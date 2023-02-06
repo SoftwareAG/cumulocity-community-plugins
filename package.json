@@ -28,6 +28,7 @@
     "url": "https://github.com/SoftwareAG/cumulocity-community-widgets/issues"
   },
   "homepage": "https://github.com/SoftwareAG/cumulocity-community-widgets#readme",
+  "main": "./src/index",
   "dependencies": {
     "@angular/animations": "14.0.6",
     "@angular/cdk": "14.1.2",

@@ -7,7 +7,7 @@ import {
   RouterModule,
 } from '@c8y/ngx-components';
 import { CockpitDashboardModule } from '@c8y/ngx-components/context-dashboard';
-import { ExampleWidgetPluginModule } from './src/example-widget/example-widget-plugin.module';
+import { ExampleWidgetPluginModule } from './example-widget/example-widget-plugin.module';
 
 // Translations
 import './locales/de.po'; // <- adding additional strings to the german translation.
