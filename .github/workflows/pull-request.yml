@@ -1,0 +1,56 @@
+name: Pull request
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - uses: sibiraj-s/action-eslint@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          eslint-args: '--quiet'
+          extensions: 'html,ts'
+          annotations: true
+
+      - name: Add commit hash to version
+        run: |
+          npm version prepatch --no-git-tag-version --preid $(git rev-parse --short HEAD)
+
+      - name: Build
+        run: npm run build:ci
+
+      - name: Zip build
+        run: |
+          cd dist/apps/sag-pkg-community-widgets
+          zip -r -q ../../build.zip *
+          cd ../../..
+          rm -r dist/apps
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          if-no-files-found: error
+          retention-days: 5
+          path: |
+            dist/build.zip
