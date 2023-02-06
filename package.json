@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-community-widgets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is a set of widgets developed and maintained by the community.",
   "scripts": {
     "start": "c8ycli server",

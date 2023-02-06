@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/SoftwareAG/cumulocity-community-widgets/compare/v1.0.0...v1.0.1) (2023-02-06)
+
+
+### Bug Fixes
+
+* move files to src folder ([5a2cc04](https://github.com/SoftwareAG/cumulocity-community-widgets/commit/5a2cc0445419b32e04694da5736861d7a66ff029))
+
 # 1.0.0 (2023-02-06)
 
 
