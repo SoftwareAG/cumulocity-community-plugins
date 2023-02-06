@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reey/test-semantic-release.git"
+    "url": "git+https://github.com/SoftwareAG/cumulocity-community-widgets.git"
   },
   "keywords": [
     "widgets",
@@ -25,9 +25,9 @@
   "author": "Cumulocity GmbH",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/reey/test-semantic-release/issues"
+    "url": "https://github.com/SoftwareAG/cumulocity-community-widgets/issues"
   },
-  "homepage": "https://github.com/reey/test-semantic-release#readme",
+  "homepage": "https://github.com/SoftwareAG/cumulocity-community-widgets#readme",
   "dependencies": {
     "@angular/animations": "14.0.6",
     "@angular/cdk": "14.1.2",
