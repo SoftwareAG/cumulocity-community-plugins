@@ -12,7 +12,7 @@
     "lib": ["dom", "es2015", "es2016"],
     "skipLibCheck": true
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
   "angularCompilerOptions": {
     "enableIvy": true,
     "strictTemplates": true

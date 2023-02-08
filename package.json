@@ -4,7 +4,7 @@
   "description": "This is a set of widgets developed and maintained by the community.",
   "scripts": {
     "start": "c8ycli server",
-    "build": "c8ycli build",
+    "build": "rimraf dist && c8ycli build",
     "build:ci": "npm run build -- --ci",
     "commit": "commit",
     "cypress:ci": "start-server-and-test http-server http://localhost:9000/apps/sag-pkg-community-widgets/index.html cypress:headless",
@@ -83,6 +83,7 @@
     "jest-preset-angular": "^12.2.0",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
+    "rimraf": "^4.1.2",
     "semantic-release": "^20.1.0",
     "start-server-and-test": "^1.15.3",
     "typescript": "4.7.4"
