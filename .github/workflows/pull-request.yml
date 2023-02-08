@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Cypress tests
     container:
-      image: cypress/browsers:node16.13.0-chrome106-ff106
+      image: cypress/browsers:node16.16.0-chrome107-ff107
       options: --user 1001
     needs: build
     steps:
