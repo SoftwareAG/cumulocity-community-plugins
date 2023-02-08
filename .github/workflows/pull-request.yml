@@ -60,6 +60,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
+          retention-days: 5
           name: cypress-screenshots
           path: cypress/screenshots
 
@@ -67,5 +68,6 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
+          retention-days: 5
           name: cypress-videos
           path: cypress/videos
