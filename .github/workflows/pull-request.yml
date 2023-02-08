@@ -54,7 +54,7 @@ jobs:
           wait-on: 'http://localhost:9000/apps/sag-pkg-community-widgets/index.html'
           browser: chrome
           record: true
-          config-file: cypress.config.js
+          config-file: cypress.config.ts
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v3
