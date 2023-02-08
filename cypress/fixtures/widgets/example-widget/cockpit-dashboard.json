@@ -1,0 +1,37 @@
+{
+  "managedObjects": [
+    {
+      "id": "123",
+      "c8y_Dashboard!name!home-cockpit1": {},
+      "c8y_Global": {},
+      "c8y_Dashboard": {
+        "translateWidgetTitle": true,
+        "children": {
+          "1": {
+            "componentId": "angular.widget.plugin",
+            "classes": {
+              "alerts-overlay": false,
+              "card-dashboard": true,
+              "panel-title-regular": true,
+              "map": true,
+              "card": true
+            },
+            "_x": 0,
+            "_y": 0,
+            "id": "1",
+            "title": "Example widget plugin",
+            "_width": 12,
+            "config": {
+              "text": "abc"
+            },
+            "_height": 6
+          }
+        },
+        "classes": { "dashboard-theme-light": true },
+        "c8y_IsNavigatorNode": null,
+        "widgetClasses": { "panel-title-regular": true }
+      }
+    }
+  ],
+  "statistics": { "pageSize": 1, "currentPage": 1 }
+}

@@ -9,8 +9,10 @@
     "experimentalDecorators": true,
     "target": "es6",
     "module": "es2020",
-    "lib": ["dom", "es2015", "es2016"]
+    "lib": ["dom", "es2015", "es2016"],
+    "skipLibCheck": true
   },
+  "exclude": ["node_modules"],
   "angularCompilerOptions": {
     "enableIvy": true,
     "strictTemplates": true
