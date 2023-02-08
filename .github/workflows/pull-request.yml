@@ -44,8 +44,7 @@ jobs:
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/apps/c8y-community-widgets/**
-
+            dist/apps/sag-pkg-community-widgets/**
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
