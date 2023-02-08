@@ -7,20 +7,19 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
+  cypress:
+    timeout-minutes: 15
+    runs-on: ubuntu-22.04
+    name: Cypress tests
+    container:
+      image: cypress/browsers:node16.16.0-chrome107-ff107
+      options: --user 1001
+    needs: build
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
 
       - name: Install dependencies
         run: npm ci
@@ -39,13 +38,6 @@ jobs:
       - name: Build
         run: npm run build:ci
 
-      - name: Zip build
-        run: |
-          cd dist/apps/sag-pkg-community-widgets
-          zip -r -q ../../build.zip *
-          cd ../../..
-          rm -r dist/apps
-
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
@@ -53,38 +45,14 @@ jobs:
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/build.zip
+            dist/apps/c8y-community-widgets/**
 
-  cypress:
-    timeout-minutes: 15
-    runs-on: ubuntu-22.04
-    name: Cypress tests
-    container:
-      image: cypress/browsers:node16.16.0-chrome107-ff107
-      options: --user 1001
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-
-      - name: Unpack build
-        run: |
-          mkdir -p dist/apps/sag-pkg-community-widgets
-          cd dist/apps/sag-pkg-community-widgets
-          unzip ../../../build.zip
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
           start: npm run http-server
-          install-command: npm ci
+          install: false
           wait-on: 'http://localhost:9000/apps/sag-pkg-community-widgets/index.html'
           browser: chrome
           record: true
