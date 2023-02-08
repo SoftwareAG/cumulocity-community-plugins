@@ -54,3 +54,52 @@ jobs:
           retention-days: 5
           path: |
             dist/build.zip
+
+  cypress:
+    timeout-minutes: 15
+    runs-on: ubuntu-22.04
+    name: Cypress tests
+    container:
+      image: cypress/browsers:node16.13.0-chrome106-ff106
+      options: --user 1001
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Unpack build
+        run: |
+          mkdir -p dist/apps/sag-pkg-community-widgets
+          cd dist/apps/sag-pkg-community-widgets
+          unzip ../../../build.zip
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run http-server
+          install-command: npm ci
+          wait-on: 'http://localhost:9000/apps/sag-pkg-community-widgets/index.html'
+          browser: chrome
+          record: true
+          config-file: cypress.config.js
+
+      - name: Upload cypress screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload cypress videos
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
