@@ -36,6 +36,10 @@ jobs:
           extensions: 'html,ts'
           annotations: true
 
+      - name: Run unit tests
+        run: |
+          npm run test
+
       - name: Add commit hash to version
         run: |
           npm version prepatch --no-git-tag-version --preid $(git rev-parse --short HEAD)
