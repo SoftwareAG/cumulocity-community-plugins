@@ -111,7 +111,8 @@
         "sag-pkg-community-widgets": [
           "ExampleWidgetPluginModule"
         ]
-      }
+      },
+      "copy": [{ "from": "CHANGELOG.md", "to": "CHANGELOG.md" }]
     },
     "cli": {}
   },
