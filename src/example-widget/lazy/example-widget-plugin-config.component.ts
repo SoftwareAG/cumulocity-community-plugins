@@ -26,11 +26,11 @@ import {
 export class ExampleWidgetPluginConfigComponent
   implements DynamicComponent, OnBeforeSave
 {
-  @Input() config: any = {};
+  @Input() config = { text: '' };
 
   constructor(private alert: AlertService) {}
 
-  onBeforeSave(config: any): boolean {
+  onBeforeSave(config: ExampleWidgetPluginConfigComponent['config']): boolean {
     if (config.text.trim() === '') {
       this.alert.warning('Please enter a valid text.');
       return false;
