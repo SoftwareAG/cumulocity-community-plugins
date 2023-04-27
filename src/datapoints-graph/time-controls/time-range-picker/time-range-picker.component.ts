@@ -1,11 +1,17 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DateTimeContext, gettext } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-time-range-picker',
-  templateUrl: './time-range-picker.component.html'
+  templateUrl: './time-range-picker.component.html',
 })
 export class TimeRangePickerComponent implements OnChanges {
   @Input() timeRange: DateTimeContext;
@@ -24,7 +30,10 @@ export class TimeRangePickerComponent implements OnChanges {
   }
 
   applyDatetimeContext() {
-    this.update([new Date(this.form.value.fromDate), new Date(this.form.value.toDate)]);
+    this.update([
+      new Date(this.form.value.fromDate),
+      new Date(this.form.value.toDate),
+    ]);
   }
 
   private update(dateRange: DateTimeContext) {
@@ -38,26 +47,26 @@ export class TimeRangePickerComponent implements OnChanges {
         type: 'date-time',
         key: 'fromDate',
         templateOptions: {
-          label: gettext('From`date`')
+          label: gettext('From`date`'),
         },
         expressionProperties: {
-          'templateOptions.maxDate': (model: any) => model?.toDate
-        }
+          'templateOptions.maxDate': (model: any) => model?.toDate,
+        },
       },
       {
         type: 'date-time',
         key: 'toDate',
         templateOptions: {
-          label: gettext('To`date`')
+          label: gettext('To`date`'),
         },
         expressionProperties: {
-          'templateOptions.minDate': (model: any) => model?.fromDate
-        }
-      }
+          'templateOptions.minDate': (model: any) => model?.fromDate,
+        },
+      },
     ];
     this.model = {
       fromDate: initialValue[0]?.toISOString(),
-      toDate: initialValue[1]?.toISOString()
+      toDate: initialValue[1]?.toISOString(),
     };
 
     if (this.disabled) {

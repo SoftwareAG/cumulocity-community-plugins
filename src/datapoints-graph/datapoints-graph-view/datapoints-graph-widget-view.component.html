@@ -46,7 +46,10 @@
         container="body"
         (click)="chart.toggleZoomIn()"
         [ngClass]="{ active: chart.zoomInActive }"
-        [tooltip]="(chart.zoomInActive ? disableZoomInLabel : enableZoomInLabel) | translate"
+        [tooltip]="
+          (chart.zoomInActive ? disableZoomInLabel : enableZoomInLabel)
+            | translate
+        "
         [attr.aria-label]="'Zoom in' | translate"
         [adaptivePosition]="false"
         [disabled]="toolboxDisabled"
@@ -88,16 +91,24 @@
     >
       <button
         type="button"
-        title="{{ (datapoint.__active ? hideDatapointLabel : showDatapointLabel) | translate }} "
+        title="{{
+          (datapoint.__active ? hideDatapointLabel : showDatapointLabel)
+            | translate
+        }} "
         class="c8y-datapoint-pill__btn"
         (click)="toggleChart(datapoint)"
       >
         <i
-          [c8yIcon]="datapoint.__active ? 'eye text-primary' : 'eye-slash text-muted'"
+          [c8yIcon]="
+            datapoint.__active ? 'eye text-primary' : 'eye-slash text-muted'
+          "
           class="icon-14"
         ></i>
       </button>
-      <div class="c8y-datapoint-pill__label" style="padding-top: 3px; padding-bottom: 2px">
+      <div
+        class="c8y-datapoint-pill__label"
+        style="padding-top: 3px; padding-bottom: 2px"
+      >
         <i
           c8yIcon="circle"
           class="m-r-4 icon-14"
@@ -105,7 +116,10 @@
             color: datapoint.color
           }"
         ></i>
-        <span class="text-truncate" [ngClass]="{ 'text-muted': !datapoint.__active }">
+        <span
+          class="text-truncate"
+          [ngClass]="{ 'text-muted': !datapoint.__active }"
+        >
           <span class="text-truncate">
             {{ datapoint.label }}
           </span>
@@ -115,7 +129,10 @@
         </span>
         <i
           *ngIf="datapointsOutOfSync.get(datapoint)"
-          [tooltip]="'Measurements received for this data point may be out of sync.' | translate"
+          [tooltip]="
+            'Measurements received for this data point may be out of sync.'
+              | translate
+          "
           container="body"
           [adaptivePosition]="false"
           c8yIcon="exclamation-triangle"

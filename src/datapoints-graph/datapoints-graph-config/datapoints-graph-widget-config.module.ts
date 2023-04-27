@@ -16,7 +16,7 @@ import { TimeControlsModule } from '../time-controls';
     PopoverModule,
     FormsModule,
     DatapointSelectorModule,
-    TimeControlsModule
+    TimeControlsModule,
   ],
   declarations: [DatapointsGraphWidgetConfigComponent],
 })

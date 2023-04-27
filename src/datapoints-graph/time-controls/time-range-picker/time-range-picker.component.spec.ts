@@ -12,9 +12,16 @@ describe('TimeRangePickerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule.forRoot(), FormsModule, CoreModule, BsDropdownModule],
+      imports: [
+        CommonModule.forRoot(),
+        FormsModule,
+        CoreModule,
+        BsDropdownModule,
+      ],
       declarations: [TimeRangePickerComponent],
-      providers: [{ provide: AnimationBuilder, useValue: { build: () => null } }]
+      providers: [
+        { provide: AnimationBuilder, useValue: { build: () => null } },
+      ],
     });
     await TestBed.compileComponents();
 
@@ -36,7 +43,7 @@ describe('TimeRangePickerComponent', () => {
     expect(component.fields).toBeDefined();
     expect(component.model).toEqual({
       fromDate: dateFrom.toISOString(),
-      toDate: dateTo.toISOString()
+      toDate: dateTo.toISOString(),
     });
   });
 
@@ -49,10 +56,16 @@ describe('TimeRangePickerComponent', () => {
     fixture.detectChanges();
     spyOn(component.timeRangeChange, 'emit');
     // when
-    component.model = { fromDate: lastMinute.toISOString(), toDate: now.toISOString() };
+    component.model = {
+      fromDate: lastMinute.toISOString(),
+      toDate: now.toISOString(),
+    };
     fixture.detectChanges();
     component.applyDatetimeContext();
     // then
-    expect(component.timeRangeChange.emit).toHaveBeenCalledWith([lastMinute, now]);
+    expect(component.timeRangeChange.emit).toHaveBeenCalledWith([
+      lastMinute,
+      now,
+    ]);
   });
 });

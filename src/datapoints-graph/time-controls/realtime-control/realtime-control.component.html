@@ -3,11 +3,16 @@
   class="btn btn-default btn-sm c8y-realtime"
   title="{{ 'Realtime' | translate }}"
   (click)="realtimeChange.emit(!active)"
-  tooltip="{{ (active ? disableRealtimeLabel : enableRealtimeLabel) | translate }}"
+  tooltip="{{
+    (active ? disableRealtimeLabel : enableRealtimeLabel) | translate
+  }}"
   [adaptivePosition]="false"
   [delay]="500"
   placement="top"
   container="body"
 >
-  <span class="c8y-pulse m-0" [ngClass]="{ active: active, inactive: !active }"></span>
+  <span
+    class="c8y-pulse m-0"
+    [ngClass]="{ active: active, inactive: !active }"
+  ></span>
 </button>

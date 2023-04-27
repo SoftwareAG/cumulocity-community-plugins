@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
   SimpleChanges,
@@ -21,7 +22,7 @@ import { aggregationType } from '@c8y/client';
   selector: 'c8y-time-controls',
   templateUrl: './time-controls.component.html',
 })
-export class TimeControlsComponent implements OnInit {
+export class TimeControlsComponent implements OnInit, OnChanges {
   timeRange: DateTimeContext;
   @Input() controlsAvailable: Partial<
     Record<'timeRange' | 'interval' | 'aggregation' | 'realtime', boolean>

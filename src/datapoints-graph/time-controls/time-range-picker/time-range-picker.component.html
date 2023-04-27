@@ -1,6 +1,11 @@
-<div #rangeDropdown="bs-dropdown" dropdown class="dropdown" [insideClick]="true">
+<div
+  #rangeDropdown="bs-dropdown"
+  dropdown
+  class="dropdown"
+  [insideClick]="true"
+>
   <button id="currentTimeFrame" dropdownToggle class="btn btn-default btn-sm">
-    {{ model.fromDate | date: 'short' }} — {{ model.toDate | date: 'short' }}
+    {{ model.fromDate | date : 'short' }} — {{ model.toDate | date : 'short' }}
     <span class="caret m-r-8"></span>
   </button>
 
@@ -16,7 +21,9 @@
       <button
         class="btn btn-primary fit-w"
         (click)="rangeDropdown.hide(); applyDatetimeContext()"
-        [disabled]="disabled || (form.pristine && form.untouched) || form.invalid"
+        [disabled]="
+          disabled || (form.pristine && form.untouched) || form.invalid
+        "
         title="{{ 'Apply' | translate }}"
         type="button"
         translate

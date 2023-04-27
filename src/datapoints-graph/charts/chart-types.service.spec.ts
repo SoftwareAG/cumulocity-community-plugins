@@ -22,19 +22,19 @@ describe('ChartTypesService', () => {
         // from lineSeriesOption
         type: 'line',
         itemStyle: {
-          color: color
+          color: color,
         },
         emphasis: {
           scale: 1.2,
           itemStyle: {
-            color: color
-          }
+            color: color,
+          },
         },
         symbolSize: 4,
         // from linePointsSeriesOption
         showSymbol: true,
         // from pointsSeriesOption
-        lineStyle: { opacity: 0 }
+        lineStyle: { opacity: 0 },
       });
     });
   });
@@ -55,20 +55,20 @@ describe('ChartTypesService', () => {
         lineStyle: {
           color: color,
           width: 1,
-          type: 'solid'
+          type: 'solid',
         },
         itemStyle: {
-          color: color
+          color: color,
         },
         emphasis: {
           scale: 1.2,
           itemStyle: {
-            color: color
-          }
+            color: color,
+          },
         },
         symbolSize: 4,
         // from linePointsSeriesOption
-        showSymbol: true
+        showSymbol: true,
       });
     });
   });
@@ -88,8 +88,8 @@ describe('ChartTypesService', () => {
         barMinWidth: 1,
         barMaxWidth: 20,
         itemStyle: {
-          color
-        }
+          color,
+        },
       });
     });
 
@@ -104,8 +104,8 @@ describe('ChartTypesService', () => {
         barMaxWidth: 20,
         itemStyle: {
           color,
-          opacity: 0.6
-        }
+          opacity: 0.6,
+        },
       });
     });
   });
@@ -126,21 +126,21 @@ describe('ChartTypesService', () => {
         lineStyle: {
           color: color,
           width: 1,
-          type: 'solid'
+          type: 'solid',
         },
         itemStyle: {
-          color: color
+          color: color,
         },
         emphasis: {
           scale: 1.2,
           itemStyle: {
-            color: color
-          }
+            color: color,
+          },
         },
         showSymbol: false,
         symbolSize: 4,
         // from stepBeforeSeriesOption
-        step: 'start'
+        step: 'start',
       });
     });
   });
@@ -161,21 +161,21 @@ describe('ChartTypesService', () => {
         lineStyle: {
           color: color,
           width: 1,
-          type: 'solid'
+          type: 'solid',
         },
         itemStyle: {
-          color: color
+          color: color,
         },
         emphasis: {
           scale: 1.2,
           itemStyle: {
-            color: color
-          }
+            color: color,
+          },
         },
         showSymbol: false,
         symbolSize: 4,
         // from stepBeforeSeriesOption
-        step: 'end'
+        step: 'end',
       });
     });
   });
@@ -196,19 +196,19 @@ describe('ChartTypesService', () => {
         lineStyle: {
           color: color,
           width: 1,
-          type: 'solid'
+          type: 'solid',
         },
         itemStyle: {
-          color: color
+          color: color,
         },
         emphasis: {
           scale: 1.2,
           itemStyle: {
-            color: color
-          }
+            color: color,
+          },
         },
         showSymbol: false,
-        symbolSize: 4
+        symbolSize: 4,
       });
     });
   });

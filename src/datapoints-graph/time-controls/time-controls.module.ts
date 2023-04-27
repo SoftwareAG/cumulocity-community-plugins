@@ -10,14 +10,20 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, TooltipModule, CoreModule, BsDropdownModule.forRoot()],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TooltipModule,
+    CoreModule,
+    BsDropdownModule.forRoot(),
+  ],
   declarations: [
     TimeRangePickerComponent,
     IntervalPickerComponent,
     TimeControlsComponent,
     AggregationPickerComponent,
-    RealtimeControlComponent
+    RealtimeControlComponent,
   ],
-  exports: [TimeControlsComponent]
+  exports: [TimeControlsComponent],
 })
 export class TimeControlsModule {}

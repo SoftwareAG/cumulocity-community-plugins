@@ -2,6 +2,8 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
+  OnInit,
   SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
@@ -24,7 +26,9 @@ import { Subject } from 'rxjs/internal/Subject';
   styleUrls: ['./datapoints-graph-widget-view.less'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DatapointsGraphWidgetViewComponent implements OnChanges {
+export class DatapointsGraphWidgetViewComponent
+  implements OnChanges, OnInit, OnDestroy
+{
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator;

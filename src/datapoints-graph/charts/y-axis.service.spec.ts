@@ -14,7 +14,7 @@ describe('YAxisService', () => {
     __active: true,
     __target: { id: 1 },
     color: 'blue',
-    values: {}
+    values: {},
   };
   const dp2: DatapointWithValues = {
     lineType: 'line',
@@ -23,7 +23,7 @@ describe('YAxisService', () => {
     __active: true,
     __target: { id: 2 },
     color: 'red',
-    values: {}
+    values: {},
   };
   const dp3: DatapointWithValues = {
     lineType: 'line',
@@ -32,7 +32,7 @@ describe('YAxisService', () => {
     __active: true,
     __target: { id: 3 },
     color: 'green',
-    values: {}
+    values: {},
   };
 
   beforeEach(() => {
@@ -42,17 +42,19 @@ describe('YAxisService', () => {
         {
           provide: AppStateService,
           useValue: {
-            state: { lang: lang }
-          }
-        }
-      ]
+            state: { lang: lang },
+          },
+        },
+      ],
     });
     service = TestBed.inject(YAxisService);
   });
 
   it('should set locale to value compliant with Intl.NumberFormat', () => {
     // given
-    const YAxis: YAXisOption = service.getYAxis([dp1], { showSplitLines: false })[0];
+    const YAxis: YAXisOption = service.getYAxis([dp1], {
+      showSplitLines: false,
+    })[0];
     // when
     const YAxisValue = (YAxis.axisLabel as any).formatter(1_400_000_000);
     // then
@@ -70,40 +72,42 @@ describe('YAxisService', () => {
         axisLine: {
           show: true,
           lineStyle: {
-            color: 'blue'
+            color: 'blue',
           },
-          onZero: false
+          onZero: false,
         },
         axisLabel: {
           fontSize: 10,
-          formatter: val =>
+          formatter: (val) =>
             new Intl.NumberFormat('en-GB', {
               notation: 'compact',
-              compactDisplay: 'short'
-            }).format(val)
+              compactDisplay: 'short',
+            }).format(val),
         },
         splitLine: {
           show: false,
-          lineStyle: { color: 'blue', opacity: 0.4, type: 'dashed' }
+          lineStyle: { color: 'blue', opacity: 0.4, type: 'dashed' },
         },
         position: 'left',
         offset: 0,
         axisTick: {
-          show: true
+          show: true,
         },
         axisPointer: {
           show: false,
           label: {
-            show: false
-          }
-        }
+            show: false,
+          },
+        },
       })
     );
   });
 
   it('should return Y axis option with min and max values', () => {
     // when
-    const YAxis = service.getYAxis([{ ...dp1, min: -100, max: 100 }], { showSplitLines: false })[0];
+    const YAxis = service.getYAxis([{ ...dp1, min: -100, max: 100 }], {
+      showSplitLines: false,
+    })[0];
     // then
     expect(YAxis.min).toEqual(-100);
     expect(YAxis.max).toEqual(100);
@@ -112,7 +116,9 @@ describe('YAxisService', () => {
   describe('should handle multiple Y axis positions and offsets', () => {
     it('when there are more than one axis and all have no yAxisType declared', () => {
       // when
-      const YAxis = service.getYAxis([dp1, dp2, dp3], { showSplitLines: false });
+      const YAxis = service.getYAxis([dp1, dp2, dp3], {
+        showSplitLines: false,
+      });
       // then
       expect(YAxis[0].position).toBe('left');
       expect(YAxis[1].position).toBe('right');
@@ -143,7 +149,7 @@ describe('YAxisService', () => {
         [
           { ...dp1, yAxisType: 'left' },
           { ...dp2, yAxisType: 'right' },
-          { ...dp3, yAxisType: 'left' }
+          { ...dp3, yAxisType: 'left' },
         ],
         { showSplitLines: false }
       );

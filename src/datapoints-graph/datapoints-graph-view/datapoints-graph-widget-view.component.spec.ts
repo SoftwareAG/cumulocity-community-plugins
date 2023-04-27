@@ -1,16 +1,21 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { DatapointsGraphWidgetViewComponent } from './datapoints-graph-widget-view.component';
 import {
   CommonModule,
   DateTimeContext,
-  DynamicComponentAlertAggregator
+  DynamicComponentAlertAggregator,
 } from '@c8y/ngx-components';
-import { TimeControlsModule } from '@c8y/ngx-components/widgets/datapoints-graph/time-controls';
-import { ChartsComponent } from '@c8y/ngx-components/widgets/datapoints-graph/charts';
+import { TimeControlsModule } from '../time-controls';
+import { ChartsComponent } from '../charts';
 import {
   DatapointsGraphKPIDetails,
-  DatapointsGraphWidgetConfig
-} from '@c8y/ngx-components/widgets/datapoints-graph/model';
+  DatapointsGraphWidgetConfig,
+} from '../model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SimpleChanges } from '@angular/core';
 
@@ -35,9 +40,14 @@ describe('DatapointsGraphWidgetViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule.forRoot(), TimeControlsModule, ChartsComponent, TooltipModule],
+      imports: [
+        CommonModule.forRoot(),
+        TimeControlsModule,
+        ChartsComponent,
+        TooltipModule,
+      ],
       declarations: [DatapointsGraphWidgetViewComponent],
-      providers: [{ provide: window, useValue: { ResizeObserver: {} } }]
+      providers: [{ provide: window, useValue: { ResizeObserver: {} } }],
     });
     await TestBed.compileComponents();
 
@@ -79,15 +89,21 @@ describe('DatapointsGraphWidgetViewComponent', () => {
 
     const dashboardTimeRange: DateTimeContext = [
       new Date('2023-03-10T11:00:19.710Z'),
-      new Date('2023-03-11T11:00:19.710Z')
+      new Date('2023-03-11T11:00:19.710Z'),
     ];
 
     it('should not change dateFrom nor dateTo when changed config has no "date" property', () => {
       // given
-      const config: DatapointsGraphWidgetConfig = { datapoints: [], dateFrom, dateTo };
+      const config: DatapointsGraphWidgetConfig = {
+        datapoints: [],
+        dateFrom,
+        dateTo,
+      };
       component.config = config;
       // when
-      component.ngOnChanges({ config: { currentValue: config } } as any as SimpleChanges);
+      component.ngOnChanges({
+        config: { currentValue: config },
+      } as any as SimpleChanges);
       // then
       expect(component.displayConfig.dateFrom).toEqual(dateFrom);
       expect(component.displayConfig.dateTo).toEqual(dateTo);
@@ -101,11 +117,13 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         dateFrom,
         dateTo,
         date: dashboardTimeRange,
-        widgetInstanceGlobalTimeContext: false
+        widgetInstanceGlobalTimeContext: false,
       };
       component.config = config;
       // when
-      component.ngOnChanges({ config: { currentValue: config } } as any as SimpleChanges);
+      component.ngOnChanges({
+        config: { currentValue: config },
+      } as any as SimpleChanges);
       // then
       expect(component.displayConfig.dateFrom).toEqual(dateFrom);
       expect(component.displayConfig.dateTo).toEqual(dateTo);
@@ -119,12 +137,14 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         dateFrom,
         dateTo,
         date: dashboardTimeRange,
-        widgetInstanceGlobalTimeContext: true
+        widgetInstanceGlobalTimeContext: true,
       };
       component.config = config;
       fixture.detectChanges();
       // when
-      component.ngOnChanges({ config: { currentValue: config } } as any as SimpleChanges);
+      component.ngOnChanges({
+        config: { currentValue: config },
+      } as any as SimpleChanges);
       tick();
       // then
       expect(component.displayConfig.dateFrom).toEqual(dashboardTimeRange[0]);
@@ -167,7 +187,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
       series: 'T',
-      __active: true
+      __active: true,
     };
     component.config = { datapoints: [dp] };
     const clonedDp = component.displayConfig.datapoints[0];
@@ -182,7 +202,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
       series: 'T',
-      __active: true
+      __active: true,
     };
     component.config = { datapoints: [dp] };
     const clonedDp = component.displayConfig.datapoints[0];
@@ -197,7 +217,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
       series: 'T',
-      __active: false
+      __active: false,
     };
     component.config = { datapoints: [dp] };
     const clonedDp = component.displayConfig.datapoints[0];
@@ -213,7 +233,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       fragment: 'c8y_Temperature',
       series: 'T',
       __active: true,
-      __target: { id: '1' }
+      __target: { id: '1' },
     };
     component.config = { datapoints: [dp] };
     const clonedDp = component.displayConfig.datapoints[0];

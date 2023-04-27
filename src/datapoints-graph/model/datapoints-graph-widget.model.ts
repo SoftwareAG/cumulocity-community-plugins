@@ -2,12 +2,16 @@ import {
   AXIS_TYPES,
   CHART_LINE_TYPES,
   CHART_RENDER_TYPES,
-  KPIDetails
+  KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
 import { DateTimeContext } from '@c8y/ngx-components';
 import { gettext } from '@c8y/ngx-components';
 import { aggregationType, IMeasurement, ISeries } from '@c8y/client';
-import type { BarSeriesOption, LineSeriesOption, ScatterSeriesOption } from 'echarts';
+import type {
+  BarSeriesOption,
+  LineSeriesOption,
+  ScatterSeriesOption,
+} from 'echarts';
 
 export type DatapointsGraphKPIDetails = KPIDetails & {
   lineType?: DatapointLineType;
@@ -30,13 +34,16 @@ export type DatapointsGraphWidgetConfig = {
 };
 
 export type DatapointsGraphWidgetTimeProps = Partial<
-  Pick<DatapointsGraphWidgetConfig, 'interval' | 'dateFrom' | 'dateTo' | 'aggregation' | 'realtime'>
+  Pick<
+    DatapointsGraphWidgetConfig,
+    'interval' | 'dateFrom' | 'dateTo' | 'aggregation' | 'realtime'
+  >
 >;
 
 export enum DATE_SELECTION {
   CONFIG = 'config',
   VIEW_AND_CONFIG = 'view_and_config',
-  DASHBOARD_CONTEXT = 'dashboard_context'
+  DASHBOARD_CONTEXT = 'dashboard_context',
 }
 
 const todayDate = new Date();
@@ -45,7 +52,8 @@ export enum TimeSpanInMs {
   'HOUR' = 1000 * 60 * 60,
   'DAY' = 1000 * 60 * 60 * 24,
   'WEEK' = 1000 * 60 * 60 * 24 * 7,
-  'MONTH' = todayDate.valueOf() - new Date(todayDate.setMonth(todayDate.getMonth() - 1)).valueOf()
+  'MONTH' = todayDate.valueOf() -
+    new Date(todayDate.setMonth(todayDate.getMonth() - 1)).valueOf(),
 }
 
 export type Interval = {
@@ -58,29 +66,29 @@ export const INTERVALS: Interval[] = [
   {
     id: 'minutes',
     title: gettext('Last minute'),
-    timespanInMs: TimeSpanInMs.MINUTE
+    timespanInMs: TimeSpanInMs.MINUTE,
   },
   {
     id: 'hours',
     title: gettext('Last hour'),
-    timespanInMs: TimeSpanInMs.HOUR
+    timespanInMs: TimeSpanInMs.HOUR,
   },
   {
     id: 'days',
     title: gettext('Last day'),
-    timespanInMs: TimeSpanInMs.DAY
+    timespanInMs: TimeSpanInMs.DAY,
   },
   {
     id: 'weeks',
     title: gettext('Last week'),
-    timespanInMs: TimeSpanInMs.WEEK
+    timespanInMs: TimeSpanInMs.WEEK,
   },
   {
     id: 'months',
     title: gettext('Last month'),
-    timespanInMs: TimeSpanInMs.MONTH
+    timespanInMs: TimeSpanInMs.MONTH,
   },
-  { id: 'custom', title: gettext('Custom') }
+  { id: 'custom', title: gettext('Custom') },
 ];
 
 export type Aggregation = {
@@ -92,13 +100,13 @@ export const AGGREGATIONS: Aggregation[] = [
   { value: null, name: gettext('None') },
   { value: aggregationType.MINUTELY, name: gettext('Minutely') },
   { value: aggregationType.HOURLY, name: gettext('Hourly') },
-  { value: aggregationType.DAILY, name: gettext('Daily') }
+  { value: aggregationType.DAILY, name: gettext('Daily') },
 ];
 
 export const AGGREGATION_LIMITS = {
   MINUTELY_LIMIT: TimeSpanInMs.MINUTE * 10,
   HOURLY_LIMIT: TimeSpanInMs.DAY * 1,
-  DAILY_LIMIT: TimeSpanInMs.DAY * 4
+  DAILY_LIMIT: TimeSpanInMs.DAY * 4,
 };
 
 type DatapointApiValues = ISeries['values'];
@@ -106,30 +114,34 @@ export interface DatapointWithValues extends DatapointsGraphKPIDetails {
   values: DatapointApiValues;
 }
 
-export type DatapointLineType = typeof CHART_LINE_TYPES[number]['val'];
-export type EchartsSeriesOptions = LineSeriesOption | ScatterSeriesOption | BarSeriesOption;
+export type DatapointLineType = (typeof CHART_LINE_TYPES)[number]['val'];
+export type EchartsSeriesOptions =
+  | LineSeriesOption
+  | ScatterSeriesOption
+  | BarSeriesOption;
 
-export type DatapointAxisType = typeof AXIS_TYPES[number]['val'];
+export type DatapointAxisType = (typeof AXIS_TYPES)[number]['val'];
 
-export type DatapointChartRenderType = typeof CHART_RENDER_TYPES[number]['val'];
+export type DatapointChartRenderType =
+  (typeof CHART_RENDER_TYPES)[number]['val'];
 
 export const REALTIME_TEXTS = {
   ACTIVE: gettext('Realtime active'),
-  INACTIVE: gettext('Realtime inactive')
+  INACTIVE: gettext('Realtime inactive'),
 } as const;
 
 export const AGGREGATION_ICONS = {
   undefined: 'line-chart',
   MINUTELY: 'hourglass',
   HOURLY: 'clock-o',
-  DAILY: 'calendar-o'
+  DAILY: 'calendar-o',
 } as const;
 
 export const AGGREGATION_TEXTS = {
   undefined: gettext('No aggregation'),
   MINUTELY: gettext('Minutely aggregation'),
   HOURLY: gettext('Hourly aggregation'),
-  DAILY: gettext('Daily aggregation')
+  DAILY: gettext('Daily aggregation'),
 } as const;
 
 export type DateString = string;

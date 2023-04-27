@@ -21,7 +21,10 @@
           (ngModelChange)="dateSelectionChange($event)"
           [ngModelOptions]="{ standalone: true }"
         >
-          <option title="{{ 'Widget configuration' | translate }}" [value]="DATE_SELECTION.CONFIG">
+          <option
+            title="{{ 'Widget configuration' | translate }}"
+            [value]="DATE_SELECTION.CONFIG"
+          >
             {{ 'Widget configuration' | translate }}
           </option>
           <option
@@ -43,7 +46,10 @@
     <form [formGroup]="formGroup">
       <label>{{ 'Display options' | translate }}</label>
       <c8y-form-group class="m-b-16">
-        <label [title]="'Display aggregation selection on view' | translate" class="c8y-checkbox">
+        <label
+          [title]="'Display aggregation selection on view' | translate"
+          class="c8y-checkbox"
+        >
           <input
             type="checkbox"
             formControlName="displayAggregationSelection"
@@ -53,12 +59,20 @@
           <span translate>Display aggregation selection on view</span>
         </label>
         <label [title]="'Y axis helper lines' | translate" class="c8y-checkbox">
-          <input type="checkbox" formControlName="yAxisSplitLines" name="yAxisSplitLines" />
+          <input
+            type="checkbox"
+            formControlName="yAxisSplitLines"
+            name="yAxisSplitLines"
+          />
           <span></span>
           <span translate>Y axis helper lines</span>
         </label>
         <label [title]="'X axis helper lines' | translate" class="c8y-checkbox">
-          <input type="checkbox" formControlName="xAxisSplitLines" name="xAxisSplitLines" />
+          <input
+            type="checkbox"
+            formControlName="xAxisSplitLines"
+            name="xAxisSplitLines"
+          />
           <span></span>
           <span translate>X axis helper lines</span>
         </label>

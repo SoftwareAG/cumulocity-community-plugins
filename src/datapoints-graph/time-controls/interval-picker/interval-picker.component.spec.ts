@@ -10,7 +10,7 @@ describe('IntervalPickerComponent', () => {
     await TestBed.configureTestingModule({
       imports: [CommonModule.forRoot(), FormsModule],
       declarations: [IntervalPickerComponent],
-      providers: []
+      providers: [],
     });
     await TestBed.compileComponents();
 

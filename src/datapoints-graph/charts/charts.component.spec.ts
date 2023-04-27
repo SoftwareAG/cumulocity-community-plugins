@@ -4,7 +4,7 @@ import {
   flush,
   flushMicrotasks,
   TestBed,
-  tick
+  tick,
 } from '@angular/core/testing';
 import { ChartsComponent } from './charts.component';
 import {
@@ -12,7 +12,7 @@ import {
   CoreModule,
   DismissAlertStrategy,
   DynamicComponentAlertAggregator,
-  MeasurementRealtimeService
+  MeasurementRealtimeService,
 } from '@c8y/ngx-components';
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from 'ngx-echarts';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -33,7 +33,7 @@ const dp: DatapointsGraphKPIDetails = {
   fragment: 'c8y_Temperature',
   series: 'T',
   __active: true,
-  __target: { id: 1 }
+  __target: { id: 1 },
 };
 
 describe('ChartsComponent', () => {
@@ -56,9 +56,9 @@ describe('ChartsComponent', () => {
     }
     window.ResizeObserver = ResizeObserverMock;
     const getComputedStyleMock = () => ({
-      getPropertyValue: _ => {
+      getPropertyValue: (_) => {
         return 1;
-      }
+      },
     });
     window.getComputedStyle = getComputedStyleMock as any;
   });
@@ -75,17 +75,17 @@ describe('ChartsComponent', () => {
           data: {
             values: {
               [dateFrom.toISOString()]: [{ min: 1, max: 1 }],
-              [dateTo.toISOString()]: [{ min: 5, max: 5 }]
-            }
-          }
-        } as IResult<ISeries>)
+              [dateTo.toISOString()]: [{ min: 5, max: 5 }],
+            },
+          },
+        } as IResult<ISeries>),
     } as any as CustomMeasurementService;
     echartsOptionsServiceMock = {
-      getChartOptions: jest.fn().mockName('getChartOptions')
+      getChartOptions: jest.fn().mockName('getChartOptions'),
     };
     chartRealtimeServiceMock = {
       stopRealtime: jest.fn().mockName('stopRealtime'),
-      startRealtime: jest.fn().mockName('startRealtime')
+      startRealtime: jest.fn().mockName('startRealtime'),
     };
     echartsInstance = {
       on(eventName, cb) {
@@ -93,10 +93,12 @@ describe('ChartsComponent', () => {
       },
       getOption() {
         return {
-          dataZoom: [{ startValue: dateFrom.valueOf(), endValue: dateTo.valueOf() }]
+          dataZoom: [
+            { startValue: dateFrom.valueOf(), endValue: dateTo.valueOf() },
+          ],
         };
       },
-      dispatchAction() {}
+      dispatchAction() {},
     } as any as ECharts;
 
     await TestBed.configureTestingModule({
@@ -106,33 +108,42 @@ describe('ChartsComponent', () => {
         CoreModule,
         NgxEchartsModule,
         TooltipModule,
-        PopoverModule
+        PopoverModule,
       ],
       declarations: [],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         {
           provide: NGX_ECHARTS_CONFIG,
-          useFactory: () => ({ echarts: () => import('echarts') })
+          useFactory: () => ({ echarts: () => import('echarts') }),
         },
         ChartRealtimeService,
         MeasurementRealtimeService,
         ChartTypesService,
         EchartsOptionsService,
-        CustomMeasurementService
-      ]
+        CustomMeasurementService,
+      ],
     });
     TestBed.overrideProvider(CustomMeasurementService, {
-      useValue: customMeasurementServiceMock
+      useValue: customMeasurementServiceMock,
     });
-    TestBed.overrideProvider(EchartsOptionsService, { useValue: echartsOptionsServiceMock });
-    TestBed.overrideProvider(ChartRealtimeService, { useValue: chartRealtimeServiceMock });
+    TestBed.overrideProvider(EchartsOptionsService, {
+      useValue: echartsOptionsServiceMock,
+    });
+    TestBed.overrideProvider(ChartRealtimeService, {
+      useValue: chartRealtimeServiceMock,
+    });
     await TestBed.compileComponents();
 
     fixture = TestBed.createComponent(ChartsComponent);
 
     component = fixture.componentInstance;
-    component.config = { datapoints: [dp], dateFrom, dateTo, interval: 'custom' };
+    component.config = {
+      datapoints: [dp],
+      dateFrom,
+      dateTo,
+      interval: 'custom',
+    };
     component.alerts = new DynamicComponentAlertAggregator();
     spyOn(component.alerts, 'setAlertGroupDismissStrategy');
   });
@@ -154,7 +165,7 @@ describe('ChartsComponent', () => {
       // given
       let result: EChartsOption;
       component.config = { datapoints: [] };
-      component.chartOption$.pipe(take(1)).subscribe(val => (result = val));
+      component.chartOption$.pipe(take(1)).subscribe((val) => (result = val));
       // when
       component.ngOnChanges();
       tick();
@@ -177,7 +188,9 @@ describe('ChartsComponent', () => {
       // given
       component.config = { ...component.config, realtime: true };
       component.echartsInstance = {} as any;
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.returnValue(of({}));
+      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.returnValue(
+        of({})
+      );
       spyOn(component, 'onChartInit');
       // when
       fixture.detectChanges();
@@ -196,31 +209,39 @@ describe('ChartsComponent', () => {
             truncated: true,
             values: {
               '2023-03-20T10:31:19.710Z': [{ min: 1, max: 1 }],
-              '2023-03-20T10:32:19.710Z': [{ min: 5, max: 5 }]
-            }
-          }
+              '2023-03-20T10:32:19.710Z': [{ min: 5, max: 5 }],
+            },
+          },
         } as any as IResult<ISeries>)
       );
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(vals => {
-        datapointsWithValues = vals;
-      });
+      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
+        (vals) => {
+          datapointsWithValues = vals;
+        }
+      );
       // when
       fixture.detectChanges();
       tick();
       // then
       expect(Object.keys(datapointsWithValues[0].values).length).toBe(3);
-      const currentAlerts = component.alerts.alertGroups.find(a => a.type === 'warning').value
-        .alerts;
+      const currentAlerts = component.alerts.alertGroups.find(
+        (a) => a.type === 'warning'
+      ).value.alerts;
       expect(currentAlerts.length).toBe(1);
     }));
 
     it('should get proper timeRange when global time context is enabled', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake((_, calculatedTimeRange) => {
-        timeRange = calculatedTimeRange;
-      });
-      component.config = { ...component.config, widgetInstanceGlobalTimeContext: true };
+      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
+        (_, calculatedTimeRange) => {
+          timeRange = calculatedTimeRange;
+        }
+      );
+      component.config = {
+        ...component.config,
+        widgetInstanceGlobalTimeContext: true,
+      };
       // when
       fixture.detectChanges();
       tick();
@@ -232,10 +253,16 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange when interval is "custom" and realtime is off', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake((_, calculatedTimeRange) => {
-        timeRange = calculatedTimeRange;
-      });
-      component.config = { ...component.config, interval: 'custom', realtime: false };
+      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
+        (_, calculatedTimeRange) => {
+          timeRange = calculatedTimeRange;
+        }
+      );
+      component.config = {
+        ...component.config,
+        interval: 'custom',
+        realtime: false,
+      };
       // when
       fixture.detectChanges();
       tick();
@@ -247,47 +274,72 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange for interval', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake((_, calculatedTimeRange) => {
-        timeRange = calculatedTimeRange;
-      });
-      component.config = { ...component.config, interval: 'hours', realtime: false };
+      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
+        (_, calculatedTimeRange) => {
+          timeRange = calculatedTimeRange;
+        }
+      );
+      component.config = {
+        ...component.config,
+        interval: 'hours',
+        realtime: false,
+      };
       // when
       fixture.detectChanges();
       tick();
       // then
-      expect(timeRange.dateFrom).not.toEqual(component.config.dateFrom.toISOString());
-      expect(timeRange.dateTo).not.toEqual(component.config.dateTo.toISOString());
-      expect(new Date(timeRange.dateTo).valueOf() - new Date(timeRange.dateFrom).valueOf()).toEqual(
-        3600_000
-      ); // time span is one hour in milliseconds
+      expect(timeRange.dateFrom).not.toEqual(
+        component.config.dateFrom.toISOString()
+      );
+      expect(timeRange.dateTo).not.toEqual(
+        component.config.dateTo.toISOString()
+      );
+      expect(
+        new Date(timeRange.dateTo).valueOf() -
+          new Date(timeRange.dateFrom).valueOf()
+      ).toEqual(3600_000); // time span is one hour in milliseconds
     }));
 
     it('should get proper timeRange when realtime is on', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake((_, calculatedTimeRange) => {
-        timeRange = calculatedTimeRange;
-      });
-      component.config = { ...component.config, interval: 'custom', realtime: true };
+      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
+        (_, calculatedTimeRange) => {
+          timeRange = calculatedTimeRange;
+        }
+      );
+      component.config = {
+        ...component.config,
+        interval: 'custom',
+        realtime: true,
+      };
       // when
       fixture.detectChanges();
       tick();
       // then
       const calculatedDatesDiff =
-        new Date(timeRange.dateTo).valueOf() - new Date(timeRange.dateFrom).valueOf();
+        new Date(timeRange.dateTo).valueOf() -
+        new Date(timeRange.dateFrom).valueOf();
       const configDatesDiff =
-        new Date(component.config.dateTo).valueOf() - new Date(component.config.dateFrom).valueOf();
+        new Date(component.config.dateTo).valueOf() -
+        new Date(component.config.dateFrom).valueOf();
       expect(configDatesDiff).toEqual(calculatedDatesDiff);
     }));
 
     it('should get proper timeRange when interval is "custom", realtime is off and padding is declared', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(customMeasurementServiceMock, 'listSeries$').and.callFake(options => {
-        timeRange = { dateFrom: options.dateFrom, dateTo: options.dateTo };
-        return NEVER;
-      });
-      component.config = { ...component.config, interval: 'custom', realtime: false };
+      spyOn(customMeasurementServiceMock, 'listSeries$').and.callFake(
+        (options) => {
+          timeRange = { dateFrom: options.dateFrom, dateTo: options.dateTo };
+          return NEVER;
+        }
+      );
+      component.config = {
+        ...component.config,
+        interval: 'custom',
+        realtime: false,
+      };
       // when
       fixture.detectChanges();
       tick();
@@ -361,7 +413,7 @@ describe('ChartsComponent', () => {
     expect(echartsInstance.dispatchAction).toHaveBeenCalledWith({
       type: 'takeGlobalCursor',
       key: 'dataZoomSelect',
-      dataZoomSelectActive: true
+      dataZoomSelectActive: true,
     });
   });
 
@@ -385,7 +437,7 @@ describe('ChartsComponent', () => {
       flushMicrotasks();
       component.zoomHistory.push({
         startValue: dateFrom.valueOf() + 60_000,
-        endValue: dateTo.valueOf() - 60_000
+        endValue: dateTo.valueOf() - 60_000,
       });
       expect(component.zoomHistory).toHaveLength(2);
 
@@ -394,7 +446,7 @@ describe('ChartsComponent', () => {
       expect(component.echartsInstance.dispatchAction).toHaveBeenCalledWith({
         type: 'dataZoom',
         startValue: dateFrom.valueOf(),
-        endValue: dateTo.valueOf()
+        endValue: dateTo.valueOf(),
       });
       expect(component.zoomHistory).toHaveLength(1);
     }));
@@ -408,7 +460,7 @@ describe('ChartsComponent', () => {
       flushMicrotasks();
       component.zoomHistory.push({
         startValue: dateFrom.valueOf() + 60_000,
-        endValue: dateTo.valueOf() - 60_000
+        endValue: dateTo.valueOf() - 60_000,
       });
       expect(component.zoomHistory).toHaveLength(2);
 
@@ -417,7 +469,7 @@ describe('ChartsComponent', () => {
       expect(component.echartsInstance.dispatchAction).toHaveBeenCalledWith({
         type: 'dataZoom',
         startValue: dateFrom.valueOf(),
-        endValue: dateTo.valueOf()
+        endValue: dateTo.valueOf(),
       });
       expect(component.zoomHistory).toHaveLength(1);
       expect(chartRealtimeServiceMock.startRealtime).toHaveBeenCalled();
@@ -437,11 +489,13 @@ describe('ChartsComponent', () => {
       expect(component.zoomHistory[0].startValue).toBe(
         dateFrom.valueOf() - currentTimeSpanInMs / 2
       );
-      expect(component.zoomHistory[0].endValue).toBe(dateTo.valueOf() + currentTimeSpanInMs / 2);
+      expect(component.zoomHistory[0].endValue).toBe(
+        dateTo.valueOf() + currentTimeSpanInMs / 2
+      );
       expect(component.configChangeOnZoomOut.emit).toHaveBeenCalledWith({
         dateFrom: new Date(component.zoomHistory[0].startValue),
         dateTo: new Date(component.zoomHistory[0].endValue),
-        interval: 'custom'
+        interval: 'custom',
       });
     }));
   });

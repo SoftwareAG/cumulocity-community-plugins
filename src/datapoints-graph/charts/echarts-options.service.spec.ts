@@ -8,7 +8,7 @@ import { DataZoomComponentOption, SeriesOption } from 'echarts';
 import { XAXisOption } from 'echarts/types/src/coord/cartesian/AxisModel';
 import {
   TooltipOption,
-  TopLevelFormatterParams
+  TopLevelFormatterParams,
 } from 'echarts/types/src/component/tooltip/TooltipModel';
 import { TooltipFormatterCallback } from 'echarts/types/src/util/types';
 
@@ -20,14 +20,17 @@ describe('EchartsOptionsService', () => {
   const Y_AXIS_OFFSET = 48;
   const dateFrom = new Date('2023-03-20T10:00:00.000Z');
   const dateTo = new Date('2023-03-20T11:00:00.000Z');
-  const timeRange = { dateFrom: dateFrom.toISOString(), dateTo: dateTo.toISOString() };
+  const timeRange = {
+    dateFrom: dateFrom.toISOString(),
+    dateTo: dateTo.toISOString(),
+  };
   const dp1: DatapointWithValues = {
     lineType: 'line',
     fragment: 'c8y_Temperature',
     series: 'T',
     __active: true,
     __target: { id: 1 },
-    values: {}
+    values: {},
   };
 
   const dp2: DatapointWithValues = {
@@ -36,7 +39,7 @@ describe('EchartsOptionsService', () => {
     series: 'T',
     __active: true,
     __target: { id: 2 },
-    values: {}
+    values: {},
   };
 
   const dp3: DatapointWithValues = {
@@ -45,22 +48,25 @@ describe('EchartsOptionsService', () => {
     series: 'T',
     __active: true,
     __target: { id: 3 },
-    values: {}
+    values: {},
   };
 
   beforeEach(() => {
     yAxisService = {
       getYAxis: jest.fn().mockName('getYAxis').mockReturnValue([]),
-      Y_AXIS_OFFSET
+      Y_AXIS_OFFSET,
     } as any as YAxisService;
     chartTypesService = {
-      getSeriesOptions: jest.fn().mockName('getSeriesOptions').mockReturnValue({})
+      getSeriesOptions: jest
+        .fn()
+        .mockName('getSeriesOptions')
+        .mockReturnValue({}),
     } as any as ChartTypesService;
     datePipe = {
       transform: jest
         .fn()
         .mockName('transform')
-        .mockImplementation(a => a)
+        .mockImplementation((a) => a),
     } as any as DatePipe;
     TestBed.configureTestingModule({
       imports: [CommonModule.forRoot()],
@@ -68,12 +74,12 @@ describe('EchartsOptionsService', () => {
         EchartsOptionsService,
         { provide: DatePipe, useValue: datePipe },
         { provide: ChartTypesService, useValue: chartTypesService },
-        { provide: YAxisService, useValue: yAxisService }
-      ]
+        { provide: YAxisService, useValue: yAxisService },
+      ],
     });
     service = TestBed.inject(EchartsOptionsService);
     service.echartsInstance = {
-      getOption: jest.fn().mockName('getOption')
+      getOption: jest.fn().mockName('getOption'),
     } as any;
   });
 
@@ -83,7 +89,10 @@ describe('EchartsOptionsService', () => {
 
   it('should get options with static values', () => {
     // when
-    const options = service.getChartOptions([], timeRange, { YAxis: false, XAxis: false });
+    const options = service.getChartOptions([], timeRange, {
+      YAxis: false,
+      XAxis: false,
+    });
     // then
     expect(JSON.stringify(options)).toBe(
       JSON.stringify({
@@ -92,12 +101,12 @@ describe('EchartsOptionsService', () => {
           left: 16,
           top: 32,
           right: 16,
-          bottom: 24
+          bottom: 24,
         },
         dataZoom: {
           type: 'inside',
           filterMode: 'none',
-          zoomOnMouseWheel: false
+          zoomOnMouseWheel: false,
         },
         animation: false,
         toolbox: {
@@ -105,22 +114,22 @@ describe('EchartsOptionsService', () => {
           itemSize: 0,
           feature: {
             dataZoom: {
-              yAxisIndex: 'none'
-            }
-          }
+              yAxisIndex: 'none',
+            },
+          },
         },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
             type: 'cross',
-            snap: true
+            snap: true,
           },
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           formatter: (service as any).getTooltipFormatter(),
-          appendToBody: true
+          appendToBody: true,
         },
         legend: {
-          show: false
+          show: false,
         },
         xAxis: {
           min: timeRange.dateFrom,
@@ -129,24 +138,24 @@ describe('EchartsOptionsService', () => {
           animation: false,
           axisPointer: {
             label: {
-              show: false
-            }
+              show: false,
+            },
           },
           axisLine: {
-            onZeroAxisIndex: -1
+            onZeroAxisIndex: -1,
           },
           axisLabel: {
             hideOverlap: true,
             borderWidth: 2,
-            borderColor: 'transparent'
+            borderColor: 'transparent',
           },
           splitLine: {
             show: false,
-            lineStyle: { opacity: 0.8, type: 'dashed', width: 2 }
-          }
+            lineStyle: { opacity: 0.8, type: 'dashed', width: 2 },
+          },
         },
         yAxis: [],
-        series: []
+        series: [],
       })
     );
   });
@@ -156,14 +165,17 @@ describe('EchartsOptionsService', () => {
       // given
       spyOn(yAxisService, 'getYAxis').and.returnValue([{ position: 'left' }]);
       // when
-      const options = service.getChartOptions([], timeRange, { YAxis: false, XAxis: false });
+      const options = service.getChartOptions([], timeRange, {
+        YAxis: false,
+        XAxis: false,
+      });
       // then
       expect(options.grid).toEqual({
         containLabel: false,
         left: Y_AXIS_OFFSET,
         top: 32,
         right: 16,
-        bottom: 24
+        bottom: 24,
       });
     });
 
@@ -171,17 +183,20 @@ describe('EchartsOptionsService', () => {
       // given
       spyOn(yAxisService, 'getYAxis').and.returnValue([
         { position: 'left' },
-        { position: 'right' }
+        { position: 'right' },
       ]);
       // when
-      const options = service.getChartOptions([], timeRange, { YAxis: false, XAxis: false });
+      const options = service.getChartOptions([], timeRange, {
+        YAxis: false,
+        XAxis: false,
+      });
       // then
       expect(options.grid).toEqual({
         containLabel: false,
         left: Y_AXIS_OFFSET,
         top: 32,
         right: Y_AXIS_OFFSET,
-        bottom: 24
+        bottom: 24,
       });
     });
 
@@ -192,17 +207,20 @@ describe('EchartsOptionsService', () => {
         { position: 'left' },
         { position: 'left' },
         { position: 'right' },
-        { position: 'right' }
+        { position: 'right' },
       ]);
       // when
-      const options = service.getChartOptions([], timeRange, { YAxis: false, XAxis: false });
+      const options = service.getChartOptions([], timeRange, {
+        YAxis: false,
+        XAxis: false,
+      });
       // then
       expect(options.grid).toEqual({
         containLabel: false,
         left: Y_AXIS_OFFSET * 3,
         top: 32,
         right: Y_AXIS_OFFSET * 2,
-        bottom: 24
+        bottom: 24,
       });
     });
   });
@@ -212,7 +230,7 @@ describe('EchartsOptionsService', () => {
       // when
       const dataZoomOptions = service.getChartOptions([dp1, dp2], timeRange, {
         YAxis: false,
-        XAxis: false
+        XAxis: false,
       }).dataZoom as DataZoomComponentOption;
       // then
       expect(dataZoomOptions.filterMode).toBe('filter');
@@ -222,7 +240,7 @@ describe('EchartsOptionsService', () => {
       // when
       const dataZoomOptions = service.getChartOptions([dp1], timeRange, {
         YAxis: false,
-        XAxis: false
+        XAxis: false,
       }).dataZoom as DataZoomComponentOption;
       // then
       expect(dataZoomOptions.filterMode).toBe('none');
@@ -230,8 +248,10 @@ describe('EchartsOptionsService', () => {
 
     it('should set xAxis axisLine onZeroAxisIndex to "-1" when there are no bars chart', () => {
       // when
-      const xAxisOptions = service.getChartOptions([dp1], timeRange, { YAxis: false, XAxis: false })
-        .xAxis as XAXisOption;
+      const xAxisOptions = service.getChartOptions([dp1], timeRange, {
+        YAxis: false,
+        XAxis: false,
+      }).xAxis as XAXisOption;
       // then
       expect(xAxisOptions.axisLine.onZeroAxisIndex).toBe(-1);
     });
@@ -240,7 +260,7 @@ describe('EchartsOptionsService', () => {
       // when
       const xAxisOptions = service.getChartOptions([dp1, dp2], timeRange, {
         YAxis: false,
-        XAxis: false
+        XAxis: false,
       }).xAxis as XAXisOption;
       // then
       expect(xAxisOptions.axisLine.onZeroAxisIndex).toBe(1);
@@ -257,15 +277,17 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
-          }
-        ]
+            name: 'c8y_Temperature → T',
+          },
+        ],
       });
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1], timeRange, { YAxis: false, XAxis: false })
-          .tooltip as TooltipOption
+        service.getChartOptions([dp1], timeRange, {
+          YAxis: false,
+          XAxis: false,
+        }).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
       const tooltipInnerHtml = tooltipFormatter(params, null);
@@ -284,24 +306,26 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
+            name: 'c8y_Temperature → T',
           },
           {
             id: dp3.__target.id + dp3.fragment + dp3.series,
             data: [
               ['2023-03-20T10:08:00.000Z', 0],
-              ['2023-03-20T10:09:00.000Z', 2]
+              ['2023-03-20T10:09:00.000Z', 2],
             ],
             itemStyle: { color: 'red' },
-            name: 'c8y_Temperature → T'
-          }
-        ]
+            name: 'c8y_Temperature → T',
+          },
+        ],
       });
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1, dp3], timeRange, { YAxis: false, XAxis: false })
-          .tooltip as TooltipOption
+        service.getChartOptions([dp1, dp3], timeRange, {
+          YAxis: false,
+          XAxis: false,
+        }).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
       const tooltipInnerHtml = tooltipFormatter(params, null);
@@ -314,40 +338,44 @@ describe('EchartsOptionsService', () => {
     it('for multiple datapoints but some datapoints has no values for exact hovered timestamp or before', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      const oneMinuteAfterXAxisValue = new Date(new Date(XAxisValue).valueOf() + 60_000);
+      const oneMinuteAfterXAxisValue = new Date(
+        new Date(XAxisValue).valueOf() + 60_000
+      );
       spyOn(service.echartsInstance, 'getOption').and.returnValue({
         series: [
           {
             id: dp1.__target.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
+            name: 'c8y_Temperature → T',
           },
           {
             id: dp2.__target.id + dp2.fragment + dp2.series + '/min',
             data: [[oneMinuteAfterXAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
+            name: 'c8y_Temperature → T',
           },
           {
             id: dp2.__target.id + dp2.fragment + dp2.series + '/max',
             data: [[oneMinuteAfterXAxisValue, 10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
+            name: 'c8y_Temperature → T',
           },
           {
             id: dp3.__target.id + dp3.fragment + dp3.series,
             data: [[oneMinuteAfterXAxisValue, 0]],
             itemStyle: { color: 'red' },
-            name: 'c8y_Temperature → T'
-          }
-        ]
+            name: 'c8y_Temperature → T',
+          },
+        ],
       });
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1, dp3], timeRange, { YAxis: false, XAxis: false })
-          .tooltip as TooltipOption
+        service.getChartOptions([dp1, dp3], timeRange, {
+          YAxis: false,
+          XAxis: false,
+        }).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
       const tooltipInnerHtml = tooltipFormatter(params, null);
@@ -366,21 +394,23 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series + '/min',
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
+            name: 'c8y_Temperature → T',
           },
           {
             id: dp1.__target.id + dp1.fragment + dp1.series + '/max',
             data: [[XAxisValue, 10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T'
-          }
-        ]
+            name: 'c8y_Temperature → T',
+          },
+        ],
       });
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1], timeRange, { YAxis: false, XAxis: false })
-          .tooltip as TooltipOption
+        service.getChartOptions([dp1], timeRange, {
+          YAxis: false,
+          XAxis: false,
+        }).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
       const tooltipInnerHtml = tooltipFormatter(params, null);
@@ -397,19 +427,21 @@ describe('EchartsOptionsService', () => {
         ...dp1,
         values: {
           '2023-03-20T10:08:00.000Z': [{ min: 1, max: 1 }],
-          '2023-03-20T10:09:00.000Z': [{ min: 2, max: 2 }]
-        }
+          '2023-03-20T10:09:00.000Z': [{ min: 2, max: 2 }],
+        },
       };
       const series = service.getChartOptions([dpWithValues], timeRange, {
         YAxis: false,
-        XAxis: false
+        XAxis: false,
       }).series as SeriesOption[];
       // then
       expect(series).toHaveLength(1);
-      expect((series[0] as any).id).toBe(dp1.__target.id + dp1.fragment + dp1.series);
+      expect((series[0] as any).id).toBe(
+        dp1.__target.id + dp1.fragment + dp1.series
+      );
       expect((series[0] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', 1],
-        ['2023-03-20T10:09:00.000Z', 2]
+        ['2023-03-20T10:09:00.000Z', 2],
       ]);
     });
 
@@ -419,24 +451,28 @@ describe('EchartsOptionsService', () => {
         renderType: 'area',
         values: {
           '2023-03-20T10:08:00.000Z': [{ min: -10, max: 10 }],
-          '2023-03-20T10:09:00.000Z': [{ min: 4, max: 12 }]
-        }
+          '2023-03-20T10:09:00.000Z': [{ min: 4, max: 12 }],
+        },
       };
       const series = service.getChartOptions([dpWithValues], timeRange, {
         YAxis: false,
-        XAxis: false
+        XAxis: false,
       }).series as SeriesOption[];
       // then
       expect(series).toHaveLength(2);
-      expect((series[0] as any).id).toBe(dp1.__target.id + dp1.fragment + dp1.series + '/min');
-      expect((series[1] as any).id).toBe(dp1.__target.id + dp1.fragment + dp1.series + '/max');
+      expect((series[0] as any).id).toBe(
+        dp1.__target.id + dp1.fragment + dp1.series + '/min'
+      );
+      expect((series[1] as any).id).toBe(
+        dp1.__target.id + dp1.fragment + dp1.series + '/max'
+      );
       expect((series[0] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', -10],
-        ['2023-03-20T10:09:00.000Z', 4]
+        ['2023-03-20T10:09:00.000Z', 4],
       ]);
       expect((series[1] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', 10],
-        ['2023-03-20T10:09:00.000Z', 12]
+        ['2023-03-20T10:09:00.000Z', 12],
       ]);
     });
 
@@ -447,24 +483,28 @@ describe('EchartsOptionsService', () => {
         renderType: 'area',
         values: {
           '2023-03-20T10:08:00.000Z': [{ min: -10, max: 10 }],
-          '2023-03-20T10:09:00.000Z': [{ min: 4, max: 12 }]
-        }
+          '2023-03-20T10:09:00.000Z': [{ min: 4, max: 12 }],
+        },
       };
       const series = service.getChartOptions([dpWithValues], timeRange, {
         YAxis: false,
-        XAxis: false
+        XAxis: false,
       }).series as SeriesOption[];
       // then
       expect(series).toHaveLength(2);
-      expect((series[0] as any).id).toBe(dp2.__target.id + dp2.fragment + dp2.series + '/min');
-      expect((series[1] as any).id).toBe(dp2.__target.id + dp2.fragment + dp2.series + '/max');
+      expect((series[0] as any).id).toBe(
+        dp2.__target.id + dp2.fragment + dp2.series + '/min'
+      );
+      expect((series[1] as any).id).toBe(
+        dp2.__target.id + dp2.fragment + dp2.series + '/max'
+      );
       expect((series[0] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', -10],
-        ['2023-03-20T10:09:00.000Z', 4]
+        ['2023-03-20T10:09:00.000Z', 4],
       ]);
       expect((series[1] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', 10],
-        ['2023-03-20T10:09:00.000Z', 12]
+        ['2023-03-20T10:09:00.000Z', 12],
       ]);
     });
   });

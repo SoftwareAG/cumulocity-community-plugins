@@ -23,14 +23,19 @@ describe('TimeControlsComponent', () => {
         IntervalPickerComponent,
         TimeControlsComponent,
         AggregationPickerComponent,
-        RealtimeControlComponent
-      ]
+        RealtimeControlComponent,
+      ],
     });
     await TestBed.compileComponents();
 
     fixture = TestBed.createComponent(TimeControlsComponent);
     component = fixture.componentInstance;
-    component.config = { dateFrom: lastMinute, dateTo: now, datapoints: [], interval: 'custom' };
+    component.config = {
+      dateFrom: lastMinute,
+      dateTo: now,
+      datapoints: [],
+      interval: 'custom',
+    };
     spyOn(component.configTimePropsChange, 'emit');
   });
 
@@ -58,7 +63,7 @@ describe('TimeControlsComponent', () => {
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: true,
-        MINUTELY: true
+        MINUTELY: true,
       });
     });
 
@@ -71,7 +76,7 @@ describe('TimeControlsComponent', () => {
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: true,
-        MINUTELY: true
+        MINUTELY: true,
       });
     });
 
@@ -84,7 +89,7 @@ describe('TimeControlsComponent', () => {
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: true,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
 
@@ -97,20 +102,22 @@ describe('TimeControlsComponent', () => {
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: false,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
 
     it('when time range is last 3 days', () => {
       // given
-      component.config.dateFrom = new Date(now.valueOf() - 1000 * 60 * 60 * 24 * 3);
+      component.config.dateFrom = new Date(
+        now.valueOf() - 1000 * 60 * 60 * 24 * 3
+      );
       // when
       fixture.detectChanges();
       // then
       expect(component.disabledAggregations).toEqual({
         DAILY: false,
         HOURLY: false,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
   });
@@ -122,9 +129,9 @@ describe('TimeControlsComponent', () => {
         config: {
           currentValue: {
             dateFrom: lastMinute,
-            dateTo: now
-          }
-        }
+            dateTo: now,
+          },
+        },
       } as any as SimpleChanges);
       // then
       expect(component.timeRange).toEqual([lastMinute, now]);
@@ -136,9 +143,9 @@ describe('TimeControlsComponent', () => {
         config: {
           currentValue: {
             dateFrom: lastMinute.toISOString(),
-            dateTo: now.toISOString()
-          }
-        }
+            dateTo: now.toISOString(),
+          },
+        },
       } as any as SimpleChanges);
       // then
       expect(component.timeRange).toEqual([lastMinute, now]);
@@ -155,7 +162,7 @@ describe('TimeControlsComponent', () => {
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
         interval: 'custom',
         dateFrom: lastMinute,
-        dateTo: now
+        dateTo: now,
       });
     });
 
@@ -167,12 +174,12 @@ describe('TimeControlsComponent', () => {
         interval: 'custom',
         dateFrom: lastMinute,
         dateTo: now,
-        aggregation: null
+        aggregation: null,
       });
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: true,
-        MINUTELY: true
+        MINUTELY: true,
       });
     });
 
@@ -186,12 +193,12 @@ describe('TimeControlsComponent', () => {
         interval: 'custom',
         dateFrom: lastTenMinutes,
         dateTo: now,
-        aggregation: aggregationType.MINUTELY
+        aggregation: aggregationType.MINUTELY,
       });
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: true,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
 
@@ -205,12 +212,12 @@ describe('TimeControlsComponent', () => {
         interval: 'custom',
         dateFrom: lastDay,
         dateTo: now,
-        aggregation: aggregationType.HOURLY
+        aggregation: aggregationType.HOURLY,
       });
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: false,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
 
@@ -224,12 +231,12 @@ describe('TimeControlsComponent', () => {
         interval: 'custom',
         dateFrom: lastFourDays,
         dateTo: now,
-        aggregation: aggregationType.DAILY
+        aggregation: aggregationType.DAILY,
       });
       expect(component.disabledAggregations).toEqual({
         DAILY: false,
         HOURLY: false,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
 
@@ -245,12 +252,12 @@ describe('TimeControlsComponent', () => {
         interval: 'custom',
         dateFrom: lastDay,
         dateTo: now,
-        aggregation: aggregationType.MINUTELY
+        aggregation: aggregationType.MINUTELY,
       });
       expect(component.disabledAggregations).toEqual({
         DAILY: true,
         HOURLY: false,
-        MINUTELY: false
+        MINUTELY: false,
       });
     });
   });
@@ -261,7 +268,7 @@ describe('TimeControlsComponent', () => {
       component.intervalChange('custom');
       // then
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
-        interval: 'custom'
+        interval: 'custom',
       });
     });
 
@@ -278,7 +285,7 @@ describe('TimeControlsComponent', () => {
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
         interval: 'minutes',
         dateFrom: expectedDateFrom,
-        dateTo: expectedDateTo
+        dateTo: expectedDateTo,
       });
     });
 
@@ -295,7 +302,7 @@ describe('TimeControlsComponent', () => {
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
         interval: 'hours',
         dateFrom: expectedDateFrom,
-        dateTo: expectedDateTo
+        dateTo: expectedDateTo,
       });
     });
 
@@ -305,14 +312,16 @@ describe('TimeControlsComponent', () => {
 
       jest.useFakeTimers();
       const expectedDateTo = new Date();
-      const expectedDateFrom = new Date(expectedDateTo.valueOf() - 60_000 * 60 * 24);
+      const expectedDateFrom = new Date(
+        expectedDateTo.valueOf() - 60_000 * 60 * 24
+      );
       // when
       component.intervalChange('days');
       // then
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
         interval: 'days',
         dateFrom: expectedDateFrom,
-        dateTo: expectedDateTo
+        dateTo: expectedDateTo,
       });
     });
 
@@ -322,14 +331,16 @@ describe('TimeControlsComponent', () => {
 
       jest.useFakeTimers();
       const expectedDateTo = new Date();
-      const expectedDateFrom = new Date(expectedDateTo.valueOf() - 60_000 * 60 * 24 * 7);
+      const expectedDateFrom = new Date(
+        expectedDateTo.valueOf() - 60_000 * 60 * 24 * 7
+      );
       // when
       component.intervalChange('weeks');
       // then
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
         interval: 'weeks',
         dateFrom: expectedDateFrom,
-        dateTo: expectedDateTo
+        dateTo: expectedDateTo,
       });
     });
 
@@ -342,7 +353,8 @@ describe('TimeControlsComponent', () => {
       const todayDate = new Date(expectedDateTo.valueOf());
       const expectedDateFrom = new Date(
         todayDate.valueOf() -
-          (todayDate.valueOf() - new Date(todayDate.setMonth(todayDate.getMonth() - 1)).valueOf())
+          (todayDate.valueOf() -
+            new Date(todayDate.setMonth(todayDate.getMonth() - 1)).valueOf())
       );
       // when
       component.intervalChange('months');
@@ -350,7 +362,7 @@ describe('TimeControlsComponent', () => {
       expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
         interval: 'months',
         dateFrom: expectedDateFrom,
-        dateTo: expectedDateTo
+        dateTo: expectedDateTo,
       });
     });
   });
@@ -360,7 +372,7 @@ describe('TimeControlsComponent', () => {
     component.aggregationChange(aggregationType.MINUTELY);
     // then
     expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
-      aggregation: aggregationType.MINUTELY
+      aggregation: aggregationType.MINUTELY,
     });
   });
 
@@ -370,7 +382,7 @@ describe('TimeControlsComponent', () => {
     // then
     expect(component.configTimePropsChange.emit).toHaveBeenCalledWith({
       realtime: true,
-      aggregation: null
+      aggregation: null,
     });
   });
 });
