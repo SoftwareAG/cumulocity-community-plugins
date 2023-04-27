@@ -25,9 +25,7 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:prettier/recommended" // <--- here we inherit from the recommended setup from eslint-plugin-prettier for TS
       ],
-      "rules": {
-        "@typescript-eslint/no-empty-function": "off"
-      },
+      "rules": {},
       "parserOptions": {
         "project": ["tsconfig.spec.json"]
       }

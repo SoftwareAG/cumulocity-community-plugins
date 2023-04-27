@@ -50,9 +50,9 @@ describe('ChartsComponent', () => {
 
   beforeAll(() => {
     class ResizeObserverMock {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
+      observe = jest.fn().mockName('observe').mockImplementation();
+      unobserve = jest.fn().mockName('unobserve').mockImplementation();
+      disconnect = jest.fn().mockName('disconnect').mockImplementation();
     }
     window.ResizeObserver = ResizeObserverMock;
     const getComputedStyleMock = () => ({
@@ -98,7 +98,7 @@ describe('ChartsComponent', () => {
           ],
         };
       },
-      dispatchAction() {},
+      dispatchAction: jest.fn().mockName('dispatchAction').mockImplementation(),
     } as any as ECharts;
 
     await TestBed.configureTestingModule({

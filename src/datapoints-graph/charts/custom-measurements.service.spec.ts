@@ -12,7 +12,7 @@ describe('CustomMeasurementService', () => {
   };
   const fullUrl =
     'http://localhost:9000/measurement/measurements/series?source=72172&series=c8y_Temperature.T&aggregationType=MINUTELY';
-  const response = { json: () => {} };
+  const response = { json: jest.fn().mockName('json').mockImplementation() };
 
   beforeEach(() => {
     apiService = {
@@ -26,10 +26,7 @@ describe('CustomMeasurementService', () => {
         .mockName('getFetchOptions')
         .mockReturnValue(options),
       getUrl: jest.fn().mockName('getFetchOptions').mockReturnValue(fullUrl),
-      fetch: jest
-        .fn()
-        .mockName('fetch')
-        .mockImplementation(() => {}),
+      fetch: jest.fn().mockName('fetch').mockImplementation(),
     } as any as FetchClient;
     TestBed.configureTestingModule({
       providers: [

@@ -28,9 +28,9 @@ describe('DatapointsGraphWidgetViewComponent', () => {
 
   beforeAll(() => {
     class ResizeObserverMock {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
+      observe = jest.fn().mockName('observe').mockImplementation();
+      unobserve = jest.fn().mockName('unobserve').mockImplementation();
+      disconnect = jest.fn().mockName('disconnect').mockImplementation();
     }
 
     window.ResizeObserver = ResizeObserverMock;
@@ -42,10 +42,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
 
   beforeEach(async () => {
     client = {
-      fetch: jest
-        .fn()
-        .mockName('fetch')
-        .mockImplementation(() => {}),
+      fetch: jest.fn().mockName('fetch').mockImplementation(),
     } as any as FetchClient;
     await TestBed.configureTestingModule({
       imports: [

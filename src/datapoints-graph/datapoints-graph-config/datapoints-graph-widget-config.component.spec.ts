@@ -45,9 +45,9 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
 
   beforeAll(() => {
     class ResizeObserverMock {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
+      observe = jest.fn().mockName('observe').mockImplementation();
+      unobserve = jest.fn().mockName('unobserve').mockImplementation();
+      disconnect = jest.fn().mockName('disconnect').mockImplementation();
     }
     window.ResizeObserver = ResizeObserverMock;
   });

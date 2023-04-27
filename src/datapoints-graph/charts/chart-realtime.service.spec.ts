@@ -65,7 +65,7 @@ describe('ChartRealtimeService', () => {
     jest.useFakeTimers();
     const now = new Date();
     const lastMinute = new Date(now.valueOf() - 60_000);
-    jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {});
+    jest.spyOn(echartsInstance, 'setOption').mockImplementation();
     jest
       .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
       .mockReturnValue(
@@ -85,7 +85,7 @@ describe('ChartRealtimeService', () => {
       echartsInstance,
       [dp1],
       { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
-      () => {},
+      jest.fn(),
       timeRangeCallback
     );
     jest.advanceTimersByTime(3000);
@@ -121,8 +121,8 @@ describe('ChartRealtimeService', () => {
         echartsInstance,
         [dp1],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
-        () => {},
-        () => {}
+        jest.fn(),
+        jest.fn()
       );
       expect(counter).toBe(0);
       // first measurement emits
@@ -160,8 +160,8 @@ describe('ChartRealtimeService', () => {
         echartsInstance,
         [dp1],
         { dateFrom: last10Minutes.toISOString(), dateTo: now.toISOString() },
-        () => {},
-        () => {}
+        jest.fn(),
+        jest.fn()
       );
       expect(counter).toBe(0);
       // first measurement emitted
@@ -201,8 +201,8 @@ describe('ChartRealtimeService', () => {
         echartsInstance,
         [dp1],
         { dateFrom: lastWeek.toISOString(), dateTo: now.toISOString() },
-        () => {},
-        () => {}
+        jest.fn(),
+        jest.fn()
       );
       expect(counter).toBe(0);
       // first measurement emitted
@@ -256,8 +256,8 @@ describe('ChartRealtimeService', () => {
         echartsInstance,
         [dp1, dp2],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
-        () => {},
-        () => {}
+        jest.fn(),
+        jest.fn()
       );
       jest.advanceTimersByTime(250);
       jest.advanceTimersByTime(250);
@@ -302,8 +302,8 @@ describe('ChartRealtimeService', () => {
         echartsInstance,
         [dp1],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
-        () => {},
-        () => {}
+        jest.fn(),
+        jest.fn()
       );
       // time to fill whole chart with time span of 1 minute of measurements with interval of 1s
       jest.advanceTimersByTime(60_000);
@@ -317,7 +317,7 @@ describe('ChartRealtimeService', () => {
       jest.useFakeTimers();
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
-      jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {});
+      jest.spyOn(echartsInstance, 'setOption').mockImplementation();
       jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
@@ -348,7 +348,7 @@ describe('ChartRealtimeService', () => {
         [dp1],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         callback,
-        () => {}
+        jest.fn()
       );
       jest.advanceTimersByTime(250);
       expect(callback).toHaveBeenCalledWith(dp1);
