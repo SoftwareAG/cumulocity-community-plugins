@@ -1,0 +1,25 @@
+<c8y-realtime-control
+  *ngIf="controlsAvailable.realtime"
+  [active]="config.realtime"
+  (realtimeChange)="realtimeChange($event)"
+></c8y-realtime-control>
+<c8y-aggregation-picker
+  *ngIf="controlsAvailable.aggregation"
+  [aggregation]="config.aggregation"
+  [disabledAggregations]="disabledAggregations"
+  [disabled]="config.realtime"
+  (aggregationChange)="aggregationChange($event)"
+></c8y-aggregation-picker>
+
+<c8y-interval-picker
+  *ngIf="controlsAvailable.interval"
+  [interval]="config.interval"
+  [disabled]="config.realtime"
+  (intervalChange)="intervalChange($event)"
+></c8y-interval-picker>
+<c8y-time-range-picker
+  *ngIf="controlsAvailable.timeRange && timeRange"
+  [timeRange]="timeRange"
+  (timeRangeChange)="timeRangeChange($event)"
+  [disabled]="config.realtime"
+></c8y-time-range-picker>

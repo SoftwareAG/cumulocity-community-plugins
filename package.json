@@ -49,7 +49,9 @@
     "@c8y/style": "1016.0.110",
     "@ngx-translate/core": "14.0.0",
     "rxjs": "~6.6.3",
-    "zone.js": "~0.11.7"
+    "zone.js": "~0.11.7",
+    "echarts": "5.4.1",
+    "ngx-echarts": "14.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "14.0.6",
@@ -105,14 +107,26 @@
           "module": "ExampleWidgetPluginModule",
           "path": "./src/example-widget/example-widget-plugin.module.ts",
           "description": "Adds a custom widget to the shell application"
+        },
+        {
+          "name": "Data points graph",
+          "module": "DatapointsGraphWidgetModule",
+          "path": "./src/datapoints-graph/datapoints-graph-widget.module.ts",
+          "description": "Adds data points graph widget to the shell application"
         }
       ],
       "remotes": {
         "sag-pkg-community-widgets": [
-          "ExampleWidgetPluginModule"
+          "ExampleWidgetPluginModule",
+          "DatapointsGraphWidgetModule"
         ]
       },
-      "copy": [{ "from": "CHANGELOG.md", "to": "CHANGELOG.md" }]
+      "copy": [
+        {
+          "from": "CHANGELOG.md",
+          "to": "CHANGELOG.md"
+        }
+      ]
     },
     "cli": {}
   },

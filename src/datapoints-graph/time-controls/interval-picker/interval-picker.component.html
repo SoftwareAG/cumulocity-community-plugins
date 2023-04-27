@@ -1,0 +1,13 @@
+<div class="c8y-select-wrapper">
+  <select
+    class="form-control input-sm"
+    [(ngModel)]="interval"
+    (change)="intervalChange.emit(interval)"
+    [disabled]="disabled"
+  >
+    <option *ngFor="let interval of INTERVALS" [value]="interval.id">
+      {{ interval.title | translate }}
+    </option>
+  </select>
+  <span></span>
+</div>

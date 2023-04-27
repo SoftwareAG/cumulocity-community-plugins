@@ -1,0 +1,115 @@
+<div class="row no-card-context d-flex">
+  <div class="col-md-5 bg-level-1 conf-col inner-scroll">
+    <div class="form-group m-b-16">
+      <label translate class="d-inline-block">Date selection</label>
+      <button
+        class="btn-clean m-l-4"
+        [attr.aria-label]="'Help' | translate"
+        [popover]="dateSelectionHelpTemplate"
+        container="body"
+        [adaptivePosition]="false"
+        placement="bottom"
+        triggers="focus"
+      >
+        <i [c8yIcon]="'question-circle-o'" class="text-primary"></i>
+      </button>
+
+      <div class="c8y-select-wrapper">
+        <select
+          class="form-control input-sm"
+          [ngModel]="dateSelection"
+          (ngModelChange)="dateSelectionChange($event)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <option title="{{ 'Widget configuration' | translate }}" [value]="DATE_SELECTION.CONFIG">
+            {{ 'Widget configuration' | translate }}
+          </option>
+          <option
+            title="{{ 'Widget and widget configuration' | translate }}"
+            [value]="DATE_SELECTION.VIEW_AND_CONFIG"
+          >
+            {{ 'Widget and widget configuration' | translate }}
+          </option>
+          <option
+            title="{{ 'Dashboard time range' | translate }}"
+            [value]="DATE_SELECTION.DASHBOARD_CONTEXT"
+          >
+            {{ 'Dashboard time range' | translate }}
+          </option>
+        </select>
+        <span></span>
+      </div>
+    </div>
+    <form [formGroup]="formGroup">
+      <label>{{ 'Display options' | translate }}</label>
+      <c8y-form-group class="m-b-16">
+        <label [title]="'Display aggregation selection on view' | translate" class="c8y-checkbox">
+          <input
+            type="checkbox"
+            formControlName="displayAggregationSelection"
+            name="displayAggregationSelection"
+          />
+          <span></span>
+          <span translate>Display aggregation selection on view</span>
+        </label>
+        <label [title]="'Y axis helper lines' | translate" class="c8y-checkbox">
+          <input type="checkbox" formControlName="yAxisSplitLines" name="yAxisSplitLines" />
+          <span></span>
+          <span translate>Y axis helper lines</span>
+        </label>
+        <label [title]="'X axis helper lines' | translate" class="c8y-checkbox">
+          <input type="checkbox" formControlName="xAxisSplitLines" name="xAxisSplitLines" />
+          <span></span>
+          <span translate>X axis helper lines</span>
+        </label>
+      </c8y-form-group>
+
+      <c8y-datapoint-selection-list
+        #datapointSelector
+        [minActiveCount]="1"
+        [defaultFormOptions]="datapointSelectDefaultFormOptions"
+        formControlName="datapoints"
+        name="datapoints"
+      ></c8y-datapoint-selection-list>
+    </form>
+  </div>
+
+  <div class="col-md-7 sticky-top">
+    <label>{{ 'Options' | translate }}</label>
+    <c8y-time-controls
+      *ngIf="!config?.widgetInstanceGlobalTimeContext"
+      [config]="formGroup.value"
+      (configTimePropsChange)="timePropsChanged($event)"
+      class="d-flex gap-4"
+    ></c8y-time-controls>
+    <c8y-charts
+      *ngIf="activeDatapointsExists"
+      [config]="config"
+      [alerts]="alerts"
+      class="d-block p-relative overflow-hidden"
+      style="--chart-spacer: 0px; height: calc(100vh - 460px)"
+      (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"
+    ></c8y-charts>
+
+    <c8y-ui-empty-state
+      *ngIf="!activeDatapointsExists"
+      [icon]="'search'"
+      [title]="'No data points selected' | translate"
+      [subtitle]="'Select data point to render chart' | translate"
+      class="d-block m-t-24"
+    >
+      <button
+        class="btn btn-primary btn-sm"
+        type="button"
+        title="{{ 'Add data point' | translate }}"
+        (click)="datapointSelector.add()"
+      >
+        {{ 'Add data point' | translate }}
+      </button>
+    </c8y-ui-empty-state>
+  </div>
+</div>
+
+<ng-template #dateSelectionHelpTemplate>
+  <div [innerHTML]="dateSelectionHelp"></div>
+</ng-template>

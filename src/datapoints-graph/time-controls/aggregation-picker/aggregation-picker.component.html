@@ -1,0 +1,17 @@
+<div class="c8y-select-wrapper">
+  <select
+    class="form-control input-sm"
+    [(ngModel)]="aggregation"
+    (change)="aggregationChange.emit(aggregation)"
+    [disabled]="disabled"
+    title="{{ 'Aggregation' | translate }}"
+  >
+    <option
+      *ngFor="let aggr of AGGREGATIONS"
+      [ngValue]="aggr.value"
+      [disabled]="disabledAggregations[aggr.value]"
+    >
+      {{ aggr.name | translate }}
+    </option>
+  </select>
+</div>
