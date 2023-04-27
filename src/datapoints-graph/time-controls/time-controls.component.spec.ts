@@ -36,7 +36,7 @@ describe('TimeControlsComponent', () => {
       datapoints: [],
       interval: 'custom',
     };
-    spyOn(component.configTimePropsChange, 'emit');
+    jest.spyOn(component.configTimePropsChange, 'emit');
   });
 
   it('should create', () => {

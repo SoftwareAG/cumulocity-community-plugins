@@ -145,7 +145,7 @@ describe('ChartsComponent', () => {
       interval: 'custom',
     };
     component.alerts = new DynamicComponentAlertAggregator();
-    spyOn(component.alerts, 'setAlertGroupDismissStrategy');
+    jest.spyOn(component.alerts, 'setAlertGroupDismissStrategy');
   });
 
   it('should create', () => {
@@ -175,7 +175,7 @@ describe('ChartsComponent', () => {
 
     it('should invoke EchartsOptionsService getChartOptions and clear alerts when there are active datapoints', fakeAsync(() => {
       // given
-      spyOn(component.alerts, 'clear');
+      jest.spyOn(component.alerts, 'clear');
       // when
       fixture.detectChanges();
       tick();
@@ -188,10 +188,10 @@ describe('ChartsComponent', () => {
       // given
       component.config = { ...component.config, realtime: true };
       component.echartsInstance = {} as any;
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.returnValue(
-        of({})
-      );
-      spyOn(component, 'onChartInit');
+      jest
+        .spyOn(echartsOptionsServiceMock, 'getChartOptions')
+        .mockReturnValue(of({}));
+      jest.spyOn(component, 'onChartInit').mockImplementation();
       // when
       fixture.detectChanges();
       tick();
@@ -203,7 +203,7 @@ describe('ChartsComponent', () => {
     it('should add empty value at the beginning of chart and add warning alert when data is truncated', fakeAsync(() => {
       // given
       let datapointsWithValues: DatapointWithValues[];
-      spyOn(customMeasurementServiceMock, 'listSeries$').and.returnValue(
+      jest.spyOn(customMeasurementServiceMock, 'listSeries$').mockReturnValue(
         of({
           data: {
             truncated: true,
@@ -214,11 +214,10 @@ describe('ChartsComponent', () => {
           },
         } as any as IResult<ISeries>)
       );
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
-        (vals) => {
-          datapointsWithValues = vals;
-        }
-      );
+      jest
+        .spyOn(echartsOptionsServiceMock, 'getChartOptions')
+        .mockImplementation((vals: any) => (datapointsWithValues = vals));
+      jest.spyOn(component, 'onChartInit').mockImplementation();
       // when
       fixture.detectChanges();
       tick();
@@ -233,11 +232,12 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange when global time context is enabled', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
-        (_, calculatedTimeRange) => {
-          timeRange = calculatedTimeRange;
-        }
-      );
+      jest
+        .spyOn(echartsOptionsServiceMock, 'getChartOptions')
+        .mockImplementation(
+          (_, calculatedTimeRange: any) => (timeRange = calculatedTimeRange)
+        );
+      jest.spyOn(component, 'onChartInit').mockImplementation();
       component.config = {
         ...component.config,
         widgetInstanceGlobalTimeContext: true,
@@ -253,11 +253,12 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange when interval is "custom" and realtime is off', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
-        (_, calculatedTimeRange) => {
-          timeRange = calculatedTimeRange;
-        }
-      );
+      jest
+        .spyOn(echartsOptionsServiceMock, 'getChartOptions')
+        .mockImplementation(
+          (_, calculatedTimeRange: any) => (timeRange = calculatedTimeRange)
+        );
+      jest.spyOn(component, 'onChartInit').mockImplementation();
       component.config = {
         ...component.config,
         interval: 'custom',
@@ -274,11 +275,12 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange for interval', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
-        (_, calculatedTimeRange) => {
-          timeRange = calculatedTimeRange;
-        }
-      );
+      jest
+        .spyOn(echartsOptionsServiceMock, 'getChartOptions')
+        .mockImplementation(
+          (_, calculatedTimeRange: any) => (timeRange = calculatedTimeRange)
+        );
+      jest.spyOn(component, 'onChartInit').mockImplementation();
       component.config = {
         ...component.config,
         interval: 'hours',
@@ -303,11 +305,12 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange when realtime is on', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(echartsOptionsServiceMock, 'getChartOptions').and.callFake(
-        (_, calculatedTimeRange) => {
-          timeRange = calculatedTimeRange;
-        }
-      );
+      jest
+        .spyOn(echartsOptionsServiceMock, 'getChartOptions')
+        .mockImplementation(
+          (_, calculatedTimeRange: any) => (timeRange = calculatedTimeRange)
+        );
+      jest.spyOn(component, 'onChartInit').mockImplementation();
       component.config = {
         ...component.config,
         interval: 'custom',
@@ -329,12 +332,12 @@ describe('ChartsComponent', () => {
     it('should get proper timeRange when interval is "custom", realtime is off and padding is declared', fakeAsync(() => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
-      spyOn(customMeasurementServiceMock, 'listSeries$').and.callFake(
-        (options) => {
+      jest
+        .spyOn(customMeasurementServiceMock, 'listSeries$')
+        .mockImplementation((options: any) => {
           timeRange = { dateFrom: options.dateFrom, dateTo: options.dateTo };
           return NEVER;
-        }
-      );
+        });
       component.config = {
         ...component.config,
         interval: 'custom',
@@ -352,7 +355,7 @@ describe('ChartsComponent', () => {
   describe('onChartInit', () => {
     it('should handle echarts initialization when realtime is true', fakeAsync(() => {
       // given
-      spyOn(chartRealtimeServiceMock, 'startRealtime');
+      jest.spyOn(chartRealtimeServiceMock, 'startRealtime');
       component.config = { ...component.config, realtime: true };
       fixture.detectChanges();
       // when
@@ -365,7 +368,7 @@ describe('ChartsComponent', () => {
 
     it('should handle echarts initialization when realtime is false', () => {
       // given
-      spyOn(chartRealtimeServiceMock, 'startRealtime');
+      jest.spyOn(chartRealtimeServiceMock, 'startRealtime');
       component.config = { ...component.config, realtime: false };
       fixture.detectChanges();
       // when
@@ -404,7 +407,7 @@ describe('ChartsComponent', () => {
 
   it('toggleZoomIn', () => {
     // given
-    spyOn(echartsInstance, 'dispatchAction');
+    jest.spyOn(echartsInstance, 'dispatchAction');
     component.onChartInit(echartsInstance);
     // when
     component.toggleZoomIn();
@@ -431,7 +434,7 @@ describe('ChartsComponent', () => {
 
     it('after zooming in, it should zoom out to previous, known state', fakeAsync(() => {
       // given
-      spyOn(echartsInstance, 'dispatchAction');
+      jest.spyOn(echartsInstance, 'dispatchAction');
       // when
       component.onChartInit(echartsInstance);
       flushMicrotasks();
@@ -453,7 +456,7 @@ describe('ChartsComponent', () => {
 
     it('after zooming in, it should zoom out to initial state and start realtime', fakeAsync(() => {
       // given
-      spyOn(echartsInstance, 'dispatchAction');
+      jest.spyOn(echartsInstance, 'dispatchAction');
       component.config = { ...component.config, realtime: true };
       // when
       component.onChartInit(echartsInstance);
@@ -478,7 +481,7 @@ describe('ChartsComponent', () => {
     it('it should zoom out from initial state and change config time range', fakeAsync(() => {
       // given
       const currentTimeSpanInMs = dateTo.valueOf() - dateFrom.valueOf();
-      spyOn(component.configChangeOnZoomOut, 'emit');
+      jest.spyOn(component.configChangeOnZoomOut, 'emit');
       component.onChartInit(echartsInstance);
       flushMicrotasks();
       // when

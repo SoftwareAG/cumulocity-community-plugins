@@ -5,7 +5,7 @@ import { DatapointsGraphKPIDetails } from '../model';
 import { interval, timer } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { IMeasurement } from '@c8y/client';
-import { MeasurementRealtimeService } from '@c8y/ngx-components/core/realtime';
+import { MeasurementRealtimeService } from '@c8y/ngx-components';
 
 describe('ChartRealtimeService', () => {
   let service: ChartRealtimeService;
@@ -65,19 +65,20 @@ describe('ChartRealtimeService', () => {
     jest.useFakeTimers();
     const now = new Date();
     const lastMinute = new Date(now.valueOf() - 60_000);
-    spyOn(echartsInstance, 'setOption').and.callFake(() => {});
-    spyOn(
-      measurementRealtime,
-      'onCreateOfSpecificMeasurement$'
-    ).and.returnValue(
-      interval(1000).pipe(
-        take(3),
-        map(
-          (i) =>
-            ({ [dp1.fragment]: { [dp1.series]: { value: i } } } as IMeasurement)
+    jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {});
+    jest
+      .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+      .mockReturnValue(
+        interval(1000).pipe(
+          take(3),
+          map(
+            (i) =>
+              ({
+                [dp1.fragment]: { [dp1.series]: { value: i } },
+              } as IMeasurement)
+          )
         )
-      )
-    );
+      );
     const timeRangeCallback = jest.fn();
     // when
     service.startRealtime(
@@ -98,23 +99,22 @@ describe('ChartRealtimeService', () => {
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
       let counter = 0;
-      spyOn(echartsInstance, 'setOption').and.callFake(() => {
+      jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {
         counter += 1;
       });
-      spyOn(
-        measurementRealtime,
-        'onCreateOfSpecificMeasurement$'
-      ).and.returnValue(
-        interval(150).pipe(
-          take(3),
-          map(
-            (i) =>
-              ({
-                [dp1.fragment]: { [dp1.series]: { value: i } },
-              } as IMeasurement)
+      jest
+        .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+        .mockReturnValue(
+          interval(150).pipe(
+            take(3),
+            map(
+              (i) =>
+                ({
+                  [dp1.fragment]: { [dp1.series]: { value: i } },
+                } as IMeasurement)
+            )
           )
-        )
-      );
+        );
       // when
       expect(counter).toBe(0);
       service.startRealtime(
@@ -138,23 +138,22 @@ describe('ChartRealtimeService', () => {
       const now = new Date();
       const last10Minutes = new Date(now.valueOf() - 10 * 60_000); // throttle time should be 600
       let counter = 0;
-      spyOn(echartsInstance, 'setOption').and.callFake(() => {
+      jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {
         counter += 1;
       });
-      spyOn(
-        measurementRealtime,
-        'onCreateOfSpecificMeasurement$'
-      ).and.returnValue(
-        interval(250).pipe(
-          take(4),
-          map(
-            (i) =>
-              ({
-                [dp1.fragment]: { [dp1.series]: { value: i } },
-              } as IMeasurement)
+      jest
+        .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+        .mockReturnValue(
+          interval(250).pipe(
+            take(4),
+            map(
+              (i) =>
+                ({
+                  [dp1.fragment]: { [dp1.series]: { value: i } },
+                } as IMeasurement)
+            )
           )
-        )
-      );
+        );
       // when
       expect(counter).toBe(0);
       service.startRealtime(
@@ -180,23 +179,22 @@ describe('ChartRealtimeService', () => {
       const now = new Date();
       const lastWeek = new Date(now.valueOf() - 60_000 * 60 * 24 * 7);
       let counter = 0;
-      spyOn(echartsInstance, 'setOption').and.callFake(() => {
+      jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {
         counter += 1;
       });
-      spyOn(
-        measurementRealtime,
-        'onCreateOfSpecificMeasurement$'
-      ).and.returnValue(
-        interval(1000).pipe(
-          take(7),
-          map(
-            (i) =>
-              ({
-                [dp1.fragment]: { [dp1.series]: { value: i } },
-              } as IMeasurement)
+      jest
+        .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+        .mockReturnValue(
+          interval(1000).pipe(
+            take(7),
+            map(
+              (i) =>
+                ({
+                  [dp1.fragment]: { [dp1.series]: { value: i } },
+                } as IMeasurement)
+            )
           )
-        )
-      );
+        );
       // when
       expect(counter).toBe(0);
       service.startRealtime(
@@ -224,8 +222,10 @@ describe('ChartRealtimeService', () => {
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
       let option;
-      spyOn(echartsInstance, 'setOption').and.callFake((val) => (option = val));
-      spyOn(echartsInstance, 'getOption').and.returnValue({
+      jest
+        .spyOn(echartsInstance, 'setOption')
+        .mockImplementation((val) => (option = val));
+      jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             datapointId: dp1.__target.id + dp1.fragment + dp1.series,
@@ -237,8 +237,9 @@ describe('ChartRealtimeService', () => {
           },
         ],
       });
-      spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$').and.callFake(
-        (fragment, series, _) =>
+      jest
+        .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+        .mockImplementation((fragment, series, _) =>
           timer(0, 250).pipe(
             take(4),
             map(
@@ -249,7 +250,7 @@ describe('ChartRealtimeService', () => {
                 } as IMeasurement)
             )
           )
-      );
+        );
       // when
       service.startRealtime(
         echartsInstance,
@@ -270,8 +271,10 @@ describe('ChartRealtimeService', () => {
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
       let option;
-      spyOn(echartsInstance, 'setOption').and.callFake((val) => (option = val));
-      spyOn(echartsInstance, 'getOption').and.returnValue({
+      jest
+        .spyOn(echartsInstance, 'setOption')
+        .mockImplementation((val) => (option = val));
+      jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             datapointId: dp1.__target.id + dp1.fragment + dp1.series,
@@ -279,8 +282,9 @@ describe('ChartRealtimeService', () => {
           },
         ],
       });
-      spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$').and.callFake(
-        (fragment, series, _) =>
+      jest
+        .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+        .mockImplementation((fragment, series, _) =>
           timer(0, 1000).pipe(
             // take 1 more measurements than it's possible to fit in 1 minute time span
             take(63),
@@ -292,7 +296,7 @@ describe('ChartRealtimeService', () => {
                 } as IMeasurement)
             )
           )
-      );
+        );
       // when
       service.startRealtime(
         echartsInstance,
@@ -313,8 +317,8 @@ describe('ChartRealtimeService', () => {
       jest.useFakeTimers();
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
-      spyOn(echartsInstance, 'setOption').and.callFake(() => {});
-      spyOn(echartsInstance, 'getOption').and.returnValue({
+      jest.spyOn(echartsInstance, 'setOption').mockImplementation(() => {});
+      jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             datapointId: dp1.__target.id + dp1.fragment + dp1.series,
@@ -322,8 +326,9 @@ describe('ChartRealtimeService', () => {
           },
         ],
       });
-      spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$').and.callFake(
-        (fragment, series, _) =>
+      jest
+        .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
+        .mockImplementation((fragment, series, _) =>
           timer(0, 250).pipe(
             take(2),
             map(
@@ -335,7 +340,7 @@ describe('ChartRealtimeService', () => {
                 } as IMeasurement)
             )
           )
-      );
+        );
       const callback = jest.fn();
       // when
       service.startRealtime(

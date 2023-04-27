@@ -18,11 +18,13 @@ import {
 } from '../model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SimpleChanges } from '@angular/core';
+import { FetchClient, Realtime } from '@c8y/client';
 
 describe('DatapointsGraphWidgetViewComponent', () => {
   let component: DatapointsGraphWidgetViewComponent;
   let fixture: ComponentFixture<DatapointsGraphWidgetViewComponent>;
   const originalResizeObserver = window.ResizeObserver;
+  let client: FetchClient;
 
   beforeAll(() => {
     class ResizeObserverMock {
@@ -39,6 +41,12 @@ describe('DatapointsGraphWidgetViewComponent', () => {
   });
 
   beforeEach(async () => {
+    client = {
+      fetch: jest
+        .fn()
+        .mockName('fetch')
+        .mockImplementation(() => {}),
+    } as any as FetchClient;
     await TestBed.configureTestingModule({
       imports: [
         CommonModule.forRoot(),
@@ -47,7 +55,11 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         TooltipModule,
       ],
       declarations: [DatapointsGraphWidgetViewComponent],
-      providers: [{ provide: window, useValue: { ResizeObserver: {} } }],
+      providers: [
+        { provide: window, useValue: { ResizeObserver: {} } },
+        { provide: FetchClient, useValue: client },
+        { provide: Realtime, useValue: {} },
+      ],
     });
     await TestBed.compileComponents();
 

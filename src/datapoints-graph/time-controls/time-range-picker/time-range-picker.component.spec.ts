@@ -54,7 +54,7 @@ describe('TimeRangePickerComponent', () => {
     component.timeRange = [dateFrom, dateTo];
     component.ngOnChanges();
     fixture.detectChanges();
-    spyOn(component.timeRangeChange, 'emit');
+    jest.spyOn(component.timeRangeChange, 'emit');
     // when
     component.model = {
       fromDate: lastMinute.toISOString(),

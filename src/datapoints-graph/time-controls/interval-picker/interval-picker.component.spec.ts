@@ -25,7 +25,7 @@ describe('IntervalPickerComponent', () => {
   it('should emit current interval if it\'s different from "custom" for the purpose of updating time range', () => {
     // given
     component.interval = 'hours';
-    spyOn(component.intervalChange, 'emit');
+    jest.spyOn(component.intervalChange, 'emit');
     // when
     fixture.detectChanges();
     // then
@@ -35,7 +35,7 @@ describe('IntervalPickerComponent', () => {
   it('should not emit current interval if it\'s "custom" ', () => {
     // given
     component.interval = 'custom';
-    spyOn(component.intervalChange, 'emit');
+    jest.spyOn(component.intervalChange, 'emit');
     // when
     fixture.detectChanges();
     // then

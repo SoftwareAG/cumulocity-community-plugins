@@ -163,7 +163,9 @@ describe('EchartsOptionsService', () => {
   describe('should calculate grid values based on Y axis', () => {
     it('when only one Y axis is on left side and no axis on the right', () => {
       // given
-      spyOn(yAxisService, 'getYAxis').and.returnValue([{ position: 'left' }]);
+      jest
+        .spyOn(yAxisService, 'getYAxis')
+        .mockReturnValue([{ position: 'left' }]);
       // when
       const options = service.getChartOptions([], timeRange, {
         YAxis: false,
@@ -181,10 +183,9 @@ describe('EchartsOptionsService', () => {
 
     it('when only one Y axis is on left side and one on the right', () => {
       // given
-      spyOn(yAxisService, 'getYAxis').and.returnValue([
-        { position: 'left' },
-        { position: 'right' },
-      ]);
+      jest
+        .spyOn(yAxisService, 'getYAxis')
+        .mockReturnValue([{ position: 'left' }, { position: 'right' }]);
       // when
       const options = service.getChartOptions([], timeRange, {
         YAxis: false,
@@ -202,13 +203,15 @@ describe('EchartsOptionsService', () => {
 
     it('when more than one Y axis is on left side and on the right side', () => {
       // given
-      spyOn(yAxisService, 'getYAxis').and.returnValue([
-        { position: 'left' },
-        { position: 'left' },
-        { position: 'left' },
-        { position: 'right' },
-        { position: 'right' },
-      ]);
+      jest
+        .spyOn(yAxisService, 'getYAxis')
+        .mockReturnValue([
+          { position: 'left' },
+          { position: 'left' },
+          { position: 'left' },
+          { position: 'right' },
+          { position: 'right' },
+        ]);
       // when
       const options = service.getChartOptions([], timeRange, {
         YAxis: false,
@@ -271,7 +274,7 @@ describe('EchartsOptionsService', () => {
     it('for one datapoint', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      spyOn(service.echartsInstance, 'getOption').and.returnValue({
+      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             id: dp1.__target.id + dp1.fragment + dp1.series,
@@ -300,7 +303,7 @@ describe('EchartsOptionsService', () => {
     it('for two datapoints that has no value on exact timestamp', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      spyOn(service.echartsInstance, 'getOption').and.returnValue({
+      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             id: dp1.__target.id + dp1.fragment + dp1.series,
@@ -341,7 +344,7 @@ describe('EchartsOptionsService', () => {
       const oneMinuteAfterXAxisValue = new Date(
         new Date(XAxisValue).valueOf() + 60_000
       );
-      spyOn(service.echartsInstance, 'getOption').and.returnValue({
+      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             id: dp1.__target.id + dp1.fragment + dp1.series,
@@ -388,7 +391,7 @@ describe('EchartsOptionsService', () => {
     it('for one datapoint and chart render type is "area"', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      spyOn(service.echartsInstance, 'getOption').and.returnValue({
+      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
             id: dp1.__target.id + dp1.fragment + dp1.series + '/min',

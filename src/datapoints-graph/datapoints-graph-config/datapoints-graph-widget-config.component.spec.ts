@@ -92,10 +92,10 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
   describe('ngOnInit', () => {
     it('should initialize form', () => {
       // given
-      spyOn(component, 'timePropsChanged');
-      spyOn(ngForm.form, 'addControl');
+      jest.spyOn(component, 'timePropsChanged');
+      jest.spyOn(ngForm.form, 'addControl');
       // when
-      fixture.detectChanges();
+      component.ngOnInit();
       // then
       expect(component.formGroup).toBeDefined();
       expect(component.formGroup.value).toEqual({
@@ -162,10 +162,10 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
   describe('onBeforeSave', () => {
     it('when form is valid', () => {
       // given
-      spyOn(component, 'timePropsChanged');
+      jest.spyOn(component, 'timePropsChanged');
       component.config = { ...config, datapoints: [dp] };
       const configToSave: DatapointsGraphWidgetConfig = { datapoints: [] };
-      fixture.detectChanges();
+      component.ngOnInit();
       // when
       const result = component.onBeforeSave(configToSave);
       // then
