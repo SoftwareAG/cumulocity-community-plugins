@@ -7,6 +7,7 @@ import { gettext } from '@c8y/ngx-components';
 })
 export class RealtimeControlComponent {
   @Input() active: boolean;
+  @Input() disabled = false;
   @Output() realtimeChange = new EventEmitter<boolean>();
   readonly disableRealtimeLabel = gettext('Disable realtime');
   readonly enableRealtimeLabel = gettext('Enable realtime');

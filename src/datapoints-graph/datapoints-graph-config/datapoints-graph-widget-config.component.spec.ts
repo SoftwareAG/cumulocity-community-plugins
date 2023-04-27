@@ -232,6 +232,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       expect(component.formGroup.value.widgetInstanceGlobalTimeContext).toBe(
         true
       );
+      expect(component.formGroup.value.realtime).toBe(false);
     });
   });
 

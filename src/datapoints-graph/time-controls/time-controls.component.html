@@ -1,6 +1,7 @@
 <c8y-realtime-control
   *ngIf="controlsAvailable.realtime"
   [active]="config.realtime"
+  [disabled]="config.widgetInstanceGlobalTimeContext"
   (realtimeChange)="realtimeChange($event)"
 ></c8y-realtime-control>
 <c8y-aggregation-picker

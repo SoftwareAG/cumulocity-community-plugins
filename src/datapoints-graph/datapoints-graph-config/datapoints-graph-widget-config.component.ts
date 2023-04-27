@@ -125,6 +125,7 @@ export class DatapointsGraphWidgetConfigComponent
       this.formGroup.patchValue({
         displayDateSelection: false,
         widgetInstanceGlobalTimeContext: true,
+        realtime: false,
       });
     }
   }

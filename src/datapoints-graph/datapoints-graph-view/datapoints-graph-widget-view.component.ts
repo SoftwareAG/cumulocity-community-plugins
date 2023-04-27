@@ -3,7 +3,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
@@ -27,7 +26,7 @@ import { Subject } from 'rxjs/internal/Subject';
   encapsulation: ViewEncapsulation.None,
 })
 export class DatapointsGraphWidgetViewComponent
-  implements OnChanges, OnInit, OnDestroy
+  implements OnChanges, OnDestroy
 {
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
@@ -53,9 +52,7 @@ export class DatapointsGraphWidgetViewComponent
   readonly showDatapointLabel = gettext('Show data point');
   private destroy$ = new Subject<void>();
 
-  constructor(private formBuilder: FormBuilder) {}
-
-  ngOnInit() {
+  constructor(private formBuilder: FormBuilder) {
     this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -70,6 +67,7 @@ export class DatapointsGraphWidgetViewComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.timeControlsFormGroup.patchValue(this.displayConfig);
     if (
       changes.config?.currentValue?.date &&
       changes.config?.currentValue?.widgetInstanceGlobalTimeContext
@@ -113,6 +111,7 @@ export class DatapointsGraphWidgetViewComponent
       interval: ['hours', [Validators.required]],
       aggregation: null,
       realtime: [false, [Validators.required]],
+      widgetInstanceGlobalTimeContext: [false, []],
     });
     this.timeControlsFormGroup.patchValue(this.displayConfig);
   }
