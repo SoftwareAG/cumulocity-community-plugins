@@ -1,0 +1,48 @@
+{
+  "managedObjects": [
+    {
+      "id": "123",
+      "c8y_Dashboard!name!home-cockpit1": {},
+      "c8y_Global": {},
+      "c8y_Dashboard": {
+        "translateWidgetTitle": true,
+        "children": {
+          "1": {
+            "componentId": "datapoints-graph",
+            "classes": {
+              "alerts-overlay": false,
+              "card-dashboard": true,
+              "panel-title-regular": true,
+              "map": true,
+              "card": true
+            },
+            "_x": 0,
+            "_y": 0,
+            "id": "1",
+            "title": "Data points graph",
+            "_width": 12,
+            "config": {
+              "datapoints": [],
+              "displayDateSelection": false,
+              "displayAggregationSelection": false,
+              "widgetInstanceGlobalTimeContext": false,
+              "canDecoupleGlobalTimeContext": false,
+              "dateFrom": "2023-04-27T12:00:00.000Z",
+              "dateTo": "2023-04-27T12:10:00.000Z",
+              "interval": "hours",
+              "aggregation": null,
+              "realtime": true,
+              "yAxisSplitLines": false,
+              "xAxisSplitLines": false
+            },
+            "_height": 6
+          }
+        },
+        "classes": { "dashboard-theme-light": true },
+        "c8y_IsNavigatorNode": null,
+        "widgetClasses": { "panel-title-regular": true }
+      }
+    }
+  ],
+  "statistics": { "pageSize": 1, "currentPage": 1 }
+}
