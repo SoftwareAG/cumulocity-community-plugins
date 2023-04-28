@@ -4,19 +4,21 @@ This package provides a number of widgets that are developed and maintained by t
 
 As of now it only consists of two widgets, but further widgets will be added soon.
 
-List of widgets:
+## `Example widget plugin`
 
-- `Example widget plugin`
+A sample plugin for orientation purposes when developing your own plugin.
 
-![Example widget plugin](./assets/example-widget-plugin-screenshot.png?raw=true 'Data points graph screenshot')
+![Example widget plugin](./assets/example-widget-plugin-screenshot.png?raw=true "Data points graph screenshot")
 
-- `Data points graph widget plugin` - A graph display of a collection of data points
+## `Data points graph widget plugin`
 
-![Data points graph screenshot](./assets/datapoints-graph-screenshot.png?raw=true 'Data points graph screenshot')
+A graph display of a collection of data points
+
+![Data points graph screenshot](./assets/datapoints-graph-screenshot.png?raw=true "Data points graph screenshot")
 
 ## Contributing
 
-We follow the [Angular guidelines for commit messages](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit). A liniting rule is ensuring that your commit messages follow these rules. You can also run `npm commit` for a helper tool to write your commit messages.
+We follow the [Angular guidelines for commit messages](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit). A linting rule is ensuring that your commit messages follow these rules. You can also run `npm commit` for a helper tool to write your commit messages.
 
 ---
 
