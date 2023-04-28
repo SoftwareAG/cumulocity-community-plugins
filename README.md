@@ -2,7 +2,14 @@
 
 This package provides a number of widgets that are developed and maintained by the community.
 
-As of now it only contains the `Example widget plugin` but further widgets will be added soon.
+As of now it only consists of two widgets, but further widgets will be added soon.
+
+List of widgets:
+-  `Example widget plugin`
+   ![Example widget plugin](./assets/example-widget-plugin-screenshot.png?raw=true "Data points graph screenshot")
+
+-  `Data points graph widget plugin` - A graph display of a collection of data points
+   ![Data points graph screenshot](./assets/datapoints-graph-screenshot.png?raw=true "Data points graph screenshot")
 
 ## Contributing
 
