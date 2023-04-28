@@ -125,6 +125,10 @@
         {
           "from": "CHANGELOG.md",
           "to": "CHANGELOG.md"
+        },
+        {
+          "from": "assets",
+          "to": "assets"
         }
       ]
     },
