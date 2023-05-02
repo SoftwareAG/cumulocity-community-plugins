@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/SoftwareAG/cumulocity-community-widgets/compare/v1.0.1...v1.0.2) (2023-05-02)
+
+
+### Bug Fixes
+
+* **ci:** adjust release process ([dc5c144](https://github.com/SoftwareAG/cumulocity-community-widgets/commit/dc5c144a01a6747438695a519897ca05bde97dcc))
+
 ## [1.0.1](https://github.com/SoftwareAG/cumulocity-community-widgets/compare/v1.0.0...v1.0.1) (2023-02-06)
 
 

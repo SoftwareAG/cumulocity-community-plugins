@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-community-widgets",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This is a set of widgets developed and maintained by the community.",
   "scripts": {
     "start": "c8ycli server",
@@ -112,7 +112,12 @@
           "ExampleWidgetPluginModule"
         ]
       },
-      "copy": [{ "from": "CHANGELOG.md", "to": "CHANGELOG.md" }]
+      "copy": [
+        {
+          "from": "CHANGELOG.md",
+          "to": "CHANGELOG.md"
+        }
+      ]
     },
     "cli": {}
   },
