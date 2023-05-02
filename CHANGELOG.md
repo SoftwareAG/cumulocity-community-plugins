@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/SoftwareAG/cumulocity-community-widgets/compare/v1.0.2...v1.0.3) (2023-05-02)
+
+
+### Bug Fixes
+
+* **ci:** also create release on github not just the tag ([4d0a267](https://github.com/SoftwareAG/cumulocity-community-widgets/commit/4d0a2673e18c9de0f3315c8eebaad2750b12278a))
+
 ## [1.0.2](https://github.com/SoftwareAG/cumulocity-community-widgets/compare/v1.0.1...v1.0.2) (2023-05-02)
 
 
