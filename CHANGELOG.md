@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v1.0.4...v2.0.0) (2023-05-02)
+
+
+### Code Refactoring
+
+* **name:** rename widgets to plugins ([797a7d0](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/797a7d0bfe20ccef271faf1d70b6b99ffaae6749))
+
+
+### BREAKING CHANGES
+
+* **name:** project renamed
+
 ## [1.0.4](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v1.0.3...v1.0.4) (2023-05-02)
 
 
