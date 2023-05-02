@@ -1,4 +1,4 @@
-THIS CONTRIBUTOR LICENSE AGREEMENT (this "Agreement"), is effective for each Contribution by signing-off the Submission by using  the option "-s"  in "git commit", which will  generate a sign-off  statement with your user name and email address as described in [**CONTRIBUTING.md**](https://github.com/SoftwareAG/cumulocity-community-widgets/blob/main/CONTRIBUTING.md).
+THIS CONTRIBUTOR LICENSE AGREEMENT (this "Agreement"), is effective for each Contribution by signing-off the Submission by using  the option "-s"  in "git commit", which will  generate a sign-off  statement with your user name and email address as described in [**CONTRIBUTING.md**](https://github.com/SoftwareAG/cumulocity-community-plugins/blob/main/CONTRIBUTING.md).
  
 This Agreement is for Your protection as a Contributor as well as the protection of **Software AG**.
  
@@ -6,7 +6,7 @@ Except for the license granted herein, You reserve all right, title, and interes
  
 You accept and agree to the following terms and conditions for Your Contributions submitted to **Software AG**.
  
-You read, understand and follow the guidelines for the various roles You represent in **Software AG**’s opensource communities, starting with the contributor guidelines [**CONTRIBUTING.md**](https://github.com/SoftwareAG/cumulocity-community-widgets/blob/main/CONTRIBUTING.md).
+You read, understand and follow the guidelines for the various roles You represent in **Software AG**’s opensource communities, starting with the contributor guidelines [**CONTRIBUTING.md**](https://github.com/SoftwareAG/cumulocity-community-plugins/blob/main/CONTRIBUTING.md).
  
 **"Contribution"** means any original work of authorship, including any modification of or addition to an existing work including any associated comments and documentation, that you submit to **Software AG** in any manner for inclusion in any Work. 
  
@@ -32,6 +32,6 @@ You are not expected to provide support for Your Contributions, except to the ex
  
 You agree to notify **Software AG** of any facts or circumstances of which you become aware that would make these representations inaccurate in any respect.
  
-By signing-off on my Submissions, I agree to be bound by the terms of the then current CONTRIBUTOR LICENSE AGREEMENT located at https://github.com/SoftwareAG/cumulocity-community-widgets/blob/main/CONTRIBUTOR-LICENSE-AGREEMENT.md, which I have read and understood and I agree that this Submission constitutes a "Contribution" under this Agreement.
+By signing-off on my Submissions, I agree to be bound by the terms of the then current CONTRIBUTOR LICENSE AGREEMENT located at https://github.com/SoftwareAG/cumulocity-community-plugins/blob/main/CONTRIBUTOR-LICENSE-AGREEMENT.md, which I have read and understood and I agree that this Submission constitutes a "Contribution" under this Agreement.
  
 Release Date: 2022-05-02

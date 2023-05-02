@@ -54,14 +54,14 @@ jobs:
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/apps/sag-pkg-community-widgets/**
+            dist/apps/sag-pkg-community-plugins/**
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
           start: npm run http-server
           install: false
-          wait-on: 'http://localhost:9000/apps/sag-pkg-community-widgets/index.html'
+          wait-on: 'http://localhost:9000/apps/sag-pkg-community-plugins/index.html'
           browser: chrome
           record: false
           config-file: cypress.config.ts

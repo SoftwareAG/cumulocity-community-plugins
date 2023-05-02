@@ -1,13 +1,13 @@
 {
-  "name": "cumulocity-community-widgets",
+  "name": "cumulocity-community-plugins",
   "version": "1.0.3",
-  "description": "This is a set of widgets developed and maintained by the community.",
+  "description": "This is a set of plugins developed and maintained by the community.",
   "scripts": {
     "start": "c8ycli server",
     "build": "rimraf dist && c8ycli build",
     "build:ci": "npm run build -- --ci",
     "commit": "commit",
-    "cypress:ci": "start-server-and-test http-server http://localhost:9000/apps/sag-pkg-community-widgets/index.html cypress:headless",
+    "cypress:ci": "start-server-and-test http-server http://localhost:9000/apps/sag-pkg-community-plugins/index.html cypress:headless",
     "cypress:headless": "cypress run",
     "cypress:open": "cypress open",
     "deploy": "c8ycli deploy",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SoftwareAG/cumulocity-community-widgets.git"
+    "url": "git+https://github.com/SoftwareAG/cumulocity-community-plugins.git"
   },
   "keywords": [
     "widgets",
@@ -29,9 +29,9 @@
   "author": "Cumulocity GmbH",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SoftwareAG/cumulocity-community-widgets/issues"
+    "url": "https://github.com/SoftwareAG/cumulocity-community-plugins/issues"
   },
-  "homepage": "https://github.com/SoftwareAG/cumulocity-community-widgets#readme",
+  "homepage": "https://github.com/SoftwareAG/cumulocity-community-plugins#readme",
   "main": "./src/index",
   "dependencies": {
     "@angular/animations": "14.0.6",
@@ -90,11 +90,11 @@
   },
   "c8y": {
     "application": {
-      "name": "Cumulocity community widgets",
-      "description": "This is a set of widgets developed and maintained by the community.",
-      "contextPath": "sag-pkg-community-widgets",
-      "key": "sag-pkg-community-widgets-application-key",
-      "globalTitle": "Cumulocity community widgets",
+      "name": "Cumulocity community plugins",
+      "description": "This is a set of plugins developed and maintained by the community.",
+      "contextPath": "sag-pkg-community-plugins",
+      "key": "sag-pkg-community-plugins-application-key",
+      "globalTitle": "Cumulocity community plugins",
       "tabsHorizontal": true,
       "isPackage": true,
       "noAppSwitcher": true,
@@ -108,7 +108,7 @@
         }
       ],
       "remotes": {
-        "sag-pkg-community-widgets": [
+        "sag-pkg-community-plugins": [
           "ExampleWidgetPluginModule"
         ]
       },

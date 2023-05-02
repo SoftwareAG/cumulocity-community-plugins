@@ -1,8 +1,8 @@
-# Cumulocity community widgets
+# Cumulocity community plugins
 
-This package provides a number of widgets that are developed and maintained by the community.
+This package provides a number of plugins that are developed and maintained by the community.
 
-As of now it only contains the `Example widget plugin` but further widgets will be added soon.
+As of now it only contains the `Example widget plugin` but further plugins will be added soon.
 
 ## Contributing
 

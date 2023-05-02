@@ -41,7 +41,7 @@ jobs:
 
       - name: Zip build
         run: |
-          cd dist/apps/sag-pkg-community-widgets
+          cd dist/apps/sag-pkg-community-plugins
           zip -r -q ../../build.zip *
           cd ../../..
           rm -r dist/apps
@@ -116,13 +116,13 @@ jobs:
   
       - name: Zip build
         run: |
-          cd dist/apps/sag-pkg-community-widgets
-          zip -r -q ../../../cumulocity-community-widgets-${{ needs.release.outputs.version }}.zip *
+          cd dist/apps/sag-pkg-community-plugins
+          zip -r -q ../../../cumulocity-community-plugins-${{ needs.release.outputs.version }}.zip *
           cd ../../..
           rm -r dist/apps
   
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: cumulocity-community-widgets-${{ needs.release.outputs.version }}.zip
+          files: cumulocity-community-plugins-${{ needs.release.outputs.version }}.zip
           tag_name: v${{ needs.release.outputs.version }}
