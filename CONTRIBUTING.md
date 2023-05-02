@@ -1,9 +1,9 @@
-# Contributing to cumulocity-community-widgets
+# Contributing to cumulocity-community-plugins
 
-Thanks for taking the time to contribute to cumulocity-community-widgets!
+Thanks for taking the time to contribute to cumulocity-community-plugins!
 
 Contributing is not limited to writing code and submitting a PR. Feel free to
-submit an [issue](https://github.com/SoftwareAG/cumulocity-community-widgets/issues) or comment
+submit an [issue](https://github.com/SoftwareAG/cumulocity-community-plugins/issues) or comment
 on an existing one to report a bug, provide feedback, or suggest a new feature.
 You can also join us on GitHub Discussions.
 
@@ -205,7 +205,7 @@ By adding this sign-off statement, you are certifying:
 
 *By signing-off on this Submission, I agree to be bound by the terms of the
 **then current CONTRIBUTOR LICENSE AGREEMENT** located at
-https://github.com/SoftwareAG/cumulocity-community-widgets/blob/main/CONTRIBUTOR-LICENSE-AGREEMENT.md,
+https://github.com/SoftwareAG/cumulocity-community-plugins/blob/main/CONTRIBUTOR-LICENSE-AGREEMENT.md,
 **which I have read and understood** and I agree that this Submission
 constitutes a "Contribution" under this Agreement.*
 
