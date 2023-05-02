@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v1.0.3...v1.0.4) (2023-05-02)
+
+
+### Bug Fixes
+
+* **ci:** adjust release process ([ede3383](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/ede3383404600367055832192f02bacfd4dc910d))
+
 ## [1.0.3](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v1.0.2...v1.0.3) (2023-05-02)
 
 
