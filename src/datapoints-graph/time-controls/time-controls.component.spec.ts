@@ -7,6 +7,7 @@ import { AggregationPickerComponent } from './aggregation-picker/aggregation-pic
 import { RealtimeControlComponent } from './realtime-control/realtime-control.component';
 import { SimpleChanges } from '@angular/core';
 import { aggregationType } from '@c8y/client';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 describe('TimeControlsComponent', () => {
   let component: TimeControlsComponent;
@@ -17,7 +18,7 @@ describe('TimeControlsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule.forRoot(), FormsModule, CoreModule],
+      imports: [CommonModule.forRoot(), FormsModule, CoreModule, TooltipModule],
       declarations: [
         TimeRangePickerComponent,
         IntervalPickerComponent,

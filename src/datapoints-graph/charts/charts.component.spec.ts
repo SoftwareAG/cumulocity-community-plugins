@@ -21,11 +21,16 @@ import { ChartRealtimeService } from './chart-realtime.service';
 import { ChartTypesService } from './chart-types.service';
 import { EchartsOptionsService } from './echarts-options.service';
 import { CustomMeasurementService } from './custom-measurements.service';
-import { DatapointsGraphKPIDetails, DatapointWithValues } from '../model';
+import {
+  DatapointsGraphKPIDetails,
+  DatapointsGraphWidgetConfig,
+  DatapointWithValues,
+} from '../model';
 import { ECharts, EChartsOption } from 'echarts';
 import { take } from 'rxjs/operators';
 import { NEVER, of } from 'rxjs';
 import { IResult, ISeries } from '@c8y/client';
+import { Component, ViewChild } from '@angular/core';
 
 const dateFrom = new Date('2023-03-20T10:30:19.710Z');
 const dateTo = new Date('2023-03-20T11:00:19.710Z');
@@ -36,9 +41,33 @@ const dp: DatapointsGraphKPIDetails = {
   __target: { id: 1 },
 };
 
+@Component({
+  selector: 'charts-wrapper',
+  template: `<c8y-charts [config]="config" [alerts]="alerts"></c8y-charts>`,
+  styles: [
+    `:host {
+        width:1000px;
+        heigth: 500px';
+      }
+    `,
+  ],
+})
+export class ChartsWrapperComponent {
+  config: DatapointsGraphWidgetConfig = {
+    datapoints: [dp],
+    dateFrom,
+    dateTo,
+    interval: 'custom',
+  };
+  alerts = new DynamicComponentAlertAggregator();
+
+  @ViewChild(ChartsComponent) chartsComponent;
+}
+
 describe('ChartsComponent', () => {
+  let hostComponent: ChartsWrapperComponent;
+  let fixture: ComponentFixture<ChartsWrapperComponent>;
   let component: ChartsComponent;
-  let fixture: ComponentFixture<ChartsComponent>;
   let customMeasurementServiceMock;
   let echartsOptionsServiceMock;
   let chartRealtimeServiceMock;
@@ -110,7 +139,7 @@ describe('ChartsComponent', () => {
         TooltipModule,
         PopoverModule,
       ],
-      declarations: [],
+      declarations: [ChartsWrapperComponent],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         {
@@ -135,16 +164,10 @@ describe('ChartsComponent', () => {
     });
     await TestBed.compileComponents();
 
-    fixture = TestBed.createComponent(ChartsComponent);
-
-    component = fixture.componentInstance;
-    component.config = {
-      datapoints: [dp],
-      dateFrom,
-      dateTo,
-      interval: 'custom',
-    };
-    component.alerts = new DynamicComponentAlertAggregator();
+    fixture = TestBed.createComponent(ChartsWrapperComponent);
+    fixture.detectChanges();
+    hostComponent = fixture.componentInstance;
+    component = hostComponent.chartsComponent;
     jest.spyOn(component.alerts, 'setAlertGroupDismissStrategy');
   });
 
@@ -153,7 +176,9 @@ describe('ChartsComponent', () => {
   });
 
   it('ngOnInit should set alerts dismiss strategy', () => {
-    fixture.detectChanges();
+    // when
+    component.ngOnInit();
+    // then
     expect(component.alerts.setAlertGroupDismissStrategy).toHaveBeenCalledWith(
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
@@ -177,7 +202,7 @@ describe('ChartsComponent', () => {
       // given
       jest.spyOn(component.alerts, 'clear');
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(echartsOptionsServiceMock.getChartOptions).toHaveBeenCalled();
@@ -193,7 +218,7 @@ describe('ChartsComponent', () => {
         .mockReturnValue(of({}));
       jest.spyOn(component, 'onChartInit').mockImplementation();
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(chartRealtimeServiceMock.stopRealtime).toHaveBeenCalled();
@@ -219,7 +244,7 @@ describe('ChartsComponent', () => {
         .mockImplementation((vals: any) => (datapointsWithValues = vals));
       jest.spyOn(component, 'onChartInit').mockImplementation();
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(Object.keys(datapointsWithValues[0].values).length).toBe(3);
@@ -243,7 +268,7 @@ describe('ChartsComponent', () => {
         widgetInstanceGlobalTimeContext: true,
       };
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(timeRange.dateFrom).toBe('2023-03-20T10:30:19.710Z');
@@ -265,7 +290,7 @@ describe('ChartsComponent', () => {
         realtime: false,
       };
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(timeRange.dateFrom).toBe('2023-03-20T10:30:19.710Z');
@@ -287,7 +312,7 @@ describe('ChartsComponent', () => {
         realtime: false,
       };
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(timeRange.dateFrom).not.toEqual(
@@ -317,7 +342,7 @@ describe('ChartsComponent', () => {
         realtime: true,
       };
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       const calculatedDatesDiff =
@@ -344,7 +369,7 @@ describe('ChartsComponent', () => {
         realtime: false,
       };
       // when
-      fixture.detectChanges();
+      component.ngOnChanges();
       tick();
       // then
       expect(timeRange.dateFrom).toBe('2023-03-20T10:29:19.710Z');
