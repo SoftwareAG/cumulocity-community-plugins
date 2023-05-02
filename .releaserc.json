@@ -29,22 +29,6 @@
         ],
         "message": "ci(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "bash ./replaceVersion.sh ${nextRelease.version}"
-      }
-    ],
-    [
-      "@semantic-release/github",
-      {
-        "assets": [
-          {
-            "path": "community-widgets-*.zip"
-          }
-        ]
-      }
     ]
   ],
   "preset": "angular"
