@@ -104,6 +104,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         return of(this.getChartOptions(datapointsWithValues));
       }),
       tap(() => {
+        if (this.zoomInActive) {
+          this.toggleZoomIn();
+        }
         this.chartRealtimeService.stopRealtime();
         this.startRealtimeIfPossible();
       })
