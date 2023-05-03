@@ -79,7 +79,6 @@
       </c8y-form-group>
 
       <c8y-datapoint-selection-list
-        #datapointSelector
         [minActiveCount]="1"
         [defaultFormOptions]="datapointSelectDefaultFormOptions"
         formControlName="datapoints"
@@ -111,16 +110,7 @@
       [title]="'No data points selected' | translate"
       [subtitle]="'Select data point to render chart' | translate"
       class="d-block m-t-24"
-    >
-      <button
-        class="btn btn-primary btn-sm"
-        type="button"
-        title="{{ 'Add data point' | translate }}"
-        (click)="datapointSelector.add()"
-      >
-        {{ 'Add data point' | translate }}
-      </button>
-    </c8y-ui-empty-state>
+    ></c8y-ui-empty-state>
   </div>
 </div>
 
