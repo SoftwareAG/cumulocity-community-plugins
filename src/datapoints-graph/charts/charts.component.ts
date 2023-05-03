@@ -208,7 +208,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'datapoints-graph';
+    link.download = 'datapoints-graph-screenshot';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
