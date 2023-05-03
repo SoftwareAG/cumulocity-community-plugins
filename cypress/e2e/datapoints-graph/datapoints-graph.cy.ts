@@ -9,7 +9,7 @@ describe('datapoints-graph', () => {
       { fixture: 'widgets/datapoints-graph/cockpit-dashboard.json' }
     ).as('cockpitDashboardConfig');
 
-    cy.visit('/apps/sag-pkg-community-widgets/#/');
+    cy.visit('/apps/sag-pkg-community-plugins/#/');
     cy.wait('@cockpitDashboardConfig');
   });
 
