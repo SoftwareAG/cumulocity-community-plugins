@@ -128,8 +128,12 @@
           "to": "CHANGELOG.md"
         },
         {
-          "from": "assets",
-          "to": "assets"
+          "from": "screenshots",
+          "to": "screenshots"
+        },
+        {
+          "from": "c8y-widget-preview-img",
+          "to": "c8y-widget-preview-img"
         }
       ]
     },

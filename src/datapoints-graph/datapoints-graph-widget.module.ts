@@ -38,6 +38,7 @@ async function loadConfigComponent() {
           ),
           loadComponent: loadViewComponent,
           loadConfigComponent: loadConfigComponent,
+          previewImage: '/apps/sag-pkg-community-plugins/c8y-widget-preview-img/datapoints-graph-widget.png',
           resolve: {
             datapoints: DynamicDatapointsResolver,
           },

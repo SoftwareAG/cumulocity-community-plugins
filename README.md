@@ -8,13 +8,13 @@ As of now it only consists of two widgets, but further plugins will be added soo
 
 A graph display of a collection of data points
 
-![Data points graph screenshot](./assets/datapoints-graph-screenshot.png?raw=true "Data points graph screenshot")
+![Data points graph screenshot](screenshots/datapoints-graph-screenshot.png?raw=true "Data points graph screenshot")
 
 ## `Example widget plugin`
 
 A sample plugin for orientation purposes when developing your own plugin.
 
-![Example widget plugin](./assets/example-widget-plugin-screenshot.png?raw=true "Data points graph screenshot")
+![Example widget plugin](screenshots/example-widget-plugin-screenshot.png?raw=true "Data points graph screenshot")
 
 ## Contributing
 
