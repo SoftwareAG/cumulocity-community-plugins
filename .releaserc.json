@@ -31,19 +31,9 @@
       }
     ],
     [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "bash ./replaceVersion.sh ${nextRelease.version}"
-      }
-    ],
-    [
       "@semantic-release/github",
       {
-        "assets": [
-          {
-            "path": "community-widgets-*.zip"
-          }
-        ]
+        "assets": []
       }
     ]
   ],
