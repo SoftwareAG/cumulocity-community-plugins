@@ -1,3 +1,17 @@
+# [2.1.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.0.0...v2.1.0) (2023-05-04)
+
+
+### Bug Fixes
+
+* **cypress-datapoints-graph:** cypress tests for datapoints graph fix ([98fad02](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/98fad02c459b05f05edad73897ff1e91dc634828))
+* **datapoints-graph:** realtime button styling fix ([8f53af3](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/8f53af3ed7742520590b14d49ec3faa01e4366b8))
+* **pre-commit:** pre-commit linting and commit message checking fix ([99e4c09](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/99e4c0909419d9228f539029076b4ad744d07173))
+
+
+### Features
+
+* **datapoints-graph:** save as image name change ([e22653e](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/e22653e07c001356056b3d43f4f00570220b6b74))
+
 # [2.0.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v1.0.4...v2.0.0) (2023-05-02)
 
 
