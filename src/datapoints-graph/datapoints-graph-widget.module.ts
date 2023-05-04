@@ -32,7 +32,7 @@ async function loadConfigComponent() {
       useValue: [
         {
           id: 'datapoints-graph',
-          label: gettext('Data points graph'),
+          label: gettext('Data points graph 2.0'),
           description: gettext(
             'A graph display of a collection of data points'
           ),
