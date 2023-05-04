@@ -6,7 +6,10 @@ As of now it only consists of two widgets, but further plugins will be added soo
 
 ## `Data points graph widget plugin`
 
-A graph display of a collection of data points
+A graph display of a collection of data points. Compatible version of Cumulocity UI app are:
+ - ~1016.0.214
+ - ~1017.0.146
+ - ~1018.0.45
 
 ![Data points graph screenshot](screenshots/datapoints-graph-screenshot.png?raw=true "Data points graph screenshot")
 
