@@ -1,0 +1,35 @@
+<div
+  class="overlay-center-vertically d-flex d-col a-i-stretch j-c-start p-16 p-r-24 p-l-24"
+  *ngIf="alerts?.anyAlertExists$ | async"
+>
+  <ng-container *ngFor="let alertGroup of alerts?.alertGroups">
+    <div
+      *ngIf="alertGroup.value.alerts.length"
+      class="alert"
+      role="alert"
+      [ngClass]="'alert-' + alertGroup.type"
+    >
+      <button
+        class="close"
+        type="button"
+        (click)="
+          alerts.dismissAlertGroup(alertGroup.type, dismissPermanently.checked)
+        "
+      >
+        <span aria-hidden="true">×</span>
+        <span class="sr-only">{{ 'Close' | translate }}</span>
+      </button>
+      <p *ngFor="let alertItem of alertGroup.value.alerts">
+        {{ alertItem.text | translate }}
+      </p>
+      <label
+        title="{{ 'Don\'t show again' | translate }}"
+        class="c8y-checkbox m-t-16"
+      >
+        <input type="checkbox" #dismissPermanently />
+        <span></span>
+        <span>{{ "Don't show again" | translate }}</span>
+      </label>
+    </div>
+  </ng-container>
+</div>

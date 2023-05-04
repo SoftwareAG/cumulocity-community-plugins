@@ -44,12 +44,14 @@
     "@angular/platform-browser-dynamic": "14.0.6",
     "@angular/router": "14.0.6",
     "@angular/upgrade": "14.0.6",
-    "@c8y/client": "1016.0.110",
-    "@c8y/ngx-components": "1016.0.110",
-    "@c8y/style": "1016.0.110",
+    "@c8y/client": "1016.0.214",
+    "@c8y/ngx-components": "1016.0.214",
+    "@c8y/style": "1016.0.214",
     "@ngx-translate/core": "14.0.0",
     "rxjs": "~6.6.3",
-    "zone.js": "~0.11.7"
+    "zone.js": "~0.11.7",
+    "echarts": "5.4.1",
+    "ngx-echarts": "14.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "14.0.6",
@@ -60,7 +62,7 @@
     "@angular/language-service": "14.0.6",
     "@angular/localize": "14.0.6",
     "@angular/service-worker": "14.0.6",
-    "@c8y/cli": "1016.0.110",
+    "@c8y/cli": "1016.0.214",
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-angular": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
@@ -81,6 +83,7 @@
     "husky": "^8.0.3",
     "jest": "^28.1.3",
     "jest-preset-angular": "^12.2.0",
+    "jest-fail-on-console": "^3.1.1",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
     "rimraf": "^4.1.2",
@@ -105,17 +108,32 @@
           "module": "ExampleWidgetPluginModule",
           "path": "./src/example-widget/example-widget-plugin.module.ts",
           "description": "Adds a custom widget to the shell application"
+        },
+        {
+          "name": "Data points graph",
+          "module": "DatapointsGraphWidgetModule",
+          "path": "./src/datapoints-graph/datapoints-graph-widget.module.ts",
+          "description": "Adds data points graph widget to the shell application"
         }
       ],
       "remotes": {
         "sag-pkg-community-plugins": [
-          "ExampleWidgetPluginModule"
+          "ExampleWidgetPluginModule",
+          "DatapointsGraphWidgetModule"
         ]
       },
       "copy": [
         {
           "from": "CHANGELOG.md",
           "to": "CHANGELOG.md"
+        },
+        {
+          "from": "screenshots",
+          "to": "screenshots"
+        },
+        {
+          "from": "c8y-widget-preview-img",
+          "to": "c8y-widget-preview-img"
         }
       ]
     },

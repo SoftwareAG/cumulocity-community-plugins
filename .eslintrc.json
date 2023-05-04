@@ -25,7 +25,20 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:prettier/recommended" // <--- here we inherit from the recommended setup from eslint-plugin-prettier for TS
       ],
-      "rules": {},
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@angular/core",
+                "importNames": ["NO_ERRORS_SCHEMA"],
+                "message": "Unexpected NO_ERRORS_SCHEMA import."
+              }
+            ]
+          }
+        ]
+      },
       "parserOptions": {
         "project": ["tsconfig.spec.json"]
       }
