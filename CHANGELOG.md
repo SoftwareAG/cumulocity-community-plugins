@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.0...v2.1.1) (2023-05-04)
+
+
+### Bug Fixes
+
+* **ci:** do not override release asset of previous release ([0be99e8](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/0be99e81d14a3949b6f421162a9aa650795b3746))
+
 # [2.1.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.0.0...v2.1.0) (2023-05-04)
 
 
