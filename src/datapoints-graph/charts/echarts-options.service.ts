@@ -77,6 +77,11 @@ export class EchartsOptionsService {
       },
       legend: {
         show: false,
+        // legend styling is needed for screenshot feature which adds legend to image
+        itemHeight: 8,
+        textStyle: {
+          fontSize: 10,
+        },
       },
       xAxis: {
         min: timeRange.dateFrom,
@@ -130,13 +135,15 @@ export class EchartsOptionsService {
     renderType: Exclude<DatapointChartRenderType, 'area'>,
     idx: number,
     isMinMaxChart = false
-  ): SeriesOption & { datapointId: string } {
+  ): SeriesOption & { datapointId: string; datapointLabel: string } {
     const datapointId = dp.__target.id + dp.fragment + dp.series;
     return {
       datapointId,
       // 'id' property is needed as 'seriesId' in tooltip formatter
       id: isMinMaxChart ? `${datapointId}/${renderType}` : `${datapointId}`,
-      name: dp.label,
+      name: `${dp.label} (${dp.__target.name})`,
+      // datapointLabel used to proper display of tooltip
+      datapointLabel: dp.label,
       data: Object.entries(dp.values).map(([dateString, values]) => {
         return [dateString, values[0][renderType]];
       }),
@@ -193,7 +200,7 @@ export class EchartsOptionsService {
 
         YAxisReadings.push(
           `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
-            `<strong>${series.name}: </strong>` + // name
+            `<strong>${series.datapointLabel}: </strong>` + // name
             value // single value or min-max range
         );
       });

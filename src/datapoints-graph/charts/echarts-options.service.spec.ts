@@ -130,6 +130,10 @@ describe('EchartsOptionsService', () => {
         },
         legend: {
           show: false,
+          itemHeight: 8,
+          textStyle: {
+            fontSize: 10,
+          },
         },
         xAxis: {
           min: timeRange.dateFrom,
@@ -280,7 +284,7 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
         ],
       });
@@ -309,7 +313,7 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
           {
             id: dp3.__target.id + dp3.fragment + dp3.series,
@@ -318,7 +322,7 @@ describe('EchartsOptionsService', () => {
               ['2023-03-20T10:09:00.000Z', 2],
             ],
             itemStyle: { color: 'red' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
         ],
       });
@@ -350,25 +354,25 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
           {
             id: dp2.__target.id + dp2.fragment + dp2.series + '/min',
             data: [[oneMinuteAfterXAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
           {
             id: dp2.__target.id + dp2.fragment + dp2.series + '/max',
             data: [[oneMinuteAfterXAxisValue, 10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
           {
             id: dp3.__target.id + dp3.fragment + dp3.series,
             data: [[oneMinuteAfterXAxisValue, 0]],
             itemStyle: { color: 'red' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
         ],
       });
@@ -397,13 +401,13 @@ describe('EchartsOptionsService', () => {
             id: dp1.__target.id + dp1.fragment + dp1.series + '/min',
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
           {
             id: dp1.__target.id + dp1.fragment + dp1.series + '/max',
             data: [[XAxisValue, 10]],
             itemStyle: { color: 'blue' },
-            name: 'c8y_Temperature → T',
+            datapointLabel: 'c8y_Temperature → T',
           },
         ],
       });
