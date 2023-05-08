@@ -26,7 +26,11 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { DatapointAttributesFormConfig } from '@c8y/ngx-components/datapoint-selector';
+import {
+  DatapointAttributesFormConfig,
+  DatapointSelectorModalOptions,
+} from '@c8y/ngx-components/datapoint-selector';
+import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -64,16 +68,21 @@ export class DatapointsGraphWidgetConfigComponent
     showRange: true,
     showChart: true,
   };
+  datapointSelectionConfig: Partial<DatapointSelectorModalOptions> = {};
   activeDatapointsExists: boolean;
   private destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
     private form: NgForm,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private widgetConfig: WidgetConfigComponent
   ) {}
 
   ngOnInit() {
+    if (this.widgetConfig.context?.id) {
+      this.datapointSelectionConfig.contextAsset = this.widgetConfig?.context;
+    }
     this.initForm();
     this.initDateSelection();
     this.setActiveDatapointsExists();
