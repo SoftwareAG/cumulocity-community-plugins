@@ -27,7 +27,7 @@
     "community"
   ],
   "author": "Cumulocity GmbH",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/SoftwareAG/cumulocity-community-plugins/issues"
   },
@@ -134,6 +134,10 @@
         {
           "from": "c8y-widget-preview-img",
           "to": "c8y-widget-preview-img"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE.txt"
         }
       ]
     },
