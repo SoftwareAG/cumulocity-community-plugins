@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-community-plugins",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "This is a set of plugins developed and maintained by the community.",
   "scripts": {
     "start": "c8ycli server",

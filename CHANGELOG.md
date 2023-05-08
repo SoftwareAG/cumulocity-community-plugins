@@ -1,3 +1,12 @@
+## [2.1.2](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.1...v2.1.2) (2023-05-08)
+
+
+### Bug Fixes
+
+* **datapoints-graph:**  unit ests fix ([66e7e0e](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/66e7e0ecbf2b91013b0e4d915b58f5ea61605128))
+* **datapoints-graph:** add legend to screenshot ([316bb28](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/316bb28970f7fe00b6e1071c829148f439e3d195))
+* **license:** copy license into build and use correct one in pkg.json ([872dadb](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/872dadb23c5e50fadc45f70054b3d7287e3489b0))
+
 ## [2.1.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.0...v2.1.1) (2023-05-04)
 
 
