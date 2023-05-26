@@ -182,7 +182,7 @@ export class EchartsOptionsService {
           );
           value =
             `${minValue[1]} — ${maxValue[1]}` +
-            ` ${series.datapointUnit}` +
+            (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
             `<div style="font-size: 11px">${this.datePipe.transform(
               minValue[0]
             )}</div>`;
@@ -199,7 +199,7 @@ export class EchartsOptionsService {
           }
           value =
             seriesValue[1]?.toString() +
-            ` ${series.datapointUnit}` +
+            (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
             `<div style="font-size: 11px">${this.datePipe.transform(
               seriesValue[0]
             )}</div>`;
