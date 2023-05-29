@@ -201,6 +201,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   saveAsImage() {
+    this.echartsInstance.setOption({
+      legend: {
+        show: true,
+      },
+    });
     const url = this.echartsInstance.getDataURL({
       pixelRatio: 2,
       backgroundColor: '#fff',
@@ -212,6 +217,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    this.echartsInstance.setOption({
+      legend: {
+        show: false,
+      },
+    });
   }
 
   private startRealtimeIfPossible(): void {
