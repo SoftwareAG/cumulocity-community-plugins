@@ -30,7 +30,7 @@ import {
   DatapointAttributesFormConfig,
   DatapointSelectorModalOptions,
 } from '@c8y/ngx-components/datapoint-selector';
-import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -76,12 +76,13 @@ export class DatapointsGraphWidgetConfigComponent
     private formBuilder: FormBuilder,
     private form: NgForm,
     private translate: TranslateService,
-    private widgetConfig: WidgetConfigComponent
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    if (this.widgetConfig.context?.id) {
-      this.datapointSelectionConfig.contextAsset = this.widgetConfig?.context;
+    const context = this.route.root.firstChild.snapshot.data?.contextData;
+    if (context?.id) {
+      this.datapointSelectionConfig.contextAsset = context;
     }
     this.initForm();
     this.initDateSelection();
