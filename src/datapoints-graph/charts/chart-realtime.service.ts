@@ -6,6 +6,7 @@ import {
   DatapointRealtimeMeasurements,
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
+  SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
 import { MeasurementRealtimeService } from '@c8y/ngx-components';
@@ -140,8 +141,7 @@ export class ChartRealtimeService {
       const datapointId =
         datapoint.__target.id + datapoint.fragment + datapoint.series;
       const seriesMatchingDatapoint: SeriesOption = allDataSeries.find(
-        (s: SeriesOption & { datapointId: string }) =>
-          s.datapointId === datapointId
+        (s: SeriesOption & SeriesDatapointInfo) => s.datapointId === datapointId
       );
       const seriesDataToUpdate = seriesMatchingDatapoint.data as SeriesValue[];
       seriesDataToUpdate.push(...newValues);

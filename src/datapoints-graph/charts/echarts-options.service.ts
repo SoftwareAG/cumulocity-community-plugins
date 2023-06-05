@@ -6,6 +6,7 @@ import {
   DatapointChartRenderType,
   DatapointWithValues,
   DateString,
+  SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
 import { YAxisService } from './y-axis.service';
@@ -135,11 +136,7 @@ export class EchartsOptionsService {
     renderType: Exclude<DatapointChartRenderType, 'area'>,
     idx: number,
     isMinMaxChart = false
-  ): SeriesOption & {
-    datapointId: string;
-    datapointLabel: string;
-    datapointUnit: string;
-  } {
+  ): SeriesOption & SeriesDatapointInfo {
     const datapointId = dp.__target.id + dp.fragment + dp.series;
     return {
       datapointId,
