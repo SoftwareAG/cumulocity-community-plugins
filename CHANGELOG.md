@@ -1,3 +1,13 @@
+## [2.1.3](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.2...v2.1.3) (2023-06-05)
+
+
+### Bug Fixes
+
+* **datapoints-graph:** adding datapoint unit to tooltip ([000f465](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/000f465ae7fc83fc86b53a27705a0cfed4825e1e))
+* **datapoints-graph:** code review ([8c43e96](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/8c43e963e2773ea49965ab42d19617c415cc651c))
+* **datapoints-graph:** reverting package-lock.json changes ([765e944](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/765e94453b8b534d0e80522a081f671cb7f75103))
+* **datapoints-graph:** updating tests ([6ea25b6](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/6ea25b6d4733fa56109a4d6f719b06f781e60183))
+
 ## [2.1.2](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.1...v2.1.2) (2023-05-08)
 
 
