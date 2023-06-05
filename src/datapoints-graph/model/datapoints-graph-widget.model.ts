@@ -155,3 +155,9 @@ export type DatapointRealtimeMeasurements = {
 export type YAxisOptions = {
   showSplitLines: boolean;
 };
+
+export interface SeriesDatapointInfo {
+  datapointId: string;
+  datapointLabel: string;
+  datapointUnit: string;
+}
