@@ -6,6 +6,7 @@ import {
   DatapointChartRenderType,
   DatapointWithValues,
   DateString,
+  SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
 import { YAxisService } from './y-axis.service';
@@ -135,10 +136,11 @@ export class EchartsOptionsService {
     renderType: Exclude<DatapointChartRenderType, 'area'>,
     idx: number,
     isMinMaxChart = false
-  ): SeriesOption & { datapointId: string; datapointLabel: string } {
+  ): SeriesOption & SeriesDatapointInfo {
     const datapointId = dp.__target.id + dp.fragment + dp.series;
     return {
       datapointId,
+      datapointUnit: dp.unit,
       // 'id' property is needed as 'seriesId' in tooltip formatter
       id: isMinMaxChart ? `${datapointId}/${renderType}` : `${datapointId}`,
       name: `${dp.label} (${dp.__target.name})`,
@@ -177,6 +179,7 @@ export class EchartsOptionsService {
           );
           value =
             `${minValue[1]} — ${maxValue[1]}` +
+            (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
             `<div style="font-size: 11px">${this.datePipe.transform(
               minValue[0]
             )}</div>`;
@@ -193,6 +196,7 @@ export class EchartsOptionsService {
           }
           value =
             seriesValue[1]?.toString() +
+            (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
             `<div style="font-size: 11px">${this.datePipe.transform(
               seriesValue[0]
             )}</div>`;
