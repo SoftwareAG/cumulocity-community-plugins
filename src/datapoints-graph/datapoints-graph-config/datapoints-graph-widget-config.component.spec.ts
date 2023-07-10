@@ -24,11 +24,13 @@ import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector'
 import { aggregationType } from '@c8y/client';
 import { AnimationBuilder } from '@angular/animations';
 import { take } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
   let fixture: ComponentFixture<DatapointsGraphWidgetConfigComponent>;
   let ngForm: NgForm;
+  const mockContextData = { id: '1234' };
   const originalResizeObserver = window.ResizeObserver;
   const dateFrom = new Date('2023-03-19T11:00:19.710Z');
   const dateTo = new Date('2023-03-20T11:00:19.710Z');
@@ -73,6 +75,16 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         { provide: window, useValue: { ResizeObserver: {} } },
         NgForm,
         { provide: AnimationBuilder, useValue: { build: () => null } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            root: {
+              firstChild: {
+                snapshot: { data: { contextData: mockContextData } },
+              },
+            },
+          },
+        },
       ],
     });
     await TestBed.compileComponents();
@@ -90,6 +102,15 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
   });
 
   describe('ngOnInit', () => {
+    it('should set contextAsset for datapoint selector', () => {
+      // when
+      component.ngOnInit();
+      // then
+      expect(component.datapointSelectionConfig.contextAsset).toEqual(
+        mockContextData
+      );
+    });
+
     it('should initialize form', () => {
       // given
       jest.spyOn(component, 'timePropsChanged');
