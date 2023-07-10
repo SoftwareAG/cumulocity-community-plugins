@@ -1,3 +1,12 @@
+## [2.1.4](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.3...v2.1.4) (2023-07-10)
+
+
+### Bug Fixes
+
+* **datapoints-graph:**  provide context do datapoints selector ([86f73cd](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/86f73cdaf4f43e03c71085805e9b188093f8e999))
+* **datapoints-graph:** context from activated route unit tests ([d83b871](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/d83b871b3c781bb6bcf9370fa15bceadd2dff862))
+* **datapoints-graph:** get context from activated route ([b2fdfad](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/b2fdfad31b235747564b3daa27fa32e837421136))
+
 ## [2.1.3](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.2...v2.1.3) (2023-06-05)
 
 
