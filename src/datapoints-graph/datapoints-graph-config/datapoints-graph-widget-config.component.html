@@ -1,5 +1,5 @@
 <div class="row no-card-context d-flex">
-  <div class="col-md-5 bg-level-1 conf-col inner-scroll">
+  <div class="col-md-5 bg-level-1 conf-col inner-scroll p-t-8 p-l-24">
     <div class="form-group m-b-16">
       <label translate class="d-inline-block">Date selection</label>
       <button
@@ -87,7 +87,7 @@
     </form>
   </div>
 
-  <div class="col-md-7 sticky-top">
+  <div class="col-md-7 sticky-top p-t-8 p-r-24">
     <label>{{ 'Options' | translate }}</label>
     <c8y-time-controls
       *ngIf="!config?.widgetInstanceGlobalTimeContext"
@@ -100,7 +100,7 @@
       [config]="config"
       [alerts]="alerts"
       class="d-block p-relative overflow-hidden"
-      style="--chart-spacer: 0px; height: calc(100vh - 460px)"
+      style="--chart-spacer: 0px; height: calc(100vh - 500px)"
       (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"
     ></c8y-charts>
 
