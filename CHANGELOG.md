@@ -1,3 +1,22 @@
+## [2.1.4](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.3...v2.1.4) (2023-07-10)
+
+
+### Bug Fixes
+
+* **datapoints-graph:**  provide context do datapoints selector ([86f73cd](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/86f73cdaf4f43e03c71085805e9b188093f8e999))
+* **datapoints-graph:** context from activated route unit tests ([d83b871](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/d83b871b3c781bb6bcf9370fa15bceadd2dff862))
+* **datapoints-graph:** get context from activated route ([b2fdfad](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/b2fdfad31b235747564b3daa27fa32e837421136))
+
+## [2.1.3](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.2...v2.1.3) (2023-06-05)
+
+
+### Bug Fixes
+
+* **datapoints-graph:** adding datapoint unit to tooltip ([000f465](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/000f465ae7fc83fc86b53a27705a0cfed4825e1e))
+* **datapoints-graph:** code review ([8c43e96](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/8c43e963e2773ea49965ab42d19617c415cc651c))
+* **datapoints-graph:** reverting package-lock.json changes ([765e944](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/765e94453b8b534d0e80522a081f671cb7f75103))
+* **datapoints-graph:** updating tests ([6ea25b6](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/6ea25b6d4733fa56109a4d6f719b06f781e60183))
+
 ## [2.1.2](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.1...v2.1.2) (2023-05-08)
 
 
