@@ -1,3 +1,10 @@
+## [2.1.5](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.4...v2.1.5) (2023-07-26)
+
+
+### Bug Fixes
+
+* **datapoints-graph:** adding margin to the datapoint graph config view ([eb09afb](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/eb09afb2d8879d31f946bc8764833bb523b2b3ed))
+
 ## [2.1.4](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.3...v2.1.4) (2023-07-10)
 
 
