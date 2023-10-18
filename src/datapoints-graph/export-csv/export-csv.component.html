@@ -1,0 +1,74 @@
+<c8y-modal
+  [title]="'Export to CSV' | translate"
+  [headerClasses]="'dialog-header'"
+  [customFooter]="true"
+>
+  <ng-container c8y-modal-title>
+    <span [c8yIcon]="'excel'"></span>
+  </ng-container>
+  <form name="form" class="p-16" #csvExportForm="ngForm">
+    <div class="alert alert-info" role="alert">
+      <strong translate>Please note:</strong>
+      <span translate
+        >Exporting CSV will only export the current visible time frame and
+        aggregation setting</span
+      >
+    </div>
+    <div class="form-group">
+      <label title="{{ 'Filename' | translate }}" for="fileNameForCsvExport">
+        {{ 'Filename' | translate }}
+      </label>
+      <div class="input-group">
+        <input
+          class="form-control"
+          id="fileNameForCsvExport"
+          type="text"
+          [disabled]="isLoading"
+          [(ngModel)]="form.fileName"
+          name="fileName"
+          required
+        />
+        <span class="input-group-addon">.csv</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label
+        title="{{ 'Value separator' | translate }}"
+        for="valueSeparatorForCsvExport"
+      >
+        {{ 'Value separator' | translate }}
+      </label>
+      <input
+        class="form-control"
+        id="valueSeparatorForCsvExport"
+        type="text"
+        [disabled]="isLoading"
+        [(ngModel)]="form.separator"
+        name="separator"
+        required
+      />
+    </div>
+
+    <div class="modal-footer">
+      <button
+        [disabled]="isLoading"
+        class="btn btn-default"
+        title="{{ 'Close' | translate }}"
+        type="button"
+        (click)="bsModalRef.hide()"
+      >
+        {{ 'Close' | translate }}
+      </button>
+      <button
+        [disabled]="isLoading || csvExportForm.invalid"
+        class="btn btn-primary"
+        title="{{ 'Export' | translate }}"
+        type="button"
+        (click)="export()"
+      >
+        {{ 'Export' | translate }}
+      </button>
+    </div>
+  </form>
+</c8y-modal>
