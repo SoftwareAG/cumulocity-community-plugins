@@ -76,6 +76,24 @@
           <span></span>
           <span translate>X axis helper lines</span>
         </label>
+        <label [title]="'Disable zoom' | translate" class="c8y-checkbox">
+          <input
+            type="checkbox"
+            formControlName="disableZoom"
+            name="disableZoom"
+          />
+          <span></span>
+          <span translate>Disable zoom</span>
+        </label>
+        <label [title]="'Disable export' | translate" class="c8y-checkbox">
+          <input
+            type="checkbox"
+            formControlName="disableExport"
+            name="disableExport"
+          />
+          <span></span>
+          <span translate>Disable export</span>
+        </label>
       </c8y-form-group>
 
       <c8y-datapoint-selection-list

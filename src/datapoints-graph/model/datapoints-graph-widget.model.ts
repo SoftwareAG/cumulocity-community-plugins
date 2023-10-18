@@ -31,6 +31,8 @@ export type DatapointsGraphWidgetConfig = {
   realtime?: boolean;
   yAxisSplitLines?: boolean;
   xAxisSplitLines?: boolean;
+  disableZoom?: boolean;
+  disableExport?: boolean;
 };
 
 export type DatapointsGraphWidgetTimeProps = Partial<

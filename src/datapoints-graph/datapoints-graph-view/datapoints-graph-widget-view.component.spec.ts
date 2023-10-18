@@ -251,4 +251,65 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     // then
     expect(component.datapointsOutOfSync.get(clonedDp)).toBe(true);
   });
+
+  it('if disableZoom is set to true, the button should be hidden', () => {
+    // given
+    const dp: DatapointsGraphKPIDetails = {
+      fragment: 'c8y_Temperature',
+      series: 'T',
+      __active: true,
+      __target: { id: '1' },
+    };
+    component.config = { datapoints: [dp], disableZoom: true };
+    const clonedDp = component.displayConfig.datapoints[0];
+    // when
+    component.toggleChart(clonedDp);
+    fixture.detectChanges();
+    // then
+    expect(
+      fixture.nativeElement.querySelectorAll('.btn-group button').length
+    ).toBe(4);
+  });
+
+  it('if disableExport is set to true, the button should be hidden', () => {
+    // given
+    const dp: DatapointsGraphKPIDetails = {
+      fragment: 'c8y_Temperature',
+      series: 'T',
+      __active: true,
+      __target: { id: '1' },
+    };
+    component.config = { datapoints: [dp], disableExport: true };
+    const clonedDp = component.displayConfig.datapoints[0];
+    // when
+    component.toggleChart(clonedDp);
+    fixture.detectChanges();
+    // then
+    expect(
+      fixture.nativeElement.querySelectorAll('.btn-group button').length
+    ).toBe(4);
+  });
+
+  it('if disableExport and disableZoom is set to true, all buttons should be hidden', () => {
+    // given
+    const dp: DatapointsGraphKPIDetails = {
+      fragment: 'c8y_Temperature',
+      series: 'T',
+      __active: true,
+      __target: { id: '1' },
+    };
+    component.config = {
+      datapoints: [dp],
+      disableExport: true,
+      disableZoom: true,
+    };
+    const clonedDp = component.displayConfig.datapoints[0];
+    // when
+    component.toggleChart(clonedDp);
+    fixture.detectChanges();
+    // then
+    expect(
+      fixture.nativeElement.querySelectorAll('.btn-group button').length
+    ).toBe(2);
+  });
 });
