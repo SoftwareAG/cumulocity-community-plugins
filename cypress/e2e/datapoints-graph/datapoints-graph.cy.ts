@@ -5,9 +5,9 @@ describe('datapoints-graph', () => {
     cy.interceptCurrentUser();
 
     cy.intercept(
-      '/application/applications/sag-pkg-community-plugins/manifest',
-      { fixture: 'manifest.json' }
-    );
+      '/inventory/managedObjects?fragmentType=c8y_Dashboard!name!home-cockpit1&pageSize=1',
+      { fixture: 'widgets/datapoints-graph/cockpit-dashboard.json' }
+    ).as('cockpitDashboardConfig');
 
     cy.visit('/apps/sag-pkg-community-plugins/#/');
     cy.wait('@cockpitDashboardConfig', { timeout: 10000 });
