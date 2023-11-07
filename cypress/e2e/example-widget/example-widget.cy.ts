@@ -19,8 +19,12 @@ describe('example-widget', () => {
   });
 
   it('config component should be present', () => {
-    cy.get('c8y-dashboard-child .header-actions a[title="Settings"]').click();
-    cy.get('bs-dropdown-container button[title="Edit widget"]').click();
+    cy.get(
+      'c8y-dashboard-child .header-actions button[title="Settings"]'
+    ).click();
+    cy.get(
+      'c8y-dashboard-child .dropdown-menu button[title="Edit widget"]'
+    ).click();
     cy.get('c8y-community-example-widget-plugin-config textarea').then(
       ($textarea) => {
         expect($textarea.val()).to.contain('abc');
