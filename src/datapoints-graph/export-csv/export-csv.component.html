@@ -9,7 +9,7 @@
   <form name="form" class="p-16" #csvExportForm="ngForm">
     <div class="alert alert-info" role="alert">
       <strong translate>Please note:</strong>
-      <span translate
+      <span translate class="p-l-4"
         >Exporting CSV will only export the current visible time frame and
         aggregation setting</span
       >
@@ -28,7 +28,7 @@
           name="fileName"
           required
         />
-        <span class="input-group-addon">.csv</span>
+        <span class="input-group-addon">&lt;&lt;series-name&gt;&gt;.csv</span>
       </div>
     </div>
 
@@ -39,15 +39,18 @@
       >
         {{ 'Value separator' | translate }}
       </label>
-      <input
-        class="form-control"
-        id="valueSeparatorForCsvExport"
-        type="text"
-        [disabled]="isLoading"
-        [(ngModel)]="form.separator"
-        name="separator"
-        required
-      />
+      <div class="c8y-select-wrapper">
+        <select
+          id="valueSeparatorForCsvExport"
+          class="form-control"
+          [disabled]="isLoading"
+          [(ngModel)]="form.separator"
+          name="separator"
+        >
+          <option value="," translate>Comma (,)</option>
+          <option value=";">Semicolon (;)</option>
+        </select>
+      </div>
     </div>
 
     <div class="modal-footer">

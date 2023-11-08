@@ -203,35 +203,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async exportAsCsv() {
-    this.chartOption$
-      .pipe(
-        first(),
-        map(({ series }) => {
-          if (!Array.isArray(series)) {
-            series = [series];
-          }
-
-          const csvData = series
-            .map(({ data, name, id }) => {
-              if (Array.isArray(data)) {
-                data.unshift([
-                  'Date',
-                  `"${name} ${
-                    id.toString().split('/').length === 2
-                      ? `(${id.toString().split('/')[1]})`
-                      : ''
-                  }"`,
-                ]);
-                return data;
-              }
-            })
-            .filter(Boolean);
-          return csvData;
-        })
-      )
-      .subscribe((csvData) => {
-        this.exportCsvService.exportToCsv(csvData);
-      });
+    const chartOptions = await this.chartOption$.pipe(first()).toPromise();
+    this.exportCsvService.exportToCsv(chartOptions);
   }
 
   saveAsImage() {

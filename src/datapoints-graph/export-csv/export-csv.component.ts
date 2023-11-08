@@ -6,6 +6,7 @@ import {
   ModalModule,
 } from '@c8y/ngx-components';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { CSVExportData } from './export-csv.model';
 
 @Component({
   selector: 'c8y-export-csv',
@@ -21,7 +22,7 @@ export class ExportCsvComponent {
     separator: this.defaultSeparator,
   };
 
-  csvData: unknown[][];
+  csvData: CSVExportData[];
 
   isLoading = false;
 
@@ -29,15 +30,15 @@ export class ExportCsvComponent {
 
   export() {
     this.isLoading = true;
-    const csvString = this.csvData
-      .map((series) =>
-        series.map((value: any[]) => value.join(this.form.separator)).join('\n')
-      )
-      .join('\n\n');
-
     import('file-saver').then((fileSaver) => {
-      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
-      fileSaver.default.saveAs(blob, `${this.form.fileName}.csv`);
+      for (const series of this.csvData) {
+        const dataSet = series.data
+          .map((value: string[]) => value.join(this.form.separator))
+          .join('\n');
+        const blob = new Blob([dataSet], { type: 'text/csv;charset=utf-8' });
+        fileSaver.default.saveAs(blob, `${this.form.fileName}${series.id}.csv`);
+      }
+
       this.isLoading = false;
       this.bsModalRef.hide();
     });
