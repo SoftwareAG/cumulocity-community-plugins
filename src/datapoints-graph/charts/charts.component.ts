@@ -17,7 +17,7 @@ import {
   INTERVALS,
 } from '../model';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { first, map, switchMap, tap } from 'rxjs/operators';
 import { CustomMeasurementService } from './custom-measurements.service';
 import {
   CoreModule,
@@ -39,6 +39,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
+import { ExportCsvService } from '../export-csv/export-csv-modal.service';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -92,7 +93,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private measurementService: CustomMeasurementService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
-    private chartRealtimeService: ChartRealtimeService
+    private chartRealtimeService: ChartRealtimeService,
+    private exportCsvService: ExportCsvService
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
       switchMap(() => this.fetchSeriesForDatapoints$()),
@@ -198,6 +200,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         endValue: newDateTo.valueOf(),
       });
     }
+  }
+
+  async exportAsCsv() {
+    const chartOptions = await this.chartOption$.pipe(first()).toPromise();
+    this.exportCsvService.exportToCsv(chartOptions);
   }
 
   saveAsImage() {

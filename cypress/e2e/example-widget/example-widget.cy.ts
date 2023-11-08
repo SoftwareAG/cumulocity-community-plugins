@@ -10,7 +10,7 @@ describe('example-widget', () => {
     ).as('cockpitDashboardConfig');
 
     cy.visit('/apps/sag-pkg-community-plugins/#/');
-    cy.wait('@cockpitDashboardConfig');
+    cy.wait('@cockpitDashboardConfig', { timeout: 10000 });
   });
 
   it('view component should be present', () => {

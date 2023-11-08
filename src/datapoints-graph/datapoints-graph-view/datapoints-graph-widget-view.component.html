@@ -53,6 +53,7 @@
         [attr.aria-label]="'Zoom in' | translate"
         [adaptivePosition]="false"
         [disabled]="toolboxDisabled"
+        *ngIf="!displayConfig.disableZoom"
       >
         <i c8yIcon="zoom-in" class="icon-14"></i>
       </button>
@@ -65,6 +66,7 @@
         [attr.aria-label]="'Zoom out' | translate"
         [adaptivePosition]="false"
         [disabled]="toolboxDisabled"
+        *ngIf="!displayConfig.disableZoom"
       >
         <i c8yIcon="zoom-out" class="icon-14"></i>
       </button>
@@ -77,8 +79,22 @@
         tooltip="{{ 'Save as image' | translate }}"
         [adaptivePosition]="false"
         [disabled]="toolboxDisabled"
+        *ngIf="!displayConfig.disableExport"
       >
         <i c8yIcon="image-file-checked" class="icon-14"></i>
+      </button>
+      <button
+        type="button"
+        class="btn btn-default"
+        container="body"
+        (click)="chart.exportAsCsv()"
+        [attr.aria-label]="'Export as csv' | translate"
+        tooltip="{{ 'Export as csv' | translate }}"
+        [adaptivePosition]="false"
+        [disabled]="toolboxDisabled"
+        *ngIf="!displayConfig.disableExport"
+      >
+        <i c8yIcon="excel" class="icon-14"></i>
       </button>
     </div>
   </div>

@@ -154,6 +154,8 @@ export class DatapointsGraphWidgetConfigComponent
       realtime: [false, [Validators.required]],
       yAxisSplitLines: [false, [Validators.required]],
       xAxisSplitLines: [false, [Validators.required]],
+      disableZoom: [false, [Validators.required]],
+      disableExport: [false, [Validators.required]],
     });
     this.form.form.addControl('config', this.formGroup);
     this.formGroup.patchValue(this.config);
