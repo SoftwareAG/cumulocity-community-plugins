@@ -10,7 +10,7 @@ describe('datapoints-graph', () => {
     ).as('cockpitDashboardConfig');
 
     cy.visit('/apps/sag-pkg-community-plugins/#/');
-    cy.wait('@cockpitDashboardConfig', { timeout: 10000 });
+    cy.wait('@cockpitDashboardConfig');
   });
 
   it('view component should be present', () => {
@@ -19,12 +19,8 @@ describe('datapoints-graph', () => {
   });
 
   it('config component should be present', () => {
-    cy.get(
-      'c8y-dashboard-child .header-actions button[title="Settings"]'
-    ).click();
-    cy.get(
-      'c8y-dashboard-child .dropdown-menu button[title="Edit widget"]'
-    ).click();
+    cy.get('c8y-dashboard-child .header-actions a[title="Settings"]').click();
+    cy.get('bs-dropdown-container button[title="Edit widget"]').click();
     cy.get('c8y-datapoints-graph-widget-config button.c8y-realtime')
       .find('.c8y-pulse.active')
       .should('exist');
