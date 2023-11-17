@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-community-plugins",
-  "version": "2.1.6",
+  "version": "2.1.5",
   "description": "This is a set of plugins developed and maintained by the community.",
   "scripts": {
     "start": "c8ycli server",
@@ -62,7 +62,7 @@
     "@angular/language-service": "14.0.6",
     "@angular/localize": "14.0.6",
     "@angular/service-worker": "14.0.6",
-    "@c8y/cli": "1016.0.214",
+    "@c8y/cli": "1016.0.396",
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-angular": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
