@@ -1,3 +1,10 @@
+## [2.1.6](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.5...v2.1.6) (2023-11-27)
+
+
+### Bug Fixes
+
+* **datapoints-graph:** c8y version bump to fix asset selelctor icon issues ([#23](https://github.com/SoftwareAG/cumulocity-community-plugins/issues/23)) ([22ed604](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/22ed60491a510d20605e40e5265438c91d5cd292))
+
 ## [2.1.5](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.4...v2.1.5) (2023-07-26)
 
 
