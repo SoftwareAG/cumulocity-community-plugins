@@ -1,6 +1,5 @@
-// jest.config.js
-module.exports = {
+export default {
   preset: 'jest-preset-angular',
-  setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
+  setupFilesAfterEnv: ['<rootDir>/src/setup-jest.ts'],
   transformIgnorePatterns: ['/!node_modules\\/lodash-es/']
 };

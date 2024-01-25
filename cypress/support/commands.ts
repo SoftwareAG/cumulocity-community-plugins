@@ -7,6 +7,7 @@ declare global {
       interceptCurrentUser(customRoles?: string[]): Chainable<void>;
       interceptCurrentTenant(): Chainable<void>;
       interceptLoginOptions(): Chainable<void>;
+      interceptAppManifest(): Chainable<void>;
     }
   }
 }
@@ -82,4 +83,15 @@ Cypress.Commands.add('interceptLoginOptions', () => {
       loginOptions: [],
     });
   }).as('loginOptions');
+});
+
+Cypress.Commands.add('interceptAppManifest', () => {
+  cy.intercept(
+    '/application/applications/sag-pkg-community-plugins/manifest',
+    (req) => {
+      req.reply((res) => {
+        res.send(404);
+      });
+    }
+  ).as('appManifest');
 });

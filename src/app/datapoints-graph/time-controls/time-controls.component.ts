@@ -23,7 +23,7 @@ import { aggregationType } from '@c8y/client';
   templateUrl: './time-controls.component.html',
 })
 export class TimeControlsComponent implements OnInit, OnChanges {
-  timeRange: DateTimeContext;
+  timeRange: DateTimeContext | undefined;
   @Input() controlsAvailable: Partial<
     Record<'timeRange' | 'interval' | 'aggregation' | 'realtime', boolean>
   > = {
@@ -32,19 +32,19 @@ export class TimeControlsComponent implements OnInit, OnChanges {
     aggregation: true,
     realtime: true,
   };
-  @Input() config: DatapointsGraphWidgetConfig;
+  @Input() config: DatapointsGraphWidgetConfig | undefined;
   @Output() configTimePropsChange =
     new EventEmitter<DatapointsGraphWidgetTimeProps>();
   disabledAggregations: Partial<Record<aggregationType, boolean>> = {};
 
   ngOnInit() {
-    if (this.config.dateFrom && this.config.dateTo) {
+    if (this.config?.dateFrom && this.config.dateTo) {
       this.calculateAggregation([this.config.dateFrom, this.config.dateTo]);
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const { dateFrom, dateTo } = changes.config?.currentValue ?? {};
+    const { dateFrom, dateTo } = changes['config']?.currentValue ?? {};
     this.timeRange = [this.castToDate(dateFrom), this.castToDate(dateTo)];
   }
 
@@ -65,16 +65,18 @@ export class TimeControlsComponent implements OnInit, OnChanges {
       return;
     }
     const dateTo = new Date();
-    const timeSpanInMs = INTERVALS.find(
+    const intervalEntry = INTERVALS.find(
       (i) => i.id === intervalId
-    ).timespanInMs;
+    );
+
+    const timeSpanInMs = intervalEntry?.timespanInMs || 0;
     const dateFrom = new Date(dateTo.valueOf() - timeSpanInMs);
     this.configTimePropsChange.emit({
       interval: intervalId,
       dateFrom,
       dateTo,
       ...(this.controlsAvailable.aggregation &&
-        !this.config.realtime && {
+        !this.config?.realtime && {
           aggregation: this.calculateAggregation([dateFrom, dateTo]),
         }),
     });
@@ -91,7 +93,7 @@ export class TimeControlsComponent implements OnInit, OnChanges {
   private calculateAggregation([
     dateFrom,
     dateTo,
-  ]: DateTimeContext): aggregationType {
+  ]: DateTimeContext): aggregationType | null {
     const timeRangeInMs = dateTo.valueOf() - dateFrom.valueOf();
     this.disabledAggregations = {
       DAILY: timeRangeInMs <= TimeSpanInMs.DAY,
@@ -99,10 +101,10 @@ export class TimeControlsComponent implements OnInit, OnChanges {
       MINUTELY: timeRangeInMs <= TimeSpanInMs.MINUTE,
     };
     const isProperAggregation =
-      this.config.aggregation &&
+      this.config?.aggregation &&
       !this.disabledAggregations[this.config.aggregation];
-    if (isProperAggregation) {
-      return this.config.aggregation;
+    if (this.config?.aggregation && isProperAggregation) {
+      return this.config?.aggregation;
     }
 
     if (timeRangeInMs >= AGGREGATION_LIMITS.DAILY_LIMIT) {
