@@ -40,12 +40,12 @@ export class CustomMeasurementService extends MeasurementService {
     };
     const callOnFinish: ApiCall = {
       ...cloneDeep(callOnStart),
-      response: { status: null } as IFetchResponse,
+      response: { status: null } as unknown as IFetchResponse,
     };
 
     return defer(() => {
       this.apiService.onStart(callOnStart);
-      return fromFetch(fullUrl, options);
+      return fromFetch<Response>(fullUrl, options as any);
     }).pipe(
       switchMap(async (res) => {
         callOnFinish.response = res;

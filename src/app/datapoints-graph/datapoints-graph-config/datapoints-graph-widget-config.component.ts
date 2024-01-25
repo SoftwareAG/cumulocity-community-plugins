@@ -19,9 +19,11 @@ import {
   OnBeforeSave,
 } from '@c8y/ngx-components';
 import {
+  DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
   DATE_SELECTION,
+  Interval,
 } from '../model';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -29,8 +31,10 @@ import { Subject } from 'rxjs';
 import {
   DatapointAttributesFormConfig,
   DatapointSelectorModalOptions,
+  KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
 import { ActivatedRoute } from '@angular/router';
+import { aggregationType } from '@c8y/client';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -42,11 +46,11 @@ import { ActivatedRoute } from '@angular/router';
 export class DatapointsGraphWidgetConfigComponent
   implements OnInit, OnBeforeSave, OnDestroy
 {
-  alerts: DynamicComponentAlertAggregator;
-  @Input() config: DatapointsGraphWidgetConfig;
-  formGroup: FormGroup;
+  alerts: DynamicComponentAlertAggregator | undefined;
+  @Input() config: DatapointsGraphWidgetConfig | undefined;
+  formGroup: ReturnType<DatapointsGraphWidgetConfigComponent['initForm']>;
   DATE_SELECTION = DATE_SELECTION;
-  dateSelection: DATE_SELECTION;
+  dateSelection: DATE_SELECTION | undefined;
   dateSelectionHelp = this.translate.instant(
     gettext(`Choose how to select a date range, the available options are:
   <ul class="m-l-0 p-l-8 m-t-8 m-b-0">
@@ -69,7 +73,7 @@ export class DatapointsGraphWidgetConfigComponent
     showChart: true,
   };
   datapointSelectionConfig: Partial<DatapointSelectorModalOptions> = {};
-  activeDatapointsExists: boolean;
+  activeDatapointsExists: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -77,14 +81,18 @@ export class DatapointsGraphWidgetConfigComponent
     private form: NgForm,
     private translate: TranslateService,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.formGroup = this.initForm();
+  }
 
   ngOnInit() {
-    const context = this.route.root.firstChild.snapshot.data?.contextData;
+    const context = this.route.root.firstChild?.snapshot.data?.['contextData'];
     if (context?.id) {
       this.datapointSelectionConfig.contextAsset = context;
     }
-    this.initForm();
+    this.form.form.addControl('config', this.formGroup);
+    this.formGroup.patchValue(this.config || {});
+
     this.initDateSelection();
     this.setActiveDatapointsExists();
     this.formGroup.valueChanges
@@ -103,7 +111,7 @@ export class DatapointsGraphWidgetConfigComponent
   onBeforeSave(
     config?: DatapointsGraphWidgetConfig
   ): boolean | Promise<boolean> | Observable<boolean> {
-    if (this.formGroup.valid) {
+    if (this.formGroup.valid && config) {
       Object.assign(config, this.formGroup.value);
       return true;
     }
@@ -140,29 +148,28 @@ export class DatapointsGraphWidgetConfigComponent
     }
   }
 
-  private initForm(): void {
-    this.formGroup = this.formBuilder.group({
-      datapoints: [[], [Validators.required, Validators.minLength(1)]],
+  private initForm() {
+    const form = this.formBuilder.group({
+      datapoints: [[] as DatapointsGraphKPIDetails[], [Validators.required, Validators.minLength(1)]],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],
       canDecoupleGlobalTimeContext: [false, []],
-      dateFrom: [null, [Validators.required]],
-      dateTo: [null, [Validators.required]],
-      interval: ['hours', [Validators.required]],
-      aggregation: null,
+      dateFrom: [null as unknown as Date, [Validators.required]],
+      dateTo: [null as unknown as Date, [Validators.required]],
+      interval: ['hours' as Interval['id'], [Validators.required]],
+      aggregation: [null as aggregationType | null, []],
       realtime: [false, [Validators.required]],
       yAxisSplitLines: [false, [Validators.required]],
       xAxisSplitLines: [false, [Validators.required]],
     });
-    this.form.form.addControl('config', this.formGroup);
-    this.formGroup.patchValue(this.config);
+    return form;
   }
 
   private initDateSelection(): void {
-    if (this.config.widgetInstanceGlobalTimeContext) {
+    if (this.config?.widgetInstanceGlobalTimeContext) {
       this.dateSelection = DATE_SELECTION.DASHBOARD_CONTEXT;
-    } else if (this.config.displayDateSelection) {
+    } else if (this.config?.displayDateSelection) {
       this.dateSelection = DATE_SELECTION.VIEW_AND_CONFIG;
     } else {
       this.dateSelection = DATE_SELECTION.CONFIG;
@@ -171,6 +178,6 @@ export class DatapointsGraphWidgetConfigComponent
 
   private setActiveDatapointsExists() {
     this.activeDatapointsExists =
-      this.config.datapoints?.filter((dp) => dp.__active).length > 0;
+      (this.config?.datapoints?.filter((dp) => dp.__active)?.length || 0) > 0;
   }
 }
