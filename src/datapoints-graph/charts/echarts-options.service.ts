@@ -27,7 +27,9 @@ export class EchartsOptionsService {
   getChartOptions(
     datapointsWithValues: DatapointWithValues[],
     timeRange: { dateFrom: string; dateTo: string },
-    showSplitLines: { YAxis: boolean; XAxis: boolean }
+    showSplitLines: { YAxis: boolean; XAxis: boolean },
+    alarms: any,
+    events: any
   ): EChartsOption {
     const yAxis = this.yAxisService.getYAxis(datapointsWithValues, {
       showSplitLines: showSplitLines.YAxis,
@@ -111,21 +113,43 @@ export class EchartsOptionsService {
         },
       },
       yAxis,
-      series: this.getChartSeries(datapointsWithValues),
+      series: this.getChartSeries(
+        datapointsWithValues,
+        alarms,
+        events,
+        timeRange
+      ),
     };
   }
 
   private getChartSeries(
-    datapointsWithValues: DatapointWithValues[]
+    datapointsWithValues: DatapointWithValues[],
+    alarms,
+    events,
+    timeRange
   ): SeriesOption[] {
     const series: SeriesOption[] = [];
     datapointsWithValues.forEach((dp, idx) => {
       const renderType: DatapointChartRenderType = dp.renderType || 'min';
       if (renderType === 'area') {
-        series.push(this.getSingleSeries(dp, 'min', idx, true));
-        series.push(this.getSingleSeries(dp, 'max', idx, true));
+        series.push(
+          this.getSingleSeries(dp, 'min', idx, true, alarms, events, timeRange)
+        );
+        series.push(
+          this.getSingleSeries(dp, 'max', idx, true, alarms, events, timeRange)
+        );
       } else {
-        series.push(this.getSingleSeries(dp, renderType, idx));
+        series.push(
+          this.getSingleSeries(
+            dp,
+            renderType,
+            idx,
+            false,
+            alarms,
+            events,
+            timeRange
+          )
+        );
       }
     });
     return series;
@@ -135,9 +159,16 @@ export class EchartsOptionsService {
     dp: DatapointWithValues,
     renderType: Exclude<DatapointChartRenderType, 'area'>,
     idx: number,
-    isMinMaxChart = false
+    isMinMaxChart = false,
+    alarms,
+    events,
+    timeRange
   ): SeriesOption & SeriesDatapointInfo {
     const datapointId = dp.__target.id + dp.fragment + dp.series;
+    console.log(alarms);
+    if (!events) {
+      events = [];
+    }
     return {
       datapointId,
       datapointUnit: dp.unit,
@@ -146,6 +177,25 @@ export class EchartsOptionsService {
       name: `${dp.label} (${dp.__target.name})`,
       // datapointLabel used to proper display of tooltip
       datapointLabel: dp.label,
+      markLine: {
+        symbol: ['none', 'none'],
+        label: { show: false },
+        data: [
+          ...events.map((event) => ({
+            name: 'Event',
+            xAxis: event.creationTime,
+            itemStyle: { color: 'red' },
+            label: { show: true, formatter: 'Event' },
+          })),
+          ...alarms.map((alarm) => ({
+            name: 'Alarm',
+            type: alarm.type,
+            xAxis: alarm.creationTime,
+            label: { show: true, formatter: 'Alarm' },
+            itemStyle: { color: 'blue' },
+          })),
+        ],
+      },
       data: Object.entries(dp.values).map(([dateString, values]) => {
         return [dateString, values[0][renderType]];
       }),

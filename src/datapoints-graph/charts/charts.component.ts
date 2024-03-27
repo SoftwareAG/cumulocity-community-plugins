@@ -39,6 +39,9 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
+import { ApiService } from '@c8y/ngx-components/api';
+import { CustomAlarmsService } from './custom-alarms.service';
+import { CustomEventsService } from './custom-events.service';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -55,6 +58,8 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     ChartTypesService,
     EchartsOptionsService,
     CustomMeasurementService,
+    CustomAlarmsService,
+    CustomEventsService,
     YAxisService,
   ],
   standalone: true,
@@ -70,6 +75,8 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   chartOption$: Observable<EChartsOption>;
   echartsInstance: ECharts;
+  alarms: any;
+  events: any;
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
   @Input() config: DatapointsGraphWidgetConfig;
@@ -90,6 +97,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
   constructor(
     private measurementService: CustomMeasurementService,
+    private alarmsService: CustomAlarmsService,
+    private eventsService: CustomEventsService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService
@@ -109,6 +118,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         }
         this.chartRealtimeService.stopRealtime();
         this.startRealtimeIfPossible();
+        if (this.echartsInstance) {
+          this.echartsInstance.on('click', this.onChartClick.bind(this));
+        }
       })
     );
   }
@@ -117,11 +129,25 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     this.configChangedSubject.next();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.alerts.setAlertGroupDismissStrategy(
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
+
+    this.alarms = (
+      await this.alarmsService.listAlarms$(this.getTimeRange(), 'TestAlarm')
+    ).data;
+    const newTypeAlarm = (
+      await this.alarmsService.listAlarms$(
+        this.getTimeRange,
+        'AnotherTypeAlarm'
+      )
+    ).data;
+    newTypeAlarm.alarms.forEach((alarm) => this.alarms.alarms.push(alarm));
+    this.events = (
+      await this.eventsService.listEvents$(this.getTimeRange())
+    ).data;
   }
 
   ngOnDestroy() {
@@ -145,6 +171,61 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  onChartClick(params) {
+    if (this.isAlarmClick(params)) {
+      const clickedAlarms = this.alarms.alarms.filter(
+        (alarm) => alarm.type === params.data.type
+      );
+
+      const timeRange = this.getTimeRange();
+      const updatedOptions = !this.hasMarkArea(this.echartsInstance.getOption())
+        ? {
+            series: [
+              {
+                markArea: {
+                  data: clickedAlarms.map((clickedAlarm) => {
+                    return [
+                      {
+                        name: clickedAlarm.type,
+                        xAxis: clickedAlarm.creationTime,
+                        itemStyle: {
+                          color:
+                            clickedAlarm.status === 'CLEARED'
+                              ? 'rgba(221,255,221,1.00)'
+                              : 'rgba(255, 173, 177, 0.4)',
+                        },
+                      },
+                      {
+                        xAxis:
+                          clickedAlarm.lastUpdated === clickedAlarm.creationTime
+                            ? timeRange.dateTo
+                            : clickedAlarm.lastUpdated,
+                      },
+                    ];
+                  }),
+                },
+              },
+            ],
+          }
+        : { series: [{ markArea: { data: [] } }] };
+
+      this.echartsInstance.setOption(updatedOptions);
+    }
+  }
+
+  isAlarmClick(params): boolean {
+    return this.alarms.alarms.some((alarm) => alarm.type === params.data.type);
+  }
+
+  hasMarkArea(options): boolean {
+    return (
+      options &&
+      options.series &&
+      options.series[0].markArea &&
+      options.series[0].markArea.data.length > 0
+    );
+  }
+
   toggleZoomIn(): void {
     this.zoomInActive = !this.zoomInActive;
     this.echartsInstance.dispatchAction({
@@ -154,7 +235,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  zoomOut(): void {
+  async zoomOut() {
     if (this.zoomInActive) {
       this.toggleZoomIn();
     }
@@ -193,6 +274,31 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         dateTo: newDateTo,
         interval: 'custom',
       });
+      this.alarms = (
+        await this.alarmsService.listAlarms$(
+          {
+            dateFrom: newDateFrom.toISOString(),
+            dateTo: newDateTo.toISOString(),
+          },
+          'TestAlarm'
+        )
+      ).data;
+      const newTypeAlarm = (
+        await this.alarmsService.listAlarms$(
+          {
+            dateFrom: newDateFrom.toISOString(),
+            dateTo: newDateTo.toISOString(),
+          },
+          'AnotherTypeAlarm'
+        )
+      ).data;
+      newTypeAlarm.alarms.forEach((alarm) => this.alarms.alarms.push(alarm));
+      this.events = (
+        await this.eventsService.listEvents$({
+          dateFrom: newDateFrom.toISOString(),
+          dateTo: newDateTo.toISOString(),
+        })
+      ).data;
       this.zoomHistory.push({
         startValue: newDateFrom.valueOf(),
         endValue: newDateTo.valueOf(),
@@ -246,13 +352,16 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     datapointsWithValues: DatapointWithValues[]
   ): EChartsOption {
     const timeRange = this.getTimeRange();
+
     return this.echartsOptionsService.getChartOptions(
       datapointsWithValues,
       timeRange,
       {
         YAxis: this.config.yAxisSplitLines,
         XAxis: this.config.xAxisSplitLines,
-      }
+      },
+      this.alarms.alarms,
+      this.events?.events
     );
   }
 
