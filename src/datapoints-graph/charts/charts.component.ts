@@ -39,6 +39,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
+import { ChartEventsService } from './chart-events.service';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -55,6 +56,7 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     ChartTypesService,
     EchartsOptionsService,
     CustomMeasurementService,
+    ChartEventsService,
     YAxisService,
   ],
   standalone: true,
@@ -70,6 +72,7 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   chartOption$: Observable<EChartsOption>;
   echartsInstance: ECharts;
+  events: any;
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
   @Input() config: DatapointsGraphWidgetConfig;
@@ -90,6 +93,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
   constructor(
     private measurementService: CustomMeasurementService,
+    private eventsService: ChartEventsService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService
@@ -117,11 +121,14 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     this.configChangedSubject.next();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.alerts.setAlertGroupDismissStrategy(
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
+    this.events = (
+      await this.eventsService.listEvents$(this.getTimeRange())
+    ).data;
   }
 
   ngOnDestroy() {
@@ -154,7 +161,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  zoomOut(): void {
+  async zoomOut() {
     if (this.zoomInActive) {
       this.toggleZoomIn();
     }
@@ -246,13 +253,15 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     datapointsWithValues: DatapointWithValues[]
   ): EChartsOption {
     const timeRange = this.getTimeRange();
+
     return this.echartsOptionsService.getChartOptions(
       datapointsWithValues,
       timeRange,
       {
         YAxis: this.config.yAxisSplitLines,
         XAxis: this.config.xAxisSplitLines,
-      }
+      },
+      this.events?.events
     );
   }
 
