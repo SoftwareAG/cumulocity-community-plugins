@@ -6,7 +6,7 @@ import {
 } from '@c8y/ngx-components/datapoint-selector';
 import { DateTimeContext } from '@c8y/ngx-components';
 import { gettext } from '@c8y/ngx-components';
-import { aggregationType, IMeasurement, ISeries } from '@c8y/client';
+import { aggregationType, IEvent, IMeasurement, ISeries } from '@c8y/client';
 import type {
   BarSeriesOption,
   LineSeriesOption,
@@ -31,6 +31,7 @@ export type DatapointsGraphWidgetConfig = {
   realtime?: boolean;
   yAxisSplitLines?: boolean;
   xAxisSplitLines?: boolean;
+  events: Event[];
 };
 
 export type DatapointsGraphWidgetTimeProps = Partial<
@@ -160,4 +161,15 @@ export interface SeriesDatapointInfo {
   datapointId: string;
   datapointLabel: string;
   datapointUnit: string;
+}
+
+export interface Event {
+  __target: {
+    id: string;
+  };
+  filters: {
+    type: string;
+  };
+  color: string;
+  icon: string;
 }

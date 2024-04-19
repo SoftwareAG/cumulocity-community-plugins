@@ -13,6 +13,7 @@ import { YAxisService } from './y-axis.service';
 import { ChartTypesService } from './chart-types.service';
 import type { TooltipFormatterCallback } from 'echarts/types/src/util/types';
 import type { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
+import { IEvent } from '@c8y/client';
 
 @Injectable()
 export class EchartsOptionsService {
@@ -28,11 +29,12 @@ export class EchartsOptionsService {
     datapointsWithValues: DatapointWithValues[],
     timeRange: { dateFrom: string; dateTo: string },
     showSplitLines: { YAxis: boolean; XAxis: boolean },
-    events: any
+    events: IEvent[]
   ): EChartsOption {
     const yAxis = this.yAxisService.getYAxis(datapointsWithValues, {
       showSplitLines: showSplitLines.YAxis,
     });
+    const eventTypes = events.map((event) => event.type);
     const leftAxis = yAxis.filter((yx) => yx.position === 'left');
     const gridLeft = leftAxis.length
       ? leftAxis.length * this.yAxisService.Y_AXIS_OFFSET
@@ -78,8 +80,8 @@ export class EchartsOptionsService {
         appendToBody: true,
       },
       legend: {
-        show: false,
-        // legend styling is needed for screenshot feature which adds legend to image
+        show: true,
+        data: eventTypes,
         itemHeight: 8,
         textStyle: {
           fontSize: 10,
@@ -121,29 +123,57 @@ export class EchartsOptionsService {
     events
   ): SeriesOption[] {
     const series: SeriesOption[] = [];
+    let eventSeries: SeriesOption[] = [];
     datapointsWithValues.forEach((dp, idx) => {
       const renderType: DatapointChartRenderType = dp.renderType || 'min';
       if (renderType === 'area') {
-        series.push(this.getSingleSeries(dp, 'min', idx, true, events));
-        series.push(this.getSingleSeries(dp, 'max', idx, true, events));
+        series.push(this.getSingleSeries(dp, 'min', idx, true));
+        series.push(this.getSingleSeries(dp, 'max', idx, true));
       } else {
-        series.push(this.getSingleSeries(dp, renderType, idx, false, events));
+        series.push(this.getSingleSeries(dp, renderType, idx, false));
       }
+
+      eventSeries = this.getEventSeries(dp, renderType, idx, false, events);
     });
-    return series;
+    return [...series, ...eventSeries];
+  }
+
+  private getEventSeries(
+    dp: DatapointWithValues,
+    renderType: DatapointChartRenderType,
+    idx: number,
+    isMinMaxChart = false,
+    events: IEvent[] = []
+  ): SeriesOption[] {
+    if (!events?.length) {
+      return [];
+    }
+    return events.map((event) => ({
+      id: event.type,
+      name: event.type,
+      showSymbol: false,
+      data: [[event.creationTime, 0]],
+      markLine: {
+        symbol: ['none', 'none'],
+        data: [
+          {
+            xAxis: event.creationTime,
+            label: { show: true, formatter: 'Event' },
+            itemStyle: { color: event.color },
+          },
+        ],
+      },
+      ...this.chartTypesService.getSeriesOptions(dp, isMinMaxChart, renderType),
+    }));
   }
 
   private getSingleSeries(
     dp: DatapointWithValues,
     renderType: Exclude<DatapointChartRenderType, 'area'>,
     idx: number,
-    isMinMaxChart = false,
-    events
+    isMinMaxChart = false
   ): SeriesOption & SeriesDatapointInfo {
     const datapointId = dp.__target.id + dp.fragment + dp.series;
-    if (!events) {
-      events = [];
-    }
     return {
       datapointId,
       datapointUnit: dp.unit,
@@ -152,18 +182,6 @@ export class EchartsOptionsService {
       name: `${dp.label} (${dp.__target.name})`,
       // datapointLabel used to proper display of tooltip
       datapointLabel: dp.label,
-      markLine: {
-        symbol: ['none', 'none'],
-        label: { show: false },
-        data: [
-          ...events.map((event) => ({
-            name: 'Event',
-            xAxis: event.creationTime,
-            itemStyle: { color: 'red' },
-            label: { show: true, formatter: 'Event' },
-          })),
-        ],
-      },
       data: Object.entries(dp.values).map(([dateString, values]) => {
         return [dateString, values[0][renderType]];
       }),

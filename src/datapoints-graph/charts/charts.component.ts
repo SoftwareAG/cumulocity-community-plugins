@@ -40,6 +40,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
 import { ChartEventsService } from './chart-events.service';
+import { IEvent } from '@c8y/client';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -72,7 +73,7 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   chartOption$: Observable<EChartsOption>;
   echartsInstance: ECharts;
-  events: any;
+  events: IEvent[] = [];
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
   @Input() config: DatapointsGraphWidgetConfig;
@@ -107,10 +108,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         }
         return of(this.getChartOptions(datapointsWithValues));
       }),
-      tap(() => {
+      tap(async () => {
         if (this.zoomInActive) {
           this.toggleZoomIn();
         }
+        await this.loadEvents();
         this.chartRealtimeService.stopRealtime();
         this.startRealtimeIfPossible();
       })
@@ -126,9 +128,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
-    this.events = (
-      await this.eventsService.listEvents$(this.getTimeRange())
-    ).data;
+    await this.loadEvents();
   }
 
   ngOnDestroy() {
@@ -159,6 +159,17 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       key: 'dataZoomSelect',
       dataZoomSelectActive: this.zoomInActive,
     });
+  }
+
+  async loadEvents() {
+    this.events = await this.eventsService.listEvents$(this.getTimeRange(), [
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'TestEvent' },
+        color: '#08293F',
+        icon: 'warning',
+      },
+    ]);
   }
 
   async zoomOut() {
@@ -261,7 +272,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         YAxis: this.config.yAxisSplitLines,
         XAxis: this.config.xAxisSplitLines,
       },
-      this.events?.events
+      this.events
     );
   }
 
