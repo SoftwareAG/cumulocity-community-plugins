@@ -76,7 +76,7 @@ export class EchartsOptionsService {
           snap: true,
         },
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        formatter: this.getTooltipFormatter(),
+        formatter: this.getTooltipFormatter(events),
         appendToBody: true,
       },
       legend: {
@@ -133,7 +133,8 @@ export class EchartsOptionsService {
         series.push(this.getSingleSeries(dp, renderType, idx, false));
       }
 
-      eventSeries = this.getEventSeries(dp, renderType, idx, false, events);
+      const newEventSeries = this.getEventSeries(dp, renderType, false, events);
+      eventSeries = [...eventSeries, ...newEventSeries];
     });
     return [...series, ...eventSeries];
   }
@@ -141,30 +142,84 @@ export class EchartsOptionsService {
   private getEventSeries(
     dp: DatapointWithValues,
     renderType: DatapointChartRenderType,
-    idx: number,
     isMinMaxChart = false,
     events: IEvent[] = []
   ): SeriesOption[] {
     if (!events?.length) {
       return [];
     }
-    return events.map((event) => ({
-      id: event.type,
-      name: event.type,
-      showSymbol: false,
-      data: [[event.creationTime, 0]],
-      markLine: {
-        symbol: ['none', 'none'],
-        data: [
-          {
-            xAxis: event.creationTime,
-            label: { show: true, formatter: 'Event' },
-            itemStyle: { color: event.color },
+
+    const eventsByType = events.reduce((grouped, event) => {
+      (grouped[event.type] = grouped[event.type] || []).push(event);
+      return grouped;
+    }, {});
+
+    return Object.entries(eventsByType).map(
+      ([type, eventsOfType]: [string, IEvent[]]) => {
+        return {
+          id: `${type}+${dp.__target.id}`,
+          name: type,
+          showSymbol: false,
+          data: eventsOfType.map((event) => [
+            event.creationTime,
+            null,
+            'markLineFlag',
+          ]),
+          markPoint: {
+            showSymbol: true,
+            symbol: `'rect'`,
+            symbolSize: 14,
+            data: eventsOfType.map((event) => {
+              if (dp.__target.id === event.source.id) {
+                const dpValuesArray = Object.entries(dp.values).map(
+                  ([time, values]) => ({
+                    time: new Date(time).getTime(),
+                    values,
+                  })
+                );
+                const eventCreationTime = new Date(
+                  event.creationTime
+                ).getTime();
+                const closestDpValue = dpValuesArray.reduce((prev, curr) =>
+                  Math.abs(curr.time - eventCreationTime) <
+                  Math.abs(prev.time - eventCreationTime)
+                    ? curr
+                    : prev
+                );
+                return {
+                  coord: [
+                    event.creationTime,
+                    closestDpValue ? closestDpValue.values[0].min : null,
+                  ],
+                  name: event.type,
+                  itemStyle: { color: event.color },
+                };
+              } else {
+                return {
+                  coord: [event.creationTime, null], // Set the position of the mark point
+                  name: event.type,
+                  itemStyle: { color: event.color },
+                };
+              }
+            }),
           },
-        ],
-      },
-      ...this.chartTypesService.getSeriesOptions(dp, isMinMaxChart, renderType),
-    }));
+          markLine: {
+            showSymbol: true,
+            symbol: ['none', 'none'],
+            data: eventsOfType.map((event) => ({
+              xAxis: event.creationTime,
+              label: { show: true, formatter: 'Event' },
+              itemStyle: { color: event.color },
+            })),
+          },
+          ...this.chartTypesService.getSeriesOptions(
+            dp,
+            isMinMaxChart,
+            renderType
+          ),
+        };
+      }
+    );
   }
 
   private getSingleSeries(
@@ -190,9 +245,12 @@ export class EchartsOptionsService {
     };
   }
 
-  private getTooltipFormatter(): TooltipFormatterCallback<TopLevelFormatterParams> {
+  private getTooltipFormatter(
+    events?: IEvent[]
+  ): TooltipFormatterCallback<TopLevelFormatterParams> {
     return (params) => {
       const XAxisValue: string = params[0].data[0];
+      const markedLineHovered = params[0].data[2] === 'markLineFlag';
       const YAxisReadings: string[] = [];
       const allSeries = this.echartsInstance.getOption()
         .series as SeriesOption[];
@@ -230,12 +288,37 @@ export class EchartsOptionsService {
           if (!seriesValue) {
             return;
           }
-          value =
-            seriesValue[1]?.toString() +
-            (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-            `<div style="font-size: 11px">${this.datePipe.transform(
-              seriesValue[0]
-            )}</div>`;
+
+          if (seriesValue[1] !== null) {
+            value =
+              seriesValue[1]?.toString() +
+              (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+              `<div style="font-size: 11px">${this.datePipe.transform(
+                seriesValue[0]
+              )}</div>`;
+          }
+
+          if (series.markLine && markedLineHovered) {
+            // Get the markLine data for the current XAxisValue
+            const markLineData = series.markLine.data.find(
+              (d) => d.xAxis === XAxisValue
+            );
+            if (markLineData) {
+              // Find the corresponding event
+              const event = events?.find((e) => e.creationTime === XAxisValue);
+              if (event && series.id.includes(event.source.id)) {
+                // Add the event information to the value
+                value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
+                value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
+                value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
+                value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
+              }
+
+              return YAxisReadings.push(value);
+            }
+          } else if (series.markLine && !markedLineHovered) {
+            return;
+          }
         }
 
         YAxisReadings.push(
