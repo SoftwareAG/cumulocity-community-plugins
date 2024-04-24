@@ -1,0 +1,68 @@
+<div class="card-header separator sticky-top bg-inherit">
+  <span *ngIf="listTitle" class="card-title h4">{{
+    listTitle | translate
+  }}</span>
+  <span *ngIf="!listTitle" class="card-title h4">{{
+    'Alarms' | translate
+  }}</span>
+</div>
+
+<c8y-list-group
+  class="flex-grow ff-scroll-fix cdk-droplist"
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  [cdkDropListDisabled]="!allowDragAndDrop || formArray.controls?.length < 2"
+>
+  <ng-content select=".alert"></ng-content>
+
+  <div class="p-t-8" *ngIf="!formArray.controls?.length">
+    <c8y-ui-empty-state
+      [icon]="'c8y-alarm'"
+      [title]="'No alarms to display.' | translate"
+      [subtitle]="'Add your first alarm.' | translate"
+      [horizontal]="true"
+      class="p-t-8"
+    ></c8y-ui-empty-state>
+  </div>
+  <div
+    *ngFor="let alarmForm of formArray.controls; let index = index"
+    [formGroup]="alarmForm"
+  >
+    <!--    <c8y-datapoint-selector-list-item-->
+    <!--      class="d-block"-->
+    <!--      [defaultFormOptions]="defaultFormOptions"-->
+    <!--      [activeToggleDisabled]="maxActiveCountReached"-->
+    <!--      [showActiveToggle]="true"-->
+    <!--      [showAddRemoveButton]="false"-->
+    <!--      [showOptions]="true"-->
+    <!--      [editable]="true"-->
+    <!--      [colorPickerDisabled]="false"-->
+    <!--      [actions]="actions"-->
+    <!--      [optionToRemove]="true"-->
+    <!--      [datapointLibraryEntries]="datapointLibraryEntries"-->
+    <!--      [hasUnlinkTemplateOption]="true"-->
+    <!--      formControlName="details"-->
+    <!--      (removed)="onItemRemoved(index)"-->
+    <!--      cdkDrag-->
+    <!--    >-->
+    <!--      <c8y-li-drag-handle-->
+    <!--        cdkDragHandle-->
+    <!--        title="{{ 'Click and drag to reorder' | translate }}"-->
+    <!--      >-->
+    <!--        <i c8yIcon="drag-reorder"></i>-->
+    <!--      </c8y-li-drag-handle>-->
+    <!--    </c8y-datapoint-selector-list-item>-->
+  </div>
+</c8y-list-group>
+
+<div class="card-footer bg-inherit">
+  <button
+    [title]="'Add alarm' | translate"
+    type="button"
+    class="btn btn-default btn-sm"
+    (click)="add()"
+  >
+    <i c8yIcon="plus-circle"></i>
+    {{ 'Add alarm' | translate }}
+  </button>
+</div>
