@@ -6,102 +6,94 @@
   <c8y-li-drag-handle
     ><ng-content select="c8y-li-drag-handle"></ng-content
   ></c8y-li-drag-handle>
+  <c8y-li-icon *ngIf="showAddRemoveButton" class="a-s-center p-r-4">
+    <button
+      *ngIf="isSelected"
+      class="btn btn-clean text-primary"
+      (click)="addOrRemoveItem()"
+      [title]="'Remove' | translate"
+    >
+      <i c8yIcon="minus-circle" class="text-danger"></i>
+    </button>
+    <button
+      *ngIf="!isSelected"
+      class="btn btn-clean text-primary"
+      (click)="addOrRemoveItem()"
+      [title]="'Select' | translate"
+    >
+      <i c8yIcon="plus-circle" class="text-primary"></i>
+    </button>
+  </c8y-li-icon>
+
   <c8y-li-checkbox
-    class="a-s-center p-r-0"
+    *ngIf="showActiveToggle"
     [displayAsSwitch]="true"
     formControlName="__active"
     (click)="$event.stopPropagation()"
+    class="a-s-center p-r-0"
   ></c8y-li-checkbox>
 
-  <!--    <div class="d-flex a-i-center p-l-16">-->
-  <!--        <div class="c8y-list__item__colorpicker p-t-0 p-b-0 p-l-0" [title]="'Change color' | translate">-->
-  <!--            <div class="c8y-colorpicker">-->
-  <!--                <input-->
-  <!--                        type="color"-->
-  <!--                        [attr.aria-label]="'Color' | translate"-->
-  <!--                        formControlName="color"-->
-  <!--                        (click)="$event.stopPropagation()"-->
-  <!--                />-->
-  <!--                <span [style.background-color]="formGroup.value.color"></span>-->
-  <!--            </div>-->
-  <!--        </div>-->
-  <!--        <button-->
-  <!--                class="btn-clean data-point-label text-truncate"-->
-  <!--                type="button"-->
-  <!--                [attr.aria-expanded]="!li.collapsed"-->
-  <!--                (click)="li.collapsed = !li.collapsed"-->
-  <!--        >-->
-  <!--      <span class="text-truncate" [title]="formGroup.value.details?.label">-->
-  <!--        <c8y-highlight-->
-  <!--                [text]="formGroup.value.details?.label"-->
-  <!--                [pattern]="highlightText"-->
-  <!--                [shouldTrimPattern]="true"-->
-  <!--        ></c8y-highlight>-->
-  <!--      </span>-->
-  <!--            <small class="text-truncate text-muted icon-flex" *ngIf="formGroup.value.__target">-->
-  <!--                <i c8yIcon="exchange"></i>-->
-  <!--                <span class="text-truncate">{{ formGroup.value.__target.name }}</span>-->
-  <!--            </small>-->
-  <!--        </button>-->
+  <div class="d-flex a-i-center p-l-4">
+    <div
+      class="c8y-list__item__colorpicker p-t-0 p-b-0 p-l-0"
+      [title]="'Change color' | translate"
+    >
+      <div class="c8y-colorpicker">
+        <input
+          type="color"
+          formControlName="color"
+          (click)="$event.stopPropagation()"
+        />
+        <span [style.background-color]="formGroup.value.color"></span>
+      </div>
+    </div>
+    <button
+      class="btn-clean data-point-label text-truncate"
+      [title]="formGroup.value.details?.label"
+      (click)="li.collapsed = !li.collapsed"
+    >
+      <span class="text-truncate">
+        <c8y-highlight
+          [text]="formGroup.value.details?.label"
+          [pattern]="highlightText"
+          [shouldTrimPattern]="true"
+        ></c8y-highlight>
+      </span>
+      <small
+        class="text-truncate text-muted icon-flex"
+        *ngIf="formGroup.value.__target"
+      >
+        <i c8yIcon="exchange"></i>
+        <span class="text-truncate">{{ formGroup.value.__target.name }}</span>
+      </small>
+    </button>
 
-  <!--        <button-->
-  <!--                class="btn btn-dot btn-dot&#45;&#45;danger m-l-auto"-->
-  <!--                type="button"-->
-  <!--                [attr.aria-label]="'Invalid' | translate"-->
-  <!--                [popover]="'Some entries are invalid. Check the input fields with red borders.' | translate"-->
-  <!--                triggers="focus"-->
-  <!--                placement="right"-->
-  <!--                container="body"-->
-  <!--                *ngIf="!(isValid$ | async)"-->
-  <!--        >-->
-  <!--            <i c8yIcon="warning"></i>-->
-  <!--        </button>-->
-  <!--        <div class="m-l-auto a-s-center p-r-4" *ngIf="showAddRemoveButton">-->
-  <!--            <button-->
-  <!--                    class="btn btn-dot btn-dot&#45;&#45;danger"-->
-  <!--                    type="button"-->
-  <!--                    [attr.aria-label]="'Remove' | translate"-->
-  <!--                    [tooltip]="'Remove from selected data points' | translate"-->
-  <!--                    [delay]="500"-->
-  <!--                    (click)="addOrRemoveItem()"-->
-  <!--                    *ngIf="isSelected"-->
-  <!--                    [attr.data-cy]="'datapoint-selector-list-item&#45;&#45;remove-datapoint-button'"-->
-  <!--            >-->
-  <!--                <i class="icon-20" c8yIcon="minus-circle"></i>-->
-  <!--            </button>-->
-  <!--            <button-->
-  <!--                    class="btn btn-dot text-primary"-->
-  <!--                    type="button"-->
-  <!--                    [attr.aria-label]="'Add to selected data points' | translate"-->
-  <!--                    [tooltip]="'Add to selected data points' | translate"-->
-  <!--                    [delay]="500"-->
-  <!--                    (click)="addOrRemoveItem()"-->
-  <!--                    *ngIf="!isSelected"-->
-  <!--                    [attr.data-cy]="'datapoint-selector-list-item&#45;&#45;add-datapoint-button'"-->
-  <!--            >-->
-  <!--                <i class="text-primary icon-20" c8yIcon="plus-circle"></i>-->
-  <!--            </button>-->
-  <!--        </div>-->
-  <!--    </div>-->
+    <button
+      class="btn-clean m-l-auto"
+      *ngIf="(isValid$ | async) === false"
+      [popover]="
+        'Some entries are invalid. Check the input fields with red borders.'
+          | translate
+      "
+      container="body"
+      [outsideClick]="true"
+    >
+      <i class="text-danger" c8yIcon="warning"></i>
+    </button>
+  </div>
 
-  <!--    <c8y-li-action-->
-  <!--            *ngIf="optionToRemove"-->
-  <!--            [icon]="'minus-circle'"-->
-  <!--            [label]="'Remove from list' | translate"-->
-  <!--            (click)="remove()"-->
-  <!--    ></c8y-li-action>-->
-  <!--    <c8y-li-action-->
-  <!--            *ngFor="let action of actions"-->
-  <!--            [icon]="action.icon"-->
-  <!--            [label]="action.label"-->
-  <!--            (click)="action.callback(formGroup.value)"-->
-  <!--    ></c8y-li-action>-->
+  <c8y-li-action
+    *ngIf="optionToRemove"
+    [icon]="'minus-circle'"
+    [label]="'Remove from list' | translate"
+    (click)="remove()"
+  ></c8y-li-action>
   <!--    <c8y-li-collapse>-->
   <!--        <div class="data-point-details">-->
   <!--            <ul class="list-unstyled small m-b-16">-->
-  <!--                <li class="p-t-4 p-b-4 d-flex separator-top-bottom">-->
-  <!--                    <label class="small m-b-0 m-r-8 a-s-start text-muted" translate>Fragment</label>-->
-  <!--                    <span class="m-l-auto">-->
+  <!--                <li class="p-t-4 p-b-4 flex-row separator-top-bottom">-->
+  <!--                    <label class="small m-b-0 m-r-8 flex-item-v-start text-muted" translate>Fragment</label>-->
+  <!--                    <span class="flex-item-right">-->
   <!--            <c8y-highlight-->
   <!--                    [text]="formGroup.value.fragment"-->
   <!--                    [pattern]="highlightText"-->
@@ -109,9 +101,9 @@
   <!--            ></c8y-highlight>-->
   <!--          </span>-->
   <!--                </li>-->
-  <!--                <li class="p-t-4 p-b-4 d-flex separator-bottom">-->
-  <!--                    <label class="small m-b-0 m-r-8 a-s-start text-muted" translate>Series</label>-->
-  <!--                    <span class="m-l-auto">-->
+  <!--                <li class="p-t-4 p-b-4 flex-row separator-bottom">-->
+  <!--                    <label class="small m-b-0 m-r-8 flex-item-v-start text-muted" translate>Series</label>-->
+  <!--                    <span class="flex-item-right">-->
   <!--            <c8y-highlight-->
   <!--                    [text]="formGroup.value.series"-->
   <!--                    [pattern]="highlightText"-->
@@ -126,15 +118,14 @@
   <!--            >-->
   <!--                <label class="d-inline-block" translate>Data point template</label>-->
   <!--                <button-->
-  <!--                        class="btn-help btn-help&#45;&#45;sm"-->
-  <!--                        type="button"-->
-  <!--                        [attr.aria-label]="'Help' | translate"-->
+  <!--                        class="btn btn-clean"-->
   <!--                        [popover]="datapointHintPopoverTemplate"-->
   <!--                        (click)="$event.stopPropagation()"-->
-  <!--                        triggers="focus"-->
-  <!--                        placement="top"-->
   <!--                        container="body"-->
-  <!--                ></button>-->
+  <!--                        [outsideClick]="true"-->
+  <!--                >-->
+  <!--                    <i [c8yIcon]="'question-circle-o'" class="m-l-4 text-info"></i>-->
+  <!--                </button>-->
 
   <!--                <ng-template #datapointHintPopoverTemplate>-->
   <!--                    {{-->
@@ -144,7 +135,6 @@
   <!--                </ng-template>-->
   <!--                <div class="d-flex">-->
   <!--                    <c8y-typeahead-->
-  <!--                            class="flex-grow"-->
   <!--                            [placeholder]="'No template' | translate"-->
   <!--                            [ngModel]="formGroup.value.__template ? formGroup.value.details : undefined"-->
   <!--                            [ngModelOptions]="{ standalone: true }"-->
@@ -153,49 +143,44 @@
   <!--                            [hideNew]="true"-->
   <!--                            *ngIf="datapointLibraryEntries"-->
   <!--                            [disabled]="isSelected && disableTypeaheadIfSelected"-->
+  <!--                            class="flex-grow"-->
   <!--                    >-->
   <!--                        <c8y-li-->
-  <!--                                class="p-l-8 p-r-8 c8y-list__item&#45;&#45;link interact"-->
   <!--                                *c8yFor="-->
   <!--                let item of datapointLibraryEntries;-->
   <!--                loadMore: 'auto';-->
   <!--                pipe: filterPipe;-->
   <!--                notFound: notFoundTemplate-->
   <!--              "-->
+  <!--                                class="p-l-8 p-r-8 c8y-list__item&#45;&#45;link interact"-->
   <!--                                (click)="dataPointTemplateSelected(item)"-->
   <!--                                [active]="formGroup.value.__template === item.id"-->
-  <!--                                [attr.role]="'menuitem'"-->
   <!--                        >-->
   <!--                            <c8y-highlight [text]="item.c8y_Kpi?.label" [pattern]="pattern"></c8y-highlight>-->
   <!--                            <c8y-li-icon icon="circle" [style.color]="item.c8y_Kpi?.color"></c8y-li-icon>-->
   <!--                        </c8y-li>-->
   <!--                        <ng-template #notFoundTemplate>-->
-  <!--                            <c8y-li class="bg-level-2 p-8" *ngIf="pattern.length > 0">-->
+  <!--                            <c8y-li class="bg-gray-lighter p-8" *ngIf="pattern.length > 0">-->
   <!--                                <span>No match found.</span>-->
   <!--                            </c8y-li>-->
   <!--                        </ng-template>-->
   <!--                    </c8y-typeahead>-->
   <!--                    <button-->
+  <!--                            *ngIf="formGroup.value.__template"-->
   <!--                            class="btn btn-info btn-xs btn-icon a-s-center m-l-8"-->
-  <!--                            type="button"-->
-  <!--                            [attr.aria-label]="'Info' | translate"-->
   <!--                            [popover]="datapointOverviewPopoverTemplate"-->
   <!--                            placement="left"-->
-  <!--                            triggers="focus"-->
   <!--                            container="body"-->
-  <!--                            *ngIf="formGroup.value.__template"-->
+  <!--                            [outsideClick]="true"-->
+  <!--                            [title]="'Info' | translate"-->
   <!--                    >-->
-  <!--                        <i class="text-info" c8yIcon="info"></i>-->
+  <!--                        <i c8yIcon="info" class="text-info"></i>-->
   <!--                    </button>-->
   <!--                    <button-->
-  <!--                            class="btn btn-danger btn-xs btn-icon a-s-center m-l-8"-->
-  <!--                            type="button"-->
-  <!--                            tooltip="{{ 'Unlink data point template' | translate }}"-->
-  <!--                            [attr.aria-label]="'Unlink data point template' | translate"-->
-  <!--                            triggers="mouseenter"-->
-  <!--                            [delay]="500"-->
   <!--                            *ngIf="formGroup.value.__template && hasUnlinkTemplateOption"-->
+  <!--                            class="btn btn-danger btn-xs btn-icon a-s-center m-l-8"-->
   <!--                            (click)="unlinkDatapointTemplate()"-->
+  <!--                            [title]="'Unlink data point template' | translate"-->
   <!--                    >-->
   <!--                        <i c8yIcon="unlink"></i>-->
   <!--                    </button>-->

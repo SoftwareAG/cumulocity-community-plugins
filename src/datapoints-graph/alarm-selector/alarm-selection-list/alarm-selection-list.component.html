@@ -28,7 +28,13 @@
     *ngFor="let alarmForm of formArray.controls; let index = index"
     [formGroup]="alarmForm"
   >
-    <c8y-alarm-selector-list-item class="d-block" cdkDrag>
+    <c8y-alarm-selector-list-item
+      class="d-block"
+      cdkDrag
+      formControlName="details"
+      [showAddRemoveButton]="false"
+      [optionToRemove]="true"
+    >
       <c8y-li-drag-handle
         cdkDragHandle
         title="{{ 'Click and drag to reorder' | translate }}"
