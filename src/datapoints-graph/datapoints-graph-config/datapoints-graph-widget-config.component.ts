@@ -143,6 +143,7 @@ export class DatapointsGraphWidgetConfigComponent
   private initForm(): void {
     this.formGroup = this.formBuilder.group({
       datapoints: [[], [Validators.required, Validators.minLength(1)]],
+      alarms: [[]],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],
@@ -157,6 +158,11 @@ export class DatapointsGraphWidgetConfigComponent
     });
     this.form.form.addControl('config', this.formGroup);
     this.formGroup.patchValue(this.config);
+    this.formGroup.controls.alarms.setValue(
+      this.config?.alarmsEventsConfigs?.filter(
+        (ae) => ae.timelineType === 'ALARM'
+      )
+    );
   }
 
   private initDateSelection(): void {

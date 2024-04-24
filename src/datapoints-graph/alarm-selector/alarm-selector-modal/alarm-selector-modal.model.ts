@@ -6,8 +6,8 @@ export type AlarmSelectorModalOptions = {
   contextAsset: IIdentified;
 };
 
-export type AlarmDetails = {
-  timelineType: 'ALARM';
+export type AlarmOrEvent = {
+  timelineType: TimelineType;
   color: string;
   __active: boolean;
   label: string;
@@ -15,4 +15,12 @@ export type AlarmDetails = {
     type: string;
   };
   __target: IIdentified;
+};
+
+export type AlarmDetails = AlarmOrEvent & {
+  timelineType: 'ALARM';
+};
+
+export type EventDetails = AlarmOrEvent & {
+  timelineType: 'EVENT';
 };

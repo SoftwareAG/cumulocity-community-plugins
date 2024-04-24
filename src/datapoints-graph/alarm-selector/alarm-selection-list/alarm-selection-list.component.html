@@ -28,30 +28,14 @@
     *ngFor="let alarmForm of formArray.controls; let index = index"
     [formGroup]="alarmForm"
   >
-    <!--    <c8y-datapoint-selector-list-item-->
-    <!--      class="d-block"-->
-    <!--      [defaultFormOptions]="defaultFormOptions"-->
-    <!--      [activeToggleDisabled]="maxActiveCountReached"-->
-    <!--      [showActiveToggle]="true"-->
-    <!--      [showAddRemoveButton]="false"-->
-    <!--      [showOptions]="true"-->
-    <!--      [editable]="true"-->
-    <!--      [colorPickerDisabled]="false"-->
-    <!--      [actions]="actions"-->
-    <!--      [optionToRemove]="true"-->
-    <!--      [datapointLibraryEntries]="datapointLibraryEntries"-->
-    <!--      [hasUnlinkTemplateOption]="true"-->
-    <!--      formControlName="details"-->
-    <!--      (removed)="onItemRemoved(index)"-->
-    <!--      cdkDrag-->
-    <!--    >-->
-    <!--      <c8y-li-drag-handle-->
-    <!--        cdkDragHandle-->
-    <!--        title="{{ 'Click and drag to reorder' | translate }}"-->
-    <!--      >-->
-    <!--        <i c8yIcon="drag-reorder"></i>-->
-    <!--      </c8y-li-drag-handle>-->
-    <!--    </c8y-datapoint-selector-list-item>-->
+    <c8y-alarm-selector-list-item class="d-block" cdkDrag>
+      <c8y-li-drag-handle
+        cdkDragHandle
+        title="{{ 'Click and drag to reorder' | translate }}"
+      >
+        <i c8yIcon="drag-reorder"></i>
+      </c8y-li-drag-handle>
+    </c8y-alarm-selector-list-item>
   </div>
 </c8y-list-group>
 
