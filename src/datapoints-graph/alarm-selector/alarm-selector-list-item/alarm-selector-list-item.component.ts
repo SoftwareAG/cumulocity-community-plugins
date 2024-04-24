@@ -57,9 +57,6 @@ export class AlarmSelectorListItemComponent
       color: [],
       __active: [],
       __target: [],
-      // fragment: [],
-      // series: [],
-      // __template: []
     });
     this.isValid$ = this.formGroup.statusChanges.pipe(
       map((status) => status === 'VALID'),

@@ -31,6 +31,7 @@ import {
   DatapointSelectorModalOptions,
 } from '@c8y/ngx-components/datapoint-selector';
 import { ActivatedRoute } from '@angular/router';
+import { omit } from 'lodash-es';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -104,7 +105,13 @@ export class DatapointsGraphWidgetConfigComponent
     config?: DatapointsGraphWidgetConfig
   ): boolean | Promise<boolean> | Observable<boolean> {
     if (this.formGroup.valid) {
-      Object.assign(config, this.formGroup.value);
+      Object.assign(config, omit(this.formGroup.value, ['alarms', 'events']), {
+        alarmsEventsConfigs: [
+          ...this.formGroup.value.alarms,
+          ...this.formGroup.value.events,
+        ],
+      });
+
       return true;
     }
     return false;
@@ -144,6 +151,7 @@ export class DatapointsGraphWidgetConfigComponent
     this.formGroup = this.formBuilder.group({
       datapoints: [[], [Validators.required, Validators.minLength(1)]],
       alarms: [[]],
+      events: [[]],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],
@@ -163,6 +171,11 @@ export class DatapointsGraphWidgetConfigComponent
         (ae) => ae.timelineType === 'ALARM'
       )
     );
+
+    // TODO: remove
+    this.formGroup.valueChanges.subscribe((val) => {
+      console.log(val);
+    });
   }
 
   private initDateSelection(): void {
