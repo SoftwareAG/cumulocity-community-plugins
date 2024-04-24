@@ -10,6 +10,7 @@ import {
 } from '@c8y/client';
 import { ApiService } from '@c8y/ngx-components/api';
 import { Event } from '../model';
+import { Observable, from } from 'rxjs';
 
 @Injectable()
 export class ChartEventsService extends EventService {
@@ -19,29 +20,30 @@ export class ChartEventsService extends EventService {
     this.apiService = apiService;
   }
 
-  async listEvents$(params?, events?: Event[]): Promise<IEvent[]> {
-    const url = `/${this.baseUrl}/events`;
-    const allEvents: IEvent[] = [];
-    events.forEach(async (event: Event) => {
-      const fetchOptions: IFetchOptions = {
-        params: {
-          source: event.__target.id,
-          type: event.filters.type,
-          withTotalPages: true,
-          pageSize: 1000,
-          ...params,
-        },
-      };
-      const result = await this.getEvents(url, fetchOptions);
-      // to all events in the result assign the color and icon of the event
-      result.data.forEach((iEvent) => {
-        iEvent.color = event.color;
-        iEvent.icon = event.icon;
-      });
-      allEvents.push(...result.data);
-    });
-
-    return allEvents;
+  listEvents$(params?, events?: Event[]): Observable<IEvent[]> {
+    return from(
+      new Promise<IEvent[]>(async (resolve) => {
+        const url = `/${this.baseUrl}/events`;
+        const allEvents: IEvent[] = [];
+        for (const event of events) {
+          const fetchOptions: IFetchOptions = {
+            params: {
+              source: event.__target.id,
+              type: event.filters.type,
+              withTotalPages: true,
+              pageSize: 1000,
+              ...params,
+            },
+          };
+          const result = await this.getEvents(url, fetchOptions);
+          result.data.forEach((iEvent) => {
+            iEvent.color = event.color;
+          });
+          allEvents.push(...result.data);
+        }
+        resolve(allEvents);
+      })
+    );
   }
 
   private async getEvents(

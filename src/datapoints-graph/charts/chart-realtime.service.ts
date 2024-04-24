@@ -1,16 +1,27 @@
 import { Injectable } from '@angular/core';
-import { interval, merge, Observable, Subscription } from 'rxjs';
-import { IMeasurement } from '@c8y/client';
-import { buffer, map, tap, throttleTime } from 'rxjs/operators';
+import { combineLatest, interval, merge, Observable, Subscription } from 'rxjs';
+import { IEvent, IMeasurement } from '@c8y/client';
 import {
+  buffer,
+  concatAll,
+  map,
+  switchMap,
+  tap,
+  throttleTime,
+} from 'rxjs/operators';
+import {
+  DatapointChartRenderType,
   DatapointRealtimeMeasurements,
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
+  DatapointWithValues,
   SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
 import { MeasurementRealtimeService } from '@c8y/ngx-components';
 import type { ECharts, SeriesOption } from 'echarts';
+import { ChartEventsService } from './chart-events.service';
+import { EchartsOptionsService } from './echarts-options.service';
 
 type Milliseconds = number;
 
@@ -23,7 +34,11 @@ export class ChartRealtimeService {
   private echartsInstance: ECharts;
   private currentTimeRange: { dateFrom: Date; dateTo: Date };
 
-  constructor(private measurementRealtime: MeasurementRealtimeService) {}
+  constructor(
+    private measurementRealtime: MeasurementRealtimeService,
+    private eventsService: ChartEventsService,
+    private echartsOptionsService: EchartsOptionsService
+  ) {}
 
   startRealtime(
     echartsInstance: ECharts,
@@ -73,15 +88,51 @@ export class ChartRealtimeService {
       )
     ).pipe(throttleTime(this.MIN_REALTIME_TIMEOUT));
 
-    this.realtimeSubscription = measurement$
-      .pipe(buffer(bufferReset$))
-      .subscribe((measurements) => {
-        this.updateChartInstance(measurements, datapointOutOfSyncCallback);
-      });
+    const events$ = interval(this.INTERVAL).pipe(
+      switchMap(() => this.loadEvents().pipe(throttleTime(updateThrottleTime)))
+    );
+
+    this.realtimeSubscription = combineLatest([
+      measurement$.pipe(buffer(bufferReset$)),
+      events$,
+    ]).subscribe(([measurements, events]) => {
+      this.updateChartInstance(
+        measurements,
+        events,
+        datapointOutOfSyncCallback
+      );
+    });
   }
 
   stopRealtime() {
     this.realtimeSubscription?.unsubscribe();
+  }
+
+  private loadEvents(): Observable<any> {
+    const timeRange = {
+      dateFrom: this.currentTimeRange.dateFrom.toISOString(),
+      dateTo: this.currentTimeRange.dateTo.toISOString(),
+    };
+    return this.eventsService.listEvents$(timeRange, [
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'TestEvent' },
+        color: '#08293F',
+        icon: 'warning',
+      },
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'AnotherEventType' },
+        color: '#349EDF',
+        icon: 'warning',
+      },
+      {
+        __target: { id: '352734984' },
+        filters: { type: 'AnotherEventType' },
+        color: '#349EDF',
+        icon: 'warning',
+      },
+    ]);
   }
 
   private removeValuesBeforeTimeRange(series: SeriesOption): SeriesValue[] {
@@ -117,6 +168,7 @@ export class ChartRealtimeService {
 
   private updateChartInstance(
     receivedMeasurements: DatapointRealtimeMeasurements[],
+    events: IEvent[],
     datapointOutOfSyncCallback: (dp: DatapointsGraphKPIDetails) => void
   ) {
     const seriesDataToUpdate = new Map<
@@ -149,6 +201,36 @@ export class ChartRealtimeService {
       seriesMatchingDatapoint.data = this.removeValuesBeforeTimeRange(
         seriesMatchingDatapoint
       );
+
+      events.forEach((event) => {
+        const eventExists = allDataSeries.some((series: { data: any[] }) =>
+          series.data.some((data) => data[0] === event.creationTime)
+        );
+        if (!eventExists && event.source.id === datapoint.__target.id) {
+          const renderType: DatapointChartRenderType =
+            datapoint.renderType || 'min';
+          if (
+            typeof seriesMatchingDatapoint.data === 'object' &&
+            seriesMatchingDatapoint.data !== null
+          ) {
+            const dp: DatapointWithValues = {
+              ...datapoint,
+              values: seriesMatchingDatapoint.data as {
+                [date: string]: { min: number; max: number }[];
+              },
+            };
+            const eventId = `${event.type}+${dp.__target.id}+${Date.now()}`;
+            const newEventSeries = this.echartsOptionsService.getEventSeries(
+              dp,
+              renderType,
+              false,
+              [event],
+              eventId
+            );
+            allDataSeries.push(...newEventSeries);
+          }
+        }
+      });
       this.checkForValuesAfterTimeRange(
         seriesMatchingDatapoint.data as SeriesValue[],
         datapoint,

@@ -106,13 +106,17 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
           this.echartsInstance?.clear();
           return of(null);
         }
-        return of(this.getChartOptions(datapointsWithValues));
+        return this.loadEvents().pipe(
+          map((events) => {
+            this.events = events;
+            return this.getChartOptions(datapointsWithValues);
+          })
+        );
       }),
-      tap(async () => {
+      tap(() => {
         if (this.zoomInActive) {
           this.toggleZoomIn();
         }
-        await this.loadEvents();
         this.chartRealtimeService.stopRealtime();
         this.startRealtimeIfPossible();
       })
@@ -128,7 +132,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
-    await this.loadEvents();
   }
 
   ngOnDestroy() {
@@ -161,8 +164,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  async loadEvents() {
-    this.events = await this.eventsService.listEvents$(this.getTimeRange(), [
+  private loadEvents(): Observable<any> {
+    return this.eventsService.listEvents$(this.getTimeRange(), [
       {
         __target: { id: '7713695199' },
         filters: { type: 'TestEvent' },
