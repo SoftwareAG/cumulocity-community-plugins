@@ -35,6 +35,7 @@
       [showAddRemoveButton]="false"
       [optionToRemove]="true"
       [showActiveToggle]="true"
+      (removed)="onItemRemoved(index)"
     >
       <c8y-li-drag-handle
         cdkDragHandle
