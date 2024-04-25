@@ -103,9 +103,6 @@ export class AlarmSelectionListComponent
     this.alarmSelector
       .selectAlarms({
         ...(this.config || {}),
-        selectedDatapoints: this.transformValue(this.formArray.value),
-        defaultActiveState: true,
-        allowSearch: !this.config?.contextAsset,
       })
       .then(
         (result) => {

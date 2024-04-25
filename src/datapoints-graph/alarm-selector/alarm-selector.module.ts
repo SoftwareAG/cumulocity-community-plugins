@@ -15,6 +15,5 @@ import { AlarmAttributesFormComponent } from './alarm-attributes-form/alarm-attr
     AlarmAttributesFormComponent,
   ],
   exports: [AlarmSelectionListComponent],
-  providers: [],
 })
 export class AlarmSelectorModule {}
