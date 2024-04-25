@@ -86,10 +86,6 @@ export class AlarmSelectorListItemComponent
     isDisabled ? this.formGroup.disable() : this.formGroup.enable();
   }
 
-  collapse() {
-    this.isCollapsed = !this.isCollapsed;
-  }
-
   addOrRemoveItem() {
     const value = this.transformFormValue(this.formGroup.value);
     if (this.isSelected) {

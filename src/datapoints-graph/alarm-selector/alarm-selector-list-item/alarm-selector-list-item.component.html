@@ -48,7 +48,7 @@
       </div>
     </div>
     <button
-      class="btn-clean data-point-label text-truncate"
+      class="btn-clean text-truncate"
       [title]="formGroup.value.details?.label"
       (click)="li.collapsed = !li.collapsed"
     >
@@ -89,8 +89,10 @@
     (click)="remove()"
   ></c8y-li-action>
   <c8y-li-collapse>
-    <div class="data-point-details">
-      <span>test</span>
+    <div class="alarm-point-details">
+      <c8y-alarm-attributes-form
+        formControlName="details"
+      ></c8y-alarm-attributes-form>
     </div>
   </c8y-li-collapse>
 </c8y-li>
