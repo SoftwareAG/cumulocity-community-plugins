@@ -8,9 +8,9 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
+  Validators,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
-import { ALARM_EVENT_TIMELINE_TYPES } from '../alarm-selector-modal/alarm-selector-modal.model';
 
 @Component({
   selector: 'c8y-alarm-attributes-form',
@@ -31,17 +31,12 @@ import { ALARM_EVENT_TIMELINE_TYPES } from '../alarm-selector-modal/alarm-select
 export class AlarmAttributesFormComponent
   implements ControlValueAccessor, Validator
 {
-  ALARM_EVENT_TIMELINE_TYPES = ALARM_EVENT_TIMELINE_TYPES;
   formGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
-      color: [],
-      __active: [],
-      __target: [],
-      label: [],
-      filters: this.formBuilder.group({ type: [] }),
-      timelineType: [],
+      label: '',
+      filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
     });
   }
 

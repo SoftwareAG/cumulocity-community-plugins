@@ -11,33 +11,17 @@
     />
   </c8y-form-group>
 
-  <div class="d-flex">
+  <div formGroupName="filters">
     <c8y-form-group>
-      <label translate>Data type</label>
-      <div class="c8y-select-wrapper">
-        <select class="form-control" formControlName="timelineType">
-          <option
-            *ngFor="let type of ALARM_EVENT_TIMELINE_TYPES"
-            [ngValue]="type.value"
-          >
-            {{ type.label | translate }}
-          </option>
-        </select>
-      </div>
+      <label translate>Type</label>
+      <input
+        class="form-control"
+        name="type"
+        formControlName="type"
+        [placeholder]="
+          'e.g. {{ example }}' | translate : { example: 'c8y_LocationUpdate' }
+        "
+      />
     </c8y-form-group>
-
-    <div formGroupName="filters">
-      <c8y-form-group>
-        <label translate>Type</label>
-        <input
-          class="form-control"
-          name="type"
-          formControlName="type"
-          [placeholder]="
-            'e.g. {{ example }}' | translate : { example: 'c8y_LocationUpdate' }
-          "
-        />
-      </c8y-form-group>
-    </div>
   </div>
 </div>
