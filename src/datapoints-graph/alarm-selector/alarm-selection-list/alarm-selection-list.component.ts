@@ -100,9 +100,15 @@ export class AlarmSelectionListComponent
   }
 
   add() {
+    const allowChangingContext =
+      !this.widgetComponent?.isDeviceTypeDashboard &&
+      this.config?.allowChangingContext !== false;
     this.alarmSelector
       .selectAlarms({
         ...(this.config || {}),
+        allowChangingContext,
+        selectedAlarms: this.transformValue(this.formArray.value),
+        allowSearch: !this.config?.contextAsset,
       })
       .then(
         (result) => {

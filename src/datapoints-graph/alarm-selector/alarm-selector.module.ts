@@ -6,6 +6,7 @@ import { AlarmSelectorListItemComponent } from './alarm-selector-list-item/alarm
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { AlarmAttributesFormComponent } from './alarm-attributes-form/alarm-attributes-form.component';
+import { AlarmSelectorModalComponent } from './alarm-selector-modal/alarm-selector-modal.component';
 
 @NgModule({
   imports: [CoreModule, DragDropModule, PopoverModule, TooltipModule],
@@ -13,6 +14,7 @@ import { AlarmAttributesFormComponent } from './alarm-attributes-form/alarm-attr
     AlarmSelectionListComponent,
     AlarmSelectorListItemComponent,
     AlarmAttributesFormComponent,
+    AlarmSelectorModalComponent,
   ],
   exports: [AlarmSelectionListComponent],
 })

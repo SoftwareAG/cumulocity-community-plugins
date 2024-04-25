@@ -1,0 +1,25 @@
+<div class="modal-header separator">
+  <h4 class="text-medium">{{ title | translate }}</h4>
+</div>
+<div class="modal-inner-scroll modal-inner-scroll--fixed">
+  <!--alarm selector-->
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    [title]="'Cancel' | translate"
+    class="btn btn-default"
+    (click)="close()"
+    translate
+  >
+    Cancel
+  </button>
+  <button
+    [title]="saveButtonLabel | translate"
+    class="btn btn-primary"
+    [disabled]="!this.selectedAlarms?.length"
+    (click)="saveChanges()"
+  >
+    {{ saveButtonLabel | translate }}
+  </button>
+</div>

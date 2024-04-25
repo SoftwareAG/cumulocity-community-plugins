@@ -1,10 +1,12 @@
 import { IIdentified } from '@c8y/client';
+import { AlarmSelectorModalComponent } from './alarm-selector-modal.component';
 
 export type TimelineType = 'ALARM' | 'EVENT';
 
-export type AlarmSelectorModalOptions = {
-  contextAsset: IIdentified;
-};
+export type AlarmSelectorModalOptions = Pick<
+  AlarmSelectorModalComponent,
+  'contextAsset' | 'allowChangingContext' | 'selectedAlarms' | 'allowSearch'
+>;
 
 export type AlarmOrEvent = {
   timelineType: TimelineType;
