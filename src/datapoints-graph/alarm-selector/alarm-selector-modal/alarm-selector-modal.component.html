@@ -2,7 +2,10 @@
   <h4 class="text-medium">{{ title | translate }}</h4>
 </div>
 <div class="modal-inner-scroll modal-inner-scroll--fixed">
-  <!--alarm selector-->
+  <c8y-alarm-selector
+    [selectedAlarms]="selectedAlarms"
+    (selectionChange)="selectionChange($event)"
+  ></c8y-alarm-selector>
 </div>
 <div class="modal-footer">
   <button

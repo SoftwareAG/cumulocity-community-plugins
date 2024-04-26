@@ -1,0 +1,33 @@
+<div
+  class="d-grid grid__row--1 fit-h"
+  [ngClass]="{
+    'grid__col--3-6-3--md': allowChangingContext,
+    'grid__col--8-4--md': !allowChangingContext
+  }"
+>
+  <div
+    class="d-flex d-col p-relative bg-gray-white"
+    *ngIf="allowChangingContext"
+  >
+    <c8y-asset-selector-miller
+      [(ngModel)]="contextAsset"
+      [asset]="contextAsset"
+      (onSelected)="selectionChanged($event)"
+      [container]="''"
+      [config]="{
+        view: 'miller',
+        groupsSelectable: true,
+        columnHeaders: true,
+        showChildDevices: true,
+        showUnassignedDevices: true,
+        singleColumn: true,
+        search: allowSearch,
+        showFilter: true
+      }"
+      class="d-contents"
+    ></c8y-asset-selector-miller>
+  </div>
+  <!-- center column -->
+
+  <!-- last column  -->
+</div>
