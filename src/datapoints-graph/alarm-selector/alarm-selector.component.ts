@@ -147,8 +147,8 @@ export class AlarmSelectorComponent implements OnInit {
           return alarms;
         }
         const lowerCaseSearchString = searchString.toLowerCase();
-        return alarms.filter((datapoint) =>
-          this.includesSearchString(datapoint, lowerCaseSearchString)
+        return alarms.filter((alarm) =>
+          this.includesSearchString(alarm, lowerCaseSearchString)
         );
       }),
       map((filtered) => filtered.slice(0, this.maxNumberOfAlarms))
