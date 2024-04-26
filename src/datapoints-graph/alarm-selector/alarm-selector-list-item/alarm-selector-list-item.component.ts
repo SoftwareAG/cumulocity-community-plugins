@@ -1,9 +1,11 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   forwardRef,
   Input,
   Output,
+  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -18,6 +20,7 @@ import {
 import { Observable } from 'rxjs/internal/Observable';
 import { AlarmDetails } from '../alarm-selector-modal/alarm-selector-modal.model';
 import { map, startWith, take } from 'rxjs/operators';
+import { ListItemComponent } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-alarm-selector-list-item',
@@ -36,7 +39,7 @@ import { map, startWith, take } from 'rxjs/operators';
   ],
 })
 export class AlarmSelectorListItemComponent
-  implements ControlValueAccessor, Validator
+  implements ControlValueAccessor, Validator, AfterViewInit
 {
   @Input() highlightText: string;
   @Input() showAddRemoveButton = true;
@@ -47,6 +50,8 @@ export class AlarmSelectorListItemComponent
 
   @Output() added = new EventEmitter<AlarmDetails>();
   @Output() removed = new EventEmitter<AlarmDetails>();
+
+  @ViewChild('li', { static: true }) listItem: ListItemComponent;
 
   formGroup: FormGroup;
   isValid$: Observable<boolean>;
@@ -62,6 +67,10 @@ export class AlarmSelectorListItemComponent
       map((status) => status === 'VALID'),
       startWith(this.formGroup.valid)
     );
+  }
+
+  ngAfterViewInit() {
+    this.listItem.collapsed = this.isCollapsed;
   }
 
   validate(_control: AbstractControl): ValidationErrors {

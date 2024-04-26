@@ -135,6 +135,15 @@
                 class="d-contents"
                 *ngFor="let alarm of filteredAlarms; trackBy: trackByFn"
               ></c8y-alarm-selector-list-item>
+
+              <c8y-alarm-selector-list-item
+                [(ngModel)]="blankAlarm"
+                [isSelected]="selectedAlarms | includesAlarm : blankAlarm"
+                [isCollapsed]="false"
+                (added)="alarmAdded($event)"
+                (removed)="alarmRemoved($event)"
+                class="d-contents"
+              ></c8y-alarm-selector-list-item>
             </c8y-list-group>
           </ng-container>
         </ng-container>

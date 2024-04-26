@@ -19,6 +19,7 @@ import {
 } from 'rxjs/operators';
 import { AlarmDetails } from './alarm-selector-modal/alarm-selector-modal.model';
 import { AlarmSelectorService } from './alarm-selector.service';
+import { ColorService } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-alarm-selector',
@@ -46,10 +47,14 @@ export class AlarmSelectorComponent implements OnInit {
   alarms$: Observable<AlarmDetails[]>;
   filteredAlarms$: Observable<AlarmDetails[]>;
   searchStringChanges$: Observable<string>;
+  blankAlarm: AlarmDetails;
 
   private searchString$ = new BehaviorSubject('');
 
-  constructor(private alarmSelectorService: AlarmSelectorService) {}
+  constructor(
+    private alarmSelectorService: AlarmSelectorService,
+    private color: ColorService
+  ) {}
 
   ngOnInit(): void {
     this.setupObservables();
@@ -101,10 +106,24 @@ export class AlarmSelectorComponent implements OnInit {
     this.searchString = newValue;
   }
 
-  private setupObservables(): void {
+  private async setupObservables(): Promise<void> {
+    const blankAlarmColor = await this.color.generateColor(null);
     this.alarms$ = this.assetSelection.pipe(
       tap(() => {
         this.loadingAlarms = true;
+      }),
+      tap((asset) => {
+        this.blankAlarm = asset
+          ? {
+              timelineType: 'ALARM',
+              color: blankAlarmColor,
+              label: '',
+              filters: {
+                type: '',
+              },
+              __target: asset,
+            }
+          : null;
       }),
       switchMap((asset) =>
         asset?.id ? this.alarmSelectorService.getAlarmsOfAsset(asset) : []
