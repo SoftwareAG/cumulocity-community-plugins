@@ -10,6 +10,7 @@ import { AlarmSelectorModalComponent } from './alarm-selector-modal/alarm-select
 import { AlarmSelectorComponent } from './alarm-selector.component';
 import { AssetSelectorModule } from '@c8y/ngx-components/assets-navigator';
 import { IncludesAlarmPipe } from './pipes/includes-alarm.pipe';
+import { SeverityIconPipe } from './pipes/severity-icon.pipe';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { IncludesAlarmPipe } from './pipes/includes-alarm.pipe';
     AlarmSelectorModalComponent,
     AlarmSelectorComponent,
     IncludesAlarmPipe,
+    SeverityIconPipe,
   ],
   exports: [AlarmSelectionListComponent],
 })

@@ -24,4 +24,44 @@
       />
     </c8y-form-group>
   </div>
+
+  <fieldset class="c8y-fieldset" formArrayName="severities">
+    <legend>{{ 'Severities' | translate }}</legend>
+    <c8y-form-group
+      [hasError]="formGroup.controls.severities.hasError('required')"
+      [ngClass]="{
+        'm-b-8': !formGroup.controls.severities.hasError('required')
+      }"
+    >
+      <ng-container *ngFor="let severityOption of severityList">
+        <label
+          class="c8y-checkbox m-t-0 gap-4"
+          [title]="SEVERITY_LABELS[severityOption] | translate"
+        >
+          <input
+            type="checkbox"
+            [formControlName]="severityOption"
+            [name]="severityOption"
+          />
+          <span class="a-s-center"></span>
+          <ng-container
+            *ngIf="{ result: severityOption | severityIcon } as severityIcon"
+          >
+            <i
+              class="a-s-center m-r-4 icon-20 {{
+                severityIcon.result.iconClass
+              }}"
+              [c8yIcon]="severityIcon.result.c8yIcon"
+            ></i>
+          </ng-container>
+          <span>{{ SEVERITY_LABELS[severityOption] | translate }}</span>
+        </label>
+      </ng-container>
+      <c8y-messages>
+        <c8y-message *ngIf="formGroup.controls.severities.hasError('required')">
+          {{ 'Select at least one severity.' | translate }}
+        </c8y-message>
+      </c8y-messages>
+    </c8y-form-group>
+  </fieldset>
 </div>

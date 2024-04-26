@@ -8,9 +8,14 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
+import {
+  DEFAULT_SEVERITY_VALUES,
+  SEVERITY_LABELS,
+} from '../alarm-selector-modal/alarm-selector-modal.model';
 
 @Component({
   selector: 'c8y-alarm-attributes-form',
@@ -32,12 +37,17 @@ export class AlarmAttributesFormComponent
   implements ControlValueAccessor, Validator
 {
   formGroup: FormGroup;
+  severityList = Object.keys(SEVERITY_LABELS);
+  readonly SEVERITY_LABELS = SEVERITY_LABELS;
 
   constructor(private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
       label: '',
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
       timelineType: '',
+      severities: this.formBuilder.group(DEFAULT_SEVERITY_VALUES, {
+        validators: this.minSelectedCheckboxes(1),
+      }),
     });
   }
 
@@ -59,5 +69,18 @@ export class AlarmAttributesFormComponent
 
   setDisabledState(isDisabled: boolean): void {
     isDisabled ? this.formGroup.disable() : this.formGroup.enable();
+  }
+
+  private minSelectedCheckboxes(min = 1): ValidatorFn {
+    const validator: ValidatorFn = (formGroup: FormGroup) => {
+      const totalSelected = Object.values(formGroup.controls).reduce(
+        (prev, next) => (next.value ? prev + next.value : prev),
+        0
+      );
+
+      return totalSelected >= min ? null : { required: true };
+    };
+
+    return validator;
   }
 }
