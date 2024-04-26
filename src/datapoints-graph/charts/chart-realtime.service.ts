@@ -118,19 +118,16 @@ export class ChartRealtimeService {
         __target: { id: '7713695199' },
         filters: { type: 'TestEvent' },
         color: '#08293F',
-        icon: 'warning',
       },
       {
         __target: { id: '7713695199' },
         filters: { type: 'AnotherEventType' },
         color: '#349EDF',
-        icon: 'warning',
       },
       {
         __target: { id: '352734984' },
         filters: { type: 'AnotherEventType' },
         color: '#349EDF',
-        icon: 'warning',
       },
     ]);
   }
