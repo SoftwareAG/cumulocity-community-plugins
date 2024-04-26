@@ -152,4 +152,52 @@
   </div>
 
   <!-- last column  -->
+  <div class="inner-scroll bg-gray-white">
+    <p
+      class="text-medium m-b-4 p-l-16 p-r-16 p-t-8 p-b-8 separator-bottom sticky-top text-truncate"
+      [title]="'Selected alarms' | translate"
+      translate
+    >
+      Selected alarms
+    </p>
+    <div class="d-flex flex-wrap gap-8 p-l-16 p-r-16 p-b-16">
+      <div
+        class="c8y-datapoint-pill"
+        *ngFor="let selectedAlarm of selectedAlarms"
+      >
+        <button
+          [title]="'Remove' | translate"
+          type="button"
+          class="c8y-datapoint-pill__btn"
+          (click)="alarmRemoved(selectedAlarm)"
+        >
+          <i c8yIcon="remove" class="icon-14"></i>
+        </button>
+        <div class="c8y-datapoint-pill__label" [title]="selectedAlarm.label">
+          <i
+            c8yIcon="circle"
+            class="m-r-4 icon-14"
+            [style.color]="selectedAlarm.color"
+          ></i>
+          <span class="text-truncate">
+            <span class="text-truncate">{{ selectedAlarm.label }}</span>
+            <small
+              class="text-muted text-10"
+              *ngIf="selectedAlarm?.__target?.name"
+            >
+              {{ selectedAlarm?.__target?.name }}
+            </small>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="p-16" *ngIf="!selectedAlarms || !selectedAlarms.length">
+      <div class="c8y-empty-state text-left">
+        <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+        <p>
+          <strong translate>No alarms selected.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
