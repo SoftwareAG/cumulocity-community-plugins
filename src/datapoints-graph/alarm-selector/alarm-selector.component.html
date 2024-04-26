@@ -28,6 +28,119 @@
     ></c8y-asset-selector-miller>
   </div>
   <!-- center column -->
+  <div class="inner-scroll bg-component">
+    <ng-template #noDeviceEmptyState>
+      <div class="p-16">
+        <div class="c8y-empty-state text-left">
+          <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+          <div>
+            <p>
+              <strong translate>No alarms to display.</strong>
+            </p>
+            <small translate>Select an asset from the list.</small>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #loadingData>
+      <div class="p-16 text-center">
+        <c8y-loading></c8y-loading>
+      </div>
+    </ng-template>
+
+    <div
+      *ngIf="assetSelection | async as asset; else noDeviceEmptyState"
+      class="bg-inherit"
+    >
+      <div
+        class="p-l-16 p-r-16 p-t-8 p-b-8 sticky-top bg-inherit separator-bottom"
+      >
+        <p
+          class="text-medium text-truncate"
+          [title]="'Available alarms' | translate"
+        >
+          {{ 'Available alarms' | translate }}
+        </p>
+        <div
+          *ngIf="!loadingAlarms"
+          id="search"
+          class="input-group input-group-search m-t-4"
+        >
+          <input
+            type="search"
+            class="form-control"
+            placeholder="Search…"
+            [ngModel]="searchString"
+            (ngModelChange)="searchStringChanged($event)"
+          />
+          <span class="input-group-addon">
+            <i
+              c8yIcon="search"
+              *ngIf="!searchString; else clearSearchString"
+            ></i>
+            <ng-template #clearSearchString>
+              <i
+                c8yIcon="times"
+                class="text-muted"
+                *ngIf="searchString"
+                (click)="searchStringChanged()"
+              ></i>
+            </ng-template>
+          </span>
+        </div>
+      </div>
+
+      <ng-container
+        *ngIf="filteredAlarms$ | async as filteredAlarms; else loadingData"
+      >
+        <ng-container *ngIf="!loadingAlarms; else loadingData">
+          <ng-container *ngIf="alarms$ | async as alarms">
+            <div class="p-16" *ngIf="!filteredAlarms.length">
+              <c8y-ui-empty-state
+                [icon]="'alarm'"
+                [title]="'No alarms to display.' | translate"
+                [subtitle]="
+                  alarms.length
+                    ? ('Try another search term.' | translate)
+                    : ('Select an asset with alarms from the list.' | translate)
+                "
+                [horizontal]="true"
+              ></c8y-ui-empty-state>
+            </div>
+
+            <c8y-list-group>
+              <c8y-list-item
+                *ngIf="
+                  alarms.length > maxNumberOfAlarms &&
+                  filteredAlarms.length >= maxNumberOfAlarms
+                "
+                class="sticky-top"
+                style="top: 72px"
+                translate
+              >
+                <div class="alert alert-warning m-b-0">
+                  {{
+                    'Due to the large number, only a subset of alarms are displayed. Use search to narrow down the number of results.'
+                      | translate
+                  }}
+                </div>
+              </c8y-list-item>
+              <c8y-alarm-selector-list-item
+                [ngModel]="alarm"
+                [isSelected]="selectedAlarms | includesAlarm : alarm"
+                (added)="alarmAdded($event)"
+                (removed)="alarmRemoved($event)"
+                [highlightText]="searchStringChanges$ | async"
+                class="d-contents"
+                *ngFor="let alarm of filteredAlarms; trackBy: trackByFn"
+              ></c8y-alarm-selector-list-item>
+            </c8y-list-group>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
 
   <!-- last column  -->
 </div>

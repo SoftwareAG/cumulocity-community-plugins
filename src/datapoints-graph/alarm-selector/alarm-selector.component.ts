@@ -18,6 +18,7 @@ import {
   tap,
 } from 'rxjs/operators';
 import { AlarmDetails } from './alarm-selector-modal/alarm-selector-modal.model';
+import { AlarmSelectorService } from './alarm-selector.service';
 
 @Component({
   selector: 'c8y-alarm-selector',
@@ -47,6 +48,8 @@ export class AlarmSelectorComponent implements OnInit {
   searchStringChanges$: Observable<string>;
 
   private searchString$ = new BehaviorSubject('');
+
+  constructor(private alarmSelectorService: AlarmSelectorService) {}
 
   ngOnInit(): void {
     this.setupObservables();
@@ -103,15 +106,8 @@ export class AlarmSelectorComponent implements OnInit {
       tap(() => {
         this.loadingAlarms = true;
       }),
-      switchMap(
-        (asset) => []
-        // TODO: get alarms for asset
-        // asset?.id
-        //   ? this.datapointService.getDatapointsOfAsset(
-        //       asset,
-        //       this.ignoreDatapointTemplates
-        //     )
-        //   : []
+      switchMap((asset) =>
+        asset?.id ? this.alarmSelectorService.getAlarmsOfAsset(asset) : []
       ),
       tap(() => (this.loadingAlarms = false)),
       shareReplay(1)

@@ -11,7 +11,7 @@ export type AlarmSelectorModalOptions = Pick<
 export type AlarmOrEvent = {
   timelineType: TimelineType;
   color: string;
-  __active: boolean;
+  __active?: boolean;
   label: string;
   filters: {
     type: string;

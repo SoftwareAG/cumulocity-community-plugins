@@ -9,6 +9,7 @@ import { AlarmAttributesFormComponent } from './alarm-attributes-form/alarm-attr
 import { AlarmSelectorModalComponent } from './alarm-selector-modal/alarm-selector-modal.component';
 import { AlarmSelectorComponent } from './alarm-selector.component';
 import { AssetSelectorModule } from '@c8y/ngx-components/assets-navigator';
+import { IncludesAlarmPipe } from './pipes/includes-alarm.pipe';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { AssetSelectorModule } from '@c8y/ngx-components/assets-navigator';
     AlarmAttributesFormComponent,
     AlarmSelectorModalComponent,
     AlarmSelectorComponent,
+    IncludesAlarmPipe,
   ],
   exports: [AlarmSelectionListComponent],
 })
