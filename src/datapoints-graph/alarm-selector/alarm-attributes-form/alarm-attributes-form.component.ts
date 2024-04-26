@@ -37,6 +37,7 @@ export class AlarmAttributesFormComponent
     this.formGroup = this.formBuilder.group({
       label: '',
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
+      timelineType: '',
     });
   }
 
