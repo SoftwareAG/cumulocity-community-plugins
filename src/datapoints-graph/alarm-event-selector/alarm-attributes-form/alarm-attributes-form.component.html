@@ -6,7 +6,14 @@
       name="label"
       formControlName="label"
       [placeholder]="
-        'e.g. {{ example }}' | translate : { example: 'c8y_LocationUpdate' }
+        'e.g. {{ example }}'
+          | translate
+            : {
+                example:
+                  timelineType === 'ALARM'
+                    ? 'c8y_UnavailabilityAlarm'
+                    : 'c8y_LocationUpdate'
+              }
       "
     />
   </c8y-form-group>
@@ -19,13 +26,24 @@
         name="type"
         formControlName="type"
         [placeholder]="
-          'e.g. {{ example }}' | translate : { example: 'c8y_LocationUpdate' }
+          'e.g. {{ example }}'
+            | translate
+              : {
+                  example:
+                    timelineType === 'ALARM'
+                      ? 'c8y_UnavailabilityAlarm'
+                      : 'c8y_LocationUpdate'
+                }
         "
       />
     </c8y-form-group>
   </div>
 
-  <fieldset class="c8y-fieldset" formArrayName="severities">
+  <fieldset
+    class="c8y-fieldset"
+    formArrayName="severities"
+    *ngIf="formGroup.controls.severities"
+  >
     <legend>{{ 'Severities' | translate }}</legend>
     <c8y-form-group
       [hasError]="formGroup.controls.severities.hasError('required')"

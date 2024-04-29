@@ -107,8 +107,8 @@ export class DatapointsGraphWidgetConfigComponent
     if (this.formGroup.valid) {
       Object.assign(config, omit(this.formGroup.value, ['alarms', 'events']), {
         alarmsEventsConfigs: [
-          ...this.formGroup.value.alarms,
-          ...this.formGroup.value.events,
+          ...(this.formGroup.value.alarms || []),
+          ...(this.formGroup.value.events || []),
         ],
       });
 
@@ -169,6 +169,11 @@ export class DatapointsGraphWidgetConfigComponent
     this.formGroup.controls.alarms.setValue(
       this.config?.alarmsEventsConfigs?.filter(
         (ae) => ae.timelineType === 'ALARM'
+      )
+    );
+    this.formGroup.controls.events.setValue(
+      this.config?.alarmsEventsConfigs?.filter(
+        (ae) => ae.timelineType === 'EVENT'
       )
     );
 

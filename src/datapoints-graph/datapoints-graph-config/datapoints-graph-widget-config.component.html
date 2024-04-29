@@ -86,11 +86,19 @@
         name="datapoints"
       ></c8y-datapoint-selection-list>
 
-      <c8y-alarm-selection-list
+      <c8y-alarm-event-selection-list
         formControlName="alarms"
         name="alarms"
         class="bg-inherit"
-      ></c8y-alarm-selection-list>
+        [listType]="'ALARM'"
+      ></c8y-alarm-event-selection-list>
+
+      <c8y-alarm-event-selection-list
+        formControlName="events"
+        name="events"
+        class="bg-inherit"
+        [listType]="'EVENT'"
+      ></c8y-alarm-event-selection-list>
     </form>
   </div>
 

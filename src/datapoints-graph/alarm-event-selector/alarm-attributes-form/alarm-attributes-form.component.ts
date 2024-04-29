@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -15,7 +15,8 @@ import { take } from 'rxjs/operators';
 import {
   DEFAULT_SEVERITY_VALUES,
   SEVERITY_LABELS,
-} from '../alarm-selector-modal/alarm-selector-modal.model';
+  TimelineType,
+} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
 
 @Component({
   selector: 'c8y-alarm-attributes-form',
@@ -34,21 +35,29 @@ import {
   ],
 })
 export class AlarmAttributesFormComponent
-  implements ControlValueAccessor, Validator
+  implements ControlValueAccessor, Validator, OnInit
 {
+  @Input() timelineType: TimelineType;
   formGroup: FormGroup;
   severityList = Object.keys(SEVERITY_LABELS);
   readonly SEVERITY_LABELS = SEVERITY_LABELS;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {}
+
+  ngOnInit() {
     this.formGroup = this.formBuilder.group({
       label: '',
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
       timelineType: '',
-      severities: this.formBuilder.group(DEFAULT_SEVERITY_VALUES, {
-        validators: this.minSelectedCheckboxes(1),
-      }),
     });
+    if (this.timelineType === 'ALARM') {
+      this.formGroup.addControl(
+        'severities',
+        this.formBuilder.group(DEFAULT_SEVERITY_VALUES, {
+          validators: this.minSelectedCheckboxes(1),
+        })
+      );
+    }
   }
 
   validate(_control: AbstractControl): ValidationErrors {

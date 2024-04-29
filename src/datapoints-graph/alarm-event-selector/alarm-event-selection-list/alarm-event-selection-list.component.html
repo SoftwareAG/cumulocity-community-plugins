@@ -3,7 +3,7 @@
     listTitle | translate
   }}</span>
   <span *ngIf="!listTitle" class="card-title h4">{{
-    'Alarms' | translate
+    timelineTypeTexts.listTitle | translate
   }}</span>
 </div>
 
@@ -13,28 +13,27 @@
   (cdkDropListDropped)="drop($event)"
   [cdkDropListDisabled]="!allowDragAndDrop || formArray.controls?.length < 2"
 >
-  <ng-content select=".alert"></ng-content>
-
   <div class="p-t-8" *ngIf="!formArray.controls?.length">
     <c8y-ui-empty-state
-      [icon]="'c8y-alarm'"
-      [title]="'No alarms to display.' | translate"
-      [subtitle]="'Add your first alarm.' | translate"
+      [icon]="timelineTypeTexts.emptyStateIcon"
+      [title]="timelineTypeTexts.emptyStateTitle | translate"
+      [subtitle]="timelineTypeTexts.emptyStateSubtitle | translate"
       [horizontal]="true"
       class="p-t-8"
     ></c8y-ui-empty-state>
   </div>
   <div
-    *ngFor="let alarmForm of formArray.controls; let index = index"
-    [formGroup]="alarmForm"
+    *ngFor="let itemForm of formArray.controls; let index = index"
+    [formGroup]="itemForm"
   >
-    <c8y-alarm-selector-list-item
+    <c8y-alarm-event-selector-list-item
       class="d-block"
       cdkDrag
       formControlName="details"
       [showAddRemoveButton]="false"
       [optionToRemove]="true"
       [showActiveToggle]="true"
+      [timelineType]="listType"
       (removed)="onItemRemoved(index)"
     >
       <c8y-li-drag-handle
@@ -43,18 +42,18 @@
       >
         <i c8yIcon="drag-reorder"></i>
       </c8y-li-drag-handle>
-    </c8y-alarm-selector-list-item>
+    </c8y-alarm-event-selector-list-item>
   </div>
 </c8y-list-group>
 
 <div class="card-footer bg-inherit">
   <button
-    [title]="'Add alarm' | translate"
+    [title]="timelineTypeTexts.addButtonLabel | translate"
     type="button"
     class="btn btn-default btn-sm"
     (click)="add()"
   >
     <i c8yIcon="plus-circle"></i>
-    {{ 'Add alarm' | translate }}
+    {{ timelineTypeTexts.addButtonLabel | translate }}
   </button>
 </div>

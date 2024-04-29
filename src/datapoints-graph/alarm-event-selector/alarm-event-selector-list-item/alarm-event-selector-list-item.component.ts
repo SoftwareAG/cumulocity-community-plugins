@@ -18,29 +18,33 @@ import {
   Validator,
 } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
-import { AlarmDetails } from '../alarm-selector-modal/alarm-selector-modal.model';
+import {
+  AlarmOrEvent,
+  TimelineType,
+} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
 import { map, startWith, take } from 'rxjs/operators';
 import { ListItemComponent } from '@c8y/ngx-components';
 
 @Component({
-  selector: 'c8y-alarm-selector-list-item',
-  templateUrl: './alarm-selector-list-item.component.html',
+  selector: 'c8y-alarm-event-selector-list-item',
+  templateUrl: './alarm-event-selector-list-item.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => AlarmSelectorListItemComponent),
+      useExisting: forwardRef(() => AlarmEventSelectorListItemComponent),
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => AlarmSelectorListItemComponent),
+      useExisting: forwardRef(() => AlarmEventSelectorListItemComponent),
       multi: true,
     },
   ],
 })
-export class AlarmSelectorListItemComponent
+export class AlarmEventSelectorListItemComponent
   implements ControlValueAccessor, Validator, AfterViewInit
 {
+  @Input() timelineType: TimelineType;
   @Input() highlightText: string;
   @Input() showAddRemoveButton = true;
   @Input() isSelected = false;
@@ -48,8 +52,8 @@ export class AlarmSelectorListItemComponent
   @Input() showActiveToggle = false;
   @Input() isCollapsed = true;
 
-  @Output() added = new EventEmitter<AlarmDetails>();
-  @Output() removed = new EventEmitter<AlarmDetails>();
+  @Output() added = new EventEmitter<AlarmOrEvent>();
+  @Output() removed = new EventEmitter<AlarmOrEvent>();
 
   @ViewChild('li', { static: true }) listItem: ListItemComponent;
 

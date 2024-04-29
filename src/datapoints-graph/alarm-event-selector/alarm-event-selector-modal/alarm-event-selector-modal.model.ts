@@ -1,15 +1,21 @@
 import { IIdentified } from '@c8y/client';
-import { AlarmSelectorModalComponent } from './alarm-selector-modal.component';
+import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal.component';
 import { gettext } from '@c8y/ngx-components';
 
 export type TimelineType = 'ALARM' | 'EVENT';
 
-export type AlarmSelectorModalOptions = Pick<
-  AlarmSelectorModalComponent,
-  'contextAsset' | 'allowChangingContext' | 'selectedAlarms' | 'allowSearch'
+export type AlarmEventSelectorModalOptions = Pick<
+  AlarmEventSelectorModalComponent,
+  | 'selectType'
+  | 'contextAsset'
+  | 'allowChangingContext'
+  | 'selectedItems'
+  | 'allowSearch'
+  | 'title'
+  | 'saveButtonLabel'
 >;
 
-export type AlarmOrEvent = {
+type AlarmOrEventBase = {
   timelineType: TimelineType;
   color: string;
   __active?: boolean;
@@ -20,20 +26,22 @@ export type AlarmOrEvent = {
   __target: IIdentified;
 };
 
-export type AlarmDetails = AlarmOrEvent & {
+export type AlarmDetails = AlarmOrEventBase & {
   timelineType: 'ALARM';
   filters: {
     type: string;
-    severities: Record<keyof typeof SEVERITY_VALUES, boolean>;
+    severities?: Record<keyof typeof SEVERITY_VALUES, boolean>;
   };
 };
 
-export type EventDetails = AlarmOrEvent & {
+export type EventDetails = AlarmOrEventBase & {
   timelineType: 'EVENT';
   filters: {
     type: string;
   };
 };
+
+export type AlarmOrEvent = AlarmDetails | EventDetails;
 
 export const SEVERITY_VALUES = {
   CRITICAL: 'CRITICAL',

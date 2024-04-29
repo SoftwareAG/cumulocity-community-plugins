@@ -11,7 +11,7 @@ import type {
   LineSeriesOption,
   ScatterSeriesOption,
 } from 'echarts';
-import { AlarmOrEvent } from '../alarm-selector/alarm-selector-modal/alarm-selector-modal.model';
+import { AlarmOrEvent } from '../alarm-event-selector/alarm-event-selector-modal/alarm-event-selector-modal.model';
 
 export type DatapointsGraphKPIDetails = KPIDetails & {
   lineType?: DatapointLineType;

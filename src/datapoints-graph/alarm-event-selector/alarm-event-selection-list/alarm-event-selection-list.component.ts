@@ -15,48 +15,51 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
-  ValidatorFn,
 } from '@angular/forms';
 import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import {
-  AlarmDetails,
-  AlarmSelectorModalOptions,
-} from '../alarm-selector-modal/alarm-selector-modal.model';
-import { AlarmSelectorService } from '../alarm-selector.service';
+import { AlarmEventSelectorService } from '../alarm-event-selector.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  AlarmEventSelectorModalOptions,
+  AlarmOrEvent,
+  TimelineType,
+} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
+import { gettext } from '@c8y/ngx-components';
 
 @Component({
-  selector: 'c8y-alarm-selection-list',
-  templateUrl: './alarm-selection-list.component.html',
+  selector: 'c8y-alarm-event-selection-list',
+  templateUrl: './alarm-event-selection-list.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => AlarmSelectionListComponent),
+      useExisting: forwardRef(() => AlarmEventSelectionListComponent),
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => AlarmSelectionListComponent),
+      useExisting: forwardRef(() => AlarmEventSelectionListComponent),
       multi: true,
     },
   ],
 })
-export class AlarmSelectionListComponent
+export class AlarmEventSelectionListComponent
   implements ControlValueAccessor, Validator, OnInit
 {
+  @Input() listType: TimelineType = 'ALARM';
   @Input() allowDragAndDrop = true;
-  @Input() config: Partial<AlarmSelectorModalOptions> = {};
-  @Input() defaultFormOptions: Partial<AlarmSelectorModalOptions> = {};
+  @Input() config: Partial<AlarmEventSelectorModalOptions> = {};
+  @Input() defaultFormOptions: Partial<AlarmEventSelectorModalOptions> = {};
   @Input() resolveContext = true;
   @Input() listTitle = '';
   formArray: FormArray;
+  timelineTypeTexts: ReturnType<AlarmEventSelectorService['timelineTypeTexts']>;
 
   @Output() isValid: Observable<boolean>;
 
   constructor(
-    private alarmSelector: AlarmSelectorService,
+    private alarmEventSelectService: AlarmEventSelectorService,
     private formBuilder: FormBuilder,
     @Optional() private widgetComponent: WidgetConfigComponent
   ) {
@@ -75,6 +78,9 @@ export class AlarmSelectionListComponent
   }
 
   ngOnInit(): void {
+    this.timelineTypeTexts = this.alarmEventSelectService.timelineTypeTexts(
+      this.listType
+    );
     const context = this.widgetComponent?.context;
     if (context?.id && this.resolveContext) {
       const { name, id, c8y_IsDevice } = context;
@@ -82,7 +88,7 @@ export class AlarmSelectionListComponent
     }
   }
 
-  writeValue(val: AlarmDetails[]): void {
+  writeValue(val: AlarmOrEvent[]): void {
     this.formArray.clear();
     if (val?.length) {
       val.forEach((val) => {
@@ -103,12 +109,15 @@ export class AlarmSelectionListComponent
     const allowChangingContext =
       !this.widgetComponent?.isDeviceTypeDashboard &&
       this.config?.allowChangingContext !== false;
-    this.alarmSelector
-      .selectAlarms({
+    this.alarmEventSelectService
+      .selectItems({
         ...(this.config || {}),
         allowChangingContext,
-        selectedAlarms: this.transformValue(this.formArray.value),
+        selectType: this.listType,
+        selectedItems: this.transformValue(this.formArray.value),
         allowSearch: !this.config?.contextAsset,
+        title: this.timelineTypeTexts.selectorTitle,
+        saveButtonLabel: this.timelineTypeTexts.addButtonLabel,
       })
       .then(
         (result) => {
@@ -124,7 +133,7 @@ export class AlarmSelectionListComponent
     this.formArray.removeAt(index);
   }
 
-  drop(event: CdkDragDrop<AlarmDetails[]>) {
+  drop(event: CdkDragDrop<AlarmOrEvent[]>) {
     const currentSorting = this.formArray.value;
     moveItemInArray(currentSorting, event.previousIndex, event.currentIndex);
     this.formArray.setValue(currentSorting);

@@ -19,62 +19,69 @@ import {
 } from 'rxjs/operators';
 import {
   AlarmDetails,
+  AlarmOrEvent,
   DEFAULT_SEVERITY_VALUES,
-} from './alarm-selector-modal/alarm-selector-modal.model';
-import { AlarmSelectorService } from './alarm-selector.service';
-import { ColorService } from '@c8y/ngx-components';
+  TimelineType,
+} from './alarm-event-selector-modal/alarm-event-selector-modal.model';
+import { AlarmEventSelectorService } from './alarm-event-selector.service';
+import { ColorService, gettext } from '@c8y/ngx-components';
 
 @Component({
-  selector: 'c8y-alarm-selector',
-  templateUrl: './alarm-selector.component.html',
+  selector: 'c8y-alarm-event-selector',
+  templateUrl: './alarm-event-selector.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => AlarmSelectorComponent),
+      useExisting: forwardRef(() => AlarmEventSelectorComponent),
     },
   ],
 })
-export class AlarmSelectorComponent implements OnInit {
+export class AlarmEventSelectorComponent implements OnInit {
+  @Input() selectType: TimelineType = 'ALARM';
   @Input() contextAsset: IIdentified;
   @Input() allowChangingContext = true;
-  @Input() selectedAlarms = new Array<AlarmDetails>();
+  @Input() selectedItems = new Array<AlarmOrEvent>();
   @Input() allowSearch = true;
   @Input() defaultActiveState = true;
-  @Output() selectionChange = new EventEmitter<AlarmDetails[]>();
+  @Output() selectionChange = new EventEmitter<AlarmOrEvent[]>();
   searchString = '';
-  maxNumberOfAlarms = 50;
+  maxNumberOfItems = 50;
 
-  loadingAlarms = false;
+  loadingItems = false;
   assetSelection = new BehaviorSubject<IIdentified>(null);
-  alarms$: Observable<AlarmDetails[]>;
-  filteredAlarms$: Observable<AlarmDetails[]>;
+  items$: Observable<AlarmOrEvent[]>;
+  filteredItems$: Observable<AlarmOrEvent[]>;
   searchStringChanges$: Observable<string>;
-  blankAlarm: AlarmDetails;
-
+  blankItem: AlarmOrEvent;
+  timelineTypeTexts: ReturnType<AlarmEventSelectorService['timelineTypeTexts']>;
   private searchString$ = new BehaviorSubject('');
 
   constructor(
-    private alarmSelectorService: AlarmSelectorService,
+    private alarmEventSelectorService: AlarmEventSelectorService,
     private color: ColorService
   ) {}
 
-  ngOnInit(): void {
-    this.setupObservables();
+  async ngOnInit(): Promise<void> {
+    this.timelineTypeTexts = this.alarmEventSelectorService.timelineTypeTexts(
+      this.selectType
+    );
+
+    await this.setupObservables();
 
     if (this.contextAsset) {
       this.selectionChanged(this.contextAsset);
     }
   }
 
-  alarmAdded(alarm: AlarmDetails): void {
-    alarm.__active = this.defaultActiveState;
-    this.selectedAlarms = [...this.selectedAlarms, alarm];
+  itemAdded(item: AlarmOrEvent): void {
+    item.__active = this.defaultActiveState;
+    this.selectedItems = [...this.selectedItems, item];
     this.emitCurrentSelection();
   }
 
-  alarmRemoved(alarm: AlarmDetails): void {
-    this.selectedAlarms = this.selectedAlarms.filter(
+  itemRemoved(alarm: AlarmOrEvent): void {
+    this.selectedItems = this.selectedItems.filter(
       (tmp) =>
         tmp.label !== alarm.label ||
         tmp.filters.type !== alarm.filters.type ||
@@ -100,7 +107,7 @@ export class AlarmSelectorComponent implements OnInit {
     this.assetSelection.next(null);
   }
 
-  trackByFn(_index: number, item: AlarmDetails): string {
+  trackByFn(_index: number, item: AlarmOrEvent): string {
     return `${item.filters.type}-${item.__target?.id}`;
   }
 
@@ -110,29 +117,23 @@ export class AlarmSelectorComponent implements OnInit {
   }
 
   private async setupObservables(): Promise<void> {
-    const blankAlarmColor = await this.color.generateColor(null);
-    this.alarms$ = this.assetSelection.pipe(
+    const blankItemColor = await this.color.generateColor(null);
+    this.items$ = this.assetSelection.pipe(
       tap(() => {
-        this.loadingAlarms = true;
+        this.loadingItems = true;
       }),
       tap((asset) => {
-        this.blankAlarm = asset
-          ? {
-              timelineType: 'ALARM',
-              color: blankAlarmColor,
-              label: '',
-              filters: {
-                type: '',
-                severities: DEFAULT_SEVERITY_VALUES,
-              },
-              __target: asset,
-            }
-          : null;
+        this.blankItem = this.getBlankItem(asset, blankItemColor);
       }),
       switchMap((asset) =>
-        asset?.id ? this.alarmSelectorService.getAlarmsOfAsset(asset) : []
+        asset?.id
+          ? this.alarmEventSelectorService.getItemsOfAsset(
+              asset,
+              this.selectType
+            )
+          : []
       ),
-      tap(() => (this.loadingAlarms = false)),
+      tap(() => (this.loadingItems = false)),
       shareReplay(1)
     );
 
@@ -142,20 +143,20 @@ export class AlarmSelectorComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.filteredAlarms$ = combineLatest([
+    this.filteredItems$ = combineLatest([
       this.searchStringChanges$,
-      this.alarms$,
+      this.items$,
     ]).pipe(
-      map(([searchString, alarms]) => {
+      map(([searchString, items]) => {
         if (!searchString) {
-          return alarms;
+          return items;
         }
         const lowerCaseSearchString = searchString.toLowerCase();
-        return alarms.filter((alarm) =>
-          this.includesSearchString(alarm, lowerCaseSearchString)
+        return items.filter((item) =>
+          this.includesSearchString(item, lowerCaseSearchString)
         );
       }),
-      map((filtered) => filtered.slice(0, this.maxNumberOfAlarms))
+      map((filtered) => filtered.slice(0, this.maxNumberOfItems))
     );
   }
 
@@ -164,17 +165,12 @@ export class AlarmSelectorComponent implements OnInit {
     this.searchStringChanged();
   }
 
-  private clearSelection(): void {
-    this.selectedAlarms = [];
-    this.emitCurrentSelection();
-  }
-
   private emitCurrentSelection() {
-    this.selectionChange.emit(this.selectedAlarms);
+    this.selectionChange.emit(this.selectedItems);
   }
 
   private includesSearchString(
-    alarm: AlarmDetails,
+    alarm: AlarmOrEvent,
     lowerCaseSearchString: string
   ): boolean {
     const label = alarm.label?.toLowerCase();
@@ -188,5 +184,35 @@ export class AlarmSelectorComponent implements OnInit {
     }
 
     return false;
+  }
+
+  private getBlankItem(
+    asset: IIdentified,
+    blankItemColor: string
+  ): AlarmOrEvent {
+    if (!asset) {
+      return null;
+    } else if (this.selectType === 'ALARM') {
+      return {
+        timelineType: 'ALARM',
+        color: blankItemColor,
+        label: '',
+        filters: {
+          type: '',
+          severities: DEFAULT_SEVERITY_VALUES,
+        },
+        __target: asset,
+      };
+    } else {
+      return {
+        timelineType: 'EVENT',
+        color: blankItemColor,
+        label: '',
+        filters: {
+          type: '',
+        },
+        __target: asset,
+      };
+    }
   }
 }

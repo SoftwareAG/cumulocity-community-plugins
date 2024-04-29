@@ -6,7 +6,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector';
 import { TimeControlsModule } from '../time-controls';
-import { AlarmSelectorModule } from '../alarm-selector/alarm-selector.module';
+import { AlarmEventSelectorModule } from '../alarm-event-selector/alarm-event-selector.module';
 
 @NgModule({
   imports: [
@@ -18,7 +18,7 @@ import { AlarmSelectorModule } from '../alarm-selector/alarm-selector.module';
     FormsModule,
     DatapointSelectorModule,
     TimeControlsModule,
-    AlarmSelectorModule,
+    AlarmEventSelectorModule,
   ],
   declarations: [DatapointsGraphWidgetConfigComponent],
 })

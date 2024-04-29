@@ -35,7 +35,7 @@
           <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
           <div>
             <p>
-              <strong translate>No alarms to display.</strong>
+              <strong translate>{{ timelineTypeTexts.emptyStateTitle }}</strong>
             </p>
             <small translate>Select an asset from the list.</small>
           </div>
@@ -58,12 +58,12 @@
       >
         <p
           class="text-medium text-truncate"
-          [title]="'Available alarms' | translate"
+          [title]="timelineTypeTexts.availableItemsTitle | translate"
         >
-          {{ 'Available alarms' | translate }}
+          {{ timelineTypeTexts.availableItemsTitle | translate }}
         </p>
         <div
-          *ngIf="!loadingAlarms"
+          *ngIf="!loadingItems"
           id="search"
           class="input-group input-group-search m-t-4"
         >
@@ -92,18 +92,19 @@
       </div>
 
       <ng-container
-        *ngIf="filteredAlarms$ | async as filteredAlarms; else loadingData"
+        *ngIf="filteredItems$ | async as filteredItems; else loadingData"
       >
-        <ng-container *ngIf="!loadingAlarms; else loadingData">
-          <ng-container *ngIf="alarms$ | async as alarms">
-            <div class="p-16" *ngIf="!filteredAlarms.length">
+        <ng-container *ngIf="!loadingItems; else loadingData">
+          <ng-container *ngIf="items$ | async as items">
+            <div class="p-16" *ngIf="!filteredItems.length">
               <c8y-ui-empty-state
-                [icon]="'alarm'"
-                [title]="'No alarms to display.' | translate"
+                [icon]="timelineTypeTexts.emptyStateIcon"
+                [title]="timelineTypeTexts.emptyStateTitle | translate"
                 [subtitle]="
-                  alarms.length
+                  items.length
                     ? ('Try another search term.' | translate)
-                    : ('Select an asset with alarms from the list.' | translate)
+                    : (timelineTypeTexts.assetWithNoItemsEmptyStateSubtitle
+                      | translate)
                 "
                 [horizontal]="true"
               ></c8y-ui-empty-state>
@@ -112,38 +113,37 @@
             <c8y-list-group>
               <c8y-list-item
                 *ngIf="
-                  alarms.length > maxNumberOfAlarms &&
-                  filteredAlarms.length >= maxNumberOfAlarms
+                  items.length > maxNumberOfItems &&
+                  filteredItems.length >= maxNumberOfItems
                 "
                 class="sticky-top"
                 style="top: 72px"
                 translate
               >
                 <div class="alert alert-warning m-b-0">
-                  {{
-                    'Due to the large number, only a subset of alarms are displayed. Use search to narrow down the number of results.'
-                      | translate
-                  }}
+                  {{ timelineTypeTexts.largeNumberOfItemsInfo | translate }}
                 </div>
               </c8y-list-item>
-              <c8y-alarm-selector-list-item
-                [ngModel]="alarm"
-                [isSelected]="selectedAlarms | includesAlarm : alarm"
-                (added)="alarmAdded($event)"
-                (removed)="alarmRemoved($event)"
+              <c8y-alarm-event-selector-list-item
+                [ngModel]="item"
+                [isSelected]="selectedItems | includesAlarmOrEvent : item"
+                (added)="itemAdded($event)"
+                (removed)="itemRemoved($event)"
                 [highlightText]="searchStringChanges$ | async"
+                [timelineType]="selectType"
                 class="d-contents"
-                *ngFor="let alarm of filteredAlarms; trackBy: trackByFn"
-              ></c8y-alarm-selector-list-item>
+                *ngFor="let item of filteredItems; trackBy: trackByFn"
+              ></c8y-alarm-event-selector-list-item>
 
-              <c8y-alarm-selector-list-item
-                [(ngModel)]="blankAlarm"
-                [isSelected]="selectedAlarms | includesAlarm : blankAlarm"
+              <c8y-alarm-event-selector-list-item
+                [(ngModel)]="blankItem"
+                [isSelected]="selectedItems | includesAlarmOrEvent : blankItem"
                 [isCollapsed]="false"
-                (added)="alarmAdded($event)"
-                (removed)="alarmRemoved($event)"
+                [timelineType]="selectType"
+                (added)="itemAdded($event)"
+                (removed)="itemRemoved($event)"
                 class="d-contents"
-              ></c8y-alarm-selector-list-item>
+              ></c8y-alarm-event-selector-list-item>
             </c8y-list-group>
           </ng-container>
         </ng-container>
@@ -155,47 +155,48 @@
   <div class="inner-scroll bg-gray-white">
     <p
       class="text-medium m-b-4 p-l-16 p-r-16 p-t-8 p-b-8 separator-bottom sticky-top text-truncate"
-      [title]="'Selected alarms' | translate"
-      translate
+      [title]="timelineTypeTexts.selectedItemsTitle | translate"
     >
-      Selected alarms
+      {{ timelineTypeTexts.selectedItemsTitle | translate }}
     </p>
     <div class="d-flex flex-wrap gap-8 p-l-16 p-r-16 p-b-16">
       <div
         class="c8y-datapoint-pill"
-        *ngFor="let selectedAlarm of selectedAlarms"
+        *ngFor="let selectedItem of selectedItems"
       >
         <button
           [title]="'Remove' | translate"
           type="button"
           class="c8y-datapoint-pill__btn"
-          (click)="alarmRemoved(selectedAlarm)"
+          (click)="itemRemoved(selectedItem)"
         >
           <i c8yIcon="remove" class="icon-14"></i>
         </button>
-        <div class="c8y-datapoint-pill__label" [title]="selectedAlarm.label">
+        <div class="c8y-datapoint-pill__label" [title]="selectedItem.label">
           <i
             c8yIcon="circle"
             class="m-r-4 icon-14"
-            [style.color]="selectedAlarm.color"
+            [style.color]="selectedItem.color"
           ></i>
           <span class="text-truncate">
-            <span class="text-truncate">{{ selectedAlarm.label }}</span>
+            <span class="text-truncate">{{ selectedItem.label }}</span>
             <small
               class="text-muted text-10"
-              *ngIf="selectedAlarm?.__target?.name"
+              *ngIf="selectedItem?.__target?.name"
             >
-              {{ selectedAlarm?.__target?.name }}
+              {{ selectedItem?.__target?.name }}
             </small>
           </span>
         </div>
       </div>
     </div>
-    <div class="p-16" *ngIf="!selectedAlarms || !selectedAlarms.length">
+    <div class="p-16" *ngIf="!selectedItems || !selectedItems.length">
       <div class="c8y-empty-state text-left">
         <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
         <p>
-          <strong translate>No alarms selected.</strong>
+          <strong>{{
+            timelineTypeTexts.noSelectedItemsTitle | translate
+          }}</strong>
         </p>
       </div>
     </div>
