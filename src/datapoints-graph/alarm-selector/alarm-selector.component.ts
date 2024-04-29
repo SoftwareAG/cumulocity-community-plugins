@@ -17,7 +17,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { AlarmDetails } from './alarm-selector-modal/alarm-selector-modal.model';
+import {
+  AlarmDetails,
+  DEFAULT_SEVERITY_VALUES,
+} from './alarm-selector-modal/alarm-selector-modal.model';
 import { AlarmSelectorService } from './alarm-selector.service';
 import { ColorService } from '@c8y/ngx-components';
 
@@ -120,6 +123,7 @@ export class AlarmSelectorComponent implements OnInit {
               label: '',
               filters: {
                 type: '',
+                severities: DEFAULT_SEVERITY_VALUES,
               },
               __target: asset,
             }
