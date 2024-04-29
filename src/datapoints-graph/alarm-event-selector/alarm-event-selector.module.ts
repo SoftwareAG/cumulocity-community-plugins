@@ -5,7 +5,7 @@ import { CoreModule } from '@c8y/ngx-components';
 import { AlarmEventSelectorListItemComponent } from './alarm-event-selector-list-item/alarm-event-selector-list-item.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { AlarmAttributesFormComponent } from './alarm-attributes-form/alarm-attributes-form.component';
+import { AlarmEventAttributesFormComponent } from './alarm-event-attributes-form/alarm-event-attributes-form.component';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 import { AlarmEventSelectorComponent } from './alarm-event-selector.component';
 import { AssetSelectorModule } from '@c8y/ngx-components/assets-navigator';
@@ -23,7 +23,7 @@ import { SeverityIconPipe } from './pipes/severity-icon.pipe';
   declarations: [
     AlarmEventSelectionListComponent,
     AlarmEventSelectorListItemComponent,
-    AlarmAttributesFormComponent,
+    AlarmEventAttributesFormComponent,
     AlarmEventSelectorModalComponent,
     AlarmEventSelectorComponent,
     IncludesAlarmOrEventPipe,

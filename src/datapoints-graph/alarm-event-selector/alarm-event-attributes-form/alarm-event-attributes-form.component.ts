@@ -19,22 +19,22 @@ import {
 } from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
 
 @Component({
-  selector: 'c8y-alarm-attributes-form',
-  templateUrl: './alarm-attributes-form.component.html',
+  selector: 'c8y-alarm-event-attributes-form',
+  templateUrl: './alarm-event-attributes-form.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => AlarmAttributesFormComponent),
+      useExisting: forwardRef(() => AlarmEventAttributesFormComponent),
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => AlarmAttributesFormComponent),
+      useExisting: forwardRef(() => AlarmEventAttributesFormComponent),
       multi: true,
     },
   ],
 })
-export class AlarmAttributesFormComponent
+export class AlarmEventAttributesFormComponent
   implements ControlValueAccessor, Validator, OnInit
 {
   @Input() timelineType: TimelineType;
