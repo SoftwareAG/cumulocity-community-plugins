@@ -176,11 +176,6 @@ export class DatapointsGraphWidgetConfigComponent
         (ae) => ae.timelineType === 'EVENT'
       )
     );
-
-    // TODO: remove
-    this.formGroup.valueChanges.subscribe((val) => {
-      console.log(val);
-    });
   }
 
   private initDateSelection(): void {

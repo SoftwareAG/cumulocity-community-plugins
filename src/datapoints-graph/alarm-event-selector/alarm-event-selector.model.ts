@@ -1,6 +1,6 @@
 import { IIdentified } from '@c8y/client';
-import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal.component';
 import { gettext } from '@c8y/ngx-components';
+import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 
 export type TimelineType = 'ALARM' | 'EVENT';
 

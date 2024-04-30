@@ -130,7 +130,7 @@
                 (added)="itemAdded($event)"
                 (removed)="itemRemoved($event)"
                 [highlightText]="searchStringChanges$ | async"
-                [timelineType]="selectType"
+                [timelineType]="timelineType"
                 class="d-contents"
                 *ngFor="let item of filteredItems; trackBy: trackByFn"
               ></c8y-alarm-event-selector-list-item>
@@ -139,7 +139,7 @@
                 [(ngModel)]="blankItem"
                 [isSelected]="selectedItems | includesAlarmOrEvent : blankItem"
                 [isCollapsed]="false"
-                [timelineType]="selectType"
+                [timelineType]="timelineType"
                 (added)="itemAdded($event)"
                 (removed)="itemRemoved($event)"
                 class="d-contents"

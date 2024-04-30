@@ -16,7 +16,7 @@ import {
   DEFAULT_SEVERITY_VALUES,
   SEVERITY_LABELS,
   TimelineType,
-} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
+} from '../alarm-event-selector.model';
 
 @Component({
   selector: 'c8y-alarm-event-attributes-form',

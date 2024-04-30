@@ -1,11 +1,4 @@
-import {
-  Component,
-  forwardRef,
-  Input,
-  OnInit,
-  Optional,
-  Output,
-} from '@angular/core';
+import { Component, forwardRef, Input, OnInit, Optional } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -17,7 +10,6 @@ import {
   Validator,
 } from '@angular/forms';
 import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
-import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AlarmEventSelectorService } from '../alarm-event-selector.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -25,8 +17,7 @@ import {
   AlarmEventSelectorModalOptions,
   AlarmOrEvent,
   TimelineType,
-} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
-import { gettext } from '@c8y/ngx-components';
+} from '../alarm-event-selector.model';
 
 @Component({
   selector: 'c8y-alarm-event-selection-list',
@@ -47,16 +38,11 @@ import { gettext } from '@c8y/ngx-components';
 export class AlarmEventSelectionListComponent
   implements ControlValueAccessor, Validator, OnInit
 {
-  @Input() listType: TimelineType = 'ALARM';
-  @Input() allowDragAndDrop = true;
+  @Input() timelineType: TimelineType = 'ALARM';
   @Input() config: Partial<AlarmEventSelectorModalOptions> = {};
-  @Input() defaultFormOptions: Partial<AlarmEventSelectorModalOptions> = {};
-  @Input() resolveContext = true;
-  @Input() listTitle = '';
+
   formArray: FormArray;
   timelineTypeTexts: ReturnType<AlarmEventSelectorService['timelineTypeTexts']>;
-
-  @Output() isValid: Observable<boolean>;
 
   constructor(
     private alarmEventSelectService: AlarmEventSelectorService,
@@ -64,9 +50,17 @@ export class AlarmEventSelectionListComponent
     @Optional() private widgetComponent: WidgetConfigComponent
   ) {
     this.formArray = this.formBuilder.array([]);
-    this.isValid = this.formArray.statusChanges.pipe(
-      map((status) => status === 'VALID')
+  }
+
+  ngOnInit(): void {
+    this.timelineTypeTexts = this.alarmEventSelectService.timelineTypeTexts(
+      this.timelineType
     );
+    const context = this.widgetComponent?.context;
+    if (context?.id) {
+      const { name, id, c8y_IsDevice } = context;
+      this.config.contextAsset = { name, id, c8y_IsDevice };
+    }
   }
 
   registerOnTouched(fn: any): void {
@@ -75,17 +69,6 @@ export class AlarmEventSelectionListComponent
 
   validate(_control: AbstractControl): ValidationErrors {
     return this.formArray.valid ? null : { formInvalid: {} };
-  }
-
-  ngOnInit(): void {
-    this.timelineTypeTexts = this.alarmEventSelectService.timelineTypeTexts(
-      this.listType
-    );
-    const context = this.widgetComponent?.context;
-    if (context?.id && this.resolveContext) {
-      const { name, id, c8y_IsDevice } = context;
-      this.config.contextAsset = { name, id, c8y_IsDevice };
-    }
   }
 
   writeValue(val: AlarmOrEvent[]): void {
@@ -113,7 +96,7 @@ export class AlarmEventSelectionListComponent
       .selectItems({
         ...(this.config || {}),
         allowChangingContext,
-        selectType: this.listType,
+        selectType: this.timelineType,
         selectedItems: this.transformValue(this.formArray.value),
         allowSearch: !this.config?.contextAsset,
         title: this.timelineTypeTexts.selectorTitle,

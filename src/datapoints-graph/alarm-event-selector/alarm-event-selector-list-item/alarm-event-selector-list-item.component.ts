@@ -18,10 +18,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
-import {
-  AlarmOrEvent,
-  TimelineType,
-} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
+import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 import { map, startWith, take } from 'rxjs/operators';
 import { ListItemComponent } from '@c8y/ngx-components';
 

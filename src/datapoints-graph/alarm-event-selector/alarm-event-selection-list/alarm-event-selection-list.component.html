@@ -1,8 +1,5 @@
 <div class="card-header separator sticky-top bg-inherit">
-  <span *ngIf="listTitle" class="card-title h4">{{
-    listTitle | translate
-  }}</span>
-  <span *ngIf="!listTitle" class="card-title h4">{{
+  <span class="card-title h4">{{
     timelineTypeTexts.listTitle | translate
   }}</span>
 </div>
@@ -11,7 +8,7 @@
   class="flex-grow ff-scroll-fix cdk-droplist"
   cdkDropList
   (cdkDropListDropped)="drop($event)"
-  [cdkDropListDisabled]="!allowDragAndDrop || formArray.controls?.length < 2"
+  [cdkDropListDisabled]="formArray.controls?.length < 2"
 >
   <div class="p-t-8" *ngIf="!formArray.controls?.length">
     <c8y-ui-empty-state
@@ -33,7 +30,7 @@
       [showAddRemoveButton]="false"
       [optionToRemove]="true"
       [showActiveToggle]="true"
-      [timelineType]="listType"
+      [timelineType]="timelineType"
       (removed)="onItemRemoved(index)"
     >
       <c8y-li-drag-handle

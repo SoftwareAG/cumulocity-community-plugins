@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { SEVERITY_VALUES } from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
+import { SEVERITY_VALUES } from '../alarm-event-selector.model';
 
 interface SeverityIcon {
   c8yIcon?: string;

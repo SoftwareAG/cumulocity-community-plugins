@@ -3,7 +3,7 @@ import {
   AlarmDetails,
   AlarmOrEvent,
   EventDetails,
-} from '../alarm-event-selector-modal/alarm-event-selector-modal.model';
+} from '../alarm-event-selector.model';
 
 @Pipe({
   name: 'includesAlarmOrEvent',

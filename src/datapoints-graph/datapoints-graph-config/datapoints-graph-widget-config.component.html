@@ -80,7 +80,6 @@
 
       <c8y-datapoint-selection-list
         [minActiveCount]="1"
-        [defaultFormOptions]="datapointSelectDefaultFormOptions"
         [config]="datapointSelectionConfig"
         formControlName="datapoints"
         name="datapoints"
@@ -90,14 +89,14 @@
         formControlName="alarms"
         name="alarms"
         class="bg-inherit"
-        [listType]="'ALARM'"
+        [timelineType]="'ALARM'"
       ></c8y-alarm-event-selection-list>
 
       <c8y-alarm-event-selection-list
         formControlName="events"
         name="events"
         class="bg-inherit"
-        [listType]="'EVENT'"
+        [timelineType]="'EVENT'"
       ></c8y-alarm-event-selection-list>
     </form>
   </div>

@@ -18,13 +18,12 @@ import {
   tap,
 } from 'rxjs/operators';
 import {
-  AlarmDetails,
   AlarmOrEvent,
   DEFAULT_SEVERITY_VALUES,
   TimelineType,
-} from './alarm-event-selector-modal/alarm-event-selector-modal.model';
+} from './alarm-event-selector.model';
 import { AlarmEventSelectorService } from './alarm-event-selector.service';
-import { ColorService, gettext } from '@c8y/ngx-components';
+import { ColorService } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-alarm-event-selector',
@@ -38,12 +37,11 @@ import { ColorService, gettext } from '@c8y/ngx-components';
   ],
 })
 export class AlarmEventSelectorComponent implements OnInit {
-  @Input() selectType: TimelineType = 'ALARM';
+  @Input() timelineType: TimelineType = 'ALARM';
   @Input() contextAsset: IIdentified;
   @Input() allowChangingContext = true;
   @Input() selectedItems = new Array<AlarmOrEvent>();
   @Input() allowSearch = true;
-  @Input() defaultActiveState = true;
   @Output() selectionChange = new EventEmitter<AlarmOrEvent[]>();
   searchString = '';
   maxNumberOfItems = 50;
@@ -64,18 +62,16 @@ export class AlarmEventSelectorComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.timelineTypeTexts = this.alarmEventSelectorService.timelineTypeTexts(
-      this.selectType
+      this.timelineType
     );
-
     await this.setupObservables();
-
     if (this.contextAsset) {
       this.selectionChanged(this.contextAsset);
     }
   }
 
   itemAdded(item: AlarmOrEvent): void {
-    item.__active = this.defaultActiveState;
+    item.__active = true;
     this.selectedItems = [...this.selectedItems, item];
     this.emitCurrentSelection();
   }
@@ -123,13 +119,17 @@ export class AlarmEventSelectorComponent implements OnInit {
         this.loadingItems = true;
       }),
       tap((asset) => {
-        this.blankItem = this.getBlankItem(asset, blankItemColor);
+        this.blankItem = this.alarmEventSelectorService.getBlankItem(
+          this.timelineType,
+          asset,
+          blankItemColor
+        );
       }),
       switchMap((asset) =>
         asset?.id
           ? this.alarmEventSelectorService.getItemsOfAsset(
               asset,
-              this.selectType
+              this.timelineType
             )
           : []
       ),
@@ -184,35 +184,5 @@ export class AlarmEventSelectorComponent implements OnInit {
     }
 
     return false;
-  }
-
-  private getBlankItem(
-    asset: IIdentified,
-    blankItemColor: string
-  ): AlarmOrEvent {
-    if (!asset) {
-      return null;
-    } else if (this.selectType === 'ALARM') {
-      return {
-        timelineType: 'ALARM',
-        color: blankItemColor,
-        label: '',
-        filters: {
-          type: '',
-          severities: DEFAULT_SEVERITY_VALUES,
-        },
-        __target: asset,
-      };
-    } else {
-      return {
-        timelineType: 'EVENT',
-        color: blankItemColor,
-        label: '',
-        filters: {
-          type: '',
-        },
-        __target: asset,
-      };
-    }
   }
 }

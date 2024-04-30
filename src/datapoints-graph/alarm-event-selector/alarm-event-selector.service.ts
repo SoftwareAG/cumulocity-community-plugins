@@ -4,8 +4,9 @@ import {
   AlarmDetails,
   AlarmEventSelectorModalOptions,
   AlarmOrEvent,
+  DEFAULT_SEVERITY_VALUES,
   TimelineType,
-} from './alarm-event-selector-modal/alarm-event-selector-modal.model';
+} from './alarm-event-selector.model';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 import {
   AlarmService,
@@ -87,6 +88,37 @@ export class AlarmEventSelectorService {
     return timelineType === 'ALARM'
       ? await this.getAlarmsOfAsset(parentReference, filters)
       : await this.getEventsOfAsset(parentReference, filters);
+  }
+
+  getBlankItem(
+    timelineType: TimelineType,
+    asset: IIdentified,
+    blankItemColor: string
+  ): AlarmOrEvent | null {
+    if (!asset) {
+      return null;
+    } else if (timelineType === 'ALARM') {
+      return {
+        timelineType: 'ALARM',
+        color: blankItemColor,
+        label: '',
+        filters: {
+          type: '',
+          severities: DEFAULT_SEVERITY_VALUES,
+        },
+        __target: asset,
+      };
+    } else {
+      return {
+        timelineType: 'EVENT',
+        color: blankItemColor,
+        label: '',
+        filters: {
+          type: '',
+        },
+        __target: asset,
+      };
+    }
   }
 
   private async getAlarmsOfAsset(

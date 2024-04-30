@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IIdentified } from '@c8y/client';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { AlarmOrEvent, TimelineType } from './alarm-event-selector-modal.model';
+import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 
 @Component({
   selector: 'c8y-alarm-event-selector-modal',
