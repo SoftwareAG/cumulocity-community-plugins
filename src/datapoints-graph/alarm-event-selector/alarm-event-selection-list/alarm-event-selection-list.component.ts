@@ -17,6 +17,7 @@ import {
   AlarmEventSelectorModalOptions,
   AlarmOrEvent,
   TimelineType,
+  TimelineTypeTexts,
 } from '../alarm-event-selector.model';
 
 @Component({
@@ -42,7 +43,7 @@ export class AlarmEventSelectionListComponent
   @Input() config: Partial<AlarmEventSelectorModalOptions> = {};
 
   formArray: FormArray;
-  timelineTypeTexts: ReturnType<AlarmEventSelectorService['timelineTypeTexts']>;
+  timelineTypeTexts: TimelineTypeTexts;
 
   constructor(
     private alarmEventSelectService: AlarmEventSelectorService,

@@ -6,6 +6,7 @@ import {
   AlarmOrEvent,
   DEFAULT_SEVERITY_VALUES,
   TimelineType,
+  TimelineTypeTexts,
 } from './alarm-event-selector.model';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 import {
@@ -27,7 +28,7 @@ export class AlarmEventSelectorService {
     private color: ColorService
   ) {}
 
-  timelineTypeTexts(timelineType: TimelineType) {
+  timelineTypeTexts(timelineType: TimelineType): TimelineTypeTexts {
     if (timelineType === 'ALARM') {
       return {
         listTitle: gettext('Alarms'),

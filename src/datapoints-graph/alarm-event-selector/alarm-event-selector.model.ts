@@ -63,3 +63,17 @@ export const SEVERITY_LABELS = {
   MINOR: gettext('Minor`alarm`') as 'MINOR',
   WARNING: gettext('Warning`alarm`') as 'WARNING',
 } as const;
+
+export type TimelineTypeTexts = {
+  listTitle: string;
+  emptyStateIcon: string;
+  emptyStateTitle: string;
+  emptyStateSubtitle: string;
+  addButtonLabel: string;
+  selectorTitle: string;
+  availableItemsTitle: string;
+  assetWithNoItemsEmptyStateSubtitle: string;
+  largeNumberOfItemsInfo: string;
+  selectedItemsTitle: string;
+  noSelectedItemsTitle: string;
+};

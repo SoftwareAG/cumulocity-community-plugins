@@ -19,8 +19,8 @@ import {
 } from 'rxjs/operators';
 import {
   AlarmOrEvent,
-  DEFAULT_SEVERITY_VALUES,
   TimelineType,
+  TimelineTypeTexts,
 } from './alarm-event-selector.model';
 import { AlarmEventSelectorService } from './alarm-event-selector.service';
 import { ColorService } from '@c8y/ngx-components';
@@ -52,7 +52,7 @@ export class AlarmEventSelectorComponent implements OnInit {
   filteredItems$: Observable<AlarmOrEvent[]>;
   searchStringChanges$: Observable<string>;
   blankItem: AlarmOrEvent;
-  timelineTypeTexts: ReturnType<AlarmEventSelectorService['timelineTypeTexts']>;
+  timelineTypeTexts: TimelineTypeTexts;
   private searchString$ = new BehaviorSubject('');
 
   constructor(
