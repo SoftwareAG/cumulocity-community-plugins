@@ -17,7 +17,6 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
 import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 import { map, startWith, take } from 'rxjs/operators';
 import { ListItemComponent } from '@c8y/ngx-components';
@@ -55,7 +54,6 @@ export class AlarmEventSelectorListItemComponent
   @ViewChild('li', { static: true }) listItem: ListItemComponent;
 
   formGroup: FormGroup;
-  isValid$: Observable<boolean>;
 
   constructor(private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
@@ -64,10 +62,6 @@ export class AlarmEventSelectorListItemComponent
       __active: [],
       __target: [],
     });
-    this.isValid$ = this.formGroup.statusChanges.pipe(
-      map((status) => status === 'VALID'),
-      startWith(this.formGroup.valid)
-    );
   }
 
   ngAfterViewInit() {

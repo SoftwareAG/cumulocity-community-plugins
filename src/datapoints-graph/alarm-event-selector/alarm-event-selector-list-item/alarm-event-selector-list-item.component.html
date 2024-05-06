@@ -20,7 +20,7 @@
       class="btn btn-clean text-primary"
       (click)="addOrRemoveItem()"
       [title]="'Select' | translate"
-      [disabled]="(isValid$ | async) === false"
+      [disabled]="!formGroup.valid"
     >
       <i c8yIcon="plus-circle" class="text-primary"></i>
     </button>
@@ -71,7 +71,7 @@
 
     <button
       class="btn-clean m-l-auto"
-      *ngIf="(isValid$ | async) === false && li.collapsed"
+      *ngIf="!formGroup.valid && li.collapsed"
       [popover]="
         'Some entries are invalid. Check the input fields with red borders.'
           | translate
