@@ -111,6 +111,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
           this.echartsInstance?.clear();
           return of(null);
         }
+        if (this.echartsInstance) {
+          this.echartsInstance.on('click', this.onChartClick.bind(this));
+        }
         return forkJoin([this.loadEvents(), this.loadAlarms()]).pipe(
           map(([events, alarms]) => {
             this.events = events;
@@ -125,9 +128,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         }
         this.chartRealtimeService.stopRealtime();
         this.startRealtimeIfPossible();
-        if (this.echartsInstance) {
-          this.echartsInstance.on('click', this.onChartClick.bind(this));
-        }
       })
     );
   }
@@ -141,6 +141,10 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
+
+    if (this.echartsInstance) {
+      this.echartsInstance.on('click', this.onChartClick.bind(this));
+    }
   }
 
   ngOnDestroy() {
@@ -167,7 +171,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   onChartClick(params) {
     if (this.isAlarmClick(params)) {
       const clickedAlarms = this.alarms.filter(
-        (alarm) => alarm.type === params.data.type
+        (alarm) => alarm.type === params.data.alarmType
       );
 
       const timeRange = this.getTimeRange();
@@ -190,7 +194,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                       },
                       {
                         xAxis:
-                          clickedAlarm.lastUpdated === clickedAlarm.creationTime
+                          clickedAlarm.lastUpdated ===
+                            clickedAlarm.creationTime ||
+                          clickedAlarm.status !== AlarmStatus.CLEARED
                             ? timeRange.dateTo
                             : clickedAlarm.lastUpdated,
                       },
@@ -207,7 +213,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   isAlarmClick(params): boolean {
-    return this.alarms.some((alarm) => alarm.type === params.data.type);
+    return this.alarms.some((alarm) => alarm.type === params.data.alarmType);
   }
 
   hasMarkArea(options): boolean {
