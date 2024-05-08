@@ -5,6 +5,7 @@ import {
   AlarmEventSelectorModalOptions,
   AlarmOrEvent,
   DEFAULT_SEVERITY_VALUES,
+  EventDetails,
   TimelineType,
   TimelineTypeTexts,
 } from './alarm-event-selector.model';
@@ -83,7 +84,7 @@ export class AlarmEventSelectorService {
   async getItemsOfAsset(
     parentReference: IIdentified,
     timelineType: TimelineType
-  ): Promise<AlarmDetails[]> {
+  ): Promise<AlarmOrEvent[]> {
     const filters = { source: parentReference.id, pageSize: 10 };
 
     return timelineType === 'ALARM'
@@ -127,7 +128,7 @@ export class AlarmEventSelectorService {
     filters: { pageSize: number; source: string | number }
   ) {
     const res = await this.alarmService.list(filters);
-    const alarms: AlarmDetails[] = uniqBy(res.data, 'type').map(
+    const alarms: Promise<AlarmDetails>[] = uniqBy(res.data, 'type').map(
       async (alarm: IAlarm) => this.createItem('ALARM', alarm, parentReference)
     );
     return await Promise.all(alarms);
@@ -138,7 +139,7 @@ export class AlarmEventSelectorService {
     filters: { pageSize: number; source: string | number }
   ) {
     const res = await this.eventsService.list(filters);
-    const alarms: AlarmDetails[] = uniqBy(res.data, 'type').map(
+    const alarms: Promise<EventDetails>[] = uniqBy(res.data, 'type').map(
       async (alarm: IAlarm) => this.createItem('EVENT', alarm, parentReference)
     );
     return await Promise.all(alarms);

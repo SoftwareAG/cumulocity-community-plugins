@@ -24,6 +24,7 @@ import {
 } from './alarm-event-selector.model';
 import { AlarmEventSelectorService } from './alarm-event-selector.service';
 import { ColorService } from '@c8y/ngx-components';
+import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
 
 @Component({
   selector: 'c8y-alarm-event-selector',
@@ -66,7 +67,7 @@ export class AlarmEventSelectorComponent implements OnInit {
     );
     await this.setupObservables();
     if (this.contextAsset) {
-      this.selectionChanged(this.contextAsset);
+      this.selectAsset(this.contextAsset);
     }
   }
 
@@ -86,19 +87,10 @@ export class AlarmEventSelectorComponent implements OnInit {
     this.emitCurrentSelection();
   }
 
-  selectionChanged(evt: IIdentified | IIdentified[]): void {
-    if (Array.isArray(evt) && evt.length !== 0) {
-      return this.selectAsset(evt[0]);
+  assetSelectionChanged(evt: AssetSelectionChangeEvent): void {
+    if (evt.items) {
+      return this.selectAsset(evt.items.length ? evt.items[0] : evt.items);
     }
-
-    if (!Array.isArray(evt) && evt.items) {
-      return this.selectionChanged(evt.items);
-    }
-
-    if (!Array.isArray(evt) && evt.id) {
-      return this.selectAsset(evt);
-    }
-
     // reset selection
     this.assetSelection.next(null);
   }
