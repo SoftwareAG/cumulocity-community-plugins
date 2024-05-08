@@ -203,10 +203,77 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                     ];
                   }),
                 },
+                markLine: {
+                  showSymbol: true,
+                  symbol: ['none', 'none'],
+                  data: clickedAlarms.reduce((acc, alarm) => {
+                    const isClickedAlarmCleared =
+                      alarm.status === AlarmStatus.CLEARED;
+                    if (isClickedAlarmCleared) {
+                      return acc.concat([
+                        {
+                          xAxis: alarm.creationTime,
+                          alarmType: alarm.type,
+                          label: {
+                            show: false,
+                            formatter: alarm.type,
+                            emphasis: { show: true },
+                          },
+                          itemStyle: { color: alarm.color },
+                        },
+                        {
+                          xAxis: alarm.lastUpdated,
+                          alarmType: alarm.type,
+                          label: {
+                            show: false,
+                            formatter: alarm.type,
+                            emphasis: { show: true },
+                          },
+                          itemStyle: { color: alarm.color },
+                        },
+                      ]);
+                    }
+                    return acc.concat([
+                      {
+                        xAxis: alarm.creationTime,
+                        alarmType: alarm.type,
+                        label: {
+                          show: false,
+                          formatter: alarm.type,
+                          emphasis: { show: true },
+                        },
+                        itemStyle: { color: alarm.color },
+                      },
+                    ]);
+                  }, []),
+                },
               },
             ],
           }
-        : { series: [{ markArea: { data: [] } }] };
+        : // if markArea already exists, remove it and remove lastUpdated from markLine
+          {
+            series: [
+              {
+                markArea: {
+                  data: [],
+                },
+                markLine: {
+                  showSymbol: true,
+                  symbol: ['none', 'none'],
+                  data: this.echartsInstance
+                    .getOption()
+                    .series[0].markLine.data.filter(
+                      (line) =>
+                        !clickedAlarms.some(
+                          (alarm) =>
+                            line.alarmType === alarm.type &&
+                            line.xAxis === alarm.lastUpdated
+                        )
+                    ),
+                },
+              },
+            ],
+          };
 
       this.echartsInstance.setOption(updatedOptions);
     }

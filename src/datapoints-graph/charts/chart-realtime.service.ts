@@ -1,14 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, interval, merge, Observable, Subscription } from 'rxjs';
-import { IEvent, IMeasurement } from '@c8y/client';
-import {
-  buffer,
-  concatAll,
-  map,
-  switchMap,
-  tap,
-  throttleTime,
-} from 'rxjs/operators';
+import { IAlarm, IEvent, IMeasurement } from '@c8y/client';
+import { buffer, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import {
   DatapointChartRenderType,
   DatapointRealtimeMeasurements,
@@ -22,6 +15,7 @@ import { MeasurementRealtimeService } from '@c8y/ngx-components';
 import type { ECharts, SeriesOption } from 'echarts';
 import { ChartEventsService } from './chart-events.service';
 import { EchartsOptionsService } from './echarts-options.service';
+import { ChartAlarmsService } from './chart-alarms.service';
 
 type Milliseconds = number;
 
@@ -37,7 +31,8 @@ export class ChartRealtimeService {
   constructor(
     private measurementRealtime: MeasurementRealtimeService,
     private eventsService: ChartEventsService,
-    private echartsOptionsService: EchartsOptionsService
+    private echartsOptionsService: EchartsOptionsService,
+    private alarmsService: ChartAlarmsService
   ) {}
 
   startRealtime(
@@ -92,13 +87,19 @@ export class ChartRealtimeService {
       switchMap(() => this.loadEvents().pipe(throttleTime(updateThrottleTime)))
     );
 
+    const alarms$ = interval(this.INTERVAL).pipe(
+      switchMap(() => this.loadAlarms().pipe(throttleTime(updateThrottleTime)))
+    );
+
     this.realtimeSubscription = combineLatest([
       measurement$.pipe(buffer(bufferReset$)),
       events$,
-    ]).subscribe(([measurements, events]) => {
+      alarms$,
+    ]).subscribe(([measurements, events, alarms]) => {
       this.updateChartInstance(
         measurements,
         events,
+        alarms,
         datapointOutOfSyncCallback
       );
     });
@@ -127,6 +128,30 @@ export class ChartRealtimeService {
       {
         __target: { id: '352734984' },
         filters: { type: 'AnotherEventType' },
+        color: '#349EDF',
+      },
+    ]);
+  }
+
+  private loadAlarms(): Observable<any> {
+    const timeRange = {
+      dateFrom: this.currentTimeRange.dateFrom.toISOString(),
+      dateTo: this.currentTimeRange.dateTo.toISOString(),
+    };
+    return this.alarmsService.listAlarms$(timeRange, [
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'TestAlarm' },
+        color: '#08293F',
+      },
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'AnotherAlarmType' },
+        color: '#349EDF',
+      },
+      {
+        __target: { id: '352734984' },
+        filters: { type: 'AnotherAlarmType' },
         color: '#349EDF',
       },
     ]);
@@ -166,6 +191,7 @@ export class ChartRealtimeService {
   private updateChartInstance(
     receivedMeasurements: DatapointRealtimeMeasurements[],
     events: IEvent[],
+    alarms: IAlarm[],
     datapointOutOfSyncCallback: (dp: DatapointsGraphKPIDetails) => void
   ) {
     const seriesDataToUpdate = new Map<
@@ -228,6 +254,37 @@ export class ChartRealtimeService {
           }
         }
       });
+
+      alarms.forEach((alarm) => {
+        const alarmExists = allDataSeries.some((series: { data: any[] }) =>
+          series.data.some((data) => data[0] === alarm.creationTime)
+        );
+        if (!alarmExists && alarm.source.id === datapoint.__target.id) {
+          const renderType: DatapointChartRenderType =
+            datapoint.renderType || 'min';
+          if (
+            typeof seriesMatchingDatapoint.data === 'object' &&
+            seriesMatchingDatapoint.data !== null
+          ) {
+            const dp: DatapointWithValues = {
+              ...datapoint,
+              values: seriesMatchingDatapoint.data as {
+                [date: string]: { min: number; max: number }[];
+              },
+            };
+            const alarmId = `${alarm.type}+${dp.__target.id}+${Date.now()}`;
+            const newAlarmSeries = this.echartsOptionsService.getAlarmSeries(
+              dp,
+              renderType,
+              false,
+              [alarm],
+              alarmId
+            );
+            allDataSeries.push(...newAlarmSeries);
+          }
+        }
+      });
+
       this.checkForValuesAfterTimeRange(
         seriesMatchingDatapoint.data as SeriesValue[],
         datapoint,
