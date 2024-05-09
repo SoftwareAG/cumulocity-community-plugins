@@ -4,6 +4,7 @@ import {
   EventEmitter,
   forwardRef,
   Input,
+  OnDestroy,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -18,8 +19,9 @@ import {
   Validator,
 } from '@angular/forms';
 import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
-import { map, startWith, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { ListItemComponent } from '@c8y/ngx-components';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'c8y-alarm-event-selector-list-item',
@@ -38,7 +40,7 @@ import { ListItemComponent } from '@c8y/ngx-components';
   ],
 })
 export class AlarmEventSelectorListItemComponent
-  implements ControlValueAccessor, Validator, AfterViewInit
+  implements ControlValueAccessor, Validator, AfterViewInit, OnDestroy
 {
   @Input() timelineType: TimelineType;
   @Input() highlightText: string;
@@ -54,6 +56,8 @@ export class AlarmEventSelectorListItemComponent
   @ViewChild('li', { static: true }) listItem: ListItemComponent;
 
   formGroup: FormGroup;
+  valid$: Observable<boolean>;
+  private destroy$ = new Subject<void>();
 
   constructor(private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
@@ -62,10 +66,21 @@ export class AlarmEventSelectorListItemComponent
       __active: [],
       __target: [],
     });
+    this.valid$ = this.formGroup.statusChanges.pipe(
+      takeUntil(this.destroy$),
+      map((val) => val === 'VALID')
+    );
   }
 
   ngAfterViewInit() {
-    this.listItem.collapsed = this.isCollapsed;
+    queueMicrotask(() => {
+      this.listItem.collapsed = this.isCollapsed;
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   validate(_control: AbstractControl): ValidationErrors {
