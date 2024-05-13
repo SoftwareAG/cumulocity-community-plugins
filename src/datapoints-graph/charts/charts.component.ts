@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import type { ECharts, EChartsOption } from 'echarts';
 import {
+  Alarm,
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
@@ -40,7 +41,8 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
 import { ChartEventsService } from './chart-events.service';
-import { IEvent } from '@c8y/client';
+import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
+import { ChartAlarmsService } from './chart-alarms.service';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -58,6 +60,7 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     EchartsOptionsService,
     CustomMeasurementService,
     ChartEventsService,
+    ChartAlarmsService,
     YAxisService,
   ],
   standalone: true,
@@ -74,6 +77,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   chartOption$: Observable<EChartsOption>;
   echartsInstance: ECharts;
   events: IEvent[] = [];
+  alarms: IAlarm[] = [];
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
   @Input() config: DatapointsGraphWidgetConfig;
@@ -95,6 +99,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   constructor(
     private measurementService: CustomMeasurementService,
     private eventsService: ChartEventsService,
+    private alarmsService: ChartAlarmsService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService
@@ -106,9 +111,13 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
           this.echartsInstance?.clear();
           return of(null);
         }
-        return this.loadEvents().pipe(
-          map((events) => {
+        if (this.echartsInstance) {
+          this.echartsInstance.on('click', this.onChartClick.bind(this));
+        }
+        return forkJoin([this.loadEvents(), this.loadAlarms()]).pipe(
+          map(([events, alarms]) => {
             this.events = events;
+            this.alarms = alarms;
             return this.getChartOptions(datapointsWithValues);
           })
         );
@@ -132,6 +141,10 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
+
+    if (this.echartsInstance) {
+      this.echartsInstance.on('click', this.onChartClick.bind(this));
+    }
   }
 
   ngOnDestroy() {
@@ -155,6 +168,119 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  onChartClick(params) {
+    if (this.isAlarmClick(params)) {
+      const clickedAlarms = this.alarms.filter(
+        (alarm) => alarm.type === params.data.alarmType
+      );
+
+      const timeRange = this.getTimeRange();
+      const updatedOptions = !this.hasMarkArea(this.echartsInstance.getOption())
+        ? {
+            series: [
+              {
+                markArea: {
+                  data: clickedAlarms.map((clickedAlarm) => {
+                    return [
+                      {
+                        name: clickedAlarm.type,
+                        xAxis: clickedAlarm.creationTime,
+                        itemStyle: {
+                          color:
+                            clickedAlarm.status === AlarmStatus.CLEARED
+                              ? 'rgba(221,255,221,1.00)'
+                              : 'rgba(255, 173, 177, 0.4)',
+                        },
+                      },
+                      {
+                        xAxis:
+                          clickedAlarm.lastUpdated ===
+                            clickedAlarm.creationTime ||
+                          clickedAlarm.status !== AlarmStatus.CLEARED
+                            ? timeRange.dateTo
+                            : clickedAlarm.lastUpdated,
+                      },
+                    ];
+                  }),
+                },
+                markLine: {
+                  showSymbol: true,
+                  symbol: ['none', 'none'],
+                  data: clickedAlarms.reduce((acc, alarm) => {
+                    const isClickedAlarmCleared =
+                      alarm.status === AlarmStatus.CLEARED;
+                    if (isClickedAlarmCleared) {
+                      return acc.concat([
+                        {
+                          xAxis: alarm.creationTime,
+                          alarmType: alarm.type,
+                          label: {
+                            show: false,
+                            formatter: alarm.type,
+                            emphasis: { show: true },
+                          },
+                          itemStyle: { color: alarm.color },
+                        },
+                        {
+                          xAxis: alarm.lastUpdated,
+                          alarmType: alarm.type,
+                          label: {
+                            show: false,
+                            formatter: alarm.type,
+                            emphasis: { show: true },
+                          },
+                          itemStyle: { color: alarm.color },
+                        },
+                      ]);
+                    }
+                    return acc.concat([
+                      {
+                        xAxis: alarm.creationTime,
+                        alarmType: alarm.type,
+                        label: {
+                          show: false,
+                          formatter: alarm.type,
+                          emphasis: { show: true },
+                        },
+                        itemStyle: { color: alarm.color },
+                      },
+                    ]);
+                  }, []),
+                },
+              },
+            ],
+          }
+        : // if markArea already exists, remove it and remove lastUpdated from markLine
+          {
+            series: [
+              {
+                markArea: {
+                  data: [],
+                },
+                markLine: {
+                  data: [],
+                },
+              },
+            ],
+          };
+
+      this.echartsInstance.setOption(updatedOptions);
+    }
+  }
+
+  isAlarmClick(params): boolean {
+    return this.alarms.some((alarm) => alarm.type === params.data.alarmType);
+  }
+
+  hasMarkArea(options): boolean {
+    return (
+      options &&
+      options.series &&
+      options.series[0].markArea &&
+      options.series[0].markArea.data.length > 0
+    );
+  }
+
   toggleZoomIn(): void {
     this.zoomInActive = !this.zoomInActive;
     this.echartsInstance.dispatchAction({
@@ -170,19 +296,36 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         __target: { id: '7713695199' },
         filters: { type: 'TestEvent' },
         color: '#08293F',
-        icon: 'warning',
       },
       {
         __target: { id: '7713695199' },
         filters: { type: 'AnotherEventType' },
         color: '#349EDF',
-        icon: 'warning',
       },
       {
         __target: { id: '352734984' },
         filters: { type: 'AnotherEventType' },
         color: '#349EDF',
-        icon: 'warning',
+      },
+    ]);
+  }
+
+  private loadAlarms(): Observable<any> {
+    return this.alarmsService.listAlarms$(this.getTimeRange(), [
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'TestAlarm' },
+        color: '#08293F',
+      },
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'AnotherAlarmType' },
+        color: '#349EDF',
+      },
+      {
+        __target: { id: '352734984' },
+        filters: { type: 'AnotherAlarmType' },
+        color: '#349EDF',
       },
     ]);
   }
@@ -287,7 +430,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         YAxis: this.config.yAxisSplitLines,
         XAxis: this.config.xAxisSplitLines,
       },
-      this.events
+      this.events,
+      this.alarms
     );
   }
 

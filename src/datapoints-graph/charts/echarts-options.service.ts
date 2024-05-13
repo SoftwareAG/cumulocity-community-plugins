@@ -13,7 +13,8 @@ import { YAxisService } from './y-axis.service';
 import { ChartTypesService } from './chart-types.service';
 import type { TooltipFormatterCallback } from 'echarts/types/src/util/types';
 import type { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
-import { IEvent } from '@c8y/client';
+import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
+import { ICONS_MAP } from './svg-icons.model';
 
 @Injectable()
 export class EchartsOptionsService {
@@ -29,12 +30,14 @@ export class EchartsOptionsService {
     datapointsWithValues: DatapointWithValues[],
     timeRange: { dateFrom: string; dateTo: string },
     showSplitLines: { YAxis: boolean; XAxis: boolean },
-    events: IEvent[]
+    events: IEvent[],
+    alarms: IAlarm[]
   ): EChartsOption {
     const yAxis = this.yAxisService.getYAxis(datapointsWithValues, {
       showSplitLines: showSplitLines.YAxis,
     });
     const eventTypes = events.map((event) => event.type);
+    const alarmTypes = alarms.map((alarm) => alarm.type);
     const leftAxis = yAxis.filter((yx) => yx.position === 'left');
     const gridLeft = leftAxis.length
       ? leftAxis.length * this.yAxisService.Y_AXIS_OFFSET
@@ -81,13 +84,23 @@ export class EchartsOptionsService {
       },
       legend: {
         show: true,
-        data: eventTypes.map((eventType) => ({
-          name: eventType,
-          icon: 'path://M97.3013 63L128.939 95.1315C79.296 134.335 47.7653 191.526 47.7653 255.276C47.7653 319.027 79.296 376.218 128.917 415.421L97.28 447.574C37.76 400.552 0 331.93 0 255.276C0 178.622 37.76 110.001 97.3013 63ZM414.72 63C474.24 110.001 512 178.622 512 255.276C512 331.93 474.24 400.552 414.72 447.574L383.083 415.421C432.704 376.218 464.235 319.027 464.235 255.276C464.235 191.526 432.704 134.335 383.083 95.1315L414.72 63ZM160.405 127.092L192 159.181C162.24 182.681 143.317 217.013 143.317 255.276C143.317 293.539 162.219 327.871 192 351.372L160.405 383.461C120.725 352.119 95.552 306.379 95.552 255.276C95.552 204.174 120.725 158.433 160.405 127.092ZM351.595 127.092C391.296 158.433 416.448 204.174 416.448 255.276C416.448 306.379 391.275 352.119 351.595 383.461L320 351.372C349.781 327.871 368.683 293.539 368.683 255.276C368.683 217.013 349.781 182.703 320 159.181L351.595 127.092ZM256 192.722C291.505 192.722 320.287 221.504 320.287 257.009C320.287 292.514 291.505 321.296 256 321.296C220.495 321.296 191.713 292.514 191.713 257.009C191.713 221.504 220.495 192.722 256 192.722Z',
-          itemStyle: {
-            color: events.find((event) => event.type === eventType).color,
-          },
-        })),
+        // as data display eventTypes and alarmTypes, we need to display them in legend
+        data: [
+          ...eventTypes.map((eventType) => ({
+            name: eventType,
+            icon: ICONS_MAP.EVENT,
+            itemStyle: {
+              color: events.find((event) => event.type === eventType).color,
+            },
+          })),
+          ...alarmTypes.map((alarmType) => ({
+            name: alarmType,
+            icon: ICONS_MAP.ALARM,
+            itemStyle: {
+              color: alarms.find((alarm) => alarm.type === alarmType).color,
+            },
+          })),
+        ],
         itemHeight: 16,
         textStyle: {
           fontSize: 10,
@@ -120,16 +133,18 @@ export class EchartsOptionsService {
         },
       },
       yAxis,
-      series: this.getChartSeries(datapointsWithValues, events),
+      series: this.getChartSeries(datapointsWithValues, events, alarms),
     };
   }
 
   private getChartSeries(
     datapointsWithValues: DatapointWithValues[],
-    events
+    events,
+    alarms
   ): SeriesOption[] {
     const series: SeriesOption[] = [];
     let eventSeries: SeriesOption[] = [];
+    let alarmSeries: SeriesOption[] = [];
     datapointsWithValues.forEach((dp, idx) => {
       const renderType: DatapointChartRenderType = dp.renderType || 'min';
       if (renderType === 'area') {
@@ -140,9 +155,198 @@ export class EchartsOptionsService {
       }
 
       const newEventSeries = this.getEventSeries(dp, renderType, false, events);
+      const newAlarmSeries = this.getAlarmSeries(dp, renderType, false, alarms);
       eventSeries = [...eventSeries, ...newEventSeries];
+      alarmSeries = [...alarmSeries, ...newAlarmSeries];
     });
-    return [...series, ...eventSeries];
+    return [...series, ...eventSeries, ...alarmSeries];
+  }
+
+  getAlarmSeries(
+    dp: any,
+    renderType: DatapointChartRenderType,
+    isMinMaxChart = false,
+    alarms: IEvent[] = [],
+    alarmId?: string
+  ): SeriesOption[] {
+    if (!alarms?.length) {
+      return [];
+    }
+
+    const alarmsByType = alarms.reduce((grouped, alarm) => {
+      (grouped[alarm.type] = grouped[alarm.type] || []).push(alarm);
+      return grouped;
+    }, {});
+
+    return Object.entries(alarmsByType).map(
+      ([type, alarmsOfType]: [string, IAlarm[]]) => {
+        return {
+          id: `${alarmId ? alarmId : `${type}/${dp.__target.id}`}`,
+          name: type,
+          showSymbol: false,
+          data: alarmsOfType.map((alarm) => [
+            alarm.creationTime,
+            null,
+            'markLineFlag',
+          ]),
+          markPoint: {
+            showSymbol: true,
+            data: alarmsOfType.reduce((acc, alarm) => {
+              if (dp.__target.id === alarm.source.id) {
+                const dpValuesArray = Object.entries(dp.values).map(
+                  ([time, values]) => ({
+                    time: new Date(time).getTime(),
+                    values,
+                  })
+                );
+                const alarmCreationTime = new Date(
+                  alarm.creationTime
+                ).getTime();
+                const closestDpValue = dpValuesArray.reduce((prev, curr) =>
+                  Math.abs(curr.time - alarmCreationTime) <
+                  Math.abs(prev.time - alarmCreationTime)
+                    ? curr
+                    : prev
+                );
+                const isAlarmCleared = alarm.status === AlarmStatus.CLEARED;
+
+                const alarmLastUpdatedTime = new Date(
+                  alarm.lastUpdated
+                ).getTime();
+                const closestDpValueLastUpdated = dpValuesArray.reduce(
+                  (prev, curr) =>
+                    Math.abs(curr.time - alarmLastUpdatedTime) <
+                    Math.abs(prev.time - alarmLastUpdatedTime)
+                      ? curr
+                      : prev
+                );
+                // DEFINITELTY NEEDS REFACTORING
+                return acc.concat(
+                  isAlarmCleared
+                    ? [
+                        {
+                          coord: [
+                            alarm.creationTime,
+                            closestDpValue
+                              ? closestDpValue.values[0].min
+                              : closestDpValue.values[1]
+                              ? closestDpValue.values[1]
+                              : null,
+                          ],
+                          name: alarm.type,
+                          itemStyle: { color: alarm.color },
+                          symbol: ICONS_MAP[alarm.type],
+                          symbolSize: 15,
+                        },
+                        {
+                          coord: [
+                            alarm.lastUpdated,
+                            closestDpValueLastUpdated
+                              ? closestDpValueLastUpdated.values[0].min
+                              : closestDpValueLastUpdated.values[1]
+                              ? closestDpValueLastUpdated.values[1]
+                              : null,
+                          ],
+                          name: alarm.type,
+                          itemStyle: { color: alarm.color },
+                          symbol: ICONS_MAP[alarm.type],
+                          symbolSize: 15,
+                        },
+                      ]
+                    : [
+                        {
+                          coord: [
+                            alarm.creationTime,
+                            closestDpValue
+                              ? closestDpValue.values[0].min
+                              : closestDpValue.values[1]
+                              ? closestDpValue.values[1]
+                              : null,
+                          ],
+                          name: alarm.type,
+                          itemStyle: { color: alarm.color },
+                          symbol: ICONS_MAP[alarm.type],
+                          symbolSize: 15,
+                        },
+                        {
+                          coord: [
+                            alarm.lastUpdated,
+                            closestDpValueLastUpdated
+                              ? closestDpValueLastUpdated.values[0].min
+                              : closestDpValueLastUpdated.values[1]
+                              ? closestDpValueLastUpdated.values[1]
+                              : null,
+                          ],
+                          name: alarm.type,
+                          itemStyle: { color: alarm.color },
+                          symbol: ICONS_MAP[alarm.type],
+                          symbolSize: 15,
+                        },
+                      ]
+                );
+              } else {
+                return acc.concat([
+                  {
+                    coord: [alarm.creationTime, null], // Set the position of the mark point
+                    name: alarm.type,
+                    itemStyle: { color: alarm.color },
+                  },
+                ]);
+              }
+            }, []),
+          },
+          markLine: {
+            showSymbol: true,
+            symbol: ['none', 'none'],
+            // below show line for creationTime and lastUpdated
+            data: alarmsOfType.reduce((acc, alarm) => {
+              if (alarm.creationTime === alarm.lastUpdated) {
+                return acc.concat([
+                  {
+                    xAxis: alarm.creationTime,
+                    alarmType: alarm.type,
+                    label: {
+                      show: false,
+                      formatter: alarm.type,
+                      emphasis: { show: true },
+                    },
+                    itemStyle: { color: alarm.color },
+                  },
+                ]);
+              } else {
+                return acc.concat([
+                  {
+                    xAxis: alarm.creationTime,
+                    alarmType: alarm.type,
+                    label: {
+                      show: false,
+                      formatter: alarm.type,
+                      emphasis: { show: true },
+                    },
+                    itemStyle: { color: alarm.color },
+                  },
+                  {
+                    xAxis: alarm.lastUpdated,
+                    alarmType: alarm.type,
+                    label: {
+                      show: false,
+                      formatter: alarm.type,
+                      emphasis: { show: true },
+                    },
+                    itemStyle: { color: alarm.color },
+                  },
+                ]);
+              }
+            }, []),
+          },
+          ...this.chartTypesService.getSeriesOptions(
+            dp,
+            isMinMaxChart,
+            renderType
+          ),
+        };
+      }
+    );
   }
 
   getEventSeries(
@@ -202,8 +406,7 @@ export class EchartsOptionsService {
                   ],
                   name: event.type,
                   itemStyle: { color: event.color },
-                  symbol:
-                    'path://M97.3013 63L128.939 95.1315C79.296 134.335 47.7653 191.526 47.7653 255.276C47.7653 319.027 79.296 376.218 128.917 415.421L97.28 447.574C37.76 400.552 0 331.93 0 255.276C0 178.622 37.76 110.001 97.3013 63ZM414.72 63C474.24 110.001 512 178.622 512 255.276C512 331.93 474.24 400.552 414.72 447.574L383.083 415.421C432.704 376.218 464.235 319.027 464.235 255.276C464.235 191.526 432.704 134.335 383.083 95.1315L414.72 63ZM160.405 127.092L192 159.181C162.24 182.681 143.317 217.013 143.317 255.276C143.317 293.539 162.219 327.871 192 351.372L160.405 383.461C120.725 352.119 95.552 306.379 95.552 255.276C95.552 204.174 120.725 158.433 160.405 127.092ZM351.595 127.092C391.296 158.433 416.448 204.174 416.448 255.276C416.448 306.379 391.275 352.119 351.595 383.461L320 351.372C349.781 327.871 368.683 293.539 368.683 255.276C368.683 217.013 349.781 182.703 320 159.181L351.595 127.092ZM256 192.722C291.505 192.722 320.287 221.504 320.287 257.009C320.287 292.514 291.505 321.296 256 321.296C220.495 321.296 191.713 292.514 191.713 257.009C191.713 221.504 220.495 192.722 256 192.722Z',
+                  symbol: ICONS_MAP.EVENT,
                   symbolSize: 15,
                 };
               } else {
@@ -319,7 +522,7 @@ export class EchartsOptionsService {
             const markLineData = series.markLine.data.find(
               (d) => d.xAxis === XAxisValue
             );
-            if (markLineData) {
+            if (markLineData && events.length > 0) {
               const event = events?.reduce((closestEvent, currentEvent) => {
                 const currentDifference = Math.abs(
                   new Date(currentEvent.creationTime).getTime() -

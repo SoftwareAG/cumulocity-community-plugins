@@ -6,7 +6,7 @@ import {
 } from '@c8y/ngx-components/datapoint-selector';
 import { DateTimeContext } from '@c8y/ngx-components';
 import { gettext } from '@c8y/ngx-components';
-import { aggregationType, IEvent, IMeasurement, ISeries } from '@c8y/client';
+import { aggregationType, IMeasurement, ISeries } from '@c8y/client';
 import type {
   BarSeriesOption,
   LineSeriesOption,
@@ -32,6 +32,7 @@ export type DatapointsGraphWidgetConfig = {
   yAxisSplitLines?: boolean;
   xAxisSplitLines?: boolean;
   events: Event[];
+  alarms: Alarm[];
 };
 
 export type DatapointsGraphWidgetTimeProps = Partial<
@@ -171,5 +172,15 @@ export interface Event {
     type: string;
   };
   color: string;
-  icon: string;
+}
+
+export interface Alarm {
+  __target: {
+    id: string;
+  };
+  filters: {
+    type: string;
+    severity?: string;
+  };
+  color: string;
 }
