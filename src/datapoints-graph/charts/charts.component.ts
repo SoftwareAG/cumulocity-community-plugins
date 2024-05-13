@@ -258,18 +258,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                   data: [],
                 },
                 markLine: {
-                  showSymbol: true,
-                  symbol: ['none', 'none'],
-                  data: this.echartsInstance
-                    .getOption()
-                    .series[0].markLine.data.filter(
-                      (line) =>
-                        !clickedAlarms.some(
-                          (alarm) =>
-                            line.alarmType === alarm.type &&
-                            line.xAxis === alarm.lastUpdated
-                        )
-                    ),
+                  data: [],
                 },
               },
             ],
