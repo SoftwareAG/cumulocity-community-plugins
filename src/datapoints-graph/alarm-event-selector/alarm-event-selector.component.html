@@ -70,21 +70,21 @@
           <input
             type="search"
             class="form-control"
-            placeholder="Search…"
-            [ngModel]="searchString"
-            (ngModelChange)="searchStringChanged($event)"
+            placeholder="Filter…"
+            [ngModel]="filterString"
+            (ngModelChange)="filterStringChanged($event)"
           />
           <span class="input-group-addon">
             <i
               c8yIcon="search"
-              *ngIf="!searchString; else clearSearchString"
+              *ngIf="!filterString; else clearFilterString"
             ></i>
-            <ng-template #clearSearchString>
+            <ng-template #clearFilterString>
               <i
                 c8yIcon="times"
                 class="text-muted"
-                *ngIf="searchString"
-                (click)="searchStringChanged()"
+                *ngIf="filterString"
+                (click)="filterStringChanged()"
               ></i>
             </ng-template>
           </span>
@@ -102,7 +102,7 @@
                 [title]="timelineTypeTexts.emptyStateTitle | translate"
                 [subtitle]="
                   items.length
-                    ? ('Try another search term.' | translate)
+                    ? ('Try another filter term.' | translate)
                     : (timelineTypeTexts.assetWithNoItemsEmptyStateSubtitle
                       | translate)
                 "
@@ -129,7 +129,7 @@
                 [isSelected]="selectedItems | includesAlarmOrEvent : item"
                 (added)="itemAdded($event)"
                 (removed)="itemRemoved($event)"
-                [highlightText]="searchStringChanges$ | async"
+                [highlightText]="filterStringChanges$ | async"
                 [timelineType]="timelineType"
                 class="d-contents"
                 *ngFor="let item of filteredItems; trackBy: trackByFn"

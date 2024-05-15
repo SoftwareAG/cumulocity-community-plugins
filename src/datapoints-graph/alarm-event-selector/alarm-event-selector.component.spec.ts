@@ -190,13 +190,13 @@ describe('AlarmEventSelectorComponent', () => {
       component.assetSelection.next({ id: 1 });
 
       // when
-      component.searchStringChanged('');
+      component.filterStringChanged('');
       tick(500);
       // then
       expect(result).toEqual([alarm1, alarm2, alarm3]);
 
       // when
-      component.searchStringChanged('c8y');
+      component.filterStringChanged('c8y');
       tick(500);
       // then
       expect(result).toEqual([alarm1, alarm2]);

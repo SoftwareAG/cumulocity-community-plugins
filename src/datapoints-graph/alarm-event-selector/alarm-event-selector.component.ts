@@ -44,17 +44,17 @@ export class AlarmEventSelectorComponent implements OnInit {
   @Input() selectedItems = new Array<AlarmOrEvent>();
   @Input() allowSearch = true;
   @Output() selectionChange = new EventEmitter<AlarmOrEvent[]>();
-  searchString = '';
+  filterString = '';
   maxNumberOfItems = 50;
 
   loadingItems = false;
   assetSelection = new BehaviorSubject<IIdentified>(null);
   items$: Observable<AlarmOrEvent[]>;
   filteredItems$: Observable<AlarmOrEvent[]>;
-  searchStringChanges$: Observable<string>;
+  filterStringChanges$: Observable<string>;
   blankItem: AlarmOrEvent;
   timelineTypeTexts: TimelineTypeTexts;
-  private searchString$ = new BehaviorSubject('');
+  private filterString$ = new BehaviorSubject('');
 
   constructor(
     private alarmEventSelectorService: AlarmEventSelectorService,
@@ -99,9 +99,9 @@ export class AlarmEventSelectorComponent implements OnInit {
     return `${item.filters.type}-${item.__target?.id}`;
   }
 
-  searchStringChanged(newValue = ''): void {
-    this.searchString$.next(newValue);
-    this.searchString = newValue;
+  filterStringChanged(newValue = ''): void {
+    this.filterString$.next(newValue);
+    this.filterString = newValue;
   }
 
   private async setupObservables(): Promise<void> {
@@ -129,23 +129,23 @@ export class AlarmEventSelectorComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.searchStringChanges$ = this.searchString$.pipe(
+    this.filterStringChanges$ = this.filterString$.pipe(
       distinctUntilChanged(),
       debounceTime(500),
       shareReplay(1)
     );
 
     this.filteredItems$ = combineLatest([
-      this.searchStringChanges$,
+      this.filterStringChanges$,
       this.items$,
     ]).pipe(
-      map(([searchString, items]) => {
-        if (!searchString) {
+      map(([filterString, items]) => {
+        if (!filterString) {
           return items;
         }
-        const lowerCaseSearchString = searchString.toLowerCase();
+        const lowerCaseFilterString = filterString.toLowerCase();
         return items.filter((item) =>
-          this.includesSearchString(item, lowerCaseSearchString)
+          this.includesFilterString(item, lowerCaseFilterString)
         );
       }),
       map((filtered) => filtered.slice(0, this.maxNumberOfItems))
@@ -154,24 +154,24 @@ export class AlarmEventSelectorComponent implements OnInit {
 
   private selectAsset(asset: IIdentified) {
     this.assetSelection.next(asset);
-    this.searchStringChanged();
+    this.filterStringChanged();
   }
 
   private emitCurrentSelection() {
     this.selectionChange.emit(this.selectedItems);
   }
 
-  private includesSearchString(
+  private includesFilterString(
     alarm: AlarmOrEvent,
-    lowerCaseSearchString: string
+    lowerCaseFilterString: string
   ): boolean {
     const label = alarm.label?.toLowerCase();
-    if (label && label.includes(lowerCaseSearchString)) {
+    if (label && label.includes(lowerCaseFilterString)) {
       return true;
     }
 
     const type = alarm.filters.type?.toLowerCase();
-    if (type && type.includes(lowerCaseSearchString)) {
+    if (type && type.includes(lowerCaseFilterString)) {
       return true;
     }
 
