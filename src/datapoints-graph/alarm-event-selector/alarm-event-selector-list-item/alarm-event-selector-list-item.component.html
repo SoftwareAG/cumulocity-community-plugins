@@ -89,7 +89,7 @@
     [label]="'Remove from list' | translate"
     (click)="remove()"
   ></c8y-li-action>
-  <c8y-li-collapse>
+  <c8y-li-collapse *ngIf="showAttributesForm">
     <div class="data-point-details">
       <c8y-alarm-event-attributes-form
         formControlName="details"

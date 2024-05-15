@@ -85,7 +85,7 @@ export class AlarmEventSelectorService {
     parentReference: IIdentified,
     timelineType: TimelineType
   ): Promise<AlarmOrEvent[]> {
-    const filters = { source: parentReference.id, pageSize: 10 };
+    const filters = { source: parentReference.id, pageSize: 1000 };
 
     return timelineType === 'ALARM'
       ? await this.getAlarmsOfAsset(parentReference, filters)
@@ -127,7 +127,7 @@ export class AlarmEventSelectorService {
     parentReference: IIdentified,
     filters: { pageSize: number; source: string | number }
   ) {
-    const res = await this.alarmService.list(filters);
+    const res = await this.alarmService.list({ ...filters, pageSize: 1000 });
     const alarms: Promise<AlarmDetails>[] = uniqBy(res.data, 'type').map(
       async (alarm: IAlarm) => this.createItem('ALARM', alarm, parentReference)
     );

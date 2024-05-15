@@ -49,6 +49,7 @@ export class AlarmEventSelectorListItemComponent
   @Input() optionToRemove = false;
   @Input() showActiveToggle = false;
   @Input() isCollapsed = true;
+  @Input() showAttributesForm = false;
 
   @Output() added = new EventEmitter<AlarmOrEvent>();
   @Output() removed = new EventEmitter<AlarmOrEvent>();
