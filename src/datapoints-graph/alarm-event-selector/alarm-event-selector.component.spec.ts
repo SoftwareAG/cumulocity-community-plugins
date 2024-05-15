@@ -9,11 +9,7 @@ import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { AlarmEventSelectorComponent } from './alarm-event-selector.component';
 import { AlarmEventSelectorService } from './alarm-event-selector.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import {
-  AlarmDetails,
-  AlarmOrEvent,
-  DEFAULT_SEVERITY_VALUES,
-} from './alarm-event-selector.model';
+import { AlarmDetails, AlarmOrEvent } from './alarm-event-selector.model';
 import {
   AssetSelectionChangeEvent,
   AssetSelectorOptions,
@@ -70,7 +66,6 @@ describe('AlarmEventSelectorComponent', () => {
       label: 'c8y_UnavailabilityAlarm',
       filters: {
         type: 'UnavailabilityAlarm',
-        severities: DEFAULT_SEVERITY_VALUES,
       },
       __target: asset1,
     };
@@ -131,7 +126,6 @@ describe('AlarmEventSelectorComponent', () => {
         label: '',
         filters: {
           type: '',
-          severities: DEFAULT_SEVERITY_VALUES,
         },
         __target: asset1,
       };
@@ -150,7 +144,6 @@ describe('AlarmEventSelectorComponent', () => {
       component.items$.subscribe((items) => (result = items));
       component.assetSelection.next(asset1);
       tick(500);
-      expect(component.blankItem).toEqual(blankItem);
       expect(component.loadingItems).toBe(true);
       tick(500);
       // then
@@ -165,7 +158,6 @@ describe('AlarmEventSelectorComponent', () => {
         label: 'OverheatAlarm',
         filters: {
           type: 'c8y_OverheatAlarm',
-          severities: DEFAULT_SEVERITY_VALUES,
         },
         __target: asset1,
       };
@@ -175,7 +167,6 @@ describe('AlarmEventSelectorComponent', () => {
         label: '_OtherAlarm',
         filters: {
           type: '_OtherAlarm',
-          severities: DEFAULT_SEVERITY_VALUES,
         },
         __target: asset1,
       };

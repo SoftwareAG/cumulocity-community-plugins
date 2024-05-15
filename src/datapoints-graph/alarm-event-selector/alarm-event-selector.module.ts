@@ -10,7 +10,6 @@ import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/a
 import { AlarmEventSelectorComponent } from './alarm-event-selector.component';
 import { AssetSelectorModule } from '@c8y/ngx-components/assets-navigator';
 import { IncludesAlarmOrEventPipe } from './pipes/includes-alarm.pipe';
-import { SeverityIconPipe } from './pipes/severity-icon.pipe';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CustomAlarmEventFormComponent } from './custom-alarm-event-form/custom-alarm-event-form.component';
 
@@ -30,7 +29,6 @@ import { CustomAlarmEventFormComponent } from './custom-alarm-event-form/custom-
     AlarmEventSelectorModalComponent,
     AlarmEventSelectorComponent,
     IncludesAlarmOrEventPipe,
-    SeverityIconPipe,
     CustomAlarmEventFormComponent,
   ],
   exports: [AlarmEventSelectionListComponent],

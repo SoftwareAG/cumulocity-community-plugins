@@ -12,11 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
-import {
-  DEFAULT_SEVERITY_VALUES,
-  SEVERITY_LABELS,
-  TimelineType,
-} from '../alarm-event-selector.model';
+import { TimelineType } from '../alarm-event-selector.model';
 
 @Component({
   selector: 'c8y-alarm-event-attributes-form',
@@ -39,8 +35,6 @@ export class AlarmEventAttributesFormComponent
 {
   @Input() timelineType: TimelineType;
   formGroup: FormGroup;
-  severityList = Object.keys(SEVERITY_LABELS);
-  readonly SEVERITY_LABELS = SEVERITY_LABELS;
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -50,14 +44,6 @@ export class AlarmEventAttributesFormComponent
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
       timelineType: '',
     });
-    if (this.timelineType === 'ALARM') {
-      this.formGroup.addControl(
-        'severities',
-        this.formBuilder.group(DEFAULT_SEVERITY_VALUES, {
-          validators: this.minSelectedCheckboxes(1),
-        })
-      );
-    }
   }
 
   validate(_control: AbstractControl): ValidationErrors {

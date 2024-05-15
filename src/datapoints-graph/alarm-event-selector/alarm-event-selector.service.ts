@@ -4,7 +4,6 @@ import {
   AlarmDetails,
   AlarmEventSelectorModalOptions,
   AlarmOrEvent,
-  DEFAULT_SEVERITY_VALUES,
   EventDetails,
   TimelineType,
   TimelineTypeTexts,
@@ -108,7 +107,6 @@ export class AlarmEventSelectorService {
         label: '',
         filters: {
           type: '',
-          severities: DEFAULT_SEVERITY_VALUES,
         },
         __target: asset,
       };

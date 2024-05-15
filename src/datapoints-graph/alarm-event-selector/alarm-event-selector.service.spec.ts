@@ -10,10 +10,7 @@ import {
   IIdentified,
   IResultList,
 } from '@c8y/client';
-import {
-  AlarmDetails,
-  DEFAULT_SEVERITY_VALUES,
-} from './alarm-event-selector.model';
+import { AlarmDetails } from './alarm-event-selector.model';
 
 describe('AlarmEventSelectorService', () => {
   let service: AlarmEventSelectorService;
@@ -63,12 +60,6 @@ describe('AlarmEventSelectorService', () => {
       label: 'Critical alarm',
       filters: {
         type: 'alarm',
-        severities: {
-          CRITICAL: true,
-          MAJOR: false,
-          MINOR: false,
-          WARNING: false,
-        },
       },
     };
     jest
@@ -161,7 +152,6 @@ describe('AlarmEventSelectorService', () => {
         label: '',
         filters: {
           type: '',
-          severities: DEFAULT_SEVERITY_VALUES,
         },
         __target: { id: 1 },
       });
