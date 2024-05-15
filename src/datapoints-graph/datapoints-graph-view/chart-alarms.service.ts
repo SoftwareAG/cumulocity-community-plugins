@@ -20,30 +20,28 @@ export class ChartAlarmsService extends AlarmService {
     this.apiService = apiService;
   }
 
-  listAlarms$(params?, alarms?: Alarm[]): Observable<IAlarm[]> {
-    return from(
-      new Promise<IAlarm[]>(async (resolve) => {
-        const url = `/${this.baseUrl}/alarms`;
-        const allAlarms: IAlarm[] = [];
-        for (const alarm of alarms) {
-          const fetchOptions: IFetchOptions = {
-            params: {
-              source: alarm.__target.id,
-              type: alarm.filters.type,
-              withTotalPages: true,
-              pageSize: 1000,
-              ...params,
-            },
-          };
-          const result = await this.getAlarms(url, fetchOptions);
-          result.data.forEach((iAlarm) => {
-            iAlarm.color = alarm.color;
-          });
-          allAlarms.push(...result.data);
-        }
-        resolve(allAlarms);
-      })
-    );
+  listAlarms$(params?, alarms?: Alarm[]): Promise<IAlarm[]> {
+    return new Promise<IAlarm[]>(async (resolve) => {
+      const url = `/${this.baseUrl}/alarms`;
+      const allAlarms: IAlarm[] = [];
+      for (const alarm of alarms) {
+        const fetchOptions: IFetchOptions = {
+          params: {
+            source: alarm.__target.id,
+            type: alarm.filters.type,
+            withTotalPages: true,
+            pageSize: 1000,
+            ...params,
+          },
+        };
+        const result = await this.getAlarms(url, fetchOptions);
+        result.data.forEach((iAlarm) => {
+          iAlarm.color = alarm.color;
+        });
+        allAlarms.push(...result.data);
+      }
+      resolve(allAlarms);
+    });
   }
 
   private async getAlarms(

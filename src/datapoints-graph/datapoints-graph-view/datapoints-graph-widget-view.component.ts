@@ -18,6 +18,9 @@ import { cloneDeep } from 'lodash-es';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
+import { ChartEventsService } from './chart-events.service';
+import { ChartAlarmsService } from './chart-alarms.service';
+import { IAlarm, IEvent } from '@c8y/client';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -28,6 +31,8 @@ import { Subject } from 'rxjs/internal/Subject';
 export class DatapointsGraphWidgetViewComponent
   implements OnChanges, OnDestroy
 {
+  events: IEvent[] = [];
+  alarms: IAlarm[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator;
@@ -52,7 +57,11 @@ export class DatapointsGraphWidgetViewComponent
   readonly showDatapointLabel = gettext('Show data point');
   private destroy$ = new Subject<void>();
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private eventsService: ChartEventsService,
+    private alarmsService: ChartAlarmsService
+  ) {
     this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -83,9 +92,11 @@ export class DatapointsGraphWidgetViewComponent
     this.timeControlsFormGroup.patchValue(timeProps);
   }
 
-  updateTimeRangeOnRealtime(
+  async updateTimeRangeOnRealtime(
     timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
-  ): void {
+  ): Promise<void> {
+    this.alarms = await this.loadAlarms(timeRange);
+    this.events = await this.loadEvents(timeRange);
     this.timeControlsFormGroup.patchValue(timeRange, { emitEvent: false });
   }
 
@@ -114,5 +125,53 @@ export class DatapointsGraphWidgetViewComponent
       widgetInstanceGlobalTimeContext: [false, []],
     });
     this.timeControlsFormGroup.patchValue(this.displayConfig);
+  }
+
+  private loadEvents(timeRange): Promise<any> {
+    const formattedTimeRange = {
+      dateFrom: timeRange.dateFrom.toISOString(),
+      dateTo: timeRange.dateTo.toISOString(),
+    };
+    return this.eventsService.listEvents$(formattedTimeRange, [
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'TestEvent' },
+        color: '#08293F',
+      },
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'AnotherEventType' },
+        color: '#349EDF',
+      },
+      {
+        __target: { id: '352734984' },
+        filters: { type: 'AnotherEventType' },
+        color: '#349EDF',
+      },
+    ]);
+  }
+
+  private loadAlarms(timeRange): Promise<any> {
+    const formattedTimeRange = {
+      dateFrom: timeRange.dateFrom.toISOString(),
+      dateTo: timeRange.dateTo.toISOString(),
+    };
+    return this.alarmsService.listAlarms$(formattedTimeRange, [
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'TestAlarm' },
+        color: '#08293F',
+      },
+      {
+        __target: { id: '7713695199' },
+        filters: { type: 'AnotherAlarmType' },
+        color: '#349EDF',
+      },
+      {
+        __target: { id: '352734984' },
+        filters: { type: 'AnotherAlarmType' },
+        color: '#349EDF',
+      },
+    ]);
   }
 }

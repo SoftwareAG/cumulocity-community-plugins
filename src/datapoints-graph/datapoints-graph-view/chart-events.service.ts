@@ -20,30 +20,28 @@ export class ChartEventsService extends EventService {
     this.apiService = apiService;
   }
 
-  listEvents$(params?, events?: Event[]): Observable<IEvent[]> {
-    return from(
-      new Promise<IEvent[]>(async (resolve) => {
-        const url = `/${this.baseUrl}/events`;
-        const allEvents: IEvent[] = [];
-        for (const event of events) {
-          const fetchOptions: IFetchOptions = {
-            params: {
-              source: event.__target.id,
-              type: event.filters.type,
-              withTotalPages: true,
-              pageSize: 1000,
-              ...params,
-            },
-          };
-          const result = await this.getEvents(url, fetchOptions);
-          result.data.forEach((iEvent) => {
-            iEvent.color = event.color;
-          });
-          allEvents.push(...result.data);
-        }
-        resolve(allEvents);
-      })
-    );
+  listEvents$(params?, events?: Event[]): Promise<IEvent[]> {
+    return new Promise<IEvent[]>(async (resolve) => {
+      const url = `/${this.baseUrl}/events`;
+      const allEvents: IEvent[] = [];
+      for (const event of events) {
+        const fetchOptions: IFetchOptions = {
+          params: {
+            source: event.__target.id,
+            type: event.filters.type,
+            withTotalPages: true,
+            pageSize: 1000,
+            ...params,
+          },
+        };
+        const result = await this.getEvents(url, fetchOptions);
+        result.data.forEach((iEvent) => {
+          iEvent.color = event.color;
+        });
+        allEvents.push(...result.data);
+      }
+      resolve(allEvents);
+    });
   }
 
   private async getEvents(

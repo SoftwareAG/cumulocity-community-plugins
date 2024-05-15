@@ -13,9 +13,7 @@ import {
 } from '../model';
 import { MeasurementRealtimeService } from '@c8y/ngx-components';
 import type { ECharts, SeriesOption } from 'echarts';
-import { ChartEventsService } from './chart-events.service';
 import { EchartsOptionsService } from './echarts-options.service';
-import { ChartAlarmsService } from './chart-alarms.service';
 
 type Milliseconds = number;
 
@@ -30,9 +28,7 @@ export class ChartRealtimeService {
 
   constructor(
     private measurementRealtime: MeasurementRealtimeService,
-    private eventsService: ChartEventsService,
-    private echartsOptionsService: EchartsOptionsService,
-    private alarmsService: ChartAlarmsService
+    private echartsOptionsService: EchartsOptionsService
   ) {}
 
   startRealtime(
@@ -83,23 +79,13 @@ export class ChartRealtimeService {
       )
     ).pipe(throttleTime(this.MIN_REALTIME_TIMEOUT));
 
-    const events$ = interval(this.INTERVAL).pipe(
-      switchMap(() => this.loadEvents().pipe(throttleTime(updateThrottleTime)))
-    );
-
-    const alarms$ = interval(this.INTERVAL).pipe(
-      switchMap(() => this.loadAlarms().pipe(throttleTime(updateThrottleTime)))
-    );
-
     this.realtimeSubscription = combineLatest([
       measurement$.pipe(buffer(bufferReset$)),
-      events$,
-      alarms$,
-    ]).subscribe(([measurements, events, alarms]) => {
+    ]).subscribe(([measurements]) => {
       this.updateChartInstance(
         measurements,
-        events,
-        alarms,
+        [],
+        [],
         datapointOutOfSyncCallback
       );
     });
@@ -107,54 +93,6 @@ export class ChartRealtimeService {
 
   stopRealtime() {
     this.realtimeSubscription?.unsubscribe();
-  }
-
-  private loadEvents(): Observable<any> {
-    const timeRange = {
-      dateFrom: this.currentTimeRange.dateFrom.toISOString(),
-      dateTo: this.currentTimeRange.dateTo.toISOString(),
-    };
-    return this.eventsService.listEvents$(timeRange, [
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'TestEvent' },
-        color: '#08293F',
-      },
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'AnotherEventType' },
-        color: '#349EDF',
-      },
-      {
-        __target: { id: '352734984' },
-        filters: { type: 'AnotherEventType' },
-        color: '#349EDF',
-      },
-    ]);
-  }
-
-  private loadAlarms(): Observable<any> {
-    const timeRange = {
-      dateFrom: this.currentTimeRange.dateFrom.toISOString(),
-      dateTo: this.currentTimeRange.dateTo.toISOString(),
-    };
-    return this.alarmsService.listAlarms$(timeRange, [
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'TestAlarm' },
-        color: '#08293F',
-      },
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'AnotherAlarmType' },
-        color: '#349EDF',
-      },
-      {
-        __target: { id: '352734984' },
-        filters: { type: 'AnotherAlarmType' },
-        color: '#349EDF',
-      },
-    ]);
   }
 
   private removeValuesBeforeTimeRange(series: SeriesOption): SeriesValue[] {

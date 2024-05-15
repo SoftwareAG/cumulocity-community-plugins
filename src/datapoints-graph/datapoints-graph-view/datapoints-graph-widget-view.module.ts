@@ -5,6 +5,8 @@ import { TimeControlsModule } from '../time-controls';
 import { ChartsComponent } from '../charts';
 import { CoreModule } from '@c8y/ngx-components';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ChartEventsService } from './chart-events.service';
+import { ChartAlarmsService } from './chart-alarms.service';
 
 @NgModule({
   imports: [
@@ -15,5 +17,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     TimeControlsModule,
   ],
   declarations: [DatapointsGraphWidgetViewComponent],
+  providers: [ChartEventsService, ChartAlarmsService],
 })
 export class DatapointsGraphWidgetViewModule {}

@@ -40,9 +40,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
-import { ChartEventsService } from './chart-events.service';
 import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
-import { ChartAlarmsService } from './chart-alarms.service';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -59,8 +57,6 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     ChartTypesService,
     EchartsOptionsService,
     CustomMeasurementService,
-    ChartEventsService,
-    ChartAlarmsService,
     YAxisService,
   ],
   standalone: true,
@@ -76,12 +72,12 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   chartOption$: Observable<EChartsOption>;
   echartsInstance: ECharts;
-  events: IEvent[] = [];
-  alarms: IAlarm[] = [];
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
   @Input() config: DatapointsGraphWidgetConfig;
   @Input() alerts: DynamicComponentAlertAggregator;
+  @Input() events: IEvent[] = [];
+  @Input() alarms: IAlarm[] = [];
   @Output() configChangeOnZoomOut =
     new EventEmitter<DatapointsGraphWidgetTimeProps>();
   @Output() timeRangeChangeOnRealtime = new EventEmitter<
@@ -98,8 +94,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
   constructor(
     private measurementService: CustomMeasurementService,
-    private eventsService: ChartEventsService,
-    private alarmsService: ChartAlarmsService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService
@@ -114,13 +108,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         if (this.echartsInstance) {
           this.echartsInstance.on('click', this.onChartClick.bind(this));
         }
-        return forkJoin([this.loadEvents(), this.loadAlarms()]).pipe(
-          map(([events, alarms]) => {
-            this.events = events;
-            this.alarms = alarms;
-            return this.getChartOptions(datapointsWithValues);
-          })
-        );
+        return of(this.getChartOptions(datapointsWithValues));
       }),
       tap(() => {
         if (this.zoomInActive) {
@@ -288,46 +276,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       key: 'dataZoomSelect',
       dataZoomSelectActive: this.zoomInActive,
     });
-  }
-
-  private loadEvents(): Observable<any> {
-    return this.eventsService.listEvents$(this.getTimeRange(), [
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'TestEvent' },
-        color: '#08293F',
-      },
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'AnotherEventType' },
-        color: '#349EDF',
-      },
-      {
-        __target: { id: '352734984' },
-        filters: { type: 'AnotherEventType' },
-        color: '#349EDF',
-      },
-    ]);
-  }
-
-  private loadAlarms(): Observable<any> {
-    return this.alarmsService.listAlarms$(this.getTimeRange(), [
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'TestAlarm' },
-        color: '#08293F',
-      },
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'AnotherAlarmType' },
-        color: '#349EDF',
-      },
-      {
-        __target: { id: '352734984' },
-        filters: { type: 'AnotherAlarmType' },
-        color: '#349EDF',
-      },
-    ]);
   }
 
   async zoomOut() {
