@@ -70,6 +70,7 @@ export type TimelineTypeTexts = {
   emptyStateTitle: string;
   emptyStateSubtitle: string;
   addButtonLabel: string;
+  addCustomItemButtonLabel: string;
   selectorTitle: string;
   availableItemsTitle: string;
   assetWithNoItemsEmptyStateSubtitle: string;

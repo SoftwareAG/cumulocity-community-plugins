@@ -62,32 +62,55 @@
         >
           {{ timelineTypeTexts.availableItemsTitle | translate }}
         </p>
-        <div
-          *ngIf="!loadingItems"
-          id="search"
-          class="input-group input-group-search m-t-4"
-        >
-          <input
-            type="search"
-            class="form-control"
-            placeholder="Filter…"
-            [ngModel]="filterString"
-            (ngModelChange)="filterStringChanged($event)"
-          />
-          <span class="input-group-addon">
-            <i
-              c8yIcon="search"
-              *ngIf="!filterString; else clearFilterString"
-            ></i>
-            <ng-template #clearFilterString>
+        <div class="d-flex">
+          <div
+            *ngIf="!loadingItems"
+            id="search"
+            class="input-group input-group-search m-t-4"
+          >
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Filter…"
+              [ngModel]="filterString"
+              (ngModelChange)="filterStringChanged($event)"
+            />
+            <span class="input-group-addon">
               <i
-                c8yIcon="times"
-                class="text-muted"
-                *ngIf="filterString"
-                (click)="filterStringChanged()"
+                c8yIcon="search"
+                *ngIf="!filterString; else clearFilterString"
               ></i>
-            </ng-template>
-          </span>
+              <ng-template #clearFilterString>
+                <i
+                  c8yIcon="times"
+                  class="text-muted"
+                  *ngIf="filterString"
+                  (click)="filterStringChanged()"
+                ></i>
+              </ng-template>
+            </span>
+          </div>
+
+          <div
+            class="dropdown m-r-4"
+            dropdown
+            #dropdown="bs-dropdown"
+            container="body"
+            [insideClick]="true"
+          >
+            <button class="btn btn-default" dropdownToggle>
+              {{ timelineTypeTexts.addCustomItemButtonLabel | translate }}
+            </button>
+
+            <div *dropdownMenu class="dropdown-menu p-16">
+              <c8y-custom-alarm-event-form
+                [timelineType]="timelineType"
+                [target]="assetSelection | async"
+                (added)="itemAdded($event)"
+                (cancel)="dropdown.isOpen = false"
+              ></c8y-custom-alarm-event-form>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -133,16 +156,6 @@
                 [timelineType]="timelineType"
                 class="d-contents"
                 *ngFor="let item of filteredItems; trackBy: trackByFn"
-              ></c8y-alarm-event-selector-list-item>
-
-              <c8y-alarm-event-selector-list-item
-                [(ngModel)]="blankItem"
-                [isSelected]="selectedItems | includesAlarmOrEvent : blankItem"
-                [isCollapsed]="false"
-                [timelineType]="timelineType"
-                (added)="itemAdded($event)"
-                (removed)="itemRemoved($event)"
-                class="d-contents"
               ></c8y-alarm-event-selector-list-item>
             </c8y-list-group>
           </ng-container>

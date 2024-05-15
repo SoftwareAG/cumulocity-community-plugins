@@ -1,0 +1,36 @@
+<form [formGroup]="formGroup">
+  <div
+    class="c8y-list__item__colorpicker p-t-0 p-b-0 p-l-0"
+    [title]="'Change color' | translate"
+  >
+    <label translate>Color</label>
+    <div class="c8y-colorpicker">
+      <input
+        type="color"
+        formControlName="color"
+        (click)="$event.stopPropagation()"
+      />
+      <span [style.background-color]="formGroup.value.color"></span>
+    </div>
+  </div>
+
+  <div class="data-point-details">
+    <c8y-alarm-event-attributes-form
+      formControlName="details"
+      [timelineType]="timelineType"
+    ></c8y-alarm-event-attributes-form>
+  </div>
+
+  <div class="d-flex">
+    <button class="btn btn-default" (click)="cancel.emit()">
+      {{ 'Cancel' | translate }}
+    </button>
+    <button
+      class="btn btn-default"
+      [disabled]="(valid$ | async) === false"
+      (click)="add()"
+    >
+      {{ 'Add' | translate }}
+    </button>
+  </div>
+</form>

@@ -40,7 +40,7 @@ import { Observable, Subject } from 'rxjs';
   ],
 })
 export class AlarmEventSelectorListItemComponent
-  implements ControlValueAccessor, Validator, AfterViewInit, OnDestroy
+  implements ControlValueAccessor, Validator, OnDestroy
 {
   @Input() timelineType: TimelineType;
   @Input() highlightText: string;
@@ -48,13 +48,10 @@ export class AlarmEventSelectorListItemComponent
   @Input() isSelected = false;
   @Input() optionToRemove = false;
   @Input() showActiveToggle = false;
-  @Input() isCollapsed = true;
   @Input() showAttributesForm = false;
 
   @Output() added = new EventEmitter<AlarmOrEvent>();
   @Output() removed = new EventEmitter<AlarmOrEvent>();
-
-  @ViewChild('li', { static: true }) listItem: ListItemComponent;
 
   formGroup: FormGroup;
   valid$: Observable<boolean>;
@@ -71,12 +68,6 @@ export class AlarmEventSelectorListItemComponent
       takeUntil(this.destroy$),
       map((val) => val === 'VALID')
     );
-  }
-
-  ngAfterViewInit() {
-    queueMicrotask(() => {
-      this.listItem.collapsed = this.isCollapsed;
-    });
   }
 
   ngOnDestroy() {

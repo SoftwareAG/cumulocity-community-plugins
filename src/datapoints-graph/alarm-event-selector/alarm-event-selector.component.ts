@@ -52,14 +52,10 @@ export class AlarmEventSelectorComponent implements OnInit {
   items$: Observable<AlarmOrEvent[]>;
   filteredItems$: Observable<AlarmOrEvent[]>;
   filterStringChanges$: Observable<string>;
-  blankItem: AlarmOrEvent;
   timelineTypeTexts: TimelineTypeTexts;
   private filterString$ = new BehaviorSubject('');
 
-  constructor(
-    private alarmEventSelectorService: AlarmEventSelectorService,
-    private color: ColorService
-  ) {}
+  constructor(private alarmEventSelectorService: AlarmEventSelectorService) {}
 
   async ngOnInit(): Promise<void> {
     this.timelineTypeTexts = this.alarmEventSelectorService.timelineTypeTexts(
@@ -105,17 +101,9 @@ export class AlarmEventSelectorComponent implements OnInit {
   }
 
   private async setupObservables(): Promise<void> {
-    const blankItemColor = await this.color.generateColor(null);
     this.items$ = this.assetSelection.pipe(
       tap(() => {
         this.loadingItems = true;
-      }),
-      tap((asset) => {
-        this.blankItem = this.alarmEventSelectorService.getBlankItem(
-          this.timelineType,
-          asset,
-          blankItemColor
-        );
       }),
       switchMap((asset) =>
         asset?.id

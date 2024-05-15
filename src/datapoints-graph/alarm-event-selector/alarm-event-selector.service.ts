@@ -37,6 +37,7 @@ export class AlarmEventSelectorService {
         emptyStateTitle: gettext('No alarms to display.'),
         emptyStateSubtitle: gettext('Add your first alarm.'),
         addButtonLabel: gettext('Add alarm'),
+        addCustomItemButtonLabel: gettext('Add custom alarm'),
         selectorTitle: gettext('Alarms selector'),
         availableItemsTitle: gettext('Available alarms'),
         assetWithNoItemsEmptyStateSubtitle: gettext(
@@ -55,6 +56,7 @@ export class AlarmEventSelectorService {
       emptyStateTitle: gettext('No events to display.'),
       emptyStateSubtitle: gettext('Add your first event.'),
       addButtonLabel: gettext('Add event'),
+      addCustomItemButtonLabel: gettext('Add custom event'),
       selectorTitle: gettext('Events selector'),
       availableItemsTitle: gettext('Available events'),
       assetWithNoItemsEmptyStateSubtitle: gettext(
