@@ -106,7 +106,7 @@
               <c8y-custom-alarm-event-form
                 [timelineType]="timelineType"
                 [target]="assetSelection | async"
-                (added)="itemAdded($event)"
+                (added)="itemAdded($event); dropdown.isOpen = false"
                 (cancel)="dropdown.isOpen = false"
               ></c8y-custom-alarm-event-form>
             </div>
@@ -119,6 +119,17 @@
       >
         <ng-container *ngIf="!loadingItems; else loadingData">
           <ng-container *ngIf="items$ | async as items">
+            <div *ngIf="items.length">
+              <p>
+                <strong>{{
+                  timelineTypeTexts.recentItemsWarningTitle | translate
+                }}</strong>
+              </p>
+              <small>{{
+                timelineTypeTexts.recentItemsWarningText | translate
+              }}</small>
+            </div>
+
             <div class="p-16" *ngIf="!filteredItems.length">
               <c8y-ui-empty-state
                 [icon]="timelineTypeTexts.emptyStateIcon"

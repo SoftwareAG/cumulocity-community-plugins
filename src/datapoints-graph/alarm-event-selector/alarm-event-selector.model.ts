@@ -55,4 +55,6 @@ export type TimelineTypeTexts = {
   largeNumberOfItemsInfo: string;
   selectedItemsTitle: string;
   noSelectedItemsTitle: string;
+  recentItemsWarningTitle: string;
+  recentItemsWarningText: string;
 };
