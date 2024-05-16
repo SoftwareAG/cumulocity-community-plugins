@@ -141,6 +141,88 @@
       </div>
     </div>
   </div>
+  <div class="flex-grow p-t-8 d-flex a-i-start gap-8 inner-scroll p-b-4">
+    <div
+      class="c8y-datapoint-pill"
+      *ngFor="let alarm of alarms"
+      title="{{ alarm.type }} "
+    >
+      <button
+        type="button"
+        title="{{ alarm.type }} "
+        class="c8y-datapoint-pill__btn"
+        (click)="toggleAlarmEventType(alarm)"
+      >
+        <i
+          [c8yIcon]="
+            alarm.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+          "
+          class="icon-14"
+        ></i>
+      </button>
+      <div
+        class="c8y-datapoint-pill__label"
+        style="padding-top: 3px; padding-bottom: 2px"
+      >
+        <i
+          c8yIcon="circle"
+          class="m-r-4 icon-14"
+          [ngStyle]="{
+            color: alarm.color
+          }"
+        ></i>
+        <span
+          class="text-truncate"
+          [ngClass]="{ 'text-muted': alarm.__hidden }"
+        >
+          <span class="text-truncate">
+            {{ alarm.type }}
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="flex-grow p-t-8 d-flex a-i-start gap-8 inner-scroll p-b-4">
+    <div
+      class="c8y-datapoint-pill"
+      *ngFor="let event of events"
+      title="{{ event.type }} "
+    >
+      <button
+        type="button"
+        title="{{ event.type }} "
+        class="c8y-datapoint-pill__btn"
+        (click)="toggleAlarmEventType(event)"
+      >
+        <i
+          [c8yIcon]="
+            event.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+          "
+          class="icon-14"
+        ></i>
+      </button>
+      <div
+        class="c8y-datapoint-pill__label"
+        style="padding-top: 3px; padding-bottom: 2px"
+      >
+        <i
+          c8yIcon="circle"
+          class="m-r-4 icon-14"
+          [ngStyle]="{
+            color: event.color
+          }"
+        ></i>
+        <span
+          class="text-truncate"
+          [ngClass]="{ 'text-muted': event.__hidden }"
+        >
+          <span class="text-truncate">
+            {{ event.type }}
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <c8y-charts

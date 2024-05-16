@@ -105,9 +105,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
           this.echartsInstance?.clear();
           return of(null);
         }
-        if (this.echartsInstance) {
-          this.echartsInstance.on('click', this.onChartClick.bind(this));
-        }
         return of(this.getChartOptions(datapointsWithValues));
       }),
       tap(() => {
@@ -124,15 +121,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     this.configChangedSubject.next();
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.alerts.setAlertGroupDismissStrategy(
       'warning',
       DismissAlertStrategy.TEMPORARY_OR_PERMANENT
     );
-
-    if (this.echartsInstance) {
-      this.echartsInstance.on('click', this.onChartClick.bind(this));
-    }
   }
 
   ngOnDestroy() {
@@ -154,6 +147,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.chartRealtimeService.stopRealtime();
       }
     });
+    this.echartsInstance.on('click', this.onChartClick.bind(this));
   }
 
   onChartClick(params) {
@@ -370,7 +364,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     datapointsWithValues: DatapointWithValues[]
   ): EChartsOption {
     const timeRange = this.getTimeRange();
-
     return this.echartsOptionsService.getChartOptions(
       datapointsWithValues,
       timeRange,

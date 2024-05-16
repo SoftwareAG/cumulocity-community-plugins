@@ -33,6 +33,8 @@ export class DatapointsGraphWidgetViewComponent
 {
   events: IEvent[] = [];
   alarms: IAlarm[] = [];
+  filteredAlarms: IAlarm[] = [];
+  filteredEvents: IEvent[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator;
@@ -65,7 +67,9 @@ export class DatapointsGraphWidgetViewComponent
     this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(async (value) => {
+        this.alarms = await this.loadAlarms(value);
+        this.events = await this.loadEvents(value);
         this.displayConfig = { ...this.displayConfig, ...value };
       });
   }
@@ -115,6 +119,19 @@ export class DatapointsGraphWidgetViewComponent
     this.datapointsOutOfSync.set(dpMatch, true);
   }
 
+  toggleAlarmEventType(AlarmOrEvent: IAlarm | IEvent) {
+    const alarms = this.alarms;
+    const typeToHide = AlarmOrEvent.type;
+
+    for (const alarm of alarms) {
+      if (alarm.type === typeToHide) {
+        alarm.__hidden = !alarm.__hidden;
+      }
+    }
+
+    this.displayConfig = { ...this.displayConfig };
+  }
+
   private initForm(): void {
     this.timeControlsFormGroup = this.formBuilder.group({
       dateFrom: [null, [Validators.required]],
@@ -129,8 +146,8 @@ export class DatapointsGraphWidgetViewComponent
 
   private loadEvents(timeRange): Promise<any> {
     const formattedTimeRange = {
-      dateFrom: timeRange.dateFrom.toISOString(),
-      dateTo: timeRange.dateTo.toISOString(),
+      dateFrom: new Date(timeRange.dateFrom).toISOString(),
+      dateTo: new Date(timeRange.dateTo).toISOString(),
     };
     return this.eventsService.listEvents$(formattedTimeRange, [
       {
@@ -153,8 +170,8 @@ export class DatapointsGraphWidgetViewComponent
 
   private loadAlarms(timeRange): Promise<any> {
     const formattedTimeRange = {
-      dateFrom: timeRange.dateFrom.toISOString(),
-      dateTo: timeRange.dateTo.toISOString(),
+      dateFrom: new Date(timeRange.dateFrom).toISOString(),
+      dateTo: new Date(timeRange.dateTo).toISOString(),
     };
     return this.alarmsService.listAlarms$(formattedTimeRange, [
       {

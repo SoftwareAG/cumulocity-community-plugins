@@ -10,7 +10,6 @@ import {
 } from '@c8y/client';
 import { ApiService } from '@c8y/ngx-components/api';
 import { Event } from '../model';
-import { Observable, from } from 'rxjs';
 
 @Injectable()
 export class ChartEventsService extends EventService {

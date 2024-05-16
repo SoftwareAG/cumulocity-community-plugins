@@ -36,8 +36,6 @@ export class EchartsOptionsService {
     const yAxis = this.yAxisService.getYAxis(datapointsWithValues, {
       showSplitLines: showSplitLines.YAxis,
     });
-    const eventTypes = events.map((event) => event.type);
-    const alarmTypes = alarms.map((alarm) => alarm.type);
     const leftAxis = yAxis.filter((yx) => yx.position === 'left');
     const gridLeft = leftAxis.length
       ? leftAxis.length * this.yAxisService.Y_AXIS_OFFSET
@@ -79,32 +77,11 @@ export class EchartsOptionsService {
           snap: true,
         },
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        formatter: this.getTooltipFormatter(events),
+        formatter: this.getTooltipFormatter(),
         appendToBody: true,
       },
       legend: {
-        show: true,
-        // as data display eventTypes and alarmTypes, we need to display them in legend
-        data: [
-          ...eventTypes.map((eventType) => ({
-            name: eventType,
-            icon: ICONS_MAP.EVENT,
-            itemStyle: {
-              color: events.find((event) => event.type === eventType).color,
-            },
-          })),
-          ...alarmTypes.map((alarmType) => ({
-            name: alarmType,
-            icon: ICONS_MAP.ALARM,
-            itemStyle: {
-              color: alarms.find((alarm) => alarm.type === alarmType).color,
-            },
-          })),
-        ],
-        itemHeight: 16,
-        textStyle: {
-          fontSize: 10,
-        },
+        show: false,
       },
       xAxis: {
         min: timeRange.dateFrom,
@@ -166,7 +143,7 @@ export class EchartsOptionsService {
     dp: any,
     renderType: DatapointChartRenderType,
     isMinMaxChart = false,
-    alarms: IEvent[] = [],
+    alarms: any = [],
     alarmId?: string
   ): SeriesOption[] {
     if (!alarms?.length) {
@@ -174,7 +151,9 @@ export class EchartsOptionsService {
     }
 
     const alarmsByType = alarms.reduce((grouped, alarm) => {
-      (grouped[alarm.type] = grouped[alarm.type] || []).push(alarm);
+      if (!alarm.__hidden) {
+        (grouped[alarm.type] = grouped[alarm.type] || []).push(alarm);
+      }
       return grouped;
     }, {});
 
@@ -189,6 +168,11 @@ export class EchartsOptionsService {
             null,
             'markLineFlag',
           ]),
+          tooltip: {
+            formatter: (params) => {
+              return 'TEEEEEEEEST';
+            },
+          },
           markPoint: {
             showSymbol: true,
             data: alarmsOfType.reduce((acc, alarm) => {
@@ -361,7 +345,9 @@ export class EchartsOptionsService {
     }
 
     const eventsByType = events.reduce((grouped, event) => {
-      (grouped[event.type] = grouped[event.type] || []).push(event);
+      if (!event.__hidden) {
+        (grouped[event.type] = grouped[event.type] || []).push(event);
+      }
       return grouped;
     }, {});
 
@@ -464,15 +450,12 @@ export class EchartsOptionsService {
     };
   }
 
-  private getTooltipFormatter(
-    events?: IEvent[]
-  ): TooltipFormatterCallback<TopLevelFormatterParams> {
+  private getTooltipFormatter(): TooltipFormatterCallback<TopLevelFormatterParams> {
     return (params) => {
       const XAxisValue: string = params[0].data[0];
-      const markedLineHovered = params[0].data[2] === 'markLineFlag';
       const YAxisReadings: string[] = [];
-      const allSeries = this.echartsInstance.getOption()
-        .series as SeriesOption[];
+      let allSeries = this.echartsInstance.getOption().series as SeriesOption[];
+
       allSeries.forEach((series: any) => {
         let value: string;
         if (series.id.endsWith('/min')) {
@@ -507,49 +490,12 @@ export class EchartsOptionsService {
           if (!seriesValue) {
             return;
           }
-
-          if (seriesValue[1] !== null) {
-            value =
-              seriesValue[1]?.toString() +
-              (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-              `<div style="font-size: 11px">${this.datePipe.transform(
-                seriesValue[0]
-              )}</div>`;
-          }
-
-          if (series.markLine && markedLineHovered) {
-            // Get the markLine data for the current XAxisValue
-            const markLineData = series.markLine.data.find(
-              (d) => d.xAxis === XAxisValue
-            );
-            if (markLineData && events.length > 0) {
-              const event = events?.reduce((closestEvent, currentEvent) => {
-                const currentDifference = Math.abs(
-                  new Date(currentEvent.creationTime).getTime() -
-                    new Date(XAxisValue).getTime()
-                );
-                const closestDifference = Math.abs(
-                  new Date(closestEvent.creationTime).getTime() -
-                    new Date(XAxisValue).getTime()
-                );
-                return currentDifference < closestDifference
-                  ? currentEvent
-                  : closestEvent;
-              });
-
-              if (event && series.id.includes(event.source.id)) {
-                // Add the event information to the value
-                value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
-                value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
-                value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
-                value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
-              }
-
-              return YAxisReadings.push(value);
-            }
-          } else if (series.markLine) {
-            return;
-          }
+          value =
+            seriesValue[1]?.toString() +
+            (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+            `<div style="font-size: 11px">${this.datePipe.transform(
+              seriesValue[0]
+            )}</div>`;
         }
 
         YAxisReadings.push(
