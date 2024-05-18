@@ -8,20 +8,23 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import type { ECharts, EChartsOption } from 'echarts';
+import type { ECharts, EChartsOption, SeriesOption } from 'echarts';
 import {
   Alarm,
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
   DatapointWithValues,
+  DateString,
   INTERVALS,
+  SeriesValue,
 } from '../model';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CustomMeasurementService } from './custom-measurements.service';
 import {
   CoreModule,
+  DatePipe,
   DismissAlertStrategy,
   DynamicComponentAlert,
   DynamicComponentAlertAggregator,
@@ -41,6 +44,8 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
 import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
+import { update } from 'cypress/types/lodash';
+import { CustomSeriesOptions } from './chart.model';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -96,7 +101,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private measurementService: CustomMeasurementService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
-    private chartRealtimeService: ChartRealtimeService
+    private chartRealtimeService: ChartRealtimeService,
+    private datePipe: DatePipe
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
       switchMap(() => this.fetchSeriesForDatapoints$()),
@@ -148,6 +154,121 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       }
     });
     this.echartsInstance.on('click', this.onChartClick.bind(this));
+
+    let originalFormatter = null;
+    this.echartsInstance.on('mouseover', (params: any) => {
+      const options = this.echartsInstance.getOption();
+      if (
+        params.componentType === 'markLine' ||
+        params.componentType === 'markPoint'
+      ) {
+        if (!originalFormatter) {
+          originalFormatter = options.tooltip[0].formatter;
+        }
+        const updatedOptions: Partial<SeriesOption> = {
+          tooltip: options.tooltip,
+        };
+        updatedOptions.tooltip[0].formatter = (tooltipParams) => {
+          const XAxisValue: string = tooltipParams[0].data[0];
+          const YAxisReadings: string[] = [];
+          const allSeries = this.echartsInstance.getOption()
+            .series as CustomSeriesOptions[];
+
+          const allDataPointSeries = allSeries.filter(
+            (series) =>
+              series.typeOfSeries !== 'alarm' && series.typeOfSeries !== 'event'
+          );
+
+          allDataPointSeries.forEach((series: any) => {
+            let value: string;
+            if (series.id.endsWith('/min')) {
+              const minValue = this.findValueForExactOrEarlierTimestamp(
+                series.data,
+                XAxisValue
+              );
+              if (!minValue) {
+                return;
+              }
+              const maxSeries = allDataPointSeries.find(
+                (s) => s.id === series.id.replace('/min', '/max')
+              );
+              const maxValue = this.findValueForExactOrEarlierTimestamp(
+                maxSeries.data as SeriesValue[],
+                XAxisValue
+              );
+              value =
+                `${minValue[1]} — ${maxValue[1]}` +
+                (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+                `<div style="font-size: 11px">${this.datePipe.transform(
+                  minValue[0]
+                )}</div>`;
+            } else if (series.id.endsWith('/max')) {
+              // do nothing, value is handled  in 'min' case
+              return;
+            } else {
+              const seriesValue = this.findValueForExactOrEarlierTimestamp(
+                series.data,
+                XAxisValue
+              );
+              if (!seriesValue) {
+                return;
+              }
+              value =
+                seriesValue[1]?.toString() +
+                (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+                `<div style="font-size: 11px">${this.datePipe.transform(
+                  seriesValue[0]
+                )}</div>`;
+            }
+
+            YAxisReadings.push(
+              `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
+                `<strong>${series.datapointLabel}: </strong>` + // name
+                value // single value or min-max range
+            );
+          });
+
+          const event = this.events.find(
+            (e) => (e.type = params.data.eventType)
+          );
+          const alarm = this.alarms.find(
+            (a) => (a.type = params.data.alarmType)
+          );
+
+          let value: string;
+          if (event) {
+            // Add the event information to the value
+            value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
+            value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
+            value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
+            value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
+          }
+
+          if (alarm) {
+            // Add the alarm information to the value
+            value = `<div style="font-size: 11px">Alarm Time: ${alarm.time}</div>`;
+            value += `<div style="font-size: 11px">Alarm Type: ${alarm.type}</div>`;
+            value += `<div style="font-size: 11px">Alarm Text: ${alarm.text}</div>`;
+            value += `<div style="font-size: 11px">Alarm Last Updated: ${alarm.lastUpdated}</div>`;
+          }
+          YAxisReadings.push(value);
+          return (
+            this.datePipe.transform(XAxisValue) +
+            '<br/>' +
+            YAxisReadings.join('')
+          );
+        };
+        this.echartsInstance.setOption(updatedOptions);
+      }
+    });
+
+    this.echartsInstance.on('mouseout', () => {
+      const options = this.echartsInstance.getOption();
+      if (originalFormatter) {
+        options.tooltip[0].formatter = originalFormatter;
+        this.echartsInstance.setOption(options);
+      }
+    });
   }
 
   onChartClick(params) {
@@ -162,6 +283,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
             series: [
               {
                 markArea: {
+                  label: {
+                    show: false,
+                  },
                   data: clickedAlarms.map((clickedAlarm) => {
                     return [
                       {
@@ -199,7 +323,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                           label: {
                             show: false,
                             formatter: alarm.type,
-                            emphasis: { show: true },
                           },
                           itemStyle: { color: alarm.color },
                         },
@@ -209,7 +332,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                           label: {
                             show: false,
                             formatter: alarm.type,
-                            emphasis: { show: true },
                           },
                           itemStyle: { color: alarm.color },
                         },
@@ -222,7 +344,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                         label: {
                           show: false,
                           formatter: alarm.type,
-                          emphasis: { show: true },
                         },
                         itemStyle: { color: alarm.color },
                       },
@@ -481,5 +602,24 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       dateFrom: timeRange.dateFrom.toISOString(),
       dateTo: timeRange.dateTo.toISOString(),
     };
+  }
+
+  private findValueForExactOrEarlierTimestamp(
+    values: SeriesValue[],
+    timestampString: DateString
+  ): SeriesValue {
+    const timestamp = new Date(timestampString).valueOf();
+    return values.reduce((acc, curr) => {
+      if (new Date(curr[0]).valueOf() <= timestamp) {
+        if (
+          acc === null ||
+          Math.abs(new Date(curr[0]).valueOf() - timestamp) <
+            Math.abs(new Date(acc[0]).valueOf() - timestamp)
+        ) {
+          return curr;
+        }
+      }
+      return acc;
+    }, null);
   }
 }

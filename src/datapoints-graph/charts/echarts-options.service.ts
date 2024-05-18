@@ -15,6 +15,7 @@ import type { TooltipFormatterCallback } from 'echarts/types/src/util/types';
 import type { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
 import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
 import { ICONS_MAP } from './svg-icons.model';
+import { CustomSeriesOptions } from './chart.model';
 
 @Injectable()
 export class EchartsOptionsService {
@@ -163,16 +164,12 @@ export class EchartsOptionsService {
           id: `${alarmId ? alarmId : `${type}/${dp.__target.id}`}`,
           name: type,
           showSymbol: false,
+          typeOfSeries: 'alarm',
           data: alarmsOfType.map((alarm) => [
             alarm.creationTime,
             null,
             'markLineFlag',
           ]),
-          tooltip: {
-            formatter: (params) => {
-              return 'TEEEEEEEEST';
-            },
-          },
           markPoint: {
             showSymbol: true,
             data: alarmsOfType.reduce((acc, alarm) => {
@@ -218,6 +215,7 @@ export class EchartsOptionsService {
                               : null,
                           ],
                           name: alarm.type,
+                          alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
                           symbol: ICONS_MAP[alarm.type],
                           symbolSize: 15,
@@ -232,6 +230,7 @@ export class EchartsOptionsService {
                               : null,
                           ],
                           name: alarm.type,
+                          alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
                           symbol: ICONS_MAP[alarm.type],
                           symbolSize: 15,
@@ -248,6 +247,7 @@ export class EchartsOptionsService {
                               : null,
                           ],
                           name: alarm.type,
+                          alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
                           symbol: ICONS_MAP[alarm.type],
                           symbolSize: 15,
@@ -262,6 +262,7 @@ export class EchartsOptionsService {
                               : null,
                           ],
                           name: alarm.type,
+                          alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
                           symbol: ICONS_MAP[alarm.type],
                           symbolSize: 15,
@@ -292,7 +293,6 @@ export class EchartsOptionsService {
                     label: {
                       show: false,
                       formatter: alarm.type,
-                      emphasis: { show: true },
                     },
                     itemStyle: { color: alarm.color },
                   },
@@ -305,7 +305,6 @@ export class EchartsOptionsService {
                     label: {
                       show: false,
                       formatter: alarm.type,
-                      emphasis: { show: true },
                     },
                     itemStyle: { color: alarm.color },
                   },
@@ -315,7 +314,6 @@ export class EchartsOptionsService {
                     label: {
                       show: false,
                       formatter: alarm.type,
-                      emphasis: { show: true },
                     },
                     itemStyle: { color: alarm.color },
                   },
@@ -357,6 +355,7 @@ export class EchartsOptionsService {
           id: `${eventId ? eventId : `${type}/${dp.__target.id}`}`,
           name: type,
           showSymbol: false,
+          typeOfSeries: 'event',
           data: eventsOfType.map((event) => [
             event.creationTime,
             null,
@@ -391,6 +390,7 @@ export class EchartsOptionsService {
                       : null,
                   ],
                   name: event.type,
+                  eventType: event.type,
                   itemStyle: { color: event.color },
                   symbol: ICONS_MAP.EVENT,
                   symbolSize: 15,
@@ -399,6 +399,7 @@ export class EchartsOptionsService {
                 return {
                   coord: [event.creationTime, null], // Set the position of the mark point
                   name: event.type,
+                  eventType: event.type,
                   itemStyle: { color: event.color },
                 };
               }
@@ -409,10 +410,9 @@ export class EchartsOptionsService {
             symbol: ['none', 'none'],
             data: eventsOfType.map((event) => ({
               xAxis: event.creationTime,
+              eventType: event.type,
               label: {
                 show: false,
-                formatter: event.type,
-                emphasis: { show: true },
               },
               itemStyle: { color: event.color },
             })),
@@ -454,9 +454,15 @@ export class EchartsOptionsService {
     return (params) => {
       const XAxisValue: string = params[0].data[0];
       const YAxisReadings: string[] = [];
-      let allSeries = this.echartsInstance.getOption().series as SeriesOption[];
+      const allSeries = this.echartsInstance.getOption()
+        .series as CustomSeriesOptions[];
 
-      allSeries.forEach((series: any) => {
+      const allDataPointSeries = allSeries.filter(
+        (series) =>
+          series.typeOfSeries !== 'alarm' && series.typeOfSeries !== 'event'
+      );
+
+      allDataPointSeries.forEach((series: any) => {
         let value: string;
         if (series.id.endsWith('/min')) {
           const minValue = this.findValueForExactOrEarlierTimestamp(
@@ -466,7 +472,7 @@ export class EchartsOptionsService {
           if (!minValue) {
             return;
           }
-          const maxSeries = allSeries.find(
+          const maxSeries = allDataPointSeries.find(
             (s) => s.id === series.id.replace('/min', '/max')
           );
           const maxValue = this.findValueForExactOrEarlierTimestamp(
