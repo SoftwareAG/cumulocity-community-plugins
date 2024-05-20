@@ -82,144 +82,150 @@
       </button>
     </div>
   </div>
-  <div class="flex-grow p-t-8 d-flex a-i-start gap-8 inner-scroll p-b-4">
-    <div
-      class="c8y-datapoint-pill"
-      *ngFor="let datapoint of displayConfig.datapoints"
-      [ngClass]="{ active: datapoint.__active }"
-      title="{{ datapoint.label }} - {{ datapoint.__target.name }}"
-    >
-      <button
-        type="button"
-        title="{{
-          (datapoint.__active ? hideDatapointLabel : showDatapointLabel)
-            | translate
-        }} "
-        class="c8y-datapoint-pill__btn"
-        (click)="toggleChart(datapoint)"
-      >
-        <i
-          [c8yIcon]="
-            datapoint.__active ? 'eye text-primary' : 'eye-slash text-muted'
-          "
-          class="icon-14"
-        ></i>
-      </button>
+  <div class="inner-scroll">
+    <div class="flex-grow p-t-8 d-flex a-i-start gap-8 p-b-4">
       <div
-        class="c8y-datapoint-pill__label"
-        style="padding-top: 3px; padding-bottom: 2px"
+        class="c8y-datapoint-pill flex-no-shrink"
+        *ngFor="let datapoint of displayConfig.datapoints"
+        [ngClass]="{ active: datapoint.__active }"
+        title="{{ datapoint.label }} - {{ datapoint.__target.name }}"
       >
-        <i
-          c8yIcon="circle"
-          class="m-r-4 icon-14"
-          [ngStyle]="{
-            color: datapoint.color
-          }"
-        ></i>
-        <span
-          class="text-truncate"
-          [ngClass]="{ 'text-muted': !datapoint.__active }"
-        >
-          <span class="text-truncate">
-            {{ datapoint.label }}
-          </span>
-          <small class="text-muted text-10">
-            {{ datapoint.__target.name }}
-          </small>
-        </span>
-        <i
-          *ngIf="datapointsOutOfSync.get(datapoint)"
-          [tooltip]="
-            'Measurements received for this data point may be out of sync.'
+        <button
+          type="button"
+          title="{{
+            (datapoint.__active ? hideDatapointLabel : showDatapointLabel)
               | translate
-          "
-          container="body"
-          [adaptivePosition]="false"
-          c8yIcon="exclamation-triangle"
-          class="text-warning m-l-4"
-        ></i>
+          }} "
+          class="c8y-datapoint-pill__btn"
+          (click)="toggleChart(datapoint)"
+        >
+          <i
+            [c8yIcon]="
+              datapoint.__active ? 'eye text-primary' : 'eye-slash text-muted'
+            "
+            class="icon-14"
+          ></i>
+        </button>
+        <div
+          class="c8y-datapoint-pill__label"
+          style="padding-top: 3px; padding-bottom: 2px"
+        >
+          <i
+            c8yIcon="circle"
+            class="m-r-4 icon-14"
+            [ngStyle]="{
+              color: datapoint.color
+            }"
+          ></i>
+          <span
+            class="text-truncate"
+            [ngClass]="{ 'text-muted': !datapoint.__active }"
+          >
+            <span class="text-truncate">
+              {{ datapoint.label }}
+            </span>
+            <small class="text-muted text-10">
+              {{ datapoint.__target.name }}
+            </small>
+          </span>
+          <i
+            *ngIf="datapointsOutOfSync.get(datapoint)"
+            [tooltip]="
+              'Measurements received for this data point may be out of sync.'
+                | translate
+            "
+            container="body"
+            [adaptivePosition]="false"
+            c8yIcon="exclamation-triangle"
+            class="text-warning m-l-4"
+          ></i>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="flex-grow p-t-8 d-flex a-i-start gap-8 inner-scroll p-b-4">
-    <div
-      class="c8y-datapoint-pill"
-      *ngFor="let alarm of alarms"
-      title="{{ alarm.type }} "
-    >
-      <button
-        type="button"
+      <!-- Alarms  -->
+      <div
+        class="c8y-alarm-pill flex-no-shrink"
+        *ngFor="let alarm of alarms"
         title="{{ alarm.type }} "
-        class="c8y-datapoint-pill__btn"
-        (click)="toggleAlarmEventType(alarm)"
       >
-        <i
-          [c8yIcon]="
-            alarm.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
-          "
-          class="icon-14"
-        ></i>
-      </button>
-      <div
-        class="c8y-datapoint-pill__label"
-        style="padding-top: 3px; padding-bottom: 2px"
-      >
-        <i
-          c8yIcon="circle"
-          class="m-r-4 icon-14"
-          [ngStyle]="{
-            color: alarm.color
-          }"
-        ></i>
-        <span
-          class="text-truncate"
-          [ngClass]="{ 'text-muted': alarm.__hidden }"
+        <button
+          type="button"
+          title="{{ alarm.type }} "
+          class="c8y-alarm-pill__btn"
+          (click)="toggleAlarmEventType(alarm)"
         >
-          <span class="text-truncate">
-            {{ alarm.type }}
+          <i
+            [c8yIcon]="
+              alarm.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+            "
+            class="icon-14"
+          ></i>
+        </button>
+        <div
+          class="c8y-alarm-pill__label"
+          style="padding-top: 3px; padding-bottom: 2px"
+        >
+          <i
+            c8yIcon="bell"
+            class="m-r-4 icon-14"
+            [ngStyle]="{
+              color: alarm.color
+            }"
+          ></i>
+          <span
+            class="text-truncate"
+            [ngClass]="{ 'text-muted': alarm.__hidden }"
+          >
+            <span class="text-truncate">
+              {{ alarm.type }}
+            </span>
+            <small class="text-muted text-10">
+              {{ alarm.source.name }}
+            </small>
           </span>
-        </span>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="flex-grow p-t-8 d-flex a-i-start gap-8 inner-scroll p-b-4">
-    <div
-      class="c8y-datapoint-pill"
-      *ngFor="let event of events"
-      title="{{ event.type }} "
-    >
-      <button
-        type="button"
-        title="{{ event.type }} "
-        class="c8y-datapoint-pill__btn"
-        (click)="toggleAlarmEventType(event)"
-      >
-        <i
-          [c8yIcon]="
-            event.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
-          "
-          class="icon-14"
-        ></i>
-      </button>
+      <!-- Events -->
       <div
-        class="c8y-datapoint-pill__label"
-        style="padding-top: 3px; padding-bottom: 2px"
+        class="c8y-event-pill flex-no-shrink"
+        *ngFor="let event of events"
+        title="{{ event.type }} "
       >
-        <i
-          c8yIcon="circle"
-          class="m-r-4 icon-14"
-          [ngStyle]="{
-            color: event.color
-          }"
-        ></i>
-        <span
-          class="text-truncate"
-          [ngClass]="{ 'text-muted': event.__hidden }"
+        <button
+          type="button"
+          title="{{ event.type }} "
+          class="c8y-event-pill__btn"
+          (click)="toggleAlarmEventType(event)"
         >
-          <span class="text-truncate">
-            {{ event.type }}
+          <i
+            [c8yIcon]="
+              event.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+            "
+            class="icon-14"
+          ></i>
+        </button>
+        <div
+          class="c8y-event-pill__label"
+          style="padding-top: 3px; padding-bottom: 2px"
+        >
+          <i
+            c8yIcon="c8y-events"
+            class="m-r-4 icon-14"
+            [ngStyle]="{
+              color: event.color
+            }"
+          ></i>
+          <span
+            class="text-truncate"
+            [ngClass]="{ 'text-muted': event.__hidden }"
+          >
+            <span class="text-truncate">
+              {{ event.type }}
+            </span>
+            <small class="text-muted text-10">
+              {{ event.source.name }}
+            </small>
           </span>
-        </span>
+        </div>
       </div>
     </div>
   </div>
