@@ -40,7 +40,7 @@ export class AlarmEventAttributesFormComponent
 
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
-      label: '',
+      label: ['', [Validators.required]],
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
       timelineType: '',
     });

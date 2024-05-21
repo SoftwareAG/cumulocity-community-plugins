@@ -25,6 +25,7 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
   formGroup: FormGroup;
   valid$: Observable<boolean>;
   private destroy$ = new Subject<void>();
+  private defaultColor: string;
 
   constructor(private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
@@ -40,8 +41,8 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  async ngOnInit() {
-    const color =
+  ngOnInit() {
+    this.defaultColor =
       getComputedStyle(document.documentElement).getPropertyValue(
         '--brand-primary'
       ) ||
@@ -51,7 +52,7 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
       '#1776BF';
 
     this.formGroup.patchValue({
-      color,
+      color: this.defaultColor,
       __target: this.target,
       details: { timelineType: this.timelineType },
     });
@@ -61,10 +62,21 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   add() {
     if (this.formGroup.valid) {
       const formValue = this.transformFormValue(this.formGroup.value);
       this.added.emit(formValue);
+
+      this.formGroup.patchValue({
+        color: this.defaultColor,
+        __target: this.target,
+        details: {
+          timelineType: this.timelineType,
+          filters: { type: '' },
+          label: '',
+        },
+      });
     }
   }
 
