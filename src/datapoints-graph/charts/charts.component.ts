@@ -277,9 +277,15 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         (alarm) => alarm.type === params.data.alarmType
       );
 
+      const options = this.echartsInstance.getOption();
+
       const timeRange = this.getTimeRange();
-      const updatedOptions = !this.hasMarkArea(this.echartsInstance.getOption())
+      const updatedOptions = !this.hasMarkArea(options)
         ? {
+            tooltip: {
+              enterable: true,
+              triggerOn: 'click',
+            },
             series: [
               {
                 markArea: {
@@ -355,6 +361,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
           }
         : // if markArea already exists, remove it and remove lastUpdated from markLine
           {
+            tooltip: { triggerOn: 'mousemove' },
             series: [
               {
                 markArea: {
