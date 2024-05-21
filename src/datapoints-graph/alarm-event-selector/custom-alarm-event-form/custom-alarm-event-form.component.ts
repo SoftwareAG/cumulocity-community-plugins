@@ -11,7 +11,6 @@ import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { IIdentified } from '@c8y/client';
-import { ColorService } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-custom-alarm-event-form',
@@ -27,7 +26,7 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
   valid$: Observable<boolean>;
   private destroy$ = new Subject<void>();
 
-  constructor(private formBuilder: FormBuilder, private color: ColorService) {
+  constructor(private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
       details: [],
       color: [],
@@ -42,7 +41,14 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    const color = await this.color.generateColor(this.target.name);
+    const color =
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--brand-primary'
+      ) ||
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--c8y-brand-primary'
+      ) ||
+      '#1776BF';
 
     this.formGroup.patchValue({
       color,
