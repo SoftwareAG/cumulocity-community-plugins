@@ -39,13 +39,21 @@
       class="c8y-list__item__colorpicker p-t-0 p-b-0 p-l-0"
       [title]="'Change color' | translate"
     >
-      <div class="c8y-colorpicker">
+      <div
+        class="c8y-colorpicker"
+        [ngClass]="{
+          'c8y-colorpicker--alarm': timelineType === 'ALARM',
+          'c8y-colorpicker--event': timelineType === 'EVENT'
+        }"
+      >
         <input
           type="color"
           formControlName="color"
           (click)="$event.stopPropagation()"
         />
-        <span [style.background-color]="formGroup.value.color"></span>
+        <span [style.background-color]="formGroup.value.color">
+          <i [c8yIcon]="timelineType === 'EVENT' ? 'c8y-events' : 'bell'"></i>
+        </span>
       </div>
     </div>
     <button
@@ -70,6 +78,7 @@
     </button>
 
     <button
+      title="{{ 'Invalid entries' | translate }}"
       class="btn-clean m-l-auto"
       *ngIf="(valid$ | async) === false && li.collapsed"
       [popover]="
@@ -79,7 +88,7 @@
       container="body"
       [outsideClick]="true"
     >
-      <i class="text-danger" c8yIcon="warning"></i>
+      <i class="text-danger" c8yIcon="exclamation-circle"></i>
     </button>
   </div>
 

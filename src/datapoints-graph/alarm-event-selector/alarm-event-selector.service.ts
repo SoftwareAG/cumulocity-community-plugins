@@ -47,12 +47,11 @@ export class AlarmEventSelectorService {
         ),
         selectedItemsTitle: gettext('Selected alarms'),
         noSelectedItemsTitle: gettext('No alarms selected.'),
-        recentItemsWarningTitle: gettext(
-          'List below might not be complete list of alarms'
-        ),
+        recentItemsWarningTitle: gettext('The list below may not be complete.'),
         recentItemsWarningText: gettext(
-          'Alarms displayed below are recent alarms. Other alarms might occur in the past.'
+          'Recent alarms are displayed below. Past alarms might not be shown.'
         ),
+        addCustomText: gettext('Optionally you can add a custom alarm.'),
       };
     }
     return {
@@ -72,12 +71,11 @@ export class AlarmEventSelectorService {
       ),
       selectedItemsTitle: gettext('Selected events'),
       noSelectedItemsTitle: gettext('No events selected.'),
-      recentItemsWarningTitle: gettext(
-        'List below might not be complete list of events'
-      ),
+      recentItemsWarningTitle: gettext('The list below may not be complete.'),
       recentItemsWarningText: gettext(
-        'Events displayed below are recent events. Other events might occur in the past.'
+        'Recent events are displayed below. Past events might not be shown..'
       ),
+      addCustomText: gettext('Optionally you can add a custom event.'),
     };
   }
 

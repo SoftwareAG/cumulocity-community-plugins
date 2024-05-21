@@ -90,27 +90,6 @@
               </ng-template>
             </span>
           </div>
-
-          <div
-            class="dropdown m-r-4"
-            dropdown
-            #dropdown="bs-dropdown"
-            container="body"
-            [insideClick]="true"
-          >
-            <button class="btn btn-default" dropdownToggle>
-              {{ timelineTypeTexts.addCustomItemButtonLabel | translate }}
-            </button>
-
-            <div *dropdownMenu class="dropdown-menu p-16">
-              <c8y-custom-alarm-event-form
-                [timelineType]="timelineType"
-                [target]="assetSelection | async"
-                (added)="itemAdded($event); dropdown.isOpen = false"
-                (cancel)="dropdown.isOpen = false"
-              ></c8y-custom-alarm-event-form>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -119,15 +98,43 @@
       >
         <ng-container *ngIf="!loadingItems; else loadingData">
           <ng-container *ngIf="items$ | async as items">
-            <div *ngIf="items.length">
-              <p>
-                <strong>{{
-                  timelineTypeTexts.recentItemsWarningTitle | translate
-                }}</strong>
-              </p>
-              <small>{{
-                timelineTypeTexts.recentItemsWarningText | translate
-              }}</small>
+            <div class="p-16 bg-level-2 bg-gray-white separator-bottom">
+              <div *ngIf="items.length">
+                <p>
+                  <i c8yIcon="info-circle" class="text-info m-r-4"></i>
+                  <strong>{{
+                    timelineTypeTexts.recentItemsWarningTitle | translate
+                  }}</strong>
+                </p>
+                <p>
+                  {{ timelineTypeTexts.recentItemsWarningText | translate }}
+                  {{ timelineTypeTexts.addCustomText | translate }}
+                </p>
+              </div>
+              <div [ngClass]="{ 'p-t-16': items.length }">
+                <button
+                  class="btn btn-default btn-sm"
+                  aria-controls="collapseCustomItemForm"
+                  [attr.aria-expanded]="isExpanded"
+                  (click)="isExpanded = !isExpanded"
+                >
+                  {{ timelineTypeTexts.addCustomItemButtonLabel | translate }}
+                </button>
+                <div
+                  class="collapse"
+                  id="collapseCustomItemForm"
+                  [collapse]="!isExpanded"
+                  [isAnimated]="true"
+                >
+                  <c8y-custom-alarm-event-form
+                    [timelineType]="timelineType"
+                    [target]="assetSelection | async"
+                    (added)="itemAdded($event); isExpanded = false"
+                    (cancel)="isExpanded = false"
+                    class="d-block separator-top"
+                  ></c8y-custom-alarm-event-form>
+                </div>
+              </div>
             </div>
 
             <div class="p-16" *ngIf="!filteredItems.length">
@@ -185,20 +192,26 @@
     </p>
     <div class="d-flex flex-wrap gap-8 p-l-16 p-r-16 p-b-16">
       <div
-        class="c8y-datapoint-pill"
+        [ngClass]="{
+          'c8y-alarm-pill': timelineType === 'ALARM',
+          'c8y-event-pill': timelineType === 'EVENT'
+        }"
         *ngFor="let selectedItem of selectedItems"
       >
         <button
           [title]="'Remove' | translate"
           type="button"
-          class="c8y-datapoint-pill__btn"
+          [ngClass]="{
+            'c8y-alarm-pill__btn': timelineType === 'ALARM',
+            'c8y-event-pill__btn': timelineType === 'EVENT'
+          }"
           (click)="itemRemoved(selectedItem)"
         >
           <i c8yIcon="remove" class="icon-14"></i>
         </button>
         <div class="c8y-datapoint-pill__label" [title]="selectedItem.label">
           <i
-            c8yIcon="circle"
+            [c8yIcon]="timelineType === 'ALARM' ? 'bell' : 'c8y-events'"
             class="m-r-4 icon-14"
             [style.color]="selectedItem.color"
           ></i>

@@ -1,41 +1,45 @@
 <div [formGroup]="formGroup">
   <c8y-form-group>
-    <label translate>Label</label>
-    <input
-      class="form-control"
-      name="label"
-      formControlName="label"
-      [placeholder]="
-        'e.g. {{ example }}'
-          | translate
-            : {
-                example:
-                  timelineType === 'ALARM'
-                    ? 'c8y_UnavailabilityAlarm'
-                    : 'c8y_LocationUpdate'
-              }
-      "
-    />
-  </c8y-form-group>
-
-  <div formGroupName="filters">
-    <c8y-form-group>
-      <label translate>Type</label>
+    <div class="d-flex a-i-center gap-8">
+      <label class="m-0" translate>Label</label>
       <input
-        class="form-control"
-        name="type"
-        formControlName="type"
+        class="form-control flex-grow"
+        name="label"
+        formControlName="label"
         [placeholder]="
           'e.g. {{ example }}'
             | translate
               : {
                   example:
                     timelineType === 'ALARM'
-                      ? 'c8y_UnavailabilityAlarm'
-                      : 'c8y_LocationUpdate'
+                      ? 'Alarm unavailable'
+                      : 'Location update'
                 }
         "
       />
+    </div>
+  </c8y-form-group>
+
+  <div formGroupName="filters">
+    <c8y-form-group>
+      <div class="d-flex a-i-center gap-8">
+        <label class="m-0" translate>Type</label>
+        <input
+          class="form-control flex-grow"
+          name="type"
+          formControlName="type"
+          [placeholder]="
+            'e.g. {{ example }}'
+              | translate
+                : {
+                    example:
+                      timelineType === 'ALARM'
+                        ? 'c8y_UnavailabilityAlarm'
+                        : 'c8y_LocationUpdate'
+                  }
+          "
+        />
+      </div>
     </c8y-form-group>
   </div>
 </div>

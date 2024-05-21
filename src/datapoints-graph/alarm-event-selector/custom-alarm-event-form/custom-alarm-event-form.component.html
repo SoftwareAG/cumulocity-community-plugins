@@ -1,36 +1,37 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" class="p-16">
   <div
-    class="c8y-list__item__colorpicker p-t-0 p-b-0 p-l-0"
+    class="form-group d-flex a-i-center gap-8"
     [title]="'Change color' | translate"
   >
-    <label translate>Color</label>
-    <div class="c8y-colorpicker">
+    <label class="m-0" translate>Color</label>
+    <div class="c8y-colorpicker c8y-colorpicker--alarm">
       <input
         type="color"
         formControlName="color"
         (click)="$event.stopPropagation()"
       />
-      <span [style.background-color]="formGroup.value.color"></span>
+      <span [style.background-color]="formGroup.value.color">
+        <i [c8yIcon]="timelineType === 'EVENT' ? 'c8y-events' : 'bell'"></i>
+      </span>
     </div>
   </div>
 
-  <div class="data-point-details">
-    <c8y-alarm-event-attributes-form
-      formControlName="details"
-      [timelineType]="timelineType"
-    ></c8y-alarm-event-attributes-form>
-  </div>
+  <c8y-alarm-event-attributes-form
+    formControlName="details"
+    [timelineType]="timelineType"
+  ></c8y-alarm-event-attributes-form>
 
-  <div class="d-flex">
-    <button class="btn btn-default" (click)="cancel.emit()">
+  <div class="d-flex p-t-16">
+    <button class="btn btn-default btn-sm" (click)="cancel.emit()">
       {{ 'Cancel' | translate }}
     </button>
     <button
-      class="btn btn-default"
+      class="btn btn-primary btn-sm"
       [disabled]="(valid$ | async) === false"
       (click)="add()"
     >
-      {{ 'Add' | translate }}
+      <i c8yIcon="plus-circle"></i>
+      {{ 'Select' | translate }}
     </button>
   </div>
 </form>

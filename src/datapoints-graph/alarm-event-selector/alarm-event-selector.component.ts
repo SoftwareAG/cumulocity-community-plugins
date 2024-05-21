@@ -23,7 +23,6 @@ import {
   TimelineTypeTexts,
 } from './alarm-event-selector.model';
 import { AlarmEventSelectorService } from './alarm-event-selector.service';
-import { ColorService } from '@c8y/ngx-components';
 import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator';
 
 @Component({
@@ -54,6 +53,7 @@ export class AlarmEventSelectorComponent implements OnInit {
   filterStringChanges$: Observable<string>;
   timelineTypeTexts: TimelineTypeTexts;
   private filterString$ = new BehaviorSubject('');
+  isExpanded = false;
 
   constructor(private alarmEventSelectorService: AlarmEventSelectorService) {}
 

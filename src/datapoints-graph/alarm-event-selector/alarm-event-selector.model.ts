@@ -1,5 +1,4 @@
 import { IIdentified } from '@c8y/client';
-import { gettext } from '@c8y/ngx-components';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 
 export type TimelineType = 'ALARM' | 'EVENT';
@@ -57,4 +56,5 @@ export type TimelineTypeTexts = {
   noSelectedItemsTitle: string;
   recentItemsWarningTitle: string;
   recentItemsWarningText: string;
+  addCustomText: string;
 };

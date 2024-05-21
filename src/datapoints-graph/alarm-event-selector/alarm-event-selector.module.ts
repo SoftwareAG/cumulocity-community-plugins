@@ -5,12 +5,12 @@ import { CoreModule } from '@c8y/ngx-components';
 import { AlarmEventSelectorListItemComponent } from './alarm-event-selector-list-item/alarm-event-selector-list-item.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { AlarmEventAttributesFormComponent } from './alarm-event-attributes-form/alarm-event-attributes-form.component';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 import { AlarmEventSelectorComponent } from './alarm-event-selector.component';
 import { AssetSelectorModule } from '@c8y/ngx-components/assets-navigator';
 import { IncludesAlarmOrEventPipe } from './pipes/includes-alarm.pipe';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CustomAlarmEventFormComponent } from './custom-alarm-event-form/custom-alarm-event-form.component';
 
 @NgModule({
@@ -20,7 +20,7 @@ import { CustomAlarmEventFormComponent } from './custom-alarm-event-form/custom-
     PopoverModule,
     TooltipModule,
     AssetSelectorModule,
-    BsDropdownModule,
+    CollapseModule,
   ],
   declarations: [
     AlarmEventSelectionListComponent,
