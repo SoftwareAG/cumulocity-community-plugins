@@ -57,14 +57,16 @@ export class AlarmEventAttributesFormComponent
   }
 
   reset() {
+    // resetting values to initial state
     this.formGroup.patchValue({ label: '', filters: { type: '' } });
+    // marking controls as untouched so inputs are not marked as invalid (with red border)
+    this.formGroup.controls.label.markAsUntouched();
+    (
+      this.formGroup.controls['filters'] as FormGroup
+    ).controls.type.markAsUntouched();
 
+    // resetting initial state of FormGroupComponent so validation message are not shown
     this.formGroups.forEach((formGroup) => {
-      this.formGroup.controls.label.markAsUntouched();
-      (
-        this.formGroup.controls['filters'] as FormGroup
-      ).controls.type.markAsUntouched();
-
       setTimeout(() => {
         formGroup.errors = null;
         formGroup.hasError = false;
