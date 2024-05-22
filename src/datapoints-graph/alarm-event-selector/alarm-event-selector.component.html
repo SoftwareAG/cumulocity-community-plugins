@@ -126,13 +126,16 @@
                   [collapse]="!isExpanded"
                   [isAnimated]="true"
                 >
-                  <c8y-custom-alarm-event-form
-                    [timelineType]="timelineType"
-                    [target]="assetSelection | async"
-                    (added)="itemAdded($event); isExpanded = false"
-                    (cancel)="isExpanded = false"
-                    class="d-block separator-top"
-                  ></c8y-custom-alarm-event-form>
+                  <div [style.min-height]="'230px'">
+                    <c8y-custom-alarm-event-form
+                      *ngIf="isExpanded"
+                      [timelineType]="timelineType"
+                      [target]="assetSelection | async"
+                      (added)="itemAdded($event); isExpanded = false"
+                      (cancel)="isExpanded = false"
+                      class="d-block separator-top"
+                    ></c8y-custom-alarm-event-form>
+                  </div>
                 </div>
               </div>
             </div>

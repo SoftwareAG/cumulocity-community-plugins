@@ -5,14 +5,12 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { IIdentified } from '@c8y/client';
-import { AlarmEventAttributesFormComponent } from '../alarm-event-attributes-form/alarm-event-attributes-form.component';
 
 @Component({
   selector: 'c8y-custom-alarm-event-form',
@@ -24,8 +22,6 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
   @Output() added = new EventEmitter<AlarmOrEvent>();
   @Output() cancel = new EventEmitter<void>();
 
-  @ViewChild(AlarmEventAttributesFormComponent)
-  alarmEventAttributesFormComponent: AlarmEventAttributesFormComponent;
   formGroup: FormGroup;
   valid$: Observable<boolean>;
   private destroy$ = new Subject<void>();
@@ -41,7 +37,8 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
 
     this.valid$ = this.formGroup.statusChanges.pipe(
       takeUntil(this.destroy$),
-      map((val) => val === 'VALID')
+      map((val) => val === 'VALID'),
+      startWith(false)
     );
   }
 
@@ -71,16 +68,6 @@ export class CustomAlarmEventFormComponent implements OnInit, OnDestroy {
     if (this.formGroup.valid) {
       const formValue = this.transformFormValue(this.formGroup.value);
       this.added.emit(formValue);
-
-      this.formGroup.patchValue({
-        color: this.defaultColor,
-        __target: this.target,
-        details: {
-          timelineType: this.timelineType,
-        },
-      });
-
-      this.alarmEventAttributesFormComponent.reset();
     }
   }
 

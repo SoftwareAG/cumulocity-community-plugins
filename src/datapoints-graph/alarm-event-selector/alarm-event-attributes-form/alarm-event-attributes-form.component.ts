@@ -1,11 +1,4 @@
-import {
-  Component,
-  forwardRef,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -19,7 +12,6 @@ import {
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { TimelineType } from '../alarm-event-selector.model';
-import { FormGroupComponent } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-alarm-event-attributes-form',
@@ -43,9 +35,6 @@ export class AlarmEventAttributesFormComponent
   @Input() timelineType: TimelineType;
   formGroup: FormGroup;
 
-  @ViewChildren(FormGroupComponent)
-  formGroups: QueryList<FormGroupComponent>;
-
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit() {
@@ -53,24 +42,6 @@ export class AlarmEventAttributesFormComponent
       label: ['', [Validators.required]],
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
       timelineType: '',
-    });
-  }
-
-  reset() {
-    // resetting values to initial state
-    this.formGroup.patchValue({ label: '', filters: { type: '' } });
-    // marking controls as untouched so inputs are not marked as invalid (with red border)
-    this.formGroup.controls.label.markAsUntouched();
-    (
-      this.formGroup.controls['filters'] as FormGroup
-    ).controls.type.markAsUntouched();
-
-    // resetting initial state of FormGroupComponent so validation message are not shown
-    this.formGroups.forEach((formGroup) => {
-      setTimeout(() => {
-        formGroup.errors = null;
-        formGroup.hasError = false;
-      }, (formGroup as any)?.VALIDATION_DEBOUNCE_MS || 1000);
     });
   }
 
