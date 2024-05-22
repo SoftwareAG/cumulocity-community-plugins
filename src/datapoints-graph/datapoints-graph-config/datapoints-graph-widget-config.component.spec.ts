@@ -7,6 +7,7 @@ import {
 import { DatapointsGraphWidgetConfigComponent } from './datapoints-graph-widget-config.component';
 import {
   CommonModule,
+  CoreModule,
   DynamicComponentAlertAggregator,
   FormsModule,
 } from '@c8y/ngx-components';
@@ -25,6 +26,8 @@ import { aggregationType } from '@c8y/client';
 import { AnimationBuilder } from '@angular/animations';
 import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
@@ -69,8 +72,13 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         ReactiveFormsModule,
         PopoverModule,
         DatapointSelectorModule,
+        CoreModule,
+        DragDropModule,
       ],
-      declarations: [DatapointsGraphWidgetConfigComponent],
+      declarations: [
+        DatapointsGraphWidgetConfigComponent,
+        AlarmEventSelectionListComponent,
+      ],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         NgForm,
@@ -193,6 +201,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       expect(result).toBeTruthy();
       expect(configToSave).toEqual({
         aggregation: null,
+        alarmsEventsConfigs: [],
         datapoints: [dp],
         dateFrom: config.dateFrom,
         dateTo: config.dateTo,

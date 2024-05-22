@@ -20,7 +20,7 @@ export type DatapointsGraphKPIDetails = KPIDetails & {
 
 export type DatapointsGraphWidgetConfig = {
   datapoints: DatapointsGraphKPIDetails[];
-  alarmsEventsConfigs: AlarmOrEvent[];
+  alarmsEventsConfigs?: AlarmOrEvent[];
   date?: DateTimeContext;
   displayDateSelection?: boolean;
   displayAggregationSelection?: boolean;

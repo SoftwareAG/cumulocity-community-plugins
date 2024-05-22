@@ -44,7 +44,7 @@ export class AlarmEventAttributesFormComponent
   formGroup: FormGroup;
 
   @ViewChildren(FormGroupComponent)
-  private formGroups: QueryList<FormGroupComponent>;
+  formGroups: QueryList<FormGroupComponent>;
 
   constructor(private formBuilder: FormBuilder) {}
 

@@ -1,7 +1,12 @@
 import { AlarmEventAttributesFormComponent } from './alarm-event-attributes-form.component';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { CommonModule, FormsModule } from '@c8y/ngx-components';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 describe('AlarmEventAttributesFormComponent', () => {
   let component: AlarmEventAttributesFormComponent;
@@ -50,4 +55,34 @@ describe('AlarmEventAttributesFormComponent', () => {
       });
     });
   });
+
+  it('reset', fakeAsync(() => {
+    // given
+    component.ngOnInit();
+    fixture.detectChanges();
+    component.formGroup.patchValue({
+      label: 'test',
+      filters: { type: 'test' },
+      timelineType: 'ALARM',
+    });
+    // when
+    component.reset();
+    tick(1000);
+    // then
+    expect(component.formGroup.value).toEqual({
+      label: '',
+      filters: { type: '' },
+      timelineType: 'ALARM',
+    });
+    expect(component.formGroup.controls.label.touched).toBe(false);
+    expect(
+      (component.formGroup.controls['filters'] as FormGroup).controls.type
+        .touched
+    ).toBe(false);
+
+    component.formGroups.forEach((f) => {
+      expect(f.hasError).toBe(false);
+      expect(f.errors).toBe(null);
+    });
+  }));
 });
