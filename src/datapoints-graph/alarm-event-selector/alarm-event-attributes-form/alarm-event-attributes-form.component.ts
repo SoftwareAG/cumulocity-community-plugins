@@ -65,17 +65,4 @@ export class AlarmEventAttributesFormComponent
   setDisabledState(isDisabled: boolean): void {
     isDisabled ? this.formGroup.disable() : this.formGroup.enable();
   }
-
-  private minSelectedCheckboxes(min = 1): ValidatorFn {
-    const validator: ValidatorFn = (formGroup: FormGroup) => {
-      const totalSelected = Object.values(formGroup.controls).reduce(
-        (prev, next) => (next.value ? prev + next.value : prev),
-        0
-      );
-
-      return totalSelected >= min ? null : { required: true };
-    };
-
-    return validator;
-  }
 }
