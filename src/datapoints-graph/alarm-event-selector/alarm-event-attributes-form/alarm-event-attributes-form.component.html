@@ -1,7 +1,7 @@
 <div [formGroup]="formGroup">
   <c8y-form-group>
     <div class="d-flex a-i-center gap-8">
-      <label class="m-0" translate>Label</label>
+      <label class="m-0">{{ 'Label' | translate }}</label>
       <input
         class="form-control flex-grow"
         name="label"
@@ -23,7 +23,7 @@
   <div formGroupName="filters">
     <c8y-form-group>
       <div class="d-flex a-i-center gap-8">
-        <label class="m-0" translate>Type</label>
+        <label class="m-0">{{ 'Type' | translate }}</label>
         <input
           class="form-control flex-grow"
           name="type"

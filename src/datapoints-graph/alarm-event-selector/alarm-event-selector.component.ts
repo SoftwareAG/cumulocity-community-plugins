@@ -52,8 +52,8 @@ export class AlarmEventSelectorComponent implements OnInit {
   filteredItems$: Observable<AlarmOrEvent[]>;
   filterStringChanges$: Observable<string>;
   timelineTypeTexts: TimelineTypeTexts;
-  private filterString$ = new BehaviorSubject('');
   isExpanded = false;
+  private filterString$ = new BehaviorSubject('');
 
   constructor(private alarmEventSelectorService: AlarmEventSelectorService) {}
 

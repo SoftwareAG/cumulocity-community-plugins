@@ -1,12 +1,10 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   forwardRef,
   Input,
   OnDestroy,
   Output,
-  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -20,7 +18,6 @@ import {
 } from '@angular/forms';
 import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 import { map, take, takeUntil } from 'rxjs/operators';
-import { ListItemComponent } from '@c8y/ngx-components';
 import { Observable, Subject } from 'rxjs';
 
 @Component({

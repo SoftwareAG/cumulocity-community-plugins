@@ -1,17 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {
-  AlarmDetails,
-  AlarmOrEvent,
-  EventDetails,
-} from '../alarm-event-selector.model';
+import { AlarmDetails, EventDetails } from '../alarm-event-selector.model';
 
 @Pipe({
   name: 'includesAlarmOrEvent',
 })
 export class IncludesAlarmOrEventPipe implements PipeTransform {
-  transform(itemList: EventDetails[], item?: EventDetails): boolean;
-  transform(itemList: AlarmDetails[], item?: AlarmDetails): boolean;
-  transform(itemList: any[], item?: any): boolean {
+  transform<T extends AlarmDetails | EventDetails>(
+    itemList: T[],
+    item?: T
+  ): boolean {
     if (!Array.isArray(itemList) || !item) {
       return false;
     }
