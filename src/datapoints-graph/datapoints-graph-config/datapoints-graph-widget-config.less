@@ -9,7 +9,11 @@ c8y-datapoints-graph-widget-config {
   .no-card-context .card-header {
     padding-left: 0;
     padding-right: 0;
-    z-index: 100;
+    z-index: 95;
+    &.sticky-top{
+      z-index: 100;
+      background: inherit;
+    }
   }
 
   .no-card-context .card-header>.card-title,
@@ -23,6 +27,28 @@ c8y-datapoints-graph-widget-config {
   .dropdown {
     .btn {
       border-radius: 0;
+    }
+  }
+}
+
+.c8y-colorpicker{
+  > input{
+    cursor: pointer;
+  }
+  &--alarm, &--event{
+    input + span{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--component-background-default, var(--c8y-root-component-background-default, #fff));
+    }
+  }
+  &--alarm{
+    input + span{
+      > i{
+        transform: translateY(-1px);
+      }
     }
   }
 }

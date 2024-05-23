@@ -4,14 +4,14 @@ import {
   CHART_RENDER_TYPES,
   KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
-import { DateTimeContext } from '@c8y/ngx-components';
-import { gettext } from '@c8y/ngx-components';
+import { DateTimeContext, gettext } from '@c8y/ngx-components';
 import { aggregationType, IMeasurement, ISeries } from '@c8y/client';
 import type {
   BarSeriesOption,
   LineSeriesOption,
   ScatterSeriesOption,
 } from 'echarts';
+import { AlarmOrEvent } from '../alarm-event-selector';
 
 export type DatapointsGraphKPIDetails = KPIDetails & {
   lineType?: DatapointLineType;
@@ -20,6 +20,7 @@ export type DatapointsGraphKPIDetails = KPIDetails & {
 
 export type DatapointsGraphWidgetConfig = {
   datapoints: DatapointsGraphKPIDetails[];
+  alarmsEventsConfigs?: AlarmOrEvent[];
   date?: DateTimeContext;
   displayDateSelection?: boolean;
   displayAggregationSelection?: boolean;
