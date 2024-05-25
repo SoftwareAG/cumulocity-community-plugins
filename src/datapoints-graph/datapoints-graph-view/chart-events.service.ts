@@ -9,7 +9,7 @@ import {
   Realtime,
 } from '@c8y/client';
 import { ApiService } from '@c8y/ngx-components/api';
-import { Event } from '../model';
+import { EventDetails } from '../alarm-event-selector';
 
 @Injectable()
 export class ChartEventsService extends EventService {
@@ -19,7 +19,7 @@ export class ChartEventsService extends EventService {
     this.apiService = apiService;
   }
 
-  listEvents$(params?, events?: Event[]): Promise<IEvent[]> {
+  listEvents$(params?, events?: EventDetails[]): Promise<IEvent[]> {
     return new Promise<IEvent[]>(async (resolve) => {
       const url = `/${this.baseUrl}/events`;
       const allEvents: IEvent[] = [];

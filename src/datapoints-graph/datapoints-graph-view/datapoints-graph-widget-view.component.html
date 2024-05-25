@@ -145,11 +145,11 @@
       <div
         class="c8y-alarm-pill flex-no-shrink"
         *ngFor="let alarm of alarms"
-        title="{{ alarm.type }} "
+        title="{{ alarm.filters.type }} "
       >
         <button
           type="button"
-          title="{{ alarm.type }} "
+          title="{{ alarm.filters.type }} "
           class="c8y-alarm-pill__btn"
           (click)="toggleAlarmEventType(alarm)"
         >
@@ -176,10 +176,10 @@
             [ngClass]="{ 'text-muted': alarm.__hidden }"
           >
             <span class="text-truncate">
-              {{ alarm.type }}
+              {{ alarm.filters.type }}
             </span>
             <small class="text-muted text-10">
-              {{ alarm.source.name }}
+              {{ alarm.__target.name }}
             </small>
           </span>
         </div>
@@ -188,11 +188,11 @@
       <div
         class="c8y-event-pill flex-no-shrink"
         *ngFor="let event of events"
-        title="{{ event.type }} "
+        title="{{ event.filters.type }} "
       >
         <button
           type="button"
-          title="{{ event.type }} "
+          title="{{ event.filters.type }} "
           class="c8y-event-pill__btn"
           (click)="toggleAlarmEventType(event)"
         >
@@ -219,10 +219,10 @@
             [ngClass]="{ 'text-muted': event.__hidden }"
           >
             <span class="text-truncate">
-              {{ event.type }}
+              {{ event.filters.type }}
             </span>
             <small class="text-muted text-10">
-              {{ event.source.name }}
+              {{ event.__target.name }}
             </small>
           </span>
         </div>
@@ -235,8 +235,7 @@
   #chart
   [config]="displayConfig"
   [alerts]="alerts"
-  [alarms]="alarms"
-  [events]="events"
+  (updateAlarmsAndEvents)="updateAlarmsAndEvents($event)"
   (configChangeOnZoomOut)="timePropsChanged($event)"
   (datapointOutOfSync)="handleDatapointOutOfSync($event)"
   (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"

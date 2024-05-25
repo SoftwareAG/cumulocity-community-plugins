@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts';
 import {
-  Alarm,
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
@@ -44,8 +43,14 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
 import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
-import { update } from 'cypress/types/lodash';
 import { CustomSeriesOptions } from './chart.model';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
+import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
+import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -79,16 +84,17 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   echartsInstance: ECharts;
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
+  alarms: IAlarm[];
+  events: IEvent[];
   @Input() config: DatapointsGraphWidgetConfig;
   @Input() alerts: DynamicComponentAlertAggregator;
-  @Input() events: IEvent[] = [];
-  @Input() alarms: IAlarm[] = [];
   @Output() configChangeOnZoomOut =
     new EventEmitter<DatapointsGraphWidgetTimeProps>();
   @Output() timeRangeChangeOnRealtime = new EventEmitter<
     Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
   >();
   @Output() datapointOutOfSync = new EventEmitter<DatapointsGraphKPIDetails>();
+  @Output() updateAlarmsAndEvents = new EventEmitter<AlarmOrEvent[]>();
   private configChangedSubject = new BehaviorSubject<void>(null);
 
   @HostListener('keydown.escape') onEscapeKeyDown() {
@@ -102,9 +108,12 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService,
+    private chartEventsService: ChartEventsService,
+    private chartAlarmsService: ChartAlarmsService,
     private datePipe: DatePipe
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
+      switchMap(async () => await this.loadAlarmsAndEvents()),
       switchMap(() => this.fetchSeriesForDatapoints$()),
       switchMap((datapointsWithValues: DatapointWithValues[]) => {
         if (datapointsWithValues.length === 0) {
@@ -400,7 +409,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  async zoomOut() {
+  zoomOut() {
     if (this.zoomInActive) {
       this.toggleZoomIn();
     }
@@ -470,6 +479,25 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  private async loadAlarmsAndEvents(): Promise<any> {
+    const timeRange = this.getTimeRange();
+    const filteredAlarmsOrEvents = this.config.alarmsEventsConfigs.filter(
+      (alarmOrEvent) => !alarmOrEvent.__hidden
+    );
+    const alarms = filteredAlarmsOrEvents.filter(
+      (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
+    ) as AlarmDetails[];
+    const events = filteredAlarmsOrEvents.filter(
+      (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
+    ) as EventDetails[];
+
+    console.log(1);
+    this.events = await this.chartEventsService.listEvents$(timeRange, events);
+    console.log(1);
+    this.alarms = await this.chartAlarmsService.listAlarms$(timeRange, alarms);
+    this.updateAlarmsAndEvents.emit(this.config.alarmsEventsConfigs);
+  }
+
   private startRealtimeIfPossible(): void {
     if (this.config.realtime && this.echartsInstance) {
       this.chartRealtimeService.startRealtime(
@@ -477,7 +505,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.config.datapoints.filter((dp) => dp.__active),
         this.getTimeRange(),
         (dp) => this.datapointOutOfSync.emit(dp),
-        (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange)
+        (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange),
+        this.config.alarmsEventsConfigs
       );
     }
   }

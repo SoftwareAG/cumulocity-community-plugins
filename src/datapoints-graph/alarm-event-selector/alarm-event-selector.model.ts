@@ -30,6 +30,7 @@ export type AlarmDetails = AlarmOrEventBase & {
   filters: {
     type: string;
   };
+  [key: string]: any;
 };
 
 export type EventDetails = AlarmOrEventBase & {
@@ -37,6 +38,7 @@ export type EventDetails = AlarmOrEventBase & {
   filters: {
     type: string;
   };
+  [key: string]: any;
 };
 
 export type AlarmOrEvent = AlarmDetails | EventDetails;

@@ -32,8 +32,6 @@ export type DatapointsGraphWidgetConfig = {
   realtime?: boolean;
   yAxisSplitLines?: boolean;
   xAxisSplitLines?: boolean;
-  events: Event[];
-  alarms: Alarm[];
 };
 
 export type DatapointsGraphWidgetTimeProps = Partial<
@@ -163,25 +161,4 @@ export interface SeriesDatapointInfo {
   datapointId: string;
   datapointLabel: string;
   datapointUnit: string;
-}
-
-export interface Event {
-  __target: {
-    id: string;
-  };
-  filters: {
-    type: string;
-  };
-  color: string;
-}
-
-export interface Alarm {
-  __target: {
-    id: string;
-  };
-  filters: {
-    type: string;
-    severity?: string;
-  };
-  color: string;
 }

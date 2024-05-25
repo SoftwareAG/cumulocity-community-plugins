@@ -18,9 +18,11 @@ import { cloneDeep } from 'lodash-es';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
-import { ChartEventsService } from './chart-events.service';
-import { ChartAlarmsService } from './chart-alarms.service';
-import { IAlarm, IEvent } from '@c8y/client';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -31,10 +33,8 @@ import { IAlarm, IEvent } from '@c8y/client';
 export class DatapointsGraphWidgetViewComponent
   implements OnChanges, OnDestroy
 {
-  events: IEvent[] = [];
-  alarms: IAlarm[] = [];
-  filteredAlarms: IAlarm[] = [];
-  filteredEvents: IEvent[] = [];
+  events: EventDetails[] = [];
+  alarms: AlarmDetails[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator;
@@ -59,17 +59,11 @@ export class DatapointsGraphWidgetViewComponent
   readonly showDatapointLabel = gettext('Show data point');
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private eventsService: ChartEventsService,
-    private alarmsService: ChartAlarmsService
-  ) {
+  constructor(private formBuilder: FormBuilder) {
     this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (value) => {
-        this.alarms = await this.loadAlarms(value);
-        this.events = await this.loadEvents(value);
         this.displayConfig = { ...this.displayConfig, ...value };
       });
   }
@@ -99,8 +93,6 @@ export class DatapointsGraphWidgetViewComponent
   async updateTimeRangeOnRealtime(
     timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
   ): Promise<void> {
-    this.alarms = await this.loadAlarms(timeRange);
-    this.events = await this.loadEvents(timeRange);
     this.timeControlsFormGroup.patchValue(timeRange, { emitEvent: false });
   }
 
@@ -119,17 +111,32 @@ export class DatapointsGraphWidgetViewComponent
     this.datapointsOutOfSync.set(dpMatch, true);
   }
 
-  toggleAlarmEventType(AlarmOrEvent: IAlarm | IEvent) {
-    const alarms = this.alarms;
-    const typeToHide = AlarmOrEvent.type;
-
-    for (const alarm of alarms) {
-      if (alarm.type === typeToHide) {
-        alarm.__hidden = !alarm.__hidden;
-      }
+  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent) {
+    if (alarmOrEvent.timelineType === 'ALARM') {
+      this.alarms = this.alarms.map((alarm) => {
+        if (alarm.filters.type === alarmOrEvent.filters.type) {
+          alarm.__hidden = !alarm.__hidden;
+        }
+        return alarm;
+      });
+    } else {
+      this.events = this.events.map((event) => {
+        if (event.filters.type === alarmOrEvent.filters.type) {
+          event.__hidden = !event.__hidden;
+        }
+        return event;
+      });
     }
-
     this.displayConfig = { ...this.displayConfig };
+  }
+
+  updateAlarmsAndEvents(alarmsEventsConfigs: AlarmOrEvent[]): void {
+    this.alarms = alarmsEventsConfigs.filter(
+      (alarm) => alarm.timelineType === 'ALARM'
+    ) as AlarmDetails[];
+    this.events = alarmsEventsConfigs.filter(
+      (event) => event.timelineType === 'EVENT'
+    ) as EventDetails[];
   }
 
   private initForm(): void {
@@ -142,53 +149,5 @@ export class DatapointsGraphWidgetViewComponent
       widgetInstanceGlobalTimeContext: [false, []],
     });
     this.timeControlsFormGroup.patchValue(this.displayConfig);
-  }
-
-  private loadEvents(timeRange): Promise<any> {
-    const formattedTimeRange = {
-      dateFrom: new Date(timeRange.dateFrom).toISOString(),
-      dateTo: new Date(timeRange.dateTo).toISOString(),
-    };
-    return this.eventsService.listEvents$(formattedTimeRange, [
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'TestEvent' },
-        color: '#08293F',
-      },
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'AnotherEventType' },
-        color: '#349EDF',
-      },
-      {
-        __target: { id: '352734984' },
-        filters: { type: 'AnotherEventType' },
-        color: '#349EDF',
-      },
-    ]);
-  }
-
-  private loadAlarms(timeRange): Promise<any> {
-    const formattedTimeRange = {
-      dateFrom: new Date(timeRange.dateFrom).toISOString(),
-      dateTo: new Date(timeRange.dateTo).toISOString(),
-    };
-    return this.alarmsService.listAlarms$(formattedTimeRange, [
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'TestAlarm' },
-        color: '#08293F',
-      },
-      {
-        __target: { id: '7713695199' },
-        filters: { type: 'AnotherAlarmType' },
-        color: '#349EDF',
-      },
-      {
-        __target: { id: '352734984' },
-        filters: { type: 'AnotherAlarmType' },
-        color: '#349EDF',
-      },
-    ]);
   }
 }

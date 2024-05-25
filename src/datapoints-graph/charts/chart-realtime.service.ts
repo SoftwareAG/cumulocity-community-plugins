@@ -14,6 +14,13 @@ import {
 import { MeasurementRealtimeService } from '@c8y/ngx-components';
 import type { ECharts, SeriesOption } from 'echarts';
 import { EchartsOptionsService } from './echarts-options.service';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
+import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
+import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
 
 type Milliseconds = number;
 
@@ -28,7 +35,9 @@ export class ChartRealtimeService {
 
   constructor(
     private measurementRealtime: MeasurementRealtimeService,
-    private echartsOptionsService: EchartsOptionsService
+    private echartsOptionsService: EchartsOptionsService,
+    private chartEventsService: ChartEventsService,
+    private chartAlarmsService: ChartAlarmsService
   ) {}
 
   startRealtime(
@@ -38,13 +47,16 @@ export class ChartRealtimeService {
     datapointOutOfSyncCallback: (dp: DatapointsGraphKPIDetails) => void,
     timeRangeChangedCallback: (
       timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
-    ) => void
+    ) => void,
+    alarmOrEventConfig: AlarmOrEvent[]
   ) {
     this.echartsInstance = echartsInstance;
     this.currentTimeRange = {
       dateFrom: new Date(timeRange.dateFrom),
       dateTo: new Date(timeRange.dateTo),
     };
+    let alarms: IAlarm[] = [];
+    let events: IEvent[] = [];
 
     const measurementsForDatapoints: Observable<DatapointRealtimeMeasurements>[] =
       datapoints.map((dp) => {
@@ -64,7 +76,7 @@ export class ChartRealtimeService {
     const bufferReset$ = merge(
       measurement$.pipe(throttleTime(updateThrottleTime)),
       interval(this.INTERVAL).pipe(
-        tap(() => {
+        tap(async () => {
           this.currentTimeRange = {
             dateFrom: new Date(
               this.currentTimeRange.dateFrom.valueOf() + this.INTERVAL
@@ -73,6 +85,24 @@ export class ChartRealtimeService {
               this.currentTimeRange.dateTo.valueOf() + this.INTERVAL
             ),
           };
+          const filteredAlarmsOrEvents = alarmOrEventConfig.filter(
+            (alarmOrEvent) => !alarmOrEvent.__hidden
+          );
+          const alarmsOfType = filteredAlarmsOrEvents.filter(
+            (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
+          ) as AlarmDetails[];
+          const eventsOfType = filteredAlarmsOrEvents.filter(
+            (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
+          ) as EventDetails[];
+
+          events = await this.chartEventsService.listEvents$(
+            timeRange,
+            eventsOfType
+          );
+          alarms = await this.chartAlarmsService.listAlarms$(
+            timeRange,
+            alarmsOfType
+          );
           timeRangeChangedCallback(this.currentTimeRange);
         }),
         throttleTime(updateThrottleTime)
@@ -84,8 +114,8 @@ export class ChartRealtimeService {
     ]).subscribe(([measurements]) => {
       this.updateChartInstance(
         measurements,
-        [],
-        [],
+        events,
+        alarms,
         datapointOutOfSyncCallback
       );
     });

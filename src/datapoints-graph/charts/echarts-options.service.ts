@@ -202,6 +202,7 @@ export class EchartsOptionsService {
                       : prev
                 );
                 // DEFINITELTY NEEDS REFACTORING
+                console.log();
                 return acc.concat(
                   isAlarmCleared
                     ? [
@@ -210,6 +211,8 @@ export class EchartsOptionsService {
                             alarm.creationTime,
                             closestDpValue
                               ? closestDpValue.values[0].min
+                                ? closestDpValue.values[0].min
+                                : closestDpValue.values[1]
                               : closestDpValue.values[1]
                               ? closestDpValue.values[1]
                               : null,
@@ -217,7 +220,7 @@ export class EchartsOptionsService {
                           name: alarm.type,
                           alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.type],
+                          symbol: ICONS_MAP[alarm.severity],
                           symbolSize: 15,
                         },
                         {
@@ -225,6 +228,8 @@ export class EchartsOptionsService {
                             alarm.lastUpdated,
                             closestDpValueLastUpdated
                               ? closestDpValueLastUpdated.values[0].min
+                                ? closestDpValueLastUpdated.values[0].min
+                                : closestDpValueLastUpdated.values[1]
                               : closestDpValueLastUpdated.values[1]
                               ? closestDpValueLastUpdated.values[1]
                               : null,
@@ -232,7 +237,7 @@ export class EchartsOptionsService {
                           name: alarm.type,
                           alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.type],
+                          symbol: ICONS_MAP.CLEARED,
                           symbolSize: 15,
                         },
                       ]
@@ -242,6 +247,8 @@ export class EchartsOptionsService {
                             alarm.creationTime,
                             closestDpValue
                               ? closestDpValue.values[0].min
+                                ? closestDpValue.values[0].min
+                                : closestDpValue.values[1]
                               : closestDpValue.values[1]
                               ? closestDpValue.values[1]
                               : null,
@@ -249,7 +256,7 @@ export class EchartsOptionsService {
                           name: alarm.type,
                           alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.type],
+                          symbol: ICONS_MAP[alarm.severity],
                           symbolSize: 15,
                         },
                         {
@@ -257,6 +264,8 @@ export class EchartsOptionsService {
                             alarm.lastUpdated,
                             closestDpValueLastUpdated
                               ? closestDpValueLastUpdated.values[0].min
+                                ? closestDpValueLastUpdated.values[0].min
+                                : closestDpValueLastUpdated.values[1]
                               : closestDpValueLastUpdated.values[1]
                               ? closestDpValueLastUpdated.values[1]
                               : null,
@@ -264,7 +273,7 @@ export class EchartsOptionsService {
                           name: alarm.type,
                           alarmType: alarm.type,
                           itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.type],
+                          symbol: ICONS_MAP[alarm.severity],
                           symbolSize: 15,
                         },
                       ]
@@ -385,6 +394,8 @@ export class EchartsOptionsService {
                     event.creationTime,
                     closestDpValue
                       ? closestDpValue.values[0].min
+                        ? closestDpValue.values[0].min
+                        : closestDpValue.values[1]
                       : closestDpValue.values[1]
                       ? closestDpValue.values[1]
                       : null,
