@@ -180,15 +180,16 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
       if (!originalFormatter) {
         originalFormatter = options.tooltip[0].formatter;
-
-        const updatedOptions: Partial<SeriesOption> = {
-          tooltip: options.tooltip,
-        };
-        updatedOptions.tooltip[0].formatter = (tooltipParams) => {
-          return this.updatedTooltip(tooltipParams, params);
-        };
-        this.echartsInstance.setOption(updatedOptions);
       }
+
+      const updatedOptions: Partial<SeriesOption> = {
+        tooltip: options.tooltip,
+      };
+      updatedOptions.tooltip[0].formatter = (tooltipParams) => {
+        return this.updatedTooltipFormatter(tooltipParams, params);
+      };
+
+      this.echartsInstance.setOption(updatedOptions);
     });
 
     this.echartsInstance.on('mouseout', () => {
@@ -201,13 +202,27 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   onChartClick(params) {
+    const options = this.echartsInstance.getOption();
     if (!this.isAlarmClick(params)) {
+      this.echartsInstance.setOption({
+        tooltip: { triggerOn: 'mousemove' },
+        series: [
+          {
+            markArea: {
+              data: [],
+            },
+            markLine: {
+              data: [],
+            },
+          },
+        ],
+      });
       return;
     }
+
     const clickedAlarms = this.alarms.filter(
-      (alarm) => alarm.type === params.data.alarmType
+      (alarm) => alarm.type === params.data.itemType
     );
-    const options = this.echartsInstance.getOption();
 
     const timeRange = this.getTimeRange();
     const updatedOptions = !this.hasMarkArea(options)
@@ -308,7 +323,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   isAlarmClick(params): boolean {
-    return this.alarms.some((alarm) => alarm.type === params.data.alarmType);
+    return this.alarms.some((alarm) => alarm.type === params.data.itemType);
   }
 
   hasMarkArea(options): boolean {
@@ -394,7 +409,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  private updatedTooltip(tooltipParams, params) {
+  private updatedTooltipFormatter(tooltipParams, params) {
     const XAxisValue: string = tooltipParams[0].data[0];
     const YAxisReadings: string[] = [];
     const allSeries = this.echartsInstance.getOption()
@@ -454,8 +469,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       );
     });
 
-    const event = this.events.find((e) => (e.type = params.data.eventType));
-    const alarm = this.alarms.find((a) => (a.type = params.data.alarmType));
+    const event = this.events.find((e) => (e.type = params.data.itemType));
+    const alarm = this.alarms.find((a) => (a.type = params.data.itemType));
 
     let value: string;
     if (event) {

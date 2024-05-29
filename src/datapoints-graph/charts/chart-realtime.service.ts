@@ -123,7 +123,6 @@ export class ChartRealtimeService {
       const alarmsAndEventsWithColor = alarmsAndEvents.map(
         (alarmOrEvent: IAlarm | IEvent) => {
           const foundAlarmOrEvent = alarmOrEventConfig.find((aOrE) => {
-            console.log(aOrE.filters.type, alarmOrEvent.type);
             return aOrE.filters.type === alarmOrEvent.type;
           });
           if (foundAlarmOrEvent) {
@@ -180,18 +179,16 @@ export class ChartRealtimeService {
     alarmsAndEvents: (IAlarm | IEvent | number)[],
     datapointOutOfSyncCallback: (dp: DatapointsGraphKPIDetails) => void
   ) {
-    const events = alarmsAndEvents.filter(
-      (alarmOrEvent) => !(alarmOrEvent as IAlarm | IEvent).severity
-    ) as IEvent[];
-
-    const alarms = alarmsAndEvents.filter(
-      (alarmOrEvent) => !!(alarmOrEvent as IAlarm | IEvent).severity
-    ) as IAlarm[];
+    const isEvent = (item: IAlarm | IEvent | number): item is IEvent =>
+      !(item as IAlarm | IEvent).severity;
+    const isAlarm = (item: IAlarm | IEvent | number): item is IAlarm =>
+      !!(item as IAlarm | IEvent).severity;
 
     const seriesDataToUpdate = new Map<
       DatapointsGraphKPIDetails,
       IMeasurement[]
     >();
+
     receivedMeasurements.forEach(({ datapoint, measurement }) => {
       if (!seriesDataToUpdate.has(datapoint)) {
         seriesDataToUpdate.set(datapoint, []);
@@ -219,7 +216,7 @@ export class ChartRealtimeService {
         seriesMatchingDatapoint
       );
 
-      events.forEach((event) => {
+      alarmsAndEvents.forEach((item) => {
         const renderType: DatapointChartRenderType =
           datapoint.renderType || 'min';
         if (
@@ -232,49 +229,38 @@ export class ChartRealtimeService {
               [date: string]: { min: number; max: number }[];
             },
           };
-          const eventId = `${event.type}+${dp.__target.id}+${Date.now()}`;
-          const newEventSeries = this.echartsOptionsService.getEventSeries(
-            dp,
-            renderType,
-            false,
-            [event],
-            eventId
-          );
-          allDataSeries.push(...newEventSeries);
-        }
-      });
 
-      alarms.forEach((alarm) => {
-        const alarmExists = allDataSeries.some((series: { data: any[] }) =>
-          series.data.some((data) => data[0] === alarm.creationTime)
-        );
-        if (alarmExists) {
-          const alarmSeries = allDataSeries.find((series: { data: any[] }) =>
-            series.data.some((data) => data[0] === alarm.creationTime)
-          );
-          allDataSeries.splice(allDataSeries.indexOf(alarmSeries), 1);
-        }
-        const renderType: DatapointChartRenderType =
-          datapoint.renderType || 'min';
-        if (
-          typeof seriesMatchingDatapoint.data === 'object' &&
-          seriesMatchingDatapoint.data !== null
-        ) {
-          const dp: DatapointWithValues = {
-            ...datapoint,
-            values: seriesMatchingDatapoint.data as {
-              [date: string]: { min: number; max: number }[];
-            },
-          };
-          const alarmId = `${alarm.type}/${dp.__target.id}`;
-          const newAlarmSeries = this.echartsOptionsService.getAlarmSeries(
-            dp,
-            renderType,
-            false,
-            [alarm],
-            alarmId
-          );
-          allDataSeries.push(...newAlarmSeries);
+          if (isEvent(item)) {
+            const newEventSeries =
+              this.echartsOptionsService.getAlarmOrEventSeries(
+                dp,
+                renderType,
+                false,
+                [item],
+                'event'
+              );
+            allDataSeries.push(...newEventSeries);
+          } else if (isAlarm(item)) {
+            const alarmExists = allDataSeries.some((series: { data: any[] }) =>
+              series.data.some((data) => data[0] === item.creationTime)
+            );
+            if (alarmExists) {
+              const alarmSeries = allDataSeries.find(
+                (series: { data: any[] }) =>
+                  series.data.some((data) => data[0] === item.creationTime)
+              );
+              allDataSeries.splice(allDataSeries.indexOf(alarmSeries), 1);
+            }
+            const newAlarmSeries =
+              this.echartsOptionsService.getAlarmOrEventSeries(
+                dp,
+                renderType,
+                false,
+                [item],
+                'alarm'
+              );
+            allDataSeries.push(...newAlarmSeries);
+          }
         }
       });
 

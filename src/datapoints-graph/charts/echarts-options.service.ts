@@ -132,309 +132,207 @@ export class EchartsOptionsService {
         series.push(this.getSingleSeries(dp, renderType, idx, false));
       }
 
-      const newEventSeries = this.getEventSeries(dp, renderType, false, events);
-      const newAlarmSeries = this.getAlarmSeries(dp, renderType, false, alarms);
+      const newEventSeries = this.getAlarmOrEventSeries(
+        dp,
+        renderType,
+        false,
+        events,
+        'event'
+      );
+      const newAlarmSeries = this.getAlarmOrEventSeries(
+        dp,
+        renderType,
+        false,
+        alarms,
+        'alarm'
+      );
       eventSeries = [...eventSeries, ...newEventSeries];
       alarmSeries = [...alarmSeries, ...newAlarmSeries];
     });
     return [...series, ...eventSeries, ...alarmSeries];
   }
 
-  getAlarmSeries(
-    dp: any,
-    renderType: DatapointChartRenderType,
-    isMinMaxChart = false,
-    alarms: any = [],
-    alarmId?: string
-  ): SeriesOption[] {
-    if (!alarms?.length) {
-      return [];
-    }
-
-    const alarmsByType = alarms.reduce((grouped, alarm) => {
-      if (!alarm.__hidden) {
-        (grouped[alarm.type] = grouped[alarm.type] || []).push(alarm);
+  groupByType(items: any[], typeField: string, hiddenField: string) {
+    return items.reduce((grouped, item) => {
+      if (!item[hiddenField]) {
+        (grouped[item[typeField]] = grouped[item[typeField]] || []).push(item);
       }
       return grouped;
     }, {});
+  }
 
-    return Object.entries(alarmsByType).map(
-      ([type, alarmsOfType]: [string, IAlarm[]]) => {
-        return {
-          id: `${alarmId ? alarmId : `${type}/${dp.__target.id}`}`,
-          name: type,
-          showSymbol: false,
-          typeOfSeries: 'alarm',
-          data: alarmsOfType.map((alarm) => [
-            alarm.creationTime,
-            null,
-            'markLineFlag',
-          ]),
-          markPoint: {
-            showSymbol: true,
-            data: alarmsOfType.reduce((acc, alarm) => {
-              if (dp.__target.id === alarm.source.id) {
-                const dpValuesArray = Object.entries(dp.values).map(
-                  ([time, values]) => ({
-                    time: new Date(time).getTime(),
-                    values,
-                  })
-                );
-                const alarmCreationTime = new Date(
-                  alarm.creationTime
-                ).getTime();
-                const closestDpValue = dpValuesArray.reduce((prev, curr) =>
-                  Math.abs(curr.time - alarmCreationTime) <
-                  Math.abs(prev.time - alarmCreationTime)
-                    ? curr
-                    : prev
-                );
-                const isAlarmCleared = alarm.status === AlarmStatus.CLEARED;
-
-                const alarmLastUpdatedTime = new Date(
-                  alarm.lastUpdated
-                ).getTime();
-                const closestDpValueLastUpdated = dpValuesArray.reduce(
-                  (prev, curr) =>
-                    Math.abs(curr.time - alarmLastUpdatedTime) <
-                    Math.abs(prev.time - alarmLastUpdatedTime)
-                      ? curr
-                      : prev
-                );
-                // DEFINITELTY NEEDS REFACTORING
-                console.log();
-                return acc.concat(
-                  isAlarmCleared
-                    ? [
-                        {
-                          coord: [
-                            alarm.creationTime,
-                            closestDpValue
-                              ? closestDpValue.values[0].min
-                                ? closestDpValue.values[0].min
-                                : closestDpValue.values[1]
-                              : closestDpValue.values[1]
-                              ? closestDpValue.values[1]
-                              : null,
-                          ],
-                          name: alarm.type,
-                          alarmType: alarm.type,
-                          itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.severity],
-                          symbolSize: 15,
-                        },
-                        {
-                          coord: [
-                            alarm.lastUpdated,
-                            closestDpValueLastUpdated
-                              ? closestDpValueLastUpdated.values[0].min
-                                ? closestDpValueLastUpdated.values[0].min
-                                : closestDpValueLastUpdated.values[1]
-                              : closestDpValueLastUpdated.values[1]
-                              ? closestDpValueLastUpdated.values[1]
-                              : null,
-                          ],
-                          name: alarm.type,
-                          alarmType: alarm.type,
-                          itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP.CLEARED,
-                          symbolSize: 15,
-                        },
-                      ]
-                    : [
-                        {
-                          coord: [
-                            alarm.creationTime,
-                            closestDpValue
-                              ? closestDpValue.values[0].min
-                                ? closestDpValue.values[0].min
-                                : closestDpValue.values[1]
-                              : closestDpValue.values[1]
-                              ? closestDpValue.values[1]
-                              : null,
-                          ],
-                          name: alarm.type,
-                          alarmType: alarm.type,
-                          itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.severity],
-                          symbolSize: 15,
-                        },
-                        {
-                          coord: [
-                            alarm.lastUpdated,
-                            closestDpValueLastUpdated
-                              ? closestDpValueLastUpdated.values[0].min
-                                ? closestDpValueLastUpdated.values[0].min
-                                : closestDpValueLastUpdated.values[1]
-                              : closestDpValueLastUpdated.values[1]
-                              ? closestDpValueLastUpdated.values[1]
-                              : null,
-                          ],
-                          name: alarm.type,
-                          alarmType: alarm.type,
-                          itemStyle: { color: alarm.color },
-                          symbol: ICONS_MAP[alarm.severity],
-                          symbolSize: 15,
-                        },
-                      ]
-                );
-              } else {
-                return acc.concat([
-                  {
-                    coord: [alarm.creationTime, null], // Set the position of the mark point
-                    name: alarm.type,
-                    itemStyle: { color: alarm.color },
-                  },
-                ]);
-              }
-            }, []),
-          },
-          markLine: {
-            showSymbol: true,
-            symbol: ['none', 'none'],
-            // below show line for creationTime and lastUpdated
-            data: alarmsOfType.reduce((acc, alarm) => {
-              if (alarm.creationTime === alarm.lastUpdated) {
-                return acc.concat([
-                  {
-                    xAxis: alarm.creationTime,
-                    alarmType: alarm.type,
-                    label: {
-                      show: false,
-                      formatter: alarm.type,
-                    },
-                    itemStyle: { color: alarm.color },
-                  },
-                ]);
-              } else {
-                return acc.concat([
-                  {
-                    xAxis: alarm.creationTime,
-                    alarmType: alarm.type,
-                    label: {
-                      show: false,
-                      formatter: alarm.type,
-                    },
-                    itemStyle: { color: alarm.color },
-                  },
-                  {
-                    xAxis: alarm.lastUpdated,
-                    alarmType: alarm.type,
-                    label: {
-                      show: false,
-                      formatter: alarm.type,
-                    },
-                    itemStyle: { color: alarm.color },
-                  },
-                ]);
-              }
-            }, []),
-          },
-          ...this.chartTypesService.getSeriesOptions(
-            dp,
-            isMinMaxChart,
-            renderType
-          ),
-        };
-      }
+  getClosestDpValue(dpValuesArray: any, targetTime: number) {
+    return dpValuesArray.reduce((prev, curr) =>
+      Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime)
+        ? curr
+        : prev
     );
   }
 
-  getEventSeries(
+  createMarkPoint(item: any, dp: any, isCleared: boolean, icon: string) {
+    const dpValuesArray = Object.entries(dp.values).map(([time, values]) => ({
+      time: new Date(time).getTime(),
+      values,
+    }));
+
+    const creationTime = new Date(item.creationTime).getTime();
+    const closestDpValue = this.getClosestDpValue(dpValuesArray, creationTime);
+    const lastUpdatedTime = new Date(item.lastUpdated).getTime();
+    const closestDpValueLastUpdated = this.getClosestDpValue(
+      dpValuesArray,
+      lastUpdatedTime
+    );
+
+    return isCleared
+      ? [
+          {
+            coord: [
+              item.creationTime,
+              closestDpValue?.values[0]?.min ??
+                closestDpValue?.values[1] ??
+                null,
+            ],
+            name: item.type,
+            itemType: item.type,
+            itemStyle: { color: item.color },
+            symbol: icon,
+            symbolSize: 15,
+          },
+          {
+            coord: [
+              item.lastUpdated,
+              closestDpValueLastUpdated?.values[0]?.min ??
+                closestDpValueLastUpdated?.values[1] ??
+                null,
+            ],
+            name: item.type,
+            itemType: item.type,
+            itemStyle: { color: item.color },
+            symbol: ICONS_MAP.CLEARED,
+            symbolSize: 15,
+          },
+        ]
+      : [
+          {
+            coord: [
+              item.creationTime,
+              closestDpValue?.values[0]?.min ??
+                closestDpValue?.values[1] ??
+                null,
+            ],
+            name: item.type,
+            itemType: item.type,
+            itemStyle: { color: item.color },
+            symbol: icon,
+            symbolSize: 15,
+          },
+          {
+            coord: [
+              item.lastUpdated,
+              closestDpValueLastUpdated?.values[0]?.min ??
+                closestDpValueLastUpdated?.values[1] ??
+                null,
+            ],
+            name: item.type,
+            itemType: item.type,
+            itemStyle: { color: item.color },
+            symbol: icon,
+            symbolSize: 15,
+          },
+        ];
+  }
+
+  createMarkLine(items: any[]) {
+    return items.reduce((acc, item) => {
+      if (item.creationTime === item.lastUpdated) {
+        return acc.concat([
+          {
+            xAxis: item.creationTime,
+            itemType: item.type,
+            label: { show: false, formatter: item.type },
+            itemStyle: { color: item.color },
+          },
+        ]);
+      } else {
+        return acc.concat([
+          {
+            xAxis: item.creationTime,
+            itemType: item.type,
+            label: { show: false, formatter: item.type },
+            itemStyle: { color: item.color },
+          },
+          {
+            xAxis: item.lastUpdated,
+            itemType: item.type,
+            label: { show: false, formatter: item.type },
+            itemStyle: { color: item.color },
+          },
+        ]);
+      }
+    }, []);
+  }
+
+  getAlarmOrEventSeries(
     dp: any,
     renderType: DatapointChartRenderType,
     isMinMaxChart = false,
-    events: IEvent[] = [],
-    eventId?: string
+    items: IAlarm[] | IEvent[] = [],
+    itemType: 'alarm' | 'event' = 'alarm'
   ): SeriesOption[] {
-    if (!events?.length) {
+    if (!items.length) {
       return [];
     }
 
-    const eventsByType = events.reduce((grouped, event) => {
-      if (!event.__hidden) {
-        (grouped[event.type] = grouped[event.type] || []).push(event);
-      }
-      return grouped;
-    }, {});
+    const itemsByType = this.groupByType(items, 'type', '__hidden');
+    const isAlarm = itemType === 'alarm';
 
-    return Object.entries(eventsByType).map(
-      ([type, eventsOfType]: [string, IEvent[]]) => {
-        return {
-          id: `${eventId ? eventId : `${type}/${dp.__target.id}`}`,
-          name: type,
-          showSymbol: false,
-          typeOfSeries: 'event',
-          data: eventsOfType.map((event) => [
-            event.creationTime,
-            null,
-            'markLineFlag',
-          ]),
-          markPoint: {
-            showSymbol: true,
-            data: eventsOfType.map((event) => {
-              if (dp.__target.id === event.source.id) {
-                const dpValuesArray = Object.entries(dp.values).map(
-                  ([time, values]) => ({
-                    time: new Date(time).getTime(),
-                    values,
-                  })
-                );
-                const eventCreationTime = new Date(
-                  event.creationTime
-                ).getTime();
-                const closestDpValue = dpValuesArray.reduce((prev, curr) =>
-                  Math.abs(curr.time - eventCreationTime) <
-                  Math.abs(prev.time - eventCreationTime)
-                    ? curr
-                    : prev
-                );
-                return {
-                  coord: [
-                    event.creationTime,
-                    closestDpValue
-                      ? closestDpValue.values[0].min
-                        ? closestDpValue.values[0].min
-                        : closestDpValue.values[1]
-                      : closestDpValue.values[1]
-                      ? closestDpValue.values[1]
-                      : null,
-                  ],
-                  name: event.type,
-                  eventType: event.type,
-                  itemStyle: { color: event.color },
-                  symbol: ICONS_MAP.EVENT,
-                  symbolSize: 15,
-                };
-              } else {
-                return {
-                  coord: [event.creationTime, null], // Set the position of the mark point
-                  name: event.type,
-                  eventType: event.type,
-                  itemStyle: { color: event.color },
-                };
-              }
-            }),
-          },
-          markLine: {
-            showSymbol: true,
-            symbol: ['none', 'none'],
-            data: eventsOfType.map((event) => ({
-              xAxis: event.creationTime,
-              eventType: event.type,
-              label: {
-                show: false,
-              },
-              itemStyle: { color: event.color },
-            })),
-          },
-          ...this.chartTypesService.getSeriesOptions(
-            dp,
-            isMinMaxChart,
-            renderType
-          ),
-        };
-      }
+    return Object.entries(itemsByType).map(
+      ([type, itemsOfType]: [string, any[]]) => ({
+        id: `${type}/${dp.__target.id}}`,
+        name: type,
+        showSymbol: false,
+        typeOfSeries: itemType,
+        data: itemsOfType.map((item) => [
+          item.creationTime,
+          null,
+          'markLineFlag',
+        ]),
+        markPoint: {
+          showSymbol: true,
+          data: itemsOfType.reduce((acc, item) => {
+            if (dp.__target.id === item.source.id) {
+              const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
+              return acc.concat(
+                this.createMarkPoint(
+                  item,
+                  dp,
+                  isCleared,
+                  ICONS_MAP[item.severity]
+                )
+              );
+            } else {
+              return acc.concat([
+                {
+                  coord: [item.creationTime, null],
+                  name: item.type,
+                  itemType: item.type,
+                  itemStyle: { color: item.color },
+                },
+              ]);
+            }
+          }, []),
+        },
+        markLine: {
+          showSymbol: true,
+          symbol: ['none', 'none'],
+          data: this.createMarkLine(itemsOfType),
+        },
+        ...this.chartTypesService.getSeriesOptions(
+          dp,
+          isMinMaxChart,
+          renderType
+        ),
+      })
     );
   }
 

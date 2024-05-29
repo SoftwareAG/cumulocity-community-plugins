@@ -63,7 +63,7 @@ export class DatapointsGraphWidgetViewComponent
     this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (value) => {
+      .subscribe((value) => {
         this.displayConfig = { ...this.displayConfig, ...value };
       });
   }
@@ -90,9 +90,9 @@ export class DatapointsGraphWidgetViewComponent
     this.timeControlsFormGroup.patchValue(timeProps);
   }
 
-  async updateTimeRangeOnRealtime(
+  updateTimeRangeOnRealtime(
     timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
-  ): Promise<void> {
+  ): void {
     this.timeControlsFormGroup.patchValue(timeRange, { emitEvent: false });
   }
 
@@ -111,7 +111,7 @@ export class DatapointsGraphWidgetViewComponent
     this.datapointsOutOfSync.set(dpMatch, true);
   }
 
-  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent) {
+  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent): void {
     if (alarmOrEvent.timelineType === 'ALARM') {
       this.alarms = this.alarms.map((alarm) => {
         if (alarm.filters.type === alarmOrEvent.filters.type) {
