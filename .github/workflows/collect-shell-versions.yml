@@ -1,0 +1,27 @@
+name: Collect shell versions
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect-shell-versions:
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    name: Get shell versions by tags
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Get @c8y/ngx-components details
+        run: npm view @c8y/ngx-components
