@@ -81,13 +81,14 @@ jobs:
           fi
           echo "File extracted successfully."
       
+          # Unzip Cockpit to dist/apps
           cockpit_file="cockpit-${next_version}.zip"
           destination_folder="dist/apps/cockpit-${next_version}"
           mkdir -p "$destination_folder"
           
           unzip -qq "$cockpit_file" -d "$destination_folder"
           if [ $? -ne 0 ]; then
-          echo "Finding or extracting cockpit file failed!"
+          echo "Extracting cockpit file failed!"
           exit 1
           fi
           echo "Cockpit file extracted successfully."
