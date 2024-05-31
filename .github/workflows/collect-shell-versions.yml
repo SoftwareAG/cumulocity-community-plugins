@@ -26,20 +26,20 @@ jobs:
           node-version: '16'
           cache: 'npm'
 
-#      - name: Install dependencies
-#        run: npm ci
-#
-#      - name: Build
-#        run: npm run build:ci
-#
-#      - name: Upload build artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: build
-#          if-no-files-found: error
-#          retention-days: 5
-#          path: |
-#            dist/apps/sag-pkg-community-plugins/**
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build:ci
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          if-no-files-found: error
+          retention-days: 5
+          path: |
+            dist/apps/sag-pkg-community-plugins/**
 
       - name: Get @c8y/ngx-components, non-deprecated dist versions
         id: check-deprecated
