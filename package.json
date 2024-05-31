@@ -16,7 +16,8 @@
     "lint:staged": "lint-staged",
     "postinstall": "ngcc",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest",
+    "collect-shell-versions": "node collect-shell-versions"
   },
   "repository": {
     "type": "git",
