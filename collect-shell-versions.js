@@ -16,9 +16,9 @@ async function getDistTags(packageName) {
 
 async function isDeprecated(packageName, version) {
   try {
-    const deprecatedInfo = (await execPromise(
-      `npm view ${packageName}@${version} deprecated --json`
-    ))?.stdout;
+    const deprecatedInfo = (
+      await execPromise(`npm view ${packageName}@${version} deprecated --json`)
+    )?.stdout;
     return !!deprecatedInfo;
   } catch (error) {
     console.error(
