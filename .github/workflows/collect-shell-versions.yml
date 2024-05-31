@@ -70,7 +70,7 @@ jobs:
 
           # Locate and extract the cockpit file inside the extracted folder
           extracted_folder=$(basename "apps-${next_version}" .tgz)
-          echo "Extracted folder is: extracted_folder"
+          echo "Extracted folder is: $extracted_folder"
 #          cockpit_file="cockpit-${next_version}.tgz"
 #          find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
 #
