@@ -67,20 +67,20 @@ jobs:
 
           # Extract the downloaded tar.gz file
           tar -xzf "apps-${next_version}.tgz"
-#
-#          # Locate and extract the cockpit file inside the extracted folder
-#          extracted_folder=$(basename "apps-${next_version}" .tgz)
-#          cockpit_file="cockpit-${next_version}.tgz"
-#          find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
-#
-#          # Echo the elements of dist/apps
-#          echo "Contents of dist/apps:"
-#          ls dist/apps
-#
-#      - name: Check dist folder
-#        run: |
-#          # Echo the elements of dist/apps
-#          echo "Contents of dist/apps:"
-#          ls dist/apps
-#          ls dist/apps/cockpit-1020.0.10
-#          ls dist/apps/sag-pkg-community-plugins
+
+          # Locate and extract the cockpit file inside the extracted folder
+          extracted_folder=$(basename "apps-${next_version}" .tgz)
+          cockpit_file="cockpit-${next_version}.tgz"
+          find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
+
+          # Echo the elements of dist/apps
+          echo "Contents of dist/apps:"
+          ls dist/apps
+
+      - name: Check dist folder
+        run: |
+          # Echo the elements of dist/apps
+          echo "Contents of dist/apps:"
+          ls dist/apps
+          ls dist/apps/cockpit-1020.0.10
+          ls dist/apps/sag-pkg-community-plugins
