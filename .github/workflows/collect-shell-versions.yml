@@ -56,11 +56,11 @@ jobs:
           # Extract the 'next' tag version from the JSON
           json=${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}
           next_version=$(echo $json | jq -r '.next')
-          echo "Version is: ${{ next_version }}"
+          echo "Version is: $next_version"
           
           # Construct the file URL
           file_url="http://resources.cumulocity.com/webapps/ui-releases/apps-${next_version}.tgz"
-          echo "File url is: ${{ file_url }}"
+          echo "File url is: $file_url "
 
 #          # Download the file
 #          curl -O $file_url
