@@ -82,7 +82,7 @@ jobs:
           echo "File extracted successfully."
       
           cockpit_file="cockpit-${next_version}.zip"
-          tar -xzf "$cockpit_file" -C "dist/apps"
+          unzip "$cockpit_file" -d "dist/apps"
           if [ $? -ne 0 ]; then
           echo "Finding or extracting cockpit file failed!"
           exit 1
