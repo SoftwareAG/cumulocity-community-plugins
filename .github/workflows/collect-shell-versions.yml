@@ -85,7 +85,7 @@ jobs:
           destination_folder="dist/apps/cockpit-${next_version}"
           mkdir -p "$destination_folder"
           
-          unzip "$cockpit_file" -d "$destination_folder"
+          unzip -qq "$cockpit_file" -d "$destination_folder"
           if [ $? -ne 0 ]; then
           echo "Finding or extracting cockpit file failed!"
           exit 1
