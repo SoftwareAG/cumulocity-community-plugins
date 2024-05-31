@@ -56,29 +56,31 @@ jobs:
           # Extract the 'next' tag version from the JSON
           json=${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}
           next_version=$(echo $json | jq -r '.next')
+          echo "Version is: ${{ next_version }}"
           
           # Construct the file URL
           file_url="http://resources.cumulocity.com/webapps/ui-releases/apps-${next_version}.tgz"
-          
-          # Download the file
-          curl -O $file_url
-          
-          # Extract the downloaded tar.gz file
-          tar -xzf "apps-${next_version}.tgz"
-          
-          # Locate and extract the cockpit file inside the extracted folder
-          extracted_folder=$(basename "apps-${next_version}" .tgz)
-          cockpit_file="cockpit-${next_version}.tgz"
-          find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
-          
-          # Echo the elements of dist/apps
-          echo "Contents of dist/apps:"
-          ls dist/apps
+          echo "File url is: ${{ file_url }}"
 
-      - name: Check dist folder
-        run: |
-          # Echo the elements of dist/apps
-          echo "Contents of dist/apps:"
-          ls dist/apps
-          ls dist/apps/cockpit-1020.0.10
-          ls dist/apps/sag-pkg-community-plugins
+#          # Download the file
+#          curl -O $file_url
+
+#          # Extract the downloaded tar.gz file
+#          tar -xzf "apps-${next_version}.tgz"
+#
+#          # Locate and extract the cockpit file inside the extracted folder
+#          extracted_folder=$(basename "apps-${next_version}" .tgz)
+#          cockpit_file="cockpit-${next_version}.tgz"
+#          find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
+#
+#          # Echo the elements of dist/apps
+#          echo "Contents of dist/apps:"
+#          ls dist/apps
+#
+#      - name: Check dist folder
+#        run: |
+#          # Echo the elements of dist/apps
+#          echo "Contents of dist/apps:"
+#          ls dist/apps
+#          ls dist/apps/cockpit-1020.0.10
+#          ls dist/apps/sag-pkg-community-plugins
