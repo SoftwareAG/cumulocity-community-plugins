@@ -169,7 +169,7 @@ export class EchartsOptionsService {
     );
   }
 
-  createMarkPoint(item: any, dp: any, isCleared: boolean, icon: string) {
+  createMarkPoint(item: any, dp: any, isCleared: boolean, isEvent: boolean) {
     const dpValuesArray = Object.entries(dp.values).map(([time, values]) => ({
       time: new Date(time).getTime(),
       values,
@@ -183,6 +183,22 @@ export class EchartsOptionsService {
       lastUpdatedTime
     );
 
+    if (isEvent) {
+      return [
+        {
+          coord: [
+            item.creationTime,
+            closestDpValue?.values[0]?.min ?? closestDpValue?.values[1] ?? null,
+          ],
+          name: item.type,
+          itemType: item.type,
+          itemStyle: { color: item.color },
+          symbol: ICONS_MAP.EVENT,
+          symbolSize: 15,
+        },
+      ];
+    }
+
     return isCleared
       ? [
           {
@@ -195,7 +211,7 @@ export class EchartsOptionsService {
             name: item.type,
             itemType: item.type,
             itemStyle: { color: item.color },
-            symbol: icon,
+            symbol: ICONS_MAP[item.severity],
             symbolSize: 15,
           },
           {
@@ -223,7 +239,7 @@ export class EchartsOptionsService {
             name: item.type,
             itemType: item.type,
             itemStyle: { color: item.color },
-            symbol: icon,
+            symbol: ICONS_MAP[item.severity],
             symbolSize: 15,
           },
           {
@@ -236,7 +252,7 @@ export class EchartsOptionsService {
             name: item.type,
             itemType: item.type,
             itemStyle: { color: item.color },
-            symbol: icon,
+            symbol: ICONS_MAP[item.severity],
             symbolSize: 15,
           },
         ];
@@ -277,7 +293,8 @@ export class EchartsOptionsService {
     renderType: DatapointChartRenderType,
     isMinMaxChart = false,
     items: IAlarm[] | IEvent[] = [],
-    itemType: 'alarm' | 'event' = 'alarm'
+    itemType: 'alarm' | 'event' = 'alarm',
+    id?: string | number
   ): SeriesOption[] {
     if (!items.length) {
       return [];
@@ -288,7 +305,7 @@ export class EchartsOptionsService {
 
     return Object.entries(itemsByType).map(
       ([type, itemsOfType]: [string, any[]]) => ({
-        id: `${type}/${dp.__target.id}}`,
+        id: `${type}/${dp.__target.id}+${id ? id : ''}`,
         name: type,
         showSymbol: false,
         typeOfSeries: itemType,
@@ -302,13 +319,9 @@ export class EchartsOptionsService {
           data: itemsOfType.reduce((acc, item) => {
             if (dp.__target.id === item.source.id) {
               const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
+              const isEvent = !isAlarm;
               return acc.concat(
-                this.createMarkPoint(
-                  item,
-                  dp,
-                  isCleared,
-                  ICONS_MAP[item.severity]
-                )
+                this.createMarkPoint(item, dp, isCleared, isEvent)
               );
             } else {
               return acc.concat([

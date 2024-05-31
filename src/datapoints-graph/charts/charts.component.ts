@@ -252,7 +252,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                     {
                       xAxis:
                         clickedAlarm.lastUpdated ===
-                          clickedAlarm.creationTime &&
+                          clickedAlarm.creationTime ||
                         clickedAlarm.status !== AlarmStatus.CLEARED
                           ? timeRange.dateTo
                           : clickedAlarm.lastUpdated,
@@ -469,8 +469,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       );
     });
 
-    const event = this.events.find((e) => (e.type = params.data.itemType));
-    const alarm = this.alarms.find((a) => (a.type = params.data.itemType));
+    const event = this.events.find((e) => e.type === params.data.itemType);
+    const alarm = this.alarms.find((a) => a.type === params.data.itemType);
 
     let value: string;
     if (event) {
@@ -507,8 +507,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
     ) as EventDetails[];
 
-    this.events = await this.chartEventsService.listEvents$(timeRange, events);
-    this.alarms = await this.chartAlarmsService.listAlarms$(timeRange, alarms);
+    this.events = await this.chartEventsService.listEvents(timeRange, events);
+    this.alarms = await this.chartAlarmsService.listAlarms(timeRange, alarms);
+
     this.updateAlarmsAndEvents.emit(this.config.alarmsEventsConfigs);
   }
 

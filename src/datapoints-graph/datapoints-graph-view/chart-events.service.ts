@@ -1,61 +1,32 @@
 import { Injectable } from '@angular/core';
-import {
-  EventService,
-  FetchClient,
-  IEvent,
-  IFetchOptions,
-  IFetchResponse,
-  IResult,
-  Realtime,
-} from '@c8y/client';
-import { ApiService } from '@c8y/ngx-components/api';
+import { EventService, IEvent, IFetchOptions, IResultList } from '@c8y/client';
 import { EventDetails } from '../alarm-event-selector';
 
 @Injectable()
-export class ChartEventsService extends EventService {
-  apiService: ApiService;
-  constructor(client: FetchClient, realtime: Realtime, apiService: ApiService) {
-    super(client, realtime);
-    this.apiService = apiService;
-  }
+export class ChartEventsService {
+  constructor(private eventService: EventService) {}
 
-  listEvents$(params?, events?: EventDetails[]): Promise<IEvent[]> {
-    return new Promise<IEvent[]>(async (resolve) => {
-      const url = `/${this.baseUrl}/events`;
-      const allEvents: IEvent[] = [];
-      for (const event of events) {
-        const fetchOptions: IFetchOptions = {
-          params: {
-            source: event.__target.id,
-            type: event.filters.type,
-            withTotalPages: true,
-            pageSize: 1000,
-            ...params,
-          },
-        };
-        const result = await this.getEvents(url, fetchOptions);
+  async listEvents(params?, events?: EventDetails[]): Promise<IEvent[]> {
+    const promises = events.map((event) => {
+      const fetchOptions: IFetchOptions = {
+        source: event.__target.id,
+        type: event.filters.type,
+        withTotalPages: true,
+        pageSize: 1000,
+        ...params,
+      };
+      return this.getEvents(fetchOptions).then((result) => {
         result.data.forEach((iEvent) => {
           iEvent.color = event.color;
         });
-        allEvents.push(...result.data);
-      }
-      resolve(allEvents);
+        return result.data;
+      });
     });
+    const result = await Promise.all(promises);
+    return result.flat();
   }
 
-  private async getEvents(
-    url: string,
-    fetchOptions: IFetchOptions
-  ): Promise<IResult<IEvent[]>> {
-    const options = this.client.getFetchOptions(fetchOptions);
-    const fullUrl: string = this.client.getUrl(url, fetchOptions);
-
-    const response = await fetch(fullUrl, options);
-    const data = await response.json();
-    const result: IResult<IEvent[]> = {
-      res: response as IFetchResponse,
-      data: data.events as IEvent[],
-    };
-    return result;
+  getEvents(fetchOptions: IFetchOptions): Promise<IResultList<IEvent>> {
+    return this.eventService.list(fetchOptions);
   }
 }

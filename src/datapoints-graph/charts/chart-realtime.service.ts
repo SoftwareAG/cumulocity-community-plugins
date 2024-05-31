@@ -237,7 +237,8 @@ export class ChartRealtimeService {
                 renderType,
                 false,
                 [item],
-                'event'
+                'event',
+                item.id
               );
             allDataSeries.push(...newEventSeries);
           } else if (isAlarm(item)) {
@@ -257,7 +258,8 @@ export class ChartRealtimeService {
                 renderType,
                 false,
                 [item],
-                'alarm'
+                'alarm',
+                item.id
               );
             allDataSeries.push(...newAlarmSeries);
           }
