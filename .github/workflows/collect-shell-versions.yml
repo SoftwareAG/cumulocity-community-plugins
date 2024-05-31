@@ -95,11 +95,3 @@ jobs:
           # Echo the elements of dist/apps
           echo "Contents of dist/apps:"
           ls dist/apps
-#
-#      - name: Check dist folder
-#        run: |
-#          # Echo the elements of dist/apps
-#          echo "Contents of dist/apps:"
-#          ls dist/apps
-#          ls dist/apps/cockpit-1020.0.10
-#          ls dist/apps/sag-pkg-community-plugins
