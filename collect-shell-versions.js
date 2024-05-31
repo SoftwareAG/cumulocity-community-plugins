@@ -46,5 +46,11 @@ async function getNonDeprecatedVersions(packageName) {
 (async () => {
   const packageName = '@c8y/ngx-components';
   const nonDeprecatedVersions = await getNonDeprecatedVersions(packageName);
-  process.stdout.write(`::set-output name=non_deprecated_shell_versions::${JSON.stringify(nonDeprecatedVersions)}`);
+  process.stdout.write(
+    `::set-output name=non_deprecated_shell_versions::${JSON.stringify(
+      nonDeprecatedVersions,
+      null,
+      2
+    )}`
+  );
 })();
