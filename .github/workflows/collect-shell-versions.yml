@@ -53,6 +53,7 @@ jobs:
 
       - name: Get shell app of particular version
         run: |
+          set -e  # Exit the script if any command fails
           # Extract the 'next' tag version from the JSON
           json='${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}'
           next_version=$(echo $json | jq -r '.next')
@@ -63,17 +64,42 @@ jobs:
           echo "File url is: $file_url"
 
           # Download the file
+          echo "Downloading file..."
           curl -O $file_url
+          if [ ! -f "apps-${next_version}.tgz" ]; then
+          echo "Downloaded file not found!"
+          exit 1
+          fi
+          echo "Downloaded file exists."
 
           # Extract the downloaded tar.gz file
+          echo "Extracting downloaded file..."
           tar -xzf "apps-${next_version}.tgz"
+          if [ $? -ne 0 ]; then
+          echo "Extraction failed!"
+          exit 1
+          fi
+          echo "File extracted successfully."
 
           # Locate and extract the cockpit file inside the extracted folder
-          extracted_folder=$(basename "apps-${next_version}" .tgz)
+          extracted_folder="apps-${next_version}"
           echo "Extracted folder is: $extracted_folder"
+
+          # Ensure the extracted folder exists
+          if [ ! -d "$extracted_folder" ]; then
+          echo "Extracted folder not found: $extracted_folder"
+          ls -la  # List files to help debug
+          exit 1
+          fi
+      
           cockpit_file="cockpit-${next_version}.zip"
           find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
-
+          if [ $? -ne 0 ]; then
+          echo "Finding or extracting cockpit file failed!"
+          exit 1
+          fi
+          echo "Cockpit file extracted successfully."
+      
           # Echo the elements of dist/apps
           echo "Contents of dist/apps:"
           ls dist/apps
