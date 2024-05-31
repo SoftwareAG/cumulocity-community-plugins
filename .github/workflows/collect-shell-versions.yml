@@ -80,20 +80,9 @@ jobs:
           exit 1
           fi
           echo "File extracted successfully."
-
-          # Locate and extract the cockpit file inside the extracted folder
-          extracted_folder="apps-${next_version}"
-          echo "Extracted folder is: $extracted_folder"
-
-          # Ensure the extracted folder exists
-          if [ ! -d "$extracted_folder" ]; then
-          echo "Extracted folder not found: $extracted_folder"
-          ls -la  # List files to help debug
-          exit 1
-          fi
       
           cockpit_file="cockpit-${next_version}.zip"
-          find "$extracted_folder" -name "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
+          "$cockpit_file" -exec tar -xzf {} -C "dist/apps" \;
           if [ $? -ne 0 ]; then
           echo "Finding or extracting cockpit file failed!"
           exit 1
