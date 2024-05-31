@@ -54,7 +54,7 @@ jobs:
       - name: Get shell app of particular version
         run: |
           # Extract the 'next' tag version from the JSON
-          json="${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}"
+          json='${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}'
           next_version=$(echo $json | jq -r '.next')
           echo "Version is: $next_version"
           
