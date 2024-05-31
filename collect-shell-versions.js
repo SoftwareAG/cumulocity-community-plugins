@@ -48,9 +48,7 @@ async function getNonDeprecatedVersions(packageName) {
   const nonDeprecatedVersions = await getNonDeprecatedVersions(packageName);
   process.stdout.write(
     `::set-output name=non_deprecated_shell_versions::${JSON.stringify(
-      nonDeprecatedVersions,
-      null,
-      2
+      nonDeprecatedVersions
     )}`
   );
 })();
