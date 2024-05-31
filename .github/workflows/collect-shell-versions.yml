@@ -62,11 +62,11 @@ jobs:
           file_url="http://resources.cumulocity.com/webapps/ui-releases/apps-${next_version}.tgz"
           echo "File url is: $file_url "
 
-#          # Download the file
-#          curl -O $file_url
+          # Download the file
+          curl -O $file_url
 
-#          # Extract the downloaded tar.gz file
-#          tar -xzf "apps-${next_version}.tgz"
+          # Extract the downloaded tar.gz file
+          tar -xzf "apps-${next_version}.tgz"
 #
 #          # Locate and extract the cockpit file inside the extracted folder
 #          extracted_folder=$(basename "apps-${next_version}" .tgz)
