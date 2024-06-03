@@ -12,6 +12,7 @@
     "cypress:open": "cypress open",
     "deploy": "c8ycli deploy",
     "http-server": "http-server -p 9000 ./dist",
+    "http-server-proxy": "http-server ./dist -p 9000 -P https://jdre.latest.stage.c8y.io",
     "lint": "eslint --ext .ts,.html .",
     "lint:staged": "lint-staged",
     "postinstall": "ngcc",
