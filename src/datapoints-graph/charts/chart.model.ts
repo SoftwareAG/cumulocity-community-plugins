@@ -8,11 +8,11 @@ export interface CustomSeriesOptions extends echarts.EChartsOption {
 
 /* Alarm properties related to time:
   time --> Used for filtering alarms in the BE. So it could happen that the alarm is not displayed in the graph
-  because lastUpdated might fit the timeframe while time does not. When a new occurence of the alarm happens, the time property is
-  updated toghether with the lastUpdated property. On the other hand for severity changes(e.g. via smart rules) and
+  because lastUpdated might fit the timeframe while time does not. When a new occurrence of the alarm happens, the time property is
+  updated together with the lastUpdated property. On the other hand for severity changes (e.g. via smart rules) and
   clearing the alarm, only the lastUpdated property is updated.
 
-  firstOccurrrence ----> Time in which the alarm was first raised. So if a new occurence of the alarm happens,
+  firstOccurrence ----> Time in which the alarm was first raised. So if a new occurrence of the alarm happens,
   the count property is increased, but the firstOccurrence is not updated.
   
   
