@@ -12,6 +12,7 @@ import type {
   ScatterSeriesOption,
 } from 'echarts';
 import { AlarmOrEvent } from '../alarm-event-selector';
+import { Data } from '@angular/router';
 
 export type DatapointsGraphKPIDetails = KPIDetails & {
   lineType?: DatapointLineType;
@@ -113,6 +114,31 @@ export const AGGREGATION_LIMITS = {
 type DatapointApiValues = ISeries['values'];
 export interface DatapointWithValues extends DatapointsGraphKPIDetails {
   values: DatapointApiValues;
+}
+
+type DataPointModifiedValues = {
+  min: number;
+  max: number;
+};
+export type DpValuesArrayItem = {
+  time: number;
+  values: DataPointModifiedValues[];
+};
+
+export interface MarkPointData {
+  coord: [string, number | DataPointModifiedValues | null];
+  name: string;
+  itemType: string;
+  itemStyle: { color: string };
+  symbol: string; // Symbol to display for the mark point (reference to ICONS_MAP)
+  symbolSize: number;
+}
+
+export interface MarkLineData {
+  xAxis: number;
+  itemType: string;
+  label: { show: boolean; formatter: (params: any) => string };
+  itemStyle: { color: string };
 }
 
 export type DatapointLineType = (typeof CHART_LINE_TYPES)[number]['val'];

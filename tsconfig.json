@@ -9,7 +9,7 @@
     "experimentalDecorators": true,
     "target": "es6",
     "module": "es2020",
-    "lib": ["dom", "es2015", "es2016"],
+    "lib": ["dom", "es2015", "es2016", "es2019"],
     "skipLibCheck": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"],

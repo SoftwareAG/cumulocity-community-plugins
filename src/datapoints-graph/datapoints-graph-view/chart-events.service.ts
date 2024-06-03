@@ -7,6 +7,9 @@ export class ChartEventsService {
   constructor(private eventService: EventService) {}
 
   async listEvents(params?, events?: EventDetails[]): Promise<IEvent[]> {
+    if (!events) {
+      return [];
+    }
     const promises = events.map((event) => {
       const fetchOptions: IFetchOptions = {
         source: event.__target.id,
@@ -26,7 +29,7 @@ export class ChartEventsService {
     return result.flat();
   }
 
-  getEvents(fetchOptions: IFetchOptions): Promise<IResultList<IEvent>> {
+  private getEvents(fetchOptions: IFetchOptions): Promise<IResultList<IEvent>> {
     return this.eventService.list(fetchOptions);
   }
 }

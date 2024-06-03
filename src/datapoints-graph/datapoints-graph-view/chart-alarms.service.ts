@@ -7,6 +7,9 @@ export class ChartAlarmsService {
   constructor(private alarmService: AlarmService) {}
 
   async listAlarms(params?, alarms?: AlarmDetails[]): Promise<IAlarm[]> {
+    if (!alarms) {
+      return [];
+    }
     const promises = alarms.map((alarm) => {
       const fetchOptions: IFetchOptions = {
         source: alarm.__target.id,
@@ -26,7 +29,7 @@ export class ChartAlarmsService {
     return result.flat();
   }
 
-  getAlarms(fetchOptions: IFetchOptions): Promise<IResultList<IAlarm>> {
+  private getAlarms(fetchOptions: IFetchOptions): Promise<IResultList<IAlarm>> {
     return this.alarmService.list(fetchOptions);
   }
 }

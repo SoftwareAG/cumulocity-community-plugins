@@ -36,7 +36,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { EchartsOptionsService } from './echarts-options.service';
 import { ChartRealtimeService } from './chart-realtime.service';
 import type { DataZoomOption } from 'echarts/types/src/component/dataZoom/DataZoomModel';
-import type { ECActionEvent } from 'echarts/types/src/util/types';
+import type {
+  ECActionEvent,
+  TooltipFormatterCallback,
+} from 'echarts/types/src/util/types';
 import { ChartTypesService } from './chart-types.service';
 import { CommonModule } from '@angular/common';
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from 'ngx-echarts';
@@ -53,6 +56,8 @@ import {
 } from '../alarm-event-selector';
 import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
 import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
+import { cli } from 'cypress';
+import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -117,7 +122,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private datePipe: DatePipe
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
-      switchMap(async () => await this.loadAlarmsAndEvents()),
+      switchMap(() => this.loadAlarmsAndEvents()),
       switchMap(() => this.fetchSeriesForDatapoints$()),
       switchMap((datapointsWithValues: DatapointWithValues[]) => {
         if (datapointsWithValues.length === 0) {
@@ -170,14 +175,13 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
     let originalFormatter = null;
     this.echartsInstance.on('mouseover', (params: any) => {
-      const options = this.echartsInstance.getOption();
       if (
         params?.componentType !== 'markLine' &&
         params?.componentType !== 'markPoint'
       ) {
         return;
       }
-
+      const options = this.echartsInstance.getOption();
       if (!originalFormatter) {
         originalFormatter = options.tooltip[0].formatter;
       }
@@ -185,8 +189,15 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       const updatedOptions: Partial<SeriesOption> = {
         tooltip: options.tooltip,
       };
-      updatedOptions.tooltip[0].formatter = (tooltipParams) => {
-        return this.updatedTooltipFormatter(tooltipParams, params);
+      updatedOptions.tooltip[0].formatter = (
+        tooltipParams: TooltipFormatterCallback<TopLevelFormatterParams>
+      ) => {
+        return this.echartsOptionsService.getTooltipFormatterForAlarmAndEvents(
+          tooltipParams,
+          params,
+          this.events,
+          this.alarms
+        );
       };
 
       this.echartsInstance.setOption(updatedOptions);
@@ -224,7 +235,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       (alarm) => alarm.type === params.data.itemType
     );
 
-    const timeRange = this.getTimeRange();
     const updatedOptions = !this.hasMarkArea(options)
       ? {
           tooltip: {
@@ -237,69 +247,12 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
                 label: {
                   show: false,
                 },
-                data: clickedAlarms.map((clickedAlarm) => {
-                  return [
-                    {
-                      name: clickedAlarm.type,
-                      xAxis: clickedAlarm.creationTime,
-                      itemStyle: {
-                        color:
-                          clickedAlarm.status === AlarmStatus.CLEARED
-                            ? 'rgba(221,255,221,1.00)'
-                            : 'rgba(255, 173, 177, 0.4)',
-                      },
-                    },
-                    {
-                      xAxis:
-                        clickedAlarm.lastUpdated ===
-                          clickedAlarm.creationTime ||
-                        clickedAlarm.status !== AlarmStatus.CLEARED
-                          ? timeRange.dateTo
-                          : clickedAlarm.lastUpdated,
-                    },
-                  ];
-                }),
+                data: this.getMarkedAreaData(clickedAlarms),
               },
               markLine: {
                 showSymbol: true,
                 symbol: ['none', 'none'],
-                data: clickedAlarms.reduce((acc, alarm) => {
-                  const isClickedAlarmCleared =
-                    alarm.status === AlarmStatus.CLEARED;
-                  if (isClickedAlarmCleared) {
-                    return acc.concat([
-                      {
-                        xAxis: alarm.creationTime,
-                        alarmType: alarm.type,
-                        label: {
-                          show: false,
-                          formatter: alarm.type,
-                        },
-                        itemStyle: { color: alarm.color },
-                      },
-                      {
-                        xAxis: alarm.lastUpdated,
-                        alarmType: alarm.type,
-                        label: {
-                          show: false,
-                          formatter: alarm.type,
-                        },
-                        itemStyle: { color: alarm.color },
-                      },
-                    ]);
-                  }
-                  return acc.concat([
-                    {
-                      xAxis: alarm.creationTime,
-                      alarmType: alarm.type,
-                      label: {
-                        show: false,
-                        formatter: alarm.type,
-                      },
-                      itemStyle: { color: alarm.color },
-                    },
-                  ]);
-                }, []),
+                data: this.getMarkedLineData(clickedAlarms),
               },
             },
           ],
@@ -409,106 +362,94 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  private updatedTooltipFormatter(tooltipParams, params) {
-    const XAxisValue: string = tooltipParams[0].data[0];
-    const YAxisReadings: string[] = [];
-    const allSeries = this.echartsInstance.getOption()
-      .series as CustomSeriesOptions[];
+  private getMarkedAreaData(clickedAlarms: IAlarm[]) {
+    const timeRange = this.getTimeRange();
 
-    const allDataPointSeries = allSeries.filter(
-      (series) =>
-        series.typeOfSeries !== 'alarm' && series.typeOfSeries !== 'event'
-    );
-
-    allDataPointSeries.forEach((series: any) => {
-      let value: string;
-      if (series.id.endsWith('/min')) {
-        const minValue = this.findValueForExactOrEarlierTimestamp(
-          series.data,
-          XAxisValue
-        );
-        if (!minValue) {
-          return;
-        }
-        const maxSeries = allDataPointSeries.find(
-          (s) => s.id === series.id.replace('/min', '/max')
-        );
-        const maxValue = this.findValueForExactOrEarlierTimestamp(
-          maxSeries.data as SeriesValue[],
-          XAxisValue
-        );
-        value =
-          `${minValue[1]} — ${maxValue[1]}` +
-          (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-          `<div style="font-size: 11px">${this.datePipe.transform(
-            minValue[0]
-          )}</div>`;
-      } else if (series.id.endsWith('/max')) {
-        // do nothing, value is handled  in 'min' case
-        return;
-      } else {
-        const seriesValue = this.findValueForExactOrEarlierTimestamp(
-          series.data,
-          XAxisValue
-        );
-        if (!seriesValue) {
-          return;
-        }
-        value =
-          seriesValue[1]?.toString() +
-          (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-          `<div style="font-size: 11px">${this.datePipe.transform(
-            seriesValue[0]
-          )}</div>`;
-      }
-
-      YAxisReadings.push(
-        `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
-          `<strong>${series.datapointLabel}: </strong>` + // name
-          value // single value or min-max range
-      );
+    return clickedAlarms.map((clickedAlarm) => {
+      return [
+        {
+          name: clickedAlarm.type,
+          xAxis: clickedAlarm.creationTime,
+          itemStyle: {
+            color:
+              clickedAlarm.status === AlarmStatus.CLEARED
+                ? 'rgba(221,255,221,1.00)'
+                : 'rgba(255, 173, 177, 0.4)',
+          },
+        },
+        {
+          xAxis:
+            clickedAlarm.lastUpdated === clickedAlarm.creationTime ||
+            clickedAlarm.status !== AlarmStatus.CLEARED
+              ? timeRange.dateTo
+              : clickedAlarm.lastUpdated,
+        },
+      ];
     });
+  }
 
-    const event = this.events.find((e) => e.type === params.data.itemType);
-    const alarm = this.alarms.find((a) => a.type === params.data.itemType);
-
-    let value: string;
-    if (event) {
-      // Add the event information to the value
-      value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
-      value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
-      value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
-      value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
-    }
-
-    if (alarm) {
-      // Add the alarm information to the value
-      value = `<div style="font-size: 11px">Alarm Time: ${alarm.time}</div>`;
-      value += `<div style="font-size: 11px">Alarm Type: ${alarm.type}</div>`;
-      value += `<div style="font-size: 11px">Alarm Text: ${alarm.text}</div>`;
-      value += `<div style="font-size: 11px">Alarm Last Updated: ${alarm.lastUpdated}</div>`;
-      value += `<div style="font-size: 11px">Alarm Count: ${alarm.count}</div>`;
-    }
-    YAxisReadings.push(value);
-    return (
-      this.datePipe.transform(XAxisValue) + '<br/>' + YAxisReadings.join('')
-    );
+  private getMarkedLineData(clickedAlarms: IAlarm[]) {
+    clickedAlarms.reduce((acc, alarm) => {
+      const isClickedAlarmCleared = alarm.status === AlarmStatus.CLEARED;
+      if (isClickedAlarmCleared) {
+        return acc.concat([
+          {
+            xAxis: alarm.creationTime,
+            alarmType: alarm.type,
+            label: {
+              show: false,
+              formatter: alarm.type,
+            },
+            itemStyle: { color: alarm.color },
+          },
+          {
+            xAxis: alarm.lastUpdated,
+            alarmType: alarm.type,
+            label: {
+              show: false,
+              formatter: alarm.type,
+            },
+            itemStyle: { color: alarm.color },
+          },
+        ]);
+      }
+      return acc.concat([
+        {
+          xAxis: alarm.creationTime,
+          alarmType: alarm.type,
+          label: {
+            show: false,
+            formatter: alarm.type,
+          },
+          itemStyle: { color: alarm.color },
+        },
+      ]);
+    }, []);
   }
 
   private async loadAlarmsAndEvents(): Promise<any> {
     const timeRange = this.getTimeRange();
-    const filteredAlarmsOrEvents = this.config.alarmsEventsConfigs.filter(
+    const updatedTimeRange = {
+      lastUpdatedFrom: timeRange.dateFrom,
+      createdTo: timeRange.dateTo,
+    };
+    const visibleAlarmsOrEvents = this.config.alarmsEventsConfigs.filter(
       (alarmOrEvent) => !alarmOrEvent.__hidden
     );
-    const alarms = filteredAlarmsOrEvents.filter(
+    const alarms = visibleAlarmsOrEvents.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
     ) as AlarmDetails[];
-    const events = filteredAlarmsOrEvents.filter(
+    const events = visibleAlarmsOrEvents.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
     ) as EventDetails[];
 
-    this.events = await this.chartEventsService.listEvents(timeRange, events);
-    this.alarms = await this.chartAlarmsService.listAlarms(timeRange, alarms);
+    const [listedEvents, listedAlarms] = await Promise.all([
+      this.chartEventsService.listEvents(updatedTimeRange, events),
+      this.chartAlarmsService.listAlarms(updatedTimeRange, alarms),
+    ]);
+
+    this.events = listedEvents;
+    this.alarms = listedAlarms;
 
     this.updateAlarmsAndEvents.emit(this.config.alarmsEventsConfigs);
   }

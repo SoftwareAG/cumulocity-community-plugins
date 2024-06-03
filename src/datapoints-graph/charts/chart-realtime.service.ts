@@ -113,14 +113,14 @@ export class ChartRealtimeService {
       measurement$.pipe(buffer(bufferReset$)),
       allAlarmsAndEvents$.pipe(buffer(bufferReset$)),
     ]).subscribe(([measurements, alarmsAndEvents]) => {
-      alarmsAndEvents = alarmsAndEvents.filter(
+      const filteredAlarmsOrEvents = alarmsAndEvents.filter(
         (alarmOrEvent: IAlarm | IEvent) => {
           return alarmOrEventConfig.some((aOrE) => {
             return aOrE.filters.type === alarmOrEvent.type;
           });
         }
       );
-      const alarmsAndEventsWithColor = alarmsAndEvents.map(
+      const alarmsAndEventsWithColor = filteredAlarmsOrEvents.map(
         (alarmOrEvent: IAlarm | IEvent) => {
           const foundAlarmOrEvent = alarmOrEventConfig.find((aOrE) => {
             return aOrE.filters.type === alarmOrEvent.type;
@@ -217,52 +217,53 @@ export class ChartRealtimeService {
       );
 
       alarmsAndEvents.forEach((item) => {
+        if (
+          typeof seriesMatchingDatapoint.data !== 'object' ||
+          seriesMatchingDatapoint.data === null
+        ) {
+          return;
+        }
         const renderType: DatapointChartRenderType =
           datapoint.renderType || 'min';
-        if (
-          typeof seriesMatchingDatapoint.data === 'object' &&
-          seriesMatchingDatapoint.data !== null
-        ) {
-          const dp: DatapointWithValues = {
-            ...datapoint,
-            values: seriesMatchingDatapoint.data as {
-              [date: string]: { min: number; max: number }[];
-            },
-          };
+        const dp: DatapointWithValues = {
+          ...datapoint,
+          values: seriesMatchingDatapoint.data as {
+            [date: string]: { min: number; max: number }[];
+          },
+        };
 
-          if (isEvent(item)) {
-            const newEventSeries =
-              this.echartsOptionsService.getAlarmOrEventSeries(
-                dp,
-                renderType,
-                false,
-                [item],
-                'event',
-                item.id
-              );
-            allDataSeries.push(...newEventSeries);
-          } else if (isAlarm(item)) {
-            const alarmExists = allDataSeries.some((series: { data: any[] }) =>
+        if (isEvent(item)) {
+          const newEventSeries =
+            this.echartsOptionsService.getAlarmOrEventSeries(
+              dp,
+              renderType,
+              false,
+              [item],
+              'event',
+              item.id
+            );
+          allDataSeries.push(...newEventSeries);
+        } else if (isAlarm(item)) {
+          const alarmExists = allDataSeries.some((series: { data: any[] }) =>
+            series.data.some((data) => data[0] === item.creationTime)
+          );
+          if (alarmExists) {
+            const alarmSeries = allDataSeries.find((series: { data: any[] }) =>
               series.data.some((data) => data[0] === item.creationTime)
             );
-            if (alarmExists) {
-              const alarmSeries = allDataSeries.find(
-                (series: { data: any[] }) =>
-                  series.data.some((data) => data[0] === item.creationTime)
-              );
-              allDataSeries.splice(allDataSeries.indexOf(alarmSeries), 1);
-            }
-            const newAlarmSeries =
-              this.echartsOptionsService.getAlarmOrEventSeries(
-                dp,
-                renderType,
-                false,
-                [item],
-                'alarm',
-                item.id
-              );
-            allDataSeries.push(...newAlarmSeries);
+            // Instead of updating the existing alarm series, it would be easier if we remove all existing series for the current time range and add them again.
+            allDataSeries.splice(allDataSeries.indexOf(alarmSeries), 1);
           }
+          const newAlarmSeries =
+            this.echartsOptionsService.getAlarmOrEventSeries(
+              dp,
+              renderType,
+              false,
+              [item],
+              'alarm',
+              item.id
+            );
+          allDataSeries.push(...newAlarmSeries);
         }
       });
 

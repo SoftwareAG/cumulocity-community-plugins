@@ -6,6 +6,9 @@ import {
   DatapointChartRenderType,
   DatapointWithValues,
   DateString,
+  DpValuesArrayItem,
+  MarkLineData,
+  MarkPointData,
   SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
@@ -115,10 +118,164 @@ export class EchartsOptionsService {
     };
   }
 
+  getAlarmOrEventSeries(
+    dp: DatapointWithValues,
+    renderType: DatapointChartRenderType,
+    isMinMaxChart = false,
+    items: IAlarm[] | IEvent[] = [],
+    itemType: 'alarm' | 'event' = 'alarm',
+    id?: string | number
+  ): SeriesOption[] {
+    if (!items.length) {
+      return [];
+    }
+
+    //filter items that are not __hidden
+    const filteredItems = items.filter((item) => !item.__hidden);
+    const itemsByType = this.groupByType(filteredItems, 'type');
+    const isAlarm = itemType === 'alarm';
+
+    return Object.entries(itemsByType).map(
+      ([type, itemsOfType]: [string, any]) => ({
+        id: `${type}/${dp.__target.id}+${id ? id : ''}`,
+        name: type,
+        showSymbol: false,
+        typeOfSeries: itemType,
+        data: itemsOfType.map((item) => [
+          item.creationTime,
+          null,
+          'markLineFlag',
+        ]),
+        markPoint: {
+          showSymbol: true,
+          data: itemsOfType.reduce((acc, item) => {
+            if (dp.__target.id === item.source.id) {
+              const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
+              const isEvent = !isAlarm;
+              return acc.concat(
+                this.createMarkPoint(item, dp, isCleared, isEvent)
+              );
+            } else {
+              return acc.concat([
+                {
+                  coord: [item.creationTime, null],
+                  name: item.type,
+                  itemType: item.type,
+                  itemStyle: { color: item.color },
+                },
+              ]);
+            }
+          }, [] as any),
+        },
+        markLine: {
+          showSymbol: true,
+          symbol: ['none', 'none'],
+          data: this.createMarkLine(itemsOfType),
+        },
+        ...this.chartTypesService.getSeriesOptions(
+          dp,
+          isMinMaxChart,
+          renderType
+        ),
+      })
+    ) as SeriesOption[];
+  }
+
+  getTooltipFormatterForAlarmAndEvents(
+    tooltipParams: TooltipFormatterCallback<TopLevelFormatterParams>,
+    params: { data: { itemType: string } },
+    allEvents: IEvent[],
+    allAlarms: IAlarm[]
+  ): string {
+    const XAxisValue: string = tooltipParams[0].data[0];
+    const YAxisReadings: string[] = [];
+    const allSeries = this.echartsInstance.getOption()
+      .series as CustomSeriesOptions[];
+
+    const allDataPointSeries = allSeries.filter(
+      (series) =>
+        series.typeOfSeries !== 'alarm' && series.typeOfSeries !== 'event'
+    );
+
+    allDataPointSeries.forEach((series: any) => {
+      let value: string;
+      if (series.id.endsWith('/min')) {
+        const minValue = this.findValueForExactOrEarlierTimestamp(
+          series.data,
+          XAxisValue
+        );
+        if (!minValue) {
+          return;
+        }
+        const maxSeries = allDataPointSeries.find(
+          (s) => s.id === series.id.replace('/min', '/max')
+        );
+        const maxValue = this.findValueForExactOrEarlierTimestamp(
+          maxSeries.data as SeriesValue[],
+          XAxisValue
+        );
+        value =
+          `${minValue[1]} — ${maxValue[1]}` +
+          (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+          `<div style="font-size: 11px">${this.datePipe.transform(
+            minValue[0]
+          )}</div>`;
+      } else if (series.id.endsWith('/max')) {
+        // do nothing, value is handled  in 'min' case
+        return;
+      } else {
+        const seriesValue = this.findValueForExactOrEarlierTimestamp(
+          series.data,
+          XAxisValue
+        );
+        if (!seriesValue) {
+          return;
+        }
+        value =
+          seriesValue[1]?.toString() +
+          (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+          `<div style="font-size: 11px">${this.datePipe.transform(
+            seriesValue[0]
+          )}</div>`;
+      }
+
+      YAxisReadings.push(
+        `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
+          `<strong>${series.datapointLabel}: </strong>` + // name
+          value // single value or min-max range
+      );
+    });
+
+    const event = allEvents.find((e) => e.type === params.data.itemType);
+    const alarm = allAlarms.find((a) => a.type === params.data.itemType);
+
+    let value: string;
+    if (event) {
+      // Add the event information to the value
+      value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
+      value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
+      value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
+      value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
+    }
+
+    if (alarm) {
+      // Add the alarm information to the value
+      value = `<div style="font-size: 11px">Alarm Time: ${alarm.time}</div>`;
+      value += `<div style="font-size: 11px">Alarm Type: ${alarm.type}</div>`;
+      value += `<div style="font-size: 11px">Alarm Text: ${alarm.text}</div>`;
+      value += `<div style="font-size: 11px">Alarm Last Updated: ${alarm.lastUpdated}</div>`;
+      value += `<div style="font-size: 11px">Alarm Count: ${alarm.count}</div>`;
+    }
+    YAxisReadings.push(value);
+    return (
+      this.datePipe.transform(XAxisValue) + '<br/>' + YAxisReadings.join('')
+    );
+  }
+
   private getChartSeries(
     datapointsWithValues: DatapointWithValues[],
-    events,
-    alarms
+    events: IEvent[],
+    alarms: IAlarm[]
   ): SeriesOption[] {
     const series: SeriesOption[] = [];
     let eventSeries: SeriesOption[] = [];
@@ -152,16 +309,20 @@ export class EchartsOptionsService {
     return [...series, ...eventSeries, ...alarmSeries];
   }
 
-  groupByType(items: any[], typeField: string, hiddenField: string) {
+  private groupByType(
+    items: IAlarm[] | IEvent[],
+    typeField: string
+  ): Record<string, IAlarm[] | IEvent[]> {
     return items.reduce((grouped, item) => {
-      if (!item[hiddenField]) {
-        (grouped[item[typeField]] = grouped[item[typeField]] || []).push(item);
-      }
+      (grouped[item[typeField]] = grouped[item[typeField]] || []).push(item);
       return grouped;
-    }, {});
+    }, {} as any);
   }
 
-  getClosestDpValue(dpValuesArray: any, targetTime: number) {
+  private getClosestDpValueToTargetTime(
+    dpValuesArray: DpValuesArrayItem[],
+    targetTime: number
+  ): DpValuesArrayItem {
     return dpValuesArray.reduce((prev, curr) =>
       Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime)
         ? curr
@@ -169,16 +330,33 @@ export class EchartsOptionsService {
     );
   }
 
-  createMarkPoint(item: any, dp: any, isCleared: boolean, isEvent: boolean) {
-    const dpValuesArray = Object.entries(dp.values).map(([time, values]) => ({
-      time: new Date(time).getTime(),
-      values,
-    }));
-
+  /**
+   * This method creates a markPoint on the chart which represents the icon of the alarm or event.
+   * @param item Single alarm or event
+   * @param dp Data point
+   * @param isCleared If the alarm is cleared in case of alarm
+   * @param isEvent If the item is an event
+   * @returns MarkPointDataItemOption[]
+   */
+  private createMarkPoint(
+    item: IAlarm | IEvent,
+    dp: DatapointWithValues,
+    isCleared: boolean,
+    isEvent: boolean
+  ): MarkPointData[] {
+    const dpValuesArray: DpValuesArrayItem[] = Object.entries(dp.values).map(
+      ([time, values]) => ({
+        time: new Date(time).getTime(),
+        values,
+      })
+    );
     const creationTime = new Date(item.creationTime).getTime();
-    const closestDpValue = this.getClosestDpValue(dpValuesArray, creationTime);
+    const closestDpValue = this.getClosestDpValueToTargetTime(
+      dpValuesArray,
+      creationTime
+    );
     const lastUpdatedTime = new Date(item.lastUpdated).getTime();
-    const closestDpValueLastUpdated = this.getClosestDpValue(
+    const closestDpValueLastUpdated = this.getClosestDpValueToTargetTime(
       dpValuesArray,
       lastUpdatedTime
     );
@@ -258,7 +436,12 @@ export class EchartsOptionsService {
         ];
   }
 
-  createMarkLine(items: any[]) {
+  /*
+   * This method creates a markLine on the chart which represents the line between the for every alarm or event on the chart.
+   * @param items Array of alarms or events
+   * @returns MarkLineDataItemOptionBase[]
+   */
+  private createMarkLine<T extends IAlarm | IEvent>(items: T): MarkLineData[] {
     return items.reduce((acc, item) => {
       if (item.creationTime === item.lastUpdated) {
         return acc.concat([
@@ -285,68 +468,7 @@ export class EchartsOptionsService {
           },
         ]);
       }
-    }, []);
-  }
-
-  getAlarmOrEventSeries(
-    dp: any,
-    renderType: DatapointChartRenderType,
-    isMinMaxChart = false,
-    items: IAlarm[] | IEvent[] = [],
-    itemType: 'alarm' | 'event' = 'alarm',
-    id?: string | number
-  ): SeriesOption[] {
-    if (!items.length) {
-      return [];
-    }
-
-    const itemsByType = this.groupByType(items, 'type', '__hidden');
-    const isAlarm = itemType === 'alarm';
-
-    return Object.entries(itemsByType).map(
-      ([type, itemsOfType]: [string, any[]]) => ({
-        id: `${type}/${dp.__target.id}+${id ? id : ''}`,
-        name: type,
-        showSymbol: false,
-        typeOfSeries: itemType,
-        data: itemsOfType.map((item) => [
-          item.creationTime,
-          null,
-          'markLineFlag',
-        ]),
-        markPoint: {
-          showSymbol: true,
-          data: itemsOfType.reduce((acc, item) => {
-            if (dp.__target.id === item.source.id) {
-              const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
-              const isEvent = !isAlarm;
-              return acc.concat(
-                this.createMarkPoint(item, dp, isCleared, isEvent)
-              );
-            } else {
-              return acc.concat([
-                {
-                  coord: [item.creationTime, null],
-                  name: item.type,
-                  itemType: item.type,
-                  itemStyle: { color: item.color },
-                },
-              ]);
-            }
-          }, []),
-        },
-        markLine: {
-          showSymbol: true,
-          symbol: ['none', 'none'],
-          data: this.createMarkLine(itemsOfType),
-        },
-        ...this.chartTypesService.getSeriesOptions(
-          dp,
-          isMinMaxChart,
-          renderType
-        ),
-      })
-    );
+    }, [] as any);
   }
 
   private getSingleSeries(
@@ -372,6 +494,10 @@ export class EchartsOptionsService {
     };
   }
 
+  /*
+   * This method creates a general tooltip formatter for the chart.
+   * @returns TooltipFormatterCallback<TopLevelFormatterParams>
+   */
   private getTooltipFormatter(): TooltipFormatterCallback<TopLevelFormatterParams> {
     return (params) => {
       const XAxisValue: string = params[0].data[0];

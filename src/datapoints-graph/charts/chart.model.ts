@@ -1,6 +1,6 @@
 export interface CustomSeriesOptions extends echarts.EChartsOption {
   // typeOfSeries is used for formatter to distinguish between events/alarms series and datapoints
-  typeOfSeries?: string;
+  typeOfSeries?: 'alarm' | 'event' | null;
   id: string;
 }
 
