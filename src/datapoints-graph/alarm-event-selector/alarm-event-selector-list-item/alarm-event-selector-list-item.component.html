@@ -50,6 +50,7 @@
           type="color"
           formControlName="color"
           (click)="$event.stopPropagation()"
+          [ngStyle]="{ 'pointer-events': allowItemEdit ? 'auto' : 'none' }"
         />
         <span [style.background-color]="formGroup.value.color">
           <i [c8yIcon]="timelineType === 'EVENT' ? 'c8y-events' : 'bell'"></i>
@@ -98,7 +99,7 @@
     [label]="'Remove from list' | translate"
     (click)="remove()"
   ></c8y-li-action>
-  <c8y-li-collapse *ngIf="showAttributesForm">
+  <c8y-li-collapse *ngIf="allowItemEdit">
     <div class="data-point-details">
       <c8y-alarm-event-attributes-form
         formControlName="details"
