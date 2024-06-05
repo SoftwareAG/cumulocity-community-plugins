@@ -6,7 +6,7 @@ import {
   DatapointChartRenderType,
   DatapointWithValues,
   DateString,
-  DpValuesArrayItem,
+  DpValuesItem,
   MarkLineData,
   MarkPointData,
   SeriesDatapointInfo,
@@ -320,9 +320,9 @@ export class EchartsOptionsService {
   }
 
   private getClosestDpValueToTargetTime(
-    dpValuesArray: DpValuesArrayItem[],
+    dpValuesArray: DpValuesItem[],
     targetTime: number
-  ): DpValuesArrayItem {
+  ): DpValuesItem {
     return dpValuesArray.reduce((prev, curr) =>
       Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime)
         ? curr
@@ -344,7 +344,7 @@ export class EchartsOptionsService {
     isCleared: boolean,
     isEvent: boolean
   ): MarkPointData[] {
-    const dpValuesArray: DpValuesArrayItem[] = Object.entries(dp.values).map(
+    const dpValuesArray: DpValuesItem[] = Object.entries(dp.values).map(
       ([time, values]) => ({
         time: new Date(time).getTime(),
         values,

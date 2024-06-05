@@ -116,17 +116,17 @@ export interface DatapointWithValues extends DatapointsGraphKPIDetails {
   values: DatapointApiValues;
 }
 
-type DataPointModifiedValues = {
+type DataPointValues = {
   min: number;
   max: number;
 };
-export type DpValuesArrayItem = {
+export type DpValuesItem = {
   time: number;
-  values: DataPointModifiedValues[];
+  values: DataPointValues[];
 };
 
 export interface MarkPointData {
-  coord: [string, number | DataPointModifiedValues | null];
+  coord: [string, number | DataPointValues | null];
   name: string;
   itemType: string;
   itemStyle: { color: string };

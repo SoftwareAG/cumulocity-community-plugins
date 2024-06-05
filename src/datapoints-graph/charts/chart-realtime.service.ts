@@ -62,14 +62,14 @@ export class ChartRealtimeService {
       new Set(activeAlarmsOrEvents.map((aOrE) => aOrE.__target.id))
     );
 
-    const allAlarmsAndEvents: Observable<IAlarm | IEvent | number>[] =
+    const allAlarmsAndEvents: Observable<IAlarm | IEvent>[] =
       uniqueAlarmOrEventTargets.map((targetId) => {
         const alarmsRealtime$: Observable<RealtimeMessage<IAlarm>> =
           this.alarmRealtimeService.onAll$(targetId);
         const eventsRealtime$: Observable<RealtimeMessage<IEvent>> =
           this.eventRealtimeService.onAll$(targetId);
         return merge(alarmsRealtime$, eventsRealtime$).pipe(
-          map((realtimeMessage) => realtimeMessage.data)
+          map((realtimeMessage) => realtimeMessage.data as IAlarm | IEvent)
         );
       });
 
