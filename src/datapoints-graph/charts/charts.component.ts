@@ -24,7 +24,6 @@ import { CustomMeasurementService } from './custom-measurements.service';
 import {
   AlarmRealtimeService,
   CoreModule,
-  DatePipe,
   DismissAlertStrategy,
   DynamicComponentAlert,
   DynamicComponentAlertAggregator,
@@ -118,8 +117,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService,
     private chartEventsService: ChartEventsService,
-    private chartAlarmsService: ChartAlarmsService,
-    private datePipe: DatePipe
+    private chartAlarmsService: ChartAlarmsService
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
       switchMap(() => this.loadAlarmsAndEvents()),

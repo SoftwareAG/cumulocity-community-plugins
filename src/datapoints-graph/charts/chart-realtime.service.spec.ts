@@ -5,11 +5,18 @@ import { DatapointsGraphKPIDetails } from '../model';
 import { interval, timer } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { IMeasurement } from '@c8y/client';
-import { MeasurementRealtimeService } from '@c8y/ngx-components';
+import {
+  AlarmRealtimeService,
+  EventRealtimeService,
+  MeasurementRealtimeService,
+} from '@c8y/ngx-components';
+import { EchartsOptionsService } from './echarts-options.service';
 
 describe('ChartRealtimeService', () => {
   let service: ChartRealtimeService;
   let measurementRealtime: MeasurementRealtimeService;
+  let eventRealtime: EventRealtimeService;
+  let alarmRealtime: AlarmRealtimeService;
   const dp1: DatapointsGraphKPIDetails = {
     fragment: 'c8y_Temperature',
     series: 'T',
@@ -30,7 +37,7 @@ describe('ChartRealtimeService', () => {
       .mockReturnValue({
         series: [
           {
-            datapointId: dp1.__target.id + dp1.fragment + dp1.series,
+            datapointId: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [],
           },
         ],
@@ -43,14 +50,21 @@ describe('ChartRealtimeService', () => {
       providers: [
         ChartRealtimeService,
         { provide: MeasurementRealtimeService, useValue: {} },
+        { provide: EventRealtimeService, useValue: {} },
+        { provide: AlarmRealtimeService, useValue: {} },
+        { provide: EchartsOptionsService, useValue: {} },
       ],
     });
     service = TestBed.inject(ChartRealtimeService);
     measurementRealtime = TestBed.inject(MeasurementRealtimeService);
+    eventRealtime = TestBed.inject(EventRealtimeService);
+    alarmRealtime = TestBed.inject(AlarmRealtimeService);
 
     measurementRealtime.onCreateOfSpecificMeasurement$ = jest
       .fn()
       .mockName('onCreateOfSpecificMeasurement$');
+    eventRealtime.onAll$ = jest.fn().mockName('onAll$');
+    alarmRealtime.onAll$ = jest.fn().mockName('onAll$');
   });
 
   afterEach(() => {
@@ -86,7 +100,8 @@ describe('ChartRealtimeService', () => {
       [dp1],
       { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
       jest.fn(),
-      timeRangeCallback
+      timeRangeCallback,
+      []
     );
     jest.advanceTimersByTime(3000);
     // then
@@ -122,7 +137,8 @@ describe('ChartRealtimeService', () => {
         [dp1],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
-        jest.fn()
+        jest.fn(),
+        []
       );
       expect(counter).toBe(0);
       // first measurement emits
@@ -161,7 +177,8 @@ describe('ChartRealtimeService', () => {
         [dp1],
         { dateFrom: last10Minutes.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
-        jest.fn()
+        jest.fn(),
+        []
       );
       expect(counter).toBe(0);
       // first measurement emitted
@@ -202,7 +219,8 @@ describe('ChartRealtimeService', () => {
         [dp1],
         { dateFrom: lastWeek.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
-        jest.fn()
+        jest.fn(),
+        []
       );
       expect(counter).toBe(0);
       // first measurement emitted
@@ -228,11 +246,11 @@ describe('ChartRealtimeService', () => {
       jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
-            datapointId: dp1.__target.id + dp1.fragment + dp1.series,
+            datapointId: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [],
           },
           {
-            datapointId: dp2.__target.id + dp2.fragment + dp2.series,
+            datapointId: dp2.__target?.id + dp2.fragment + dp2.series,
             data: [],
           },
         ],
@@ -257,7 +275,8 @@ describe('ChartRealtimeService', () => {
         [dp1, dp2],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
-        jest.fn()
+        jest.fn(),
+        []
       );
       jest.advanceTimersByTime(250);
       jest.advanceTimersByTime(250);
@@ -277,7 +296,7 @@ describe('ChartRealtimeService', () => {
       jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
-            datapointId: dp1.__target.id + dp1.fragment + dp1.series,
+            datapointId: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [],
           },
         ],
@@ -303,7 +322,8 @@ describe('ChartRealtimeService', () => {
         [dp1],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
-        jest.fn()
+        jest.fn(),
+        []
       );
       // time to fill whole chart with time span of 1 minute of measurements with interval of 1s
       jest.advanceTimersByTime(60_000);
@@ -321,7 +341,7 @@ describe('ChartRealtimeService', () => {
       jest.spyOn(echartsInstance, 'getOption').mockReturnValue({
         series: [
           {
-            datapointId: dp1.__target.id + dp1.fragment + dp1.series,
+            datapointId: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [],
           },
         ],
@@ -348,7 +368,8 @@ describe('ChartRealtimeService', () => {
         [dp1],
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         callback,
-        jest.fn()
+        jest.fn(),
+        []
       );
       jest.advanceTimersByTime(250);
       expect(callback).toHaveBeenCalledWith(dp1);

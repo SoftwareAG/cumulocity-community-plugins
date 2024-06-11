@@ -5,7 +5,13 @@ import {
   KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
 import { DateTimeContext, gettext } from '@c8y/ngx-components';
-import { aggregationType, IMeasurement, ISeries } from '@c8y/client';
+import {
+  aggregationType,
+  IAlarm,
+  IEvent,
+  IMeasurement,
+  ISeries,
+} from '@c8y/client';
 import type {
   BarSeriesOption,
   LineSeriesOption,
