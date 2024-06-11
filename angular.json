@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "cumulocity-community-plugins-ng-cli": {
+    "sag-pkg-community-plugins": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@c8y/devkit:build",
           "options": {
-            "outputPath": "dist/cumulocity-community-plugins-ng-cli",
+            "outputPath": "dist/sag-pkg-community-plugins",
             "main": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -72,10 +72,10 @@
           "builder": "@c8y/devkit:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "cumulocity-community-plugins-ng-cli:build:production"
+              "browserTarget": "sag-pkg-community-plugins:build:production"
             },
             "development": {
-              "browserTarget": "cumulocity-community-plugins-ng-cli:build:development"
+              "browserTarget": "sag-pkg-community-plugins:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,10 +87,10 @@
           "builder": "@c8y/devkit:deploy",
           "configurations": {
             "production": {
-              "browserTarget": "cumulocity-community-plugins-ng-cli:build:production"
+              "browserTarget": "sag-pkg-community-plugins:build:production"
             },
             "development": {
-              "browserTarget": "cumulocity-community-plugins-ng-cli:build:development"
+              "browserTarget": "sag-pkg-community-plugins:build:development"
             }
           },
           "defaultConfiguration": "production"
