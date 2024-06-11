@@ -56,6 +56,11 @@ jobs:
           path: |
             dist/sag-pkg-community-plugins/**
 
+      - name: Copy files for http-server into apps subfolder
+        run: |
+          mkdir -p dist/apps/sag-pkg-community-plugins
+          cp -r dist/sag-pkg-community-plugins/* dist/apps/sag-pkg-community-plugins
+
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
