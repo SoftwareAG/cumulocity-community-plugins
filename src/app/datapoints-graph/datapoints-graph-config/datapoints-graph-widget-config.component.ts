@@ -73,7 +73,7 @@ export class DatapointsGraphWidgetConfigComponent
     showChart: true,
   };
   datapointSelectionConfig: Partial<DatapointSelectorModalOptions> = {};
-  activeDatapointsExists: boolean = false;
+  activeDatapointsExists = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -150,7 +150,10 @@ export class DatapointsGraphWidgetConfigComponent
 
   private initForm() {
     const form = this.formBuilder.group({
-      datapoints: [[] as DatapointsGraphKPIDetails[], [Validators.required, Validators.minLength(1)]],
+      datapoints: [
+        [] as DatapointsGraphKPIDetails[],
+        [Validators.required, Validators.minLength(1)],
+      ],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],

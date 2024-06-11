@@ -19,7 +19,8 @@ import {
           description: 'Widget added via Module Federation',
           loadComponent: () =>
             import('./lazy').then((m) => m.ExampleWidgetPluginViewComponent),
-          previewImage: '/apps/sag-pkg-community-plugins/c8y-widget-preview-img/widget-plugin-pr.png',
+          previewImage:
+            '/apps/sag-pkg-community-plugins/c8y-widget-preview-img/widget-plugin-pr.png',
           loadConfigComponent: () =>
             import('./lazy').then((m) => m.ExampleWidgetPluginConfigComponent),
         },

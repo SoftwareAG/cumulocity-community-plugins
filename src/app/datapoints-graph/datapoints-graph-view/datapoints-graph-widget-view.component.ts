@@ -36,7 +36,9 @@ export class DatapointsGraphWidgetViewComponent
   alerts: DynamicComponentAlertAggregator | undefined;
   datapointsOutOfSync = new Map<DatapointsGraphKPIDetails, boolean>();
   toolboxDisabled = false;
-  timeControlsFormGroup: ReturnType<DatapointsGraphWidgetViewComponent['initForm']>;
+  timeControlsFormGroup: ReturnType<
+    DatapointsGraphWidgetViewComponent['initForm']
+  >;
 
   @Input() set config(value: DatapointsGraphWidgetConfig) {
     this.displayConfig = cloneDeep(value);

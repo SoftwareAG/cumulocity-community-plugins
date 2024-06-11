@@ -14,26 +14,26 @@ export default {
     dynamicOptionsUrl: '/apps/public/public-options/options.json',
     remotes: {
       'sag-pkg-community-plugins': [
-        "ExampleWidgetPluginModule",
-        "DatapointsGraphWidgetModule"
-      ]
+        'ExampleWidgetPluginModule',
+        'DatapointsGraphWidgetModule',
+      ],
     },
     package: 'plugin',
     isPackage: true,
     noAppSwitcher: true,
     exports: [
       {
-        "name": "Example widget plugin",
-        "module": "ExampleWidgetPluginModule",
-        "path": "./src/app/example-widget/example-widget-plugin.module.ts",
-        "description": "Adds a custom widget to the shell application"
+        name: 'Example widget plugin',
+        module: 'ExampleWidgetPluginModule',
+        path: './src/app/example-widget/example-widget-plugin.module.ts',
+        description: 'Adds a custom widget to the shell application',
       },
       {
-        "name": "Data points graph",
-        "module": "DatapointsGraphWidgetModule",
-        "path": "./src/app/datapoints-graph/datapoints-graph-widget.module.ts",
-        "description": "Adds data points graph widget to the shell application"
-      }
+        name: 'Data points graph',
+        module: 'DatapointsGraphWidgetModule',
+        path: './src/app/datapoints-graph/datapoints-graph-widget.module.ts',
+        description: 'Adds data points graph widget to the shell application',
+      },
     ],
   },
   buildTime: {
@@ -51,25 +51,25 @@ export default {
       '@c8y/client',
       '@c8y/ngx-components',
       'ngx-bootstrap',
-      '@ngx-translate/core'
+      '@ngx-translate/core',
     ],
     copy: [
       {
-        from: "CHANGELOG.md",
-        to: "CHANGELOG.md"
+        from: 'CHANGELOG.md',
+        to: 'CHANGELOG.md',
       },
       {
-        from: "screenshots",
-        to: "screenshots"
+        from: 'screenshots',
+        to: 'screenshots',
       },
       {
-        from: "c8y-widget-preview-img",
-        to: "c8y-widget-preview-img"
+        from: 'c8y-widget-preview-img',
+        to: 'c8y-widget-preview-img',
       },
       {
-        from: "LICENSE",
-        to: "LICENSE.txt"
-      }
-    ]
-  }
+        from: 'LICENSE',
+        to: 'LICENSE.txt',
+      },
+    ],
+  },
 } as const satisfies EnvironmentOptions;

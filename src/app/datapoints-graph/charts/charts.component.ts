@@ -225,7 +225,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private startRealtimeIfPossible(): void {
-    const activeDatapoints = this.config?.datapoints?.filter((dp) => dp.__active);
+    const activeDatapoints = this.config?.datapoints?.filter(
+      (dp) => dp.__active
+    );
     if (activeDatapoints && this.config.realtime && this.echartsInstance) {
       this.chartRealtimeService.startRealtime(
         this.echartsInstance,
@@ -238,7 +240,6 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private updateZoomState(): void {
-
     const dataZoom: any = this.echartsInstance.getOption()['dataZoom'];
     const { startValue, endValue }: DataZoomOption = dataZoom[0];
     this.zoomHistory.push({ startValue, endValue });

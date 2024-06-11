@@ -20,8 +20,12 @@ describe('datapoints-graph', () => {
   });
 
   it('config component should be present', () => {
-    cy.get('c8y-dashboard-child .header-actions button[data-cy="c8y-dashboard-child--settings"]').click();
-    cy.get('.dropdown-menu button[data-cy="c8y-widgets-dashboard--edit-dashboard"]').click();
+    cy.get(
+      'c8y-dashboard-child .header-actions button[data-cy="c8y-dashboard-child--settings"]'
+    ).click();
+    cy.get(
+      '.dropdown-menu button[data-cy="c8y-widgets-dashboard--edit-dashboard"]'
+    ).click();
     cy.get('c8y-datapoints-graph-widget-config button.c8y-realtime')
       .find('.c8y-pulse.active')
       .should('exist');

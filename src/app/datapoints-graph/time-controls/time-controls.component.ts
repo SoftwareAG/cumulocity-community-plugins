@@ -65,9 +65,7 @@ export class TimeControlsComponent implements OnInit, OnChanges {
       return;
     }
     const dateTo = new Date();
-    const intervalEntry = INTERVALS.find(
-      (i) => i.id === intervalId
-    );
+    const intervalEntry = INTERVALS.find((i) => i.id === intervalId);
 
     const timeSpanInMs = intervalEntry?.timespanInMs || 0;
     const dateFrom = new Date(dateTo.valueOf() - timeSpanInMs);
