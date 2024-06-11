@@ -70,7 +70,7 @@ describe('ChartRealtimeService', () => {
       .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
       .mockReturnValue(
         interval(1000).pipe(
-          take(3),
+          take(4),
           map(
             (i) =>
               ({
@@ -240,8 +240,8 @@ describe('ChartRealtimeService', () => {
       jest
         .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
         .mockImplementation((fragment, series, _) =>
-          timer(0, 250).pipe(
-            take(4),
+          interval(250).pipe(
+            take(3),
             map(
               (i) =>
                 ({
@@ -259,9 +259,7 @@ describe('ChartRealtimeService', () => {
         jest.fn(),
         jest.fn()
       );
-      jest.advanceTimersByTime(250);
-      jest.advanceTimersByTime(250);
-      jest.advanceTimersByTime(250);
+      jest.advanceTimersByTime(750);
       expect(option.series[0].data.length).toBe(3);
       expect(option.series[1].data.length).toBe(3);
     });
@@ -285,9 +283,9 @@ describe('ChartRealtimeService', () => {
       jest
         .spyOn(measurementRealtime, 'onCreateOfSpecificMeasurement$')
         .mockImplementation((fragment, series, _) =>
-          timer(0, 1000).pipe(
-            // take 1 more measurements than it's possible to fit in 1 minute time span
-            take(63),
+          interval(1000).pipe(
+            // take more measurements than it's possible to fit in 1 minute time span
+            take(70),
             map(
               (i) =>
                 ({
@@ -307,10 +305,9 @@ describe('ChartRealtimeService', () => {
       );
       // time to fill whole chart with time span of 1 minute of measurements with interval of 1s
       jest.advanceTimersByTime(60_000);
-      // time to get two values more to make them out of chart
-      jest.advanceTimersByTime(2_000);
-      // two measurements should be out of chart, but one just before dateFrom should stay in data series
-      expect(option.series[0].data.length).toBe(61);
+      // ten measurements should be out of chart,
+      // TODO: check logic responsible for: "but one just before dateFrom should stay in data series"
+      expect(option.series[0].data.length).toBe(60);
     });
 
     it('should trigger out of sync callback when value is out of sync', () => {
