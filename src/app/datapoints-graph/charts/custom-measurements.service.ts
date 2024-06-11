@@ -17,10 +17,12 @@ import { cloneDeep } from 'lodash-es';
 
 @Injectable()
 export class CustomMeasurementService extends MeasurementService {
-  apiService: ApiService;
-  constructor(client: FetchClient, realtime: Realtime, apiService: ApiService) {
+  constructor(
+    client: FetchClient,
+    realtime: Realtime,
+    private apiService: ApiService
+  ) {
     super(client, realtime);
-    this.apiService = apiService;
   }
 
   listSeries$(params: ISeriesFilter): Observable<IResult<ISeries>> {
@@ -50,6 +52,7 @@ export class CustomMeasurementService extends MeasurementService {
       switchMap(async (res) => {
         callOnFinish.response = res;
         const data = await res.json();
+
         return { res: res as IFetchResponse, data };
       }),
       finalize(() => {
