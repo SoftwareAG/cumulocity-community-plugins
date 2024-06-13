@@ -28,7 +28,8 @@ export class ChartRealtimeService {
   private INTERVAL: Milliseconds = 1000;
   private MIN_REALTIME_TIMEOUT: Milliseconds = 250;
   private MAX_REALTIME_TIMEOUT: Milliseconds = 5_000;
-  private realtimeSubscription: Subscription;
+  private realtimeSubscriptionMeasurements: Subscription;
+  private realtimeSubscriptionAlarmsEvents: Subscription;
   private echartsInstance: ECharts;
   private currentTimeRange: { dateFrom: Date; dateTo: Date };
 
@@ -109,38 +110,44 @@ export class ChartRealtimeService {
       )
     ).pipe(throttleTime(this.MIN_REALTIME_TIMEOUT));
 
-    this.realtimeSubscription = combineLatest([
-      measurement$.pipe(buffer(bufferReset$)),
-      allAlarmsAndEvents$.pipe(buffer(bufferReset$)),
-    ]).subscribe(([measurements, alarmsAndEvents]) => {
-      const filteredAlarmsOrEvents = alarmsAndEvents.filter(
-        (alarmOrEvent: IAlarm | IEvent) => {
-          return alarmOrEventConfig.some((aOrE) => {
-            return aOrE.filters.type === alarmOrEvent.type;
-          });
-        }
-      );
-      const alarmsAndEventsWithColor = filteredAlarmsOrEvents.map(
-        (alarmOrEvent: IAlarm | IEvent) => {
-          const foundAlarmOrEvent = alarmOrEventConfig.find((aOrE) => {
-            return aOrE.filters.type === alarmOrEvent.type;
-          });
-          if (foundAlarmOrEvent) {
-            alarmOrEvent.color = foundAlarmOrEvent.color;
+    this.realtimeSubscriptionMeasurements = measurement$
+      .pipe(buffer(bufferReset$))
+      .subscribe((measurements) => {
+        this.updateChartInstance(measurements, [], datapointOutOfSyncCallback);
+      });
+
+    this.realtimeSubscriptionAlarmsEvents = allAlarmsAndEvents$
+      .pipe(buffer(bufferReset$))
+      .subscribe((alarmsAndEvents) => {
+        const filteredAlarmsOrEvents = alarmsAndEvents.filter(
+          (alarmOrEvent: IAlarm | IEvent) => {
+            return alarmOrEventConfig.some((aOrE) => {
+              return aOrE.filters.type === alarmOrEvent.type;
+            });
           }
-          return alarmOrEvent;
-        }
-      );
-      this.updateChartInstance(
-        measurements,
-        alarmsAndEventsWithColor,
-        datapointOutOfSyncCallback
-      );
-    });
+        );
+        const alarmsAndEventsWithColor = filteredAlarmsOrEvents.map(
+          (alarmOrEvent: IAlarm | IEvent) => {
+            const foundAlarmOrEvent = alarmOrEventConfig.find((aOrE) => {
+              return aOrE.filters.type === alarmOrEvent.type;
+            });
+            if (foundAlarmOrEvent) {
+              alarmOrEvent.color = foundAlarmOrEvent.color;
+            }
+            return alarmOrEvent;
+          }
+        );
+        this.updateChartInstance(
+          [],
+          alarmsAndEventsWithColor,
+          datapointOutOfSyncCallback
+        );
+      });
   }
 
   stopRealtime() {
-    this.realtimeSubscription?.unsubscribe();
+    this.realtimeSubscriptionMeasurements?.unsubscribe();
+    this.realtimeSubscriptionAlarmsEvents?.unsubscribe();
   }
 
   private removeValuesBeforeTimeRange(series: SeriesOption): SeriesValue[] {
