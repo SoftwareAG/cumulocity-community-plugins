@@ -28,6 +28,7 @@ export type DatapointsGraphWidgetConfig = {
   widgetInstanceGlobalTimeContext?: boolean;
   dateFrom?: Date;
   dateTo?: Date;
+  activeAlarmTypesOutOfRange?: string[];
   interval?: Interval['id'];
   aggregation?: aggregationType;
   realtime?: boolean;

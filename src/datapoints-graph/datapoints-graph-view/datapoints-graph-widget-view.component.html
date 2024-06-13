@@ -39,6 +39,16 @@
       ></c8y-time-controls>
     </div>
 
+    <div *ngFor="let severity of ['WARNING', 'MINOR', 'MAJOR', 'CRITICAL']">
+      <input
+        type="checkbox"
+        [id]="severity"
+        [value]="severity"
+        (change)="filterSeverity(severity, $event.target)"
+      />
+      <label [for]="severity">{{ severity }}</label>
+    </div>
+
     <div class="m-l-auto btn-group btn-group-sm">
       <button
         type="button"
@@ -142,11 +152,20 @@
         </div>
       </div>
       <!-- Alarms  -->
+
       <div
         class="c8y-alarm-pill flex-no-shrink"
         *ngFor="let alarm of alarms"
         title="{{ alarm.filters.type }} "
       >
+        <span
+          *ngIf="
+            displayConfig?.activeAlarmTypesOutOfRange?.includes(
+              alarm.filters.type
+            )
+          "
+          >Alarm is currently active!</span
+        >
         <button
           type="button"
           title="{{ alarm.filters.type }} "

@@ -24,7 +24,6 @@ import { CustomMeasurementService } from './custom-measurements.service';
 import {
   AlarmRealtimeService,
   CoreModule,
-  DatePipe,
   DismissAlertStrategy,
   DynamicComponentAlert,
   DynamicComponentAlertAggregator,
@@ -48,7 +47,6 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
 import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
-import { CustomSeriesOptions } from './chart.model';
 import {
   AlarmDetails,
   AlarmOrEvent,
@@ -56,7 +54,6 @@ import {
 } from '../alarm-event-selector';
 import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
 import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
-import { cli } from 'cypress';
 import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
@@ -118,8 +115,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private echartsOptionsService: EchartsOptionsService,
     private chartRealtimeService: ChartRealtimeService,
     private chartEventsService: ChartEventsService,
-    private chartAlarmsService: ChartAlarmsService,
-    private datePipe: DatePipe
+    private chartAlarmsService: ChartAlarmsService
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
       switchMap(() => this.loadAlarmsAndEvents()),
@@ -450,6 +446,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
     this.events = listedEvents;
     this.alarms = listedAlarms;
+    await this.addActiveAlarms(alarms);
 
     this.updateAlarmsAndEvents.emit(this.config.alarmsEventsConfigs);
   }
@@ -465,6 +462,32 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.config.alarmsEventsConfigs
       );
     }
+  }
+
+  /*
+  This method should check and add active alarms from the begining of time to the alarm array 
+  */
+  private async addActiveAlarms(alarms: AlarmDetails[]): Promise<void> {
+    const timeRange = this.getTimeRange();
+    const params = {
+      dateFrom: '1970-01-01T01:00:00+01:00',
+      dateTo: timeRange.dateTo,
+      status: AlarmStatus.ACTIVE,
+    };
+
+    const activeAlarms = await this.chartAlarmsService.listAlarms(
+      params,
+      alarms
+    );
+    this.config.activeAlarmTypesOutOfRange = [];
+    // iterate through the activeAlarms and check if the alarm is in the alarms array, if not update the config.activeAlarmTypesOutOfRange prop
+    activeAlarms.forEach((activeAlarm) => {
+      const alarmType = activeAlarm.type;
+      const alarm = this.alarms.find((alarm) => alarm.type === alarmType);
+      if (!alarm) {
+        this.config.activeAlarmTypesOutOfRange.push(alarmType);
+      }
+    });
   }
 
   private updateZoomState(): void {

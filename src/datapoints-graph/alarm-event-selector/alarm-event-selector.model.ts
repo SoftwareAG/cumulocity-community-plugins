@@ -31,6 +31,7 @@ export type AlarmDetails = AlarmOrEventBase & {
     type: string;
   };
   __hidden?: boolean;
+  __severity?: string;
 };
 
 export type EventDetails = AlarmOrEventBase & {

@@ -11,6 +11,12 @@ export class ChartAlarmsService {
       return [];
     }
     const promises = alarms.map((alarm) => {
+      if (alarm.__severity) {
+        params = {
+          ...params,
+          severity: alarm.__severity,
+        };
+      }
       const fetchOptions: IFetchOptions = {
         source: alarm.__target.id,
         type: alarm.filters.type,
@@ -18,7 +24,7 @@ export class ChartAlarmsService {
         pageSize: 1000,
         ...params,
       };
-      return this.getAlarms(fetchOptions).then((result) => {
+      return this.alarmService.list(fetchOptions).then((result) => {
         result.data.forEach((iAlarm) => {
           iAlarm.color = alarm.color;
         });
@@ -27,9 +33,5 @@ export class ChartAlarmsService {
     });
     const result = await Promise.all(promises);
     return result.flat();
-  }
-
-  private getAlarms(fetchOptions: IFetchOptions): Promise<IResultList<IAlarm>> {
-    return this.alarmService.list(fetchOptions);
   }
 }

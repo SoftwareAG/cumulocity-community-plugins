@@ -18,7 +18,7 @@ export class ChartEventsService {
         pageSize: 1000,
         ...params,
       };
-      return this.getEvents(fetchOptions).then((result) => {
+      return this.eventService.list(fetchOptions).then((result) => {
         result.data.forEach((iEvent) => {
           iEvent.color = event.color;
         });
@@ -27,9 +27,5 @@ export class ChartEventsService {
     });
     const result = await Promise.all(promises);
     return result.flat();
-  }
-
-  private getEvents(fetchOptions: IFetchOptions): Promise<IResultList<IEvent>> {
-    return this.eventService.list(fetchOptions);
   }
 }

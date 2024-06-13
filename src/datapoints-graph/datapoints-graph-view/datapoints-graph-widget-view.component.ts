@@ -23,6 +23,7 @@ import {
   AlarmOrEvent,
   EventDetails,
 } from '../alarm-event-selector';
+import { is } from 'cypress/types/bluebird';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -137,6 +138,19 @@ export class DatapointsGraphWidgetViewComponent
     this.events = alarmsEventsConfigs.filter(
       (event) => event.timelineType === 'EVENT'
     ) as EventDetails[];
+  }
+
+  filterSeverity(severity, eventTarget) {
+    const isChecked = eventTarget.checked;
+    this.alarms = this.alarms.map((alarm) => {
+      if (!isChecked) {
+        alarm.__severity = null;
+        return alarm;
+      }
+      alarm.__severity = severity;
+      return alarm;
+    });
+    this.displayConfig = { ...this.displayConfig };
   }
 
   private initForm(): void {
