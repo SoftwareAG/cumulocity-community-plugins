@@ -5,20 +5,13 @@ import {
   KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
 import { DateTimeContext, gettext } from '@c8y/ngx-components';
-import {
-  aggregationType,
-  IAlarm,
-  IEvent,
-  IMeasurement,
-  ISeries,
-} from '@c8y/client';
+import { aggregationType, IMeasurement, ISeries, Severity } from '@c8y/client';
 import type {
   BarSeriesOption,
   LineSeriesOption,
   ScatterSeriesOption,
 } from 'echarts';
 import { AlarmOrEvent } from '../alarm-event-selector';
-import { Data } from '@angular/router';
 
 export type DatapointsGraphKPIDetails = KPIDetails & {
   lineType?: DatapointLineType;
@@ -195,3 +188,26 @@ export interface SeriesDatapointInfo {
   datapointLabel: string;
   datapointUnit: string;
 }
+
+export const SEVERITY_LABELS = {
+  CRITICAL: 'CRITICAL',
+  MAJOR: gettext('Major`alarm`') as 'MAJOR',
+  MINOR: gettext('Minor`alarm`') as 'MINOR',
+  WARNING: gettext('Warning`alarm`') as 'WARNING',
+} as const;
+
+export type SeverityType = keyof typeof Severity;
+
+export const ALARM_SEVERITY_ICON = {
+  CIRCLE: 'circle',
+  HIGH_PRIORITY: 'high-priority',
+  WARNING: 'warning',
+  EXCLAMATION_CIRCLE: 'exclamation-circle',
+} as const;
+
+export const ALARM_SEVERITY_ICON_MAP = {
+  [Severity.CRITICAL]: ALARM_SEVERITY_ICON.EXCLAMATION_CIRCLE,
+  [Severity.MAJOR]: ALARM_SEVERITY_ICON.WARNING,
+  [Severity.MINOR]: ALARM_SEVERITY_ICON.HIGH_PRIORITY,
+  [Severity.WARNING]: ALARM_SEVERITY_ICON.CIRCLE,
+} as const;

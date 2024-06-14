@@ -39,15 +39,23 @@
       ></c8y-time-controls>
     </div>
 
-    <div *ngFor="let severity of ['WARNING', 'MINOR', 'MAJOR', 'CRITICAL']">
-      <input
-        type="checkbox"
-        [id]="severity"
-        [value]="severity"
-        (change)="filterSeverity(severity, $event.target)"
-      />
-      <label [for]="severity">{{ severity }}</label>
-    </div>
+    <li
+      class="p-l-16 p-r-16 p-t-4 p-b-4 d-flex a-i-center"
+      *ngFor="let severity of severitiesList"
+    >
+      <label class="c8y-checkbox d-flex a-i-center" [title]="severity">
+        <input
+          type="checkbox"
+          (change)="filterSeverity(severity, $event.target)"
+        />
+        <span></span>
+        <i
+          class="status stroked-icon m-l-8 icon-20"
+          [ngClass]="severity | lowercase"
+        ></i>
+        <span class="m-l-8">{{ severity | translate }}</span>
+      </label>
+    </li>
 
     <div class="m-l-auto btn-group btn-group-sm">
       <button
@@ -158,14 +166,21 @@
         *ngFor="let alarm of alarms"
         title="{{ alarm.filters.type }} "
       >
-        <span
+        <i
           *ngIf="
             displayConfig?.activeAlarmTypesOutOfRange?.includes(
               alarm.filters.type
             )
           "
-          >Alarm is currently active!</span
-        >
+          [tooltip]="
+            'Alarm of this type is currently active and outside of the selected time range'
+              | translate
+          "
+          container="body"
+          [adaptivePosition]="false"
+          c8yIcon="exclamation-triangle"
+          class="text-warning m-l-4"
+        ></i>
         <button
           type="button"
           title="{{ alarm.filters.type }} "

@@ -118,6 +118,15 @@ export class EchartsOptionsService {
     };
   }
 
+  /**
+   * This method is used to get the series for alarms and events.
+   * @param dp - The data point.
+   * @param renderType - The render type.
+   * @param isMinMaxChart - If the chart is min max chart.
+   * @param items - All alarms or events which should be displayed on the chart.
+   * @param itemType - The item type.
+   * @param id - The id of the device
+   */
   getAlarmOrEventSeries(
     dp: DatapointWithValues,
     renderType: DatapointChartRenderType,
@@ -140,6 +149,7 @@ export class EchartsOptionsService {
         id: `${type}/${dp.__target.id}+${id ? id : ''}`,
         name: type,
         showSymbol: false,
+        // typeOfSeries is used for formatter to distinguish between events/alarms series
         typeOfSeries: itemType,
         data: itemsOfType.map((item) => [
           item.creationTime,
@@ -168,7 +178,8 @@ export class EchartsOptionsService {
           }, [] as any),
         },
         markLine: {
-          showSymbol: true,
+          showSymbol: false,
+          // no symbol should be shown in the beginning and end of the marked line
           symbol: ['none', 'none'],
           data: this.createMarkLine(itemsOfType),
         },
@@ -181,6 +192,14 @@ export class EchartsOptionsService {
     ) as SeriesOption[];
   }
 
+  /**
+   * This method is used to get tooltip formatter for alarms and events.
+   * @param tooltipParams - The tooltip parameters.
+   * @param params - The parameters data.
+   * @param allEvents - All events.
+   * @param allAlarms - All alarms.
+   * @returns The formatted string for the tooltip.
+   */
   getTooltipFormatterForAlarmAndEvents(
     tooltipParams: TooltipFormatterCallback<TopLevelFormatterParams>,
     params: { data: { itemType: string } },
@@ -192,84 +211,145 @@ export class EchartsOptionsService {
     const allSeries = this.echartsInstance.getOption()
       .series as CustomSeriesOptions[];
 
+    // filter out alarm and event series
     const allDataPointSeries = allSeries.filter(
       (series) =>
         series.typeOfSeries !== 'alarm' && series.typeOfSeries !== 'event'
     );
 
-    allDataPointSeries.forEach((series: any) => {
-      let value: string;
-      if (series.id.endsWith('/min')) {
-        const minValue = this.findValueForExactOrEarlierTimestamp(
-          series.data,
-          XAxisValue
-        );
-        if (!minValue) {
-          return;
-        }
-        const maxSeries = allDataPointSeries.find(
-          (s) => s.id === series.id.replace('/min', '/max')
-        );
-        const maxValue = this.findValueForExactOrEarlierTimestamp(
-          maxSeries.data as SeriesValue[],
-          XAxisValue
-        );
-        value =
-          `${minValue[1]} — ${maxValue[1]}` +
-          (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-          `<div style="font-size: 11px">${this.datePipe.transform(
-            minValue[0]
-          )}</div>`;
-      } else if (series.id.endsWith('/max')) {
-        // do nothing, value is handled  in 'min' case
-        return;
-      } else {
-        const seriesValue = this.findValueForExactOrEarlierTimestamp(
-          series.data,
-          XAxisValue
-        );
-        if (!seriesValue) {
-          return;
-        }
-        value =
-          seriesValue[1]?.toString() +
-          (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-          `<div style="font-size: 11px">${this.datePipe.transform(
-            seriesValue[0]
-          )}</div>`;
-      }
+    this.processSeries(allDataPointSeries, XAxisValue, YAxisReadings);
 
-      YAxisReadings.push(
-        `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
-          `<strong>${series.datapointLabel}: </strong>` + // name
-          value // single value or min-max range
-      );
-    });
-
+    // find event and alarm of the same type as the hovered markedLine or markedPoint
     const event = allEvents.find((e) => e.type === params.data.itemType);
     const alarm = allAlarms.find((a) => a.type === params.data.itemType);
 
     let value: string;
     if (event) {
-      // Add the event information to the value
-      value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
-      value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
-      value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
-      value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
+      value = this.processEvent(event);
     }
 
     if (alarm) {
-      // Add the alarm information to the value
-      value = `<div style="font-size: 11px">Alarm Time: ${alarm.time}</div>`;
-      value += `<div style="font-size: 11px">Alarm Type: ${alarm.type}</div>`;
-      value += `<div style="font-size: 11px">Alarm Text: ${alarm.text}</div>`;
-      value += `<div style="font-size: 11px">Alarm Last Updated: ${alarm.lastUpdated}</div>`;
-      value += `<div style="font-size: 11px">Alarm Count: ${alarm.count}</div>`;
+      value = this.processAlarm(alarm);
     }
     YAxisReadings.push(value);
+
     return (
       this.datePipe.transform(XAxisValue) + '<br/>' + YAxisReadings.join('')
     );
+  }
+
+  /**
+   * This method is used to add the data point info to the tooltip.
+   * @param allDataPointSeries - All the data point series.
+   * @param XAxisValue - The X Axis value.
+   * @param YAxisReadings - The Y Axis readings.
+   */
+  private processSeries(
+    allDataPointSeries: CustomSeriesOptions[],
+    XAxisValue: string,
+    YAxisReadings: string[]
+  ): void {
+    allDataPointSeries.forEach((series: any) => {
+      let value: string;
+      if (series.id.endsWith('/min')) {
+        value = this.processMinSeries(series, allDataPointSeries, XAxisValue);
+      } else if (!series.id.endsWith('/max')) {
+        value = this.processRegularSeries(series, XAxisValue);
+      }
+
+      if (value) {
+        YAxisReadings.push(
+          `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
+            `<strong>${series.datapointLabel}: </strong>` + // name
+            value // single value or min-max range
+        );
+      }
+    });
+  }
+
+  /**
+   * This method is used to process the min series.
+   * @param series - The series.
+   * @param allDataPointSeries - All the data point series.
+   * @param XAxisValue - The X Axis value.
+   * @returns The processed value.
+   */
+  private processMinSeries(
+    series: any,
+    allDataPointSeries: CustomSeriesOptions[],
+    XAxisValue: string
+  ): string {
+    const minValue = this.findValueForExactOrEarlierTimestamp(
+      series.data,
+      XAxisValue
+    );
+    if (!minValue) {
+      return;
+    }
+    const maxSeries = allDataPointSeries.find(
+      (s) => s.id === series.id.replace('/min', '/max')
+    );
+    const maxValue = this.findValueForExactOrEarlierTimestamp(
+      maxSeries.data as SeriesValue[],
+      XAxisValue
+    );
+    return (
+      `${minValue[1]} — ${maxValue[1]}` +
+      (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+      `<div style="font-size: 11px">${this.datePipe.transform(
+        minValue[0]
+      )}</div>`
+    );
+  }
+
+  /**
+   * This method is used to process the regular series.
+   * @param series - The series.
+   * @param XAxisValue - The X Axis value.
+   * @returns The processed value.
+   */
+  private processRegularSeries(series: any, XAxisValue: string): string {
+    const seriesValue = this.findValueForExactOrEarlierTimestamp(
+      series.data,
+      XAxisValue
+    );
+    if (!seriesValue) {
+      return;
+    }
+    return (
+      seriesValue[1]?.toString() +
+      (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
+      `<div style="font-size: 11px">${this.datePipe.transform(
+        seriesValue[0]
+      )}</div>`
+    );
+  }
+
+  /**
+   * This method is used to process the event tooltip.
+   * @param event - The event object.
+   * @returns The processed value.
+   */
+  private processEvent(event: IEvent): string {
+    let value = `<div style="font-size: 11px">Event Time: ${event.time}</div>`;
+    value += `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
+    value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
+    value += `<div style="font-size: 11px">Event Last Updated: ${event.lastUpdated}</div>`;
+    return value;
+  }
+
+  /**
+   * This method is used to process the alarm tooltip.
+   * @param alarm - The alarm object.
+   * @returns The processed value.
+   */
+  private processAlarm(alarm: IAlarm): string {
+    let value = `<div style="font-size: 11px">Alarm Time: ${alarm.time}</div>`;
+    value += `<div style="font-size: 11px">Alarm Type: ${alarm.type}</div>`;
+    value += `<div style="font-size: 11px">Alarm Text: ${alarm.text}</div>`;
+    value += `<div style="font-size: 11px">Alarm Last Updated: ${alarm.lastUpdated}</div>`;
+    value += `<div style="font-size: 11px">Alarm Count: ${alarm.count}</div>`;
+    return value;
   }
 
   private getChartSeries(
@@ -436,8 +516,8 @@ export class EchartsOptionsService {
         ];
   }
 
-  /*
-   * This method creates a markLine on the chart which represents the line between the for every alarm or event on the chart.
+  /**
+   * This method creates a markLine on the chart which represents the line between every alarm or event on the chart.
    * @param items Array of alarms or events
    * @returns MarkLineDataItemOptionBase[]
    */
@@ -494,12 +574,15 @@ export class EchartsOptionsService {
     };
   }
 
-  /*
+  /**
    * This method creates a general tooltip formatter for the chart.
    * @returns TooltipFormatterCallback<TopLevelFormatterParams>
    */
   private getTooltipFormatter(): TooltipFormatterCallback<TopLevelFormatterParams> {
     return (params) => {
+      if (!params[0]?.data) {
+        return;
+      }
       const XAxisValue: string = params[0].data[0];
       const YAxisReadings: string[] = [];
       const allSeries = this.echartsInstance.getOption()
@@ -510,7 +593,7 @@ export class EchartsOptionsService {
           series.typeOfSeries !== 'alarm' && series.typeOfSeries !== 'event'
       );
 
-      allDataPointSeries.forEach((series: any) => {
+      allDataPointSeries.forEach((series: CustomSeriesOptions) => {
         let value: string;
         if (series.id.endsWith('/min')) {
           const minValue = this.findValueForExactOrEarlierTimestamp(

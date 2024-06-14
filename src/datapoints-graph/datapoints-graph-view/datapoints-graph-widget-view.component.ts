@@ -12,6 +12,8 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
+  SEVERITY_LABELS,
+  SeverityType,
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
 import { cloneDeep } from 'lodash-es';
@@ -23,7 +25,6 @@ import {
   AlarmOrEvent,
   EventDetails,
 } from '../alarm-event-selector';
-import { is } from 'cypress/types/bluebird';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -58,6 +59,7 @@ export class DatapointsGraphWidgetViewComponent
   );
   readonly hideDatapointLabel = gettext('Hide data point');
   readonly showDatapointLabel = gettext('Show data point');
+  readonly severitiesList = Object.keys(SEVERITY_LABELS) as SeverityType[];
   private destroy$ = new Subject<void>();
 
   constructor(private formBuilder: FormBuilder) {
@@ -143,11 +145,14 @@ export class DatapointsGraphWidgetViewComponent
   filterSeverity(severity, eventTarget) {
     const isChecked = eventTarget.checked;
     this.alarms = this.alarms.map((alarm) => {
+      if (!alarm.__severity) {
+        alarm.__severity = [];
+      }
       if (!isChecked) {
-        alarm.__severity = null;
+        alarm.__severity = alarm.__severity.filter((sev) => sev !== severity);
         return alarm;
       }
-      alarm.__severity = severity;
+      alarm.__severity = [...alarm.__severity, severity];
       return alarm;
     });
     this.displayConfig = { ...this.displayConfig };

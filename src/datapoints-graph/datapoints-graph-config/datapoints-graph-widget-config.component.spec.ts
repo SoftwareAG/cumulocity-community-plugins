@@ -221,7 +221,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       fixture.detectChanges();
       component.formGroup.patchValue({ dateFrom: null });
       // when
-      const result = component.onBeforeSave(null);
+      const result = component.onBeforeSave(undefined);
       // then
       expect(result).toBeFalsy();
     });

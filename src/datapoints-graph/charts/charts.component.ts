@@ -14,9 +14,7 @@ import {
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
   DatapointWithValues,
-  DateString,
   INTERVALS,
-  SeriesValue,
 } from '../model';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -178,9 +176,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         return;
       }
       const options = this.echartsInstance.getOption();
-      if (!originalFormatter) {
-        originalFormatter = options.tooltip[0].formatter;
-      }
+      originalFormatter = originalFormatter ?? options.tooltip[0].formatter;
 
       const updatedOptions: Partial<SeriesOption> = {
         tooltip: options.tooltip,
@@ -360,6 +356,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
 
   private getMarkedAreaData(clickedAlarms: IAlarm[]) {
     const timeRange = this.getTimeRange();
+    const clearedAlarmColor = 'rgba(221,255,221,1.00)';
+    const activeAlarmColor = 'rgba(255, 173, 177, 0.4)';
 
     return clickedAlarms.map((clickedAlarm) => {
       return [
@@ -369,8 +367,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
           itemStyle: {
             color:
               clickedAlarm.status === AlarmStatus.CLEARED
-                ? 'rgba(221,255,221,1.00)'
-                : 'rgba(255, 173, 177, 0.4)',
+                ? clearedAlarmColor
+                : activeAlarmColor,
           },
         },
         {
@@ -385,7 +383,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private getMarkedLineData(clickedAlarms: IAlarm[]) {
-    clickedAlarms.reduce((acc, alarm) => {
+    return clickedAlarms.reduce((acc, alarm) => {
       const isClickedAlarmCleared = alarm.status === AlarmStatus.CLEARED;
       if (isClickedAlarmCleared) {
         return acc.concat([
@@ -423,19 +421,20 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     }, []);
   }
 
-  private async loadAlarmsAndEvents(): Promise<any> {
+  private async loadAlarmsAndEvents(): Promise<void> {
     const timeRange = this.getTimeRange();
     const updatedTimeRange = {
       lastUpdatedFrom: timeRange.dateFrom,
       createdTo: timeRange.dateTo,
     };
-    const visibleAlarmsOrEvents = this.config.alarmsEventsConfigs.filter(
+    if (!this.config.alarmsEventsConfigs) return;
+    const visibleAlarmsOrEvents = this.config.alarmsEventsConfigs?.filter(
       (alarmOrEvent) => !alarmOrEvent.__hidden
     );
-    const alarms = visibleAlarmsOrEvents.filter(
+    const alarms = visibleAlarmsOrEvents?.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
     ) as AlarmDetails[];
-    const events = visibleAlarmsOrEvents.filter(
+    const events = visibleAlarmsOrEvents?.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
     ) as EventDetails[];
 
@@ -617,24 +616,5 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       dateFrom: timeRange.dateFrom.toISOString(),
       dateTo: timeRange.dateTo.toISOString(),
     };
-  }
-
-  private findValueForExactOrEarlierTimestamp(
-    values: SeriesValue[],
-    timestampString: DateString
-  ): SeriesValue {
-    const timestamp = new Date(timestampString).valueOf();
-    return values.reduce((acc, curr) => {
-      if (new Date(curr[0]).valueOf() <= timestamp) {
-        if (
-          acc === null ||
-          Math.abs(new Date(curr[0]).valueOf() - timestamp) <
-            Math.abs(new Date(acc[0]).valueOf() - timestamp)
-        ) {
-          return curr;
-        }
-      }
-      return acc;
-    }, null);
   }
 }

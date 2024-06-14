@@ -6,6 +6,12 @@ import { EventDetails } from '../alarm-event-selector';
 export class ChartEventsService {
   constructor(private eventService: EventService) {}
 
+  /**
+   * List events for the given event details.
+   * @param params Additonal fetchOptions
+   * @param events List of event types with details like color, target, etc.
+   * @returns List of events for the given event details
+   */
   async listEvents(params?, events?: EventDetails[]): Promise<IEvent[]> {
     if (!events) {
       return [];

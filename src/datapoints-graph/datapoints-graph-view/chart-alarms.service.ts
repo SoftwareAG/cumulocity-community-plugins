@@ -6,15 +6,22 @@ import { AlarmDetails } from '../alarm-event-selector';
 export class ChartAlarmsService {
   constructor(private alarmService: AlarmService) {}
 
+  /**
+   * List alarms for the given alarm details.
+   * @param params Additonal fetchOptions
+   * @param alarms List of alarm types with details like color, target, etc.
+   * @returns List of alarms for the given alarm details
+   */
   async listAlarms(params?, alarms?: AlarmDetails[]): Promise<IAlarm[]> {
     if (!alarms) {
       return [];
     }
     const promises = alarms.map((alarm) => {
-      if (alarm.__severity) {
+      if (alarm.__severity?.length > 0) {
+        const severities = alarm.__severity.join(',');
         params = {
           ...params,
-          severity: alarm.__severity,
+          severity: severities,
         };
       }
       const fetchOptions: IFetchOptions = {

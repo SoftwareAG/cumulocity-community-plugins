@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, interval, merge, Observable, Subscription } from 'rxjs';
+import { interval, merge, Observable, Subscription } from 'rxjs';
 import { IAlarm, IEvent, IMeasurement } from '@c8y/client';
 import { buffer, map, tap, throttleTime } from 'rxjs/operators';
 import {
@@ -48,7 +48,7 @@ export class ChartRealtimeService {
     timeRangeChangedCallback: (
       timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
     ) => void,
-    alarmOrEventConfig: AlarmOrEvent[]
+    alarmOrEventConfig: AlarmOrEvent[] = []
   ) {
     this.echartsInstance = echartsInstance;
     this.currentTimeRange = {
