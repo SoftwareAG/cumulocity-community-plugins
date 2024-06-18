@@ -1,5 +1,5 @@
 import './i18n';
-import { applyOptions, loadOptions, loginOptions } from '@c8y/bootstrap';
+import { applyOptions, loadOptions } from '@c8y/bootstrap';
 
 const barHolder: HTMLElement | null =
   document.querySelector('body > .init-load');
@@ -11,7 +11,6 @@ applicationSetup();
 async function applicationSetup() {
   await applyOptions({
     ...(await loadOptions()),
-    ...((await loginOptions()) as object),
   });
 
   const mod = await import('./bootstrap');
