@@ -61,10 +61,10 @@ export class ChartRealtimeService {
         tap(() => {
           this.currentTimeRange = {
             dateFrom: new Date(
-              this.currentTimeRange?.dateFrom?.valueOf() || 0 + this.INTERVAL
+              (this.currentTimeRange?.dateFrom?.valueOf() || 0) + this.INTERVAL
             ),
             dateTo: new Date(
-              this.currentTimeRange?.dateTo?.valueOf() || 0 + this.INTERVAL
+              (this.currentTimeRange?.dateTo?.valueOf() || 0) + this.INTERVAL
             ),
           };
           timeRangeChangedCallback(this.currentTimeRange);

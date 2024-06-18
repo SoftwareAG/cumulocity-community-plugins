@@ -264,7 +264,7 @@ describe('ChartRealtimeService', () => {
       expect(option.series[1].data.length).toBe(3);
     });
 
-    it('should remove values before time range', () => {
+    it('should remove values before time range except one closes to dateFrom', () => {
       jest.useFakeTimers();
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
@@ -303,11 +303,16 @@ describe('ChartRealtimeService', () => {
         jest.fn(),
         jest.fn()
       );
-      // time to fill whole chart with time span of 1 minute of measurements with interval of 1s
-      jest.advanceTimersByTime(60_000);
-      // ten measurements should be out of chart,
-      // TODO: check logic responsible for: "but one just before dateFrom should stay in data series"
-      expect(option.series[0].data.length).toBe(60);
+      // time to fill whole chart with more than time span of 1 minute of measurements with interval of 1s
+      jest.advanceTimersByTime(70_000);
+      // then
+      const currentDateFrom = option.xAxis.min;
+      // first element out of time range (before dateFrom) should not be removed to maintain graph continuity
+      const firstElementTime = option.series[0].data[0][0];
+      expect(new Date(firstElementTime) < currentDateFrom).toBe(true);
+      // second element should be in time range
+      const secondElementTime = option.series[0].data[1][0];
+      expect(new Date(secondElementTime) >= currentDateFrom).toBe(true);
     });
 
     it('should trigger out of sync callback when value is out of sync', () => {
