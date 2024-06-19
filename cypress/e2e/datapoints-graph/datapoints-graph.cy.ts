@@ -12,7 +12,7 @@ describe('datapoints-graph', () => {
 
     // TODO: make it configurable
     cy.visit(
-      '/apps/cockpit-1019.24.2/index.html?remotes=%7B"sag-pkg-community-plugins"%3A%5B"ExampleWidgetPluginModule"%2C"DatapointsGraphWidgetModule"%5D%7D#/'
+      '/apps/cockpit-1020.0.22/index.html?remotes=%7B"sag-pkg-community-plugins"%3A%5B"ExampleWidgetPluginModule"%2C"DatapointsGraphWidgetModule"%5D%7D#/'
     );
     // cy.visit('/apps/sag-pkg-community-plugins/#/');
     cy.wait('@cockpitDashboardConfig');

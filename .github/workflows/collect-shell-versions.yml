@@ -39,7 +39,12 @@ jobs:
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/apps/sag-pkg-community-plugins/**
+            dist/sag-pkg-community-plugins/**
+
+      - name: Copy files for http-server into apps subfolder
+        run: |
+          mkdir -p dist/apps/sag-pkg-community-plugins
+          cp -r dist/sag-pkg-community-plugins/* dist/apps/sag-pkg-community-plugins
 
       - name: Get @c8y/ngx-components, non-deprecated dist versions
         id: check-deprecated
@@ -58,7 +63,7 @@ jobs:
           json='${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}'
           next_version=$(echo $json | jq -r '.next')
           echo "Version is: $next_version"
-          
+
           # Construct the file URL
           file_url="http://resources.cumulocity.com/webapps/ui-releases/apps-${next_version}.tgz"
           echo "File url is: $file_url"
@@ -80,19 +85,19 @@ jobs:
           exit 1
           fi
           echo "File extracted successfully."
-      
+
           # Unzip Cockpit to dist/apps
           cockpit_file="cockpit-${next_version}.zip"
           destination_folder="dist/apps/cockpit-${next_version}"
           mkdir -p "$destination_folder"
-          
+
           unzip -qq "$cockpit_file" -d "$destination_folder"
           if [ $? -ne 0 ]; then
           echo "Extracting cockpit file failed!"
           exit 1
           fi
           echo "Cockpit file extracted successfully."
-      
+
           # Echo the elements of dist/apps
           echo "Contents of dist/apps:"
           ls dist/apps
