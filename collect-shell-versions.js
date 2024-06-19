@@ -2,6 +2,7 @@ const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
 
+// TODO: instead of dictionary of tags and versions, return a list of last 3 versions. possibly semver package needed to find out the last 3 versions.
 async function getDistTags(packageName) {
   try {
     const { stdout } = await execPromise(
