@@ -72,10 +72,10 @@
           "builder": "@c8y/devkit:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "sag-pkg-community-plugins:build:production"
+              "buildTarget": "sag-pkg-community-plugins:build:production"
             },
             "development": {
-              "browserTarget": "sag-pkg-community-plugins:build:development"
+              "buildTarget": "sag-pkg-community-plugins:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,10 +87,10 @@
           "builder": "@c8y/devkit:deploy",
           "configurations": {
             "production": {
-              "browserTarget": "sag-pkg-community-plugins:build:production"
+              "buildTarget": "sag-pkg-community-plugins:build:production"
             },
             "development": {
-              "browserTarget": "sag-pkg-community-plugins:build:development"
+              "buildTarget": "sag-pkg-community-plugins:build:development"
             }
           },
           "defaultConfiguration": "production"
