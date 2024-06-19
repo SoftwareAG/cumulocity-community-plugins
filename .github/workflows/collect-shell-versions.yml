@@ -54,7 +54,7 @@ jobs:
         run: |
           echo "Non-deprecated Versions: ${{ steps.check-deprecated.outputs.non_deprecated_shell_versions }}"
 
-      # further should run in loop for each shell version
+      # TODO: further should run in loop for each shell version
 
       - name: Get shell app of particular version
         run: |
