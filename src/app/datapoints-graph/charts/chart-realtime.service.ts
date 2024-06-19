@@ -19,9 +19,9 @@ export class ChartRealtimeService {
   private INTERVAL: Milliseconds = 1000;
   private MIN_REALTIME_TIMEOUT: Milliseconds = 250;
   private MAX_REALTIME_TIMEOUT: Milliseconds = 5_000;
-  private realtimeSubscription: Subscription;
-  private echartsInstance: ECharts;
-  private currentTimeRange: { dateFrom: Date; dateTo: Date };
+  private realtimeSubscription: Subscription | undefined;
+  private echartsInstance: ECharts | undefined;
+  private currentTimeRange: { dateFrom: Date; dateTo: Date } | undefined;
 
   constructor(private measurementRealtime: MeasurementRealtimeService) {}
 
@@ -46,7 +46,7 @@ export class ChartRealtimeService {
           this.measurementRealtime.onCreateOfSpecificMeasurement$(
             dp.fragment,
             dp.series,
-            dp.__target.id
+            dp.__target?.id
           );
         return source$.pipe(
           map((measurement: IMeasurement) => ({ datapoint: dp, measurement }))
@@ -61,10 +61,10 @@ export class ChartRealtimeService {
         tap(() => {
           this.currentTimeRange = {
             dateFrom: new Date(
-              this.currentTimeRange.dateFrom.valueOf() + this.INTERVAL
+              (this.currentTimeRange?.dateFrom?.valueOf() || 0) + this.INTERVAL
             ),
             dateTo: new Date(
-              this.currentTimeRange.dateTo.valueOf() + this.INTERVAL
+              (this.currentTimeRange?.dateTo?.valueOf() || 0) + this.INTERVAL
             ),
           };
           timeRangeChangedCallback(this.currentTimeRange);
@@ -87,7 +87,10 @@ export class ChartRealtimeService {
   private removeValuesBeforeTimeRange(series: SeriesOption): SeriesValue[] {
     const firstValidValueByDateIndex = (series.data as SeriesValue[]).findIndex(
       ([dateString, _]) => {
-        return new Date(dateString) >= this.currentTimeRange.dateFrom;
+        return (
+          new Date(dateString) >=
+          (this.currentTimeRange?.dateFrom || new Date())
+        );
       }
     );
     if (firstValidValueByDateIndex > 1) {
@@ -127,11 +130,12 @@ export class ChartRealtimeService {
       if (!seriesDataToUpdate.has(datapoint)) {
         seriesDataToUpdate.set(datapoint, []);
       }
-      seriesDataToUpdate.get(datapoint).push(measurement);
+      seriesDataToUpdate.get(datapoint)?.push(measurement);
     });
 
-    const allDataSeries = this.echartsInstance.getOption()
-      .series as SeriesOption[];
+    const allDataSeries = this.echartsInstance?.getOption()[
+      'series'
+    ] as (SeriesOption & SeriesDatapointInfo)[];
 
     seriesDataToUpdate.forEach((measurements, datapoint) => {
       const newValues: SeriesValue[] = measurements.map((m) => [
@@ -139,10 +143,13 @@ export class ChartRealtimeService {
         m[datapoint.fragment][datapoint.series].value,
       ]);
       const datapointId =
-        datapoint.__target.id + datapoint.fragment + datapoint.series;
-      const seriesMatchingDatapoint: SeriesOption = allDataSeries.find(
-        (s: SeriesOption & SeriesDatapointInfo) => s.datapointId === datapointId
+        datapoint.__target?.id + datapoint.fragment + datapoint.series;
+      const seriesMatchingDatapoint = allDataSeries.find(
+        (s) => s.datapointId === datapointId
       );
+      if (!seriesMatchingDatapoint) {
+        return;
+      }
       const seriesDataToUpdate = seriesMatchingDatapoint.data as SeriesValue[];
       seriesDataToUpdate.push(...newValues);
 
@@ -156,10 +163,10 @@ export class ChartRealtimeService {
       );
     });
 
-    this.echartsInstance.setOption({
+    this.echartsInstance?.setOption({
       xAxis: {
-        min: this.currentTimeRange.dateFrom,
-        max: this.currentTimeRange.dateTo,
+        min: this.currentTimeRange?.dateFrom,
+        max: this.currentTimeRange?.dateTo,
       },
       series: allDataSeries,
     });

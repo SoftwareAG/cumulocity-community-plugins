@@ -136,8 +136,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     queueMicrotask(() => {
       this.updateZoomState();
     });
-    this.echartsInstance.on('dataZoom', (event: ECActionEvent) => {
-      const isZoomInActionFromHiddenToolbox = event.batch?.[0]?.from != null;
+    this.echartsInstance.on('dataZoom', (event) => {
+      const evt = event as ECActionEvent;
+      const isZoomInActionFromHiddenToolbox = evt.batch?.[0]?.from != null;
       if (isZoomInActionFromHiddenToolbox) {
         this.updateZoomState();
         this.chartRealtimeService.stopRealtime();
@@ -170,10 +171,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.startRealtimeIfPossible();
       }
     } else {
-      const currentStartValue =
-        this.echartsInstance.getOption().dataZoom[0].startValue;
-      const currentEndValue =
-        this.echartsInstance.getOption().dataZoom[0].endValue;
+      const dataZoom: any = this.echartsInstance.getOption()['dataZoom'];
+      const currentStartValue = dataZoom[0].startValue;
+      const currentEndValue = dataZoom[0].endValue;
       const currentTimeRangeInMs = currentEndValue - currentStartValue;
 
       // new dateTo should not exceed today date
@@ -225,10 +225,13 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private startRealtimeIfPossible(): void {
-    if (this.config.realtime && this.echartsInstance) {
+    const activeDatapoints = this.config?.datapoints?.filter(
+      (dp) => dp.__active
+    );
+    if (activeDatapoints && this.config.realtime && this.echartsInstance) {
       this.chartRealtimeService.startRealtime(
         this.echartsInstance,
-        this.config.datapoints.filter((dp) => dp.__active),
+        activeDatapoints,
         this.getTimeRange(),
         (dp) => this.datapointOutOfSync.emit(dp),
         (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange)
@@ -237,8 +240,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private updateZoomState(): void {
-    const { startValue, endValue }: DataZoomOption =
-      this.echartsInstance.getOption().dataZoom[0];
+    const dataZoom: any = this.echartsInstance.getOption()['dataZoom'];
+    const { startValue, endValue }: DataZoomOption = dataZoom[0];
     this.zoomHistory.push({ startValue, endValue });
   }
 
@@ -293,7 +296,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     }
     return forkJoin(datapointsWithValuesRequests).pipe(
       tap((dpsWithValues: DatapointWithValues[]) => {
-        if (dpsWithValues.some((dp) => dp.truncated)) {
+        if (dpsWithValues.some((dp) => dp['truncated'])) {
           this.addTruncatedDataAlert();
         }
       })

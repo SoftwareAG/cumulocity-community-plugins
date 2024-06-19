@@ -8,9 +8,6 @@ import {
 } from '@c8y/ngx-components';
 import { CockpitDashboardModule } from '@c8y/ngx-components/context-dashboard';
 
-// Translations
-import './locales/de.po'; // <- adding additional strings to the german translation.
-
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -19,7 +16,6 @@ import './locales/de.po'; // <- adding additional strings to the german translat
     CoreModule.forRoot(),
     CockpitDashboardModule,
   ],
-  providers: [],
   bootstrap: [BootstrapComponent],
 })
 export class AppModule {}

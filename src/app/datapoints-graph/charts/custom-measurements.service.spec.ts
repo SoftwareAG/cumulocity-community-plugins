@@ -1,6 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FetchClient, ISeries, Realtime } from '@c8y/client';
 import { ApiService } from '@c8y/ngx-components/api';
+import { firstValueFrom } from 'rxjs';
 import { CustomMeasurementService } from './custom-measurements.service';
 
 describe('CustomMeasurementService', () => {
@@ -26,17 +27,20 @@ describe('CustomMeasurementService', () => {
         .mockName('getFetchOptions')
         .mockReturnValue(options),
       getUrl: jest.fn().mockName('getFetchOptions').mockReturnValue(fullUrl),
-      fetch: jest.fn().mockName('fetch').mockImplementation(),
+      fetch: jest
+        .fn()
+        .mockName('fetch')
+        .mockImplementation(() => Promise.resolve(response)),
     } as any as FetchClient;
     TestBed.configureTestingModule({
       providers: [
-        CustomMeasurementService,
         { provide: FetchClient, useValue: client },
         { provide: Realtime, useValue: {} },
         {
           provide: ApiService,
           useValue: apiService,
         },
+        CustomMeasurementService,
       ],
     });
     service = TestBed.inject(CustomMeasurementService);
@@ -61,23 +65,19 @@ describe('CustomMeasurementService', () => {
     });
   }));
 
-  it('should call onFinish to trigger header loading bar', fakeAsync(() => {
-    // when
-    (global as any).fetch = jest
-      .fn()
-      .mockImplementationOnce(() => Promise.resolve(response));
-    service.listSeries$({} as any).subscribe();
-    tick();
-    // then
-    expect(apiService.onFinish).toHaveBeenCalledWith({
-      options,
-      method: 'GET',
-      url: '/measurement/measurements/series',
-      response,
-    });
-  }));
+  it('should call onFinish to trigger header loading bar', async () => {
+    (global as any).fetch = jest.fn().mockResolvedValueOnce(response);
 
-  it('should return resolved data', fakeAsync(() => {
+    await firstValueFrom(service.listSeries$({} as any));
+    expect(apiService.onFinish).toHaveBeenCalledWith({
+      method: 'GET',
+      options,
+      response,
+      url: '/measurement/measurements/series',
+    });
+  });
+
+  it('should return resolved data', (done) => {
     // when
     const values = { [new Date().toString()]: [{ min: 0, max: 1 }] };
     (global as any).fetch = jest.fn().mockImplementationOnce(() =>
@@ -85,12 +85,9 @@ describe('CustomMeasurementService', () => {
         json: () => ({ values } as ISeries),
       })
     );
-    let resolvedData;
-    service
-      .listSeries$({} as any)
-      .subscribe((val) => (resolvedData = val.data));
-    tick();
-    // then
-    expect(resolvedData.values).toEqual(values);
-  }));
+    service.listSeries$({} as any).subscribe((val) => {
+      expect(val.data.values).toEqual(values);
+      done();
+    });
+  });
 });

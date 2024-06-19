@@ -16,7 +16,7 @@ import type { TopLevelFormatterParams } from 'echarts/types/src/component/toolti
 
 @Injectable()
 export class EchartsOptionsService {
-  echartsInstance: ECharts;
+  echartsInstance: ECharts | undefined;
 
   constructor(
     private datePipe: DatePipe,
@@ -137,15 +137,15 @@ export class EchartsOptionsService {
     idx: number,
     isMinMaxChart = false
   ): SeriesOption & SeriesDatapointInfo {
-    const datapointId = dp.__target.id + dp.fragment + dp.series;
+    const datapointId = dp.__target?.id + dp.fragment + dp.series;
     return {
       datapointId,
-      datapointUnit: dp.unit,
+      datapointUnit: dp.unit || '',
       // 'id' property is needed as 'seriesId' in tooltip formatter
       id: isMinMaxChart ? `${datapointId}/${renderType}` : `${datapointId}`,
-      name: `${dp.label} (${dp.__target.name})`,
+      name: `${dp.label} (${dp.__target?.['name']})`,
       // datapointLabel used to proper display of tooltip
-      datapointLabel: dp.label,
+      datapointLabel: dp.label || '',
       data: Object.entries(dp.values).map(([dateString, values]) => {
         return [dateString, values[0][renderType]];
       }),
@@ -156,10 +156,15 @@ export class EchartsOptionsService {
 
   private getTooltipFormatter(): TooltipFormatterCallback<TopLevelFormatterParams> {
     return (params) => {
-      const XAxisValue: string = params[0].data[0];
+      const firstParamEntry = Array.isArray(params) ? params[0] : params;
+      const firstOptionData = Array.isArray(firstParamEntry.data)
+        ? firstParamEntry.data[0]
+        : firstParamEntry.data;
+      const XAxisValue: string = firstOptionData as string;
       const YAxisReadings: string[] = [];
-      const allSeries = this.echartsInstance.getOption()
-        .series as SeriesOption[];
+      const allSeries = this.echartsInstance?.getOption()[
+        'series'
+      ] as SeriesOption[];
       allSeries.forEach((series: any) => {
         let value: string;
         if (series.id.endsWith('/min')) {
@@ -173,10 +178,16 @@ export class EchartsOptionsService {
           const maxSeries = allSeries.find(
             (s) => s.id === series.id.replace('/min', '/max')
           );
+          if (!maxSeries) {
+            return;
+          }
           const maxValue = this.findValueForExactOrEarlierTimestamp(
             maxSeries.data as SeriesValue[],
             XAxisValue
           );
+          if (maxValue === null) {
+            return;
+          }
           value =
             `${minValue[1]} — ${maxValue[1]}` +
             (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
@@ -218,9 +229,9 @@ export class EchartsOptionsService {
   private findValueForExactOrEarlierTimestamp(
     values: SeriesValue[],
     timestampString: DateString
-  ): SeriesValue {
+  ): SeriesValue | null {
     const timestamp = new Date(timestampString).valueOf();
-    return values.reduce((acc, curr) => {
+    return values.reduce((acc: SeriesValue | null, curr: SeriesValue) => {
       if (new Date(curr[0]).valueOf() <= timestamp) {
         if (
           acc === null ||

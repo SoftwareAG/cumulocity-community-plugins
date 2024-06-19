@@ -19,18 +19,18 @@ export type DatapointsGraphKPIDetails = KPIDetails & {
 };
 
 export type DatapointsGraphWidgetConfig = {
-  datapoints: DatapointsGraphKPIDetails[];
+  datapoints?: DatapointsGraphKPIDetails[] | null;
   date?: DateTimeContext;
-  displayDateSelection?: boolean;
-  displayAggregationSelection?: boolean;
-  widgetInstanceGlobalTimeContext?: boolean;
-  dateFrom?: Date;
-  dateTo?: Date;
-  interval?: Interval['id'];
-  aggregation?: aggregationType;
-  realtime?: boolean;
-  yAxisSplitLines?: boolean;
-  xAxisSplitLines?: boolean;
+  displayDateSelection?: boolean | null;
+  displayAggregationSelection?: boolean | null;
+  widgetInstanceGlobalTimeContext?: boolean | null;
+  dateFrom?: Date | null;
+  dateTo?: Date | null;
+  interval?: Interval['id'] | null;
+  aggregation?: aggregationType | null;
+  realtime?: boolean | null;
+  yAxisSplitLines?: boolean | null;
+  xAxisSplitLines?: boolean | null;
 };
 
 export type DatapointsGraphWidgetTimeProps = Partial<
@@ -59,10 +59,10 @@ export enum TimeSpanInMs {
 export type Interval = {
   id: 'minutes' | 'hours' | 'days' | 'weeks' | 'months' | 'custom';
   title: string;
-  timespanInMs?: number;
+  timespanInMs: TimeSpanInMs | null;
 };
 
-export const INTERVALS: Interval[] = [
+export const INTERVALS = [
   {
     id: 'minutes',
     title: gettext('Last minute'),
@@ -88,11 +88,11 @@ export const INTERVALS: Interval[] = [
     title: gettext('Last month'),
     timespanInMs: TimeSpanInMs.MONTH,
   },
-  { id: 'custom', title: gettext('Custom') },
-];
+  { id: 'custom', title: gettext('Custom'), timespanInMs: null },
+] as const satisfies ReadonlyArray<Interval>;
 
 export type Aggregation = {
-  value: aggregationType;
+  value: aggregationType | null;
   name: string;
 };
 

@@ -12,12 +12,15 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
+  Interval,
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
 import { cloneDeep } from 'lodash-es';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
+import { aggregationType } from '@c8y/client';
+import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -30,10 +33,12 @@ export class DatapointsGraphWidgetViewComponent
 {
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
-  alerts: DynamicComponentAlertAggregator;
+  alerts: DynamicComponentAlertAggregator | undefined;
   datapointsOutOfSync = new Map<DatapointsGraphKPIDetails, boolean>();
   toolboxDisabled = false;
-  timeControlsFormGroup: FormGroup;
+  timeControlsFormGroup: ReturnType<
+    DatapointsGraphWidgetViewComponent['initForm']
+  >;
 
   @Input() set config(value: DatapointsGraphWidgetConfig) {
     this.displayConfig = cloneDeep(value);
@@ -43,7 +48,7 @@ export class DatapointsGraphWidgetViewComponent
       '"config" property should not be referenced in view component to avoid mutating data.'
     );
   }
-  displayConfig: DatapointsGraphWidgetConfig;
+  displayConfig: DatapointsGraphWidgetConfig | undefined;
   readonly disableZoomInLabel = gettext('Disable zoom in');
   readonly enableZoomInLabel = gettext(
     'Click to enable zoom, then click and drag on the desired area in the chart.'
@@ -53,7 +58,7 @@ export class DatapointsGraphWidgetViewComponent
   private destroy$ = new Subject<void>();
 
   constructor(private formBuilder: FormBuilder) {
-    this.initForm();
+    this.timeControlsFormGroup = this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -67,14 +72,16 @@ export class DatapointsGraphWidgetViewComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.timeControlsFormGroup.patchValue(this.displayConfig);
+    this.timeControlsFormGroup.patchValue(this.displayConfig || {});
+    const config: DatapointsGraphWidgetConfig = changes['config']?.currentValue;
     if (
-      changes.config?.currentValue?.date &&
-      changes.config?.currentValue?.widgetInstanceGlobalTimeContext
+      config?.date &&
+      config?.widgetInstanceGlobalTimeContext &&
+      this.displayConfig?.date
     ) {
       this.timePropsChanged({
-        dateFrom: this.displayConfig.date[0],
-        dateTo: this.displayConfig.date[1],
+        dateFrom: this.displayConfig?.date[0],
+        dateTo: this.displayConfig?.date[1],
       });
     }
   }
@@ -93,26 +100,30 @@ export class DatapointsGraphWidgetViewComponent
     datapoint.__active = !datapoint.__active;
     this.displayConfig = { ...this.displayConfig };
     this.toolboxDisabled =
-      this.displayConfig.datapoints.filter((dp) => dp.__active).length === 0;
+      this.displayConfig.datapoints?.filter((dp) => dp.__active).length === 0;
   }
 
   handleDatapointOutOfSync(dpOutOfSync: DatapointsGraphKPIDetails): void {
-    const key = (dp) => dp.__target.id + dp.fragment + dp.series;
-    const dpMatch = this.displayConfig.datapoints.find(
+    const key = (dp: KPIDetails) => dp.__target?.id + dp.fragment + dp.series;
+    const dpMatch = this.displayConfig?.datapoints?.find(
       (dp) => key(dp) === key(dpOutOfSync)
     );
+    if (!dpMatch) {
+      return;
+    }
     this.datapointsOutOfSync.set(dpMatch, true);
   }
 
-  private initForm(): void {
-    this.timeControlsFormGroup = this.formBuilder.group({
-      dateFrom: [null, [Validators.required]],
-      dateTo: [null, [Validators.required]],
-      interval: ['hours', [Validators.required]],
-      aggregation: null,
+  private initForm() {
+    const form = this.formBuilder.group({
+      dateFrom: [undefined as unknown as Date, [Validators.required]],
+      dateTo: [undefined as unknown as Date, [Validators.required]],
+      interval: ['hours' as Interval['id'], [Validators.required]],
+      aggregation: [null as aggregationType | null, []],
       realtime: [false, [Validators.required]],
       widgetInstanceGlobalTimeContext: [false, []],
     });
-    this.timeControlsFormGroup.patchValue(this.displayConfig);
+    form.patchValue(this.displayConfig || {});
+    return form;
   }
 }
