@@ -156,10 +156,10 @@ export class EchartsOptionsService {
 
   private getTooltipFormatter(): TooltipFormatterCallback<TopLevelFormatterParams> {
     return (params) => {
-      const firstParamentry = Array.isArray(params) ? params[0] : params;
-      const firstOptionData = Array.isArray(firstParamentry.data)
-        ? firstParamentry.data[0]
-        : firstParamentry.data;
+      const firstParamEntry = Array.isArray(params) ? params[0] : params;
+      const firstOptionData = Array.isArray(firstParamEntry.data)
+        ? firstParamEntry.data[0]
+        : firstParamEntry.data;
       const XAxisValue: string = firstOptionData as string;
       const YAxisReadings: string[] = [];
       const allSeries = this.echartsInstance?.getOption()[
