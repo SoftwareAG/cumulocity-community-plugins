@@ -190,7 +190,7 @@ export interface SeriesDatapointInfo {
 }
 
 export const SEVERITY_LABELS = {
-  CRITICAL: 'CRITICAL',
+  CRITICAL: gettext('Critical`alarm`') as 'CRITICAL',
   MAJOR: gettext('Major`alarm`') as 'MAJOR',
   MINOR: gettext('Minor`alarm`') as 'MINOR',
   WARNING: gettext('Warning`alarm`') as 'WARNING',

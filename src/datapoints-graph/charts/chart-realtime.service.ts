@@ -1,7 +1,21 @@
 import { Injectable } from '@angular/core';
-import { interval, merge, Observable, Subscription } from 'rxjs';
+import {
+  combineLatest,
+  from,
+  interval,
+  merge,
+  Observable,
+  Subscription,
+} from 'rxjs';
 import { IAlarm, IEvent, IMeasurement } from '@c8y/client';
-import { buffer, map, tap, throttleTime } from 'rxjs/operators';
+import {
+  buffer,
+  distinctUntilChanged,
+  map,
+  mergeMap,
+  tap,
+  throttleTime,
+} from 'rxjs/operators';
 import {
   DatapointChartRenderType,
   DatapointRealtimeMeasurements,
@@ -63,8 +77,10 @@ export class ChartRealtimeService {
       new Set(activeAlarmsOrEvents.map((aOrE) => aOrE.__target.id))
     );
 
-    const allAlarmsAndEvents: Observable<IAlarm | IEvent>[] =
-      uniqueAlarmOrEventTargets.map((targetId) => {
+    const allAlarmsAndEvents$: Observable<IAlarm | IEvent> = from(
+      uniqueAlarmOrEventTargets
+    ).pipe(
+      mergeMap((targetId) => {
         const alarmsRealtime$: Observable<RealtimeMessage<IAlarm>> =
           this.alarmRealtimeService.onAll$(targetId);
         const eventsRealtime$: Observable<RealtimeMessage<IEvent>> =
@@ -72,9 +88,8 @@ export class ChartRealtimeService {
         return merge(alarmsRealtime$, eventsRealtime$).pipe(
           map((realtimeMessage) => realtimeMessage.data as IAlarm | IEvent)
         );
-      });
-
-    const allAlarmsAndEvents$ = merge(...allAlarmsAndEvents);
+      })
+    );
 
     const measurementsForDatapoints: Observable<DatapointRealtimeMeasurements>[] =
       datapoints.map((dp) => {
@@ -113,33 +128,32 @@ export class ChartRealtimeService {
     this.realtimeSubscriptionMeasurements = measurement$
       .pipe(buffer(bufferReset$))
       .subscribe((measurements) => {
-        this.updateChartInstance(measurements, [], datapointOutOfSyncCallback);
+        this.updateChartInstance(
+          measurements,
+          null,
+          datapointOutOfSyncCallback
+        );
       });
 
-    this.realtimeSubscriptionAlarmsEvents = allAlarmsAndEvents$
-      .pipe(buffer(bufferReset$))
-      .subscribe((alarmsAndEvents) => {
-        const filteredAlarmsOrEvents = alarmsAndEvents.filter(
-          (alarmOrEvent: IAlarm | IEvent) => {
-            return alarmOrEventConfig.some((aOrE) => {
-              return aOrE.filters.type === alarmOrEvent.type;
-            });
+    const combined$ = combineLatest([allAlarmsAndEvents$, measurement$]);
+
+    this.realtimeSubscriptionAlarmsEvents = combined$
+      .pipe(
+        map(([alarmOrEvent, measurements]) => {
+          const foundAlarmOrEvent = alarmOrEventConfig.find((aOrE) => {
+            return aOrE.filters.type === alarmOrEvent.type;
+          });
+          if (foundAlarmOrEvent) {
+            alarmOrEvent.color = foundAlarmOrEvent.color;
           }
-        );
-        const alarmsAndEventsWithColor = filteredAlarmsOrEvents.map(
-          (alarmOrEvent: IAlarm | IEvent) => {
-            const foundAlarmOrEvent = alarmOrEventConfig.find((aOrE) => {
-              return aOrE.filters.type === alarmOrEvent.type;
-            });
-            if (foundAlarmOrEvent) {
-              alarmOrEvent.color = foundAlarmOrEvent.color;
-            }
-            return alarmOrEvent;
-          }
-        );
+
+          return { alarmOrEvent, measurements };
+        })
+      )
+      .subscribe(({ alarmOrEvent, measurements }) => {
         this.updateChartInstance(
-          [],
-          alarmsAndEventsWithColor,
+          [measurements],
+          alarmOrEvent,
           datapointOutOfSyncCallback
         );
       });
@@ -183,13 +197,13 @@ export class ChartRealtimeService {
 
   private updateChartInstance(
     receivedMeasurements: DatapointRealtimeMeasurements[],
-    alarmsAndEvents: (IAlarm | IEvent | number)[],
+    alarmOrEvent: IAlarm | IEvent | null,
     datapointOutOfSyncCallback: (dp: DatapointsGraphKPIDetails) => void
   ) {
-    const isEvent = (item: IAlarm | IEvent | number): item is IEvent =>
-      !(item as IAlarm | IEvent).severity;
-    const isAlarm = (item: IAlarm | IEvent | number): item is IAlarm =>
-      !!(item as IAlarm | IEvent).severity;
+    const isEvent = (item: IAlarm | IEvent): item is IEvent =>
+      !('severity' in item);
+    const isAlarm = (item: IAlarm | IEvent): item is IAlarm =>
+      'severity' in item;
 
     const seriesDataToUpdate = new Map<
       DatapointsGraphKPIDetails,
@@ -223,13 +237,7 @@ export class ChartRealtimeService {
         seriesMatchingDatapoint
       );
 
-      alarmsAndEvents.forEach((item) => {
-        if (
-          typeof seriesMatchingDatapoint.data !== 'object' ||
-          seriesMatchingDatapoint.data === null
-        ) {
-          return;
-        }
+      if (alarmOrEvent) {
         const renderType: DatapointChartRenderType =
           datapoint.renderType || 'min';
         const dp: DatapointWithValues = {
@@ -239,40 +247,52 @@ export class ChartRealtimeService {
           },
         };
 
-        if (isEvent(item)) {
+        if (isEvent(alarmOrEvent)) {
           const newEventSeries =
             this.echartsOptionsService.getAlarmOrEventSeries(
               dp,
               renderType,
               false,
-              [item],
+              [alarmOrEvent],
               'event',
-              item.id
+              alarmOrEvent.id
             );
           allDataSeries.push(...newEventSeries);
-        } else if (isAlarm(item)) {
+        } else if (isAlarm(alarmOrEvent)) {
           const alarmExists = allDataSeries.some((series: { data: any[] }) =>
-            series.data.some((data) => data[0] === item.creationTime)
+            series.data.some(
+              (data) => data[0] === (alarmOrEvent as IEvent).creationTime
+            )
           );
           if (alarmExists) {
             const alarmSeries = allDataSeries.find((series: { data: any[] }) =>
-              series.data.some((data) => data[0] === item.creationTime)
+              series.data.some(
+                (data) => data[0] === (alarmOrEvent as IAlarm).creationTime
+              )
             );
-            // Instead of updating the existing alarm series, it would be easier if we remove all existing series for the current time range and add them again.
-            allDataSeries.splice(allDataSeries.indexOf(alarmSeries), 1);
+            // update the last value of the markline to the new value
+            alarmSeries.markLine.data[1].xAxis = (
+              alarmOrEvent as IAlarm
+            ).lastUpdated;
+            // update the last value of the markpoint to the new value
+            alarmSeries.markPoint.data[1].coord[0] = (
+              alarmOrEvent as IAlarm
+            ).lastUpdated;
+          } else {
+            const newAlarmSeries =
+              this.echartsOptionsService.getAlarmOrEventSeries(
+                dp,
+                renderType,
+                false,
+                [alarmOrEvent],
+                'alarm',
+                (alarmOrEvent as IEvent).id
+              );
+
+            allDataSeries.push(...newAlarmSeries);
           }
-          const newAlarmSeries =
-            this.echartsOptionsService.getAlarmOrEventSeries(
-              dp,
-              renderType,
-              false,
-              [item],
-              'alarm',
-              item.id
-            );
-          allDataSeries.push(...newAlarmSeries);
         }
-      });
+      }
 
       this.checkForValuesAfterTimeRange(
         seriesMatchingDatapoint.data as SeriesValue[],

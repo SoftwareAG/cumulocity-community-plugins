@@ -1,7 +1,7 @@
 import { SeriesValue } from '../model';
 
 export interface CustomSeriesOptions extends echarts.EChartsOption {
-  // typeOfSeries is used for formatter to distinguish between events/alarms series and datapoints
+  // typeOfSeries is used for formatter to distinguish between events/alarms series
   typeOfSeries?: 'alarm' | 'event' | null;
   id: string;
   data: SeriesValue[];
