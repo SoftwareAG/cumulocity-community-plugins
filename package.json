@@ -19,7 +19,8 @@
     "lint": "eslint --ext .ts,.html .",
     "lint:staged": "lint-staged",
     "prepare": "husky install",
-    "collect-shell-versions": "node collect-shell-versions"
+    "collect-shell-versions": "node collect-shell-versions",
+    "cypress:recording": "npx c8yctrl --config c8yctrl.config.ts --port 4200 --staticRoot ./dist --folder ./rec & yarn cypress:headless --env C8Y_CTRL_MODE=recording"
   },
   "repository": {
     "type": "git",
