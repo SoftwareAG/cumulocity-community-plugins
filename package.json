@@ -9,9 +9,10 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "commit": "commit",
-    "cypress:ci": "start-server-and-test http-server http://localhost:4200/apps/sag-pkg-community-plugins/index.html cypress:headless",
-    "cypress:ci:shell": "start-server-and-test c8yctrl-server-proxy http://localhost:4200/apps/sag-pkg-community-plugins/index.html cypress:headless",
-    "cypress:headless": "cypress run",
+    "cypress:ci:plugins": "start-server-and-test http-server http://localhost:4200/apps/sag-pkg-community-plugins/index.html cypress:headless:plugins",
+    "cypress:headless:plugins": "cypress run --env grepUntagged=true",
+    "cypress:headless:shell:recording": "cypress run --env grepTags=@1020 C8Y_CTRL_MODE=recording",
+    "cypress:headless:shell:mocking": "cypress run --env grepTags=@1020 C8Y_CTRL_MODE=mocking",
     "cypress:open": "cypress open",
     "deploy": "c8ycli deploy",
     "http-server": "http-server -p 4200 ./dist",
@@ -102,6 +103,7 @@
     "rimraf": "^4.1.2",
     "semantic-release": "^20.1.0",
     "start-server-and-test": "^1.15.3",
-    "typescript": "5.3.2"
+    "typescript": "5.3.2",
+    "@cypress/grep": "^4.0.2"
   }
 }

@@ -21,8 +21,12 @@ import './commands';
 
 import 'cumulocity-cypress/lib/commands';
 
+import registerCypressGrep from '@cypress/grep/src/support';
+
 import { C8yPactID } from 'cumulocity-cypress-ctrl';
 const { _ } = Cypress;
+
+registerCypressGrep();
 
 before(() => {
   Cypress.session.clearAllSavedSessions();
@@ -36,11 +40,11 @@ before(() => {
     });
     const runner = Cypress.mocha.getRunner();
     runner.on('suite', (suite) => c8yctrl(getSuiteTitles(suite)));
-  }
 
-  cy.then(() => {
-    cy.getAuth('admin').getTenantId();
-  });
+    cy.then(() => {
+      cy.getAuth('admin').getTenantId();
+    });
+  }
 });
 
 beforeEach(() => {

@@ -12,6 +12,7 @@ export default defineConfig({
       }
 
       configureC8yPlugin(on, config);
+
       return config;
     },
     baseUrl: 'http://localhost:4200',
