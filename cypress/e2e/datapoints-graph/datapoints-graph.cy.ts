@@ -1,15 +1,10 @@
 describe('datapoints-graph', () => {
   beforeEach(() => {
-    cy.interceptLoginOptions();
-    cy.interceptCurrentTenant();
-    cy.interceptCurrentUser();
-    cy.interceptAppManifest();
-
     cy.intercept(
       '/inventory/managedObjects?fragmentType=c8y_Dashboard!name!home-cockpit1&pageSize=1',
       { fixture: 'widgets/datapoints-graph/cockpit-dashboard.json' }
     ).as('cockpitDashboardConfig');
-
+    cy.getAuth('admin').login();
     // TODO: make it configurable
     cy.visit(
       '/apps/cockpit/index.html?remotes=%7B"sag-pkg-community-plugins"%3A%5B"ExampleWidgetPluginModule"%2C"DatapointsGraphWidgetModule"%5D%7D#/'

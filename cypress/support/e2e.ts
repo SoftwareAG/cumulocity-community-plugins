@@ -37,6 +37,10 @@ before(() => {
     const runner = Cypress.mocha.getRunner();
     runner.on('suite', (suite) => c8yctrl(getSuiteTitles(suite)));
   }
+
+  cy.then(() => {
+    cy.getAuth('admin').getTenantId();
+  });
 });
 
 beforeEach(() => {
