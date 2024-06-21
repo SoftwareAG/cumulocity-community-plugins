@@ -255,7 +255,7 @@ export class ChartRealtimeService {
               false,
               [alarmOrEvent],
               'event',
-              alarmOrEvent.id
+              alarmOrEvent.creationTime
             );
           allDataSeries.push(...newEventSeries);
         } else if (isAlarm(alarmOrEvent)) {
