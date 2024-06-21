@@ -147,10 +147,14 @@ export class ChartRealtimeService {
             alarmOrEvent.color = foundAlarmOrEvent.color;
           }
 
-          return { alarmOrEvent, measurements };
+          return foundAlarmOrEvent ? { alarmOrEvent, measurements } : null;
         })
       )
-      .subscribe(({ alarmOrEvent, measurements }) => {
+      .subscribe((data) => {
+        if (!data) {
+          return;
+        }
+        const { alarmOrEvent, measurements } = data;
         this.updateChartInstance(
           [measurements],
           alarmOrEvent,
@@ -248,6 +252,15 @@ export class ChartRealtimeService {
         };
 
         if (isEvent(alarmOrEvent)) {
+          // if event series with the same id already exists, return
+          const eventExists = allDataSeries.some((series: { data: any[] }) =>
+            series.data.some(
+              (data) => data[0] === (alarmOrEvent as IEvent).creationTime
+            )
+          );
+          if (eventExists) {
+            return;
+          }
           const newEventSeries =
             this.echartsOptionsService.getAlarmOrEventSeries(
               dp,
