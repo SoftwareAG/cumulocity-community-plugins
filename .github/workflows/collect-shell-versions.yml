@@ -101,3 +101,30 @@ jobs:
           # Echo the elements of dist/apps
           echo "Contents of dist/apps:"
           ls dist/apps
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run cypress:ctrl
+          install: false
+          wait-on: 'http://localhost:4200/apps/cockpit/index.html?remotes=%7B"sag-pkg-community-plugins"%3A%5B"ExampleWidgetPluginModule"%2C"DatapointsGraphWidgetModule"%5D%7D#'
+          browser: chrome
+          record: false
+          config-file: cypress.config.ts
+          env: C8Y_CTRL_MODE=recording,grepTags=@1020
+
+      - name: Upload cypress screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          retention-days: 5
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload cypress videos
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          retention-days: 5
+          name: cypress-videos
+          path: cypress/videos

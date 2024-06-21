@@ -21,7 +21,7 @@
     "lint:staged": "lint-staged",
     "prepare": "husky install",
     "collect-shell-versions": "node collect-shell-versions",
-    "cypress:recording": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec & cypress:headless:shell:recording"
+    "cypress:ctrl": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec"
   },
   "repository": {
     "type": "git",
