@@ -15,9 +15,65 @@ declare global {
        * @example cy.request('/inventory/managedObjects', 'POST', deviceObjCopy);
        */
       request(originalFn: object, ...args: string[]): Chainable<any>;
+      acceptCookieBanner(
+        required: boolean,
+        functional: boolean
+      ): Chainable<void>;
+      login2(username: string, password: string): Chainable<any>;
+      getTenantId2(username: string, password: string): Chainable<string>;
     }
   }
 }
+
+Cypress.Commands.add('acceptCookieBanner', (required, functional) => {
+  const COOKIE_NAME = 'acceptCookieNotice';
+  const COOKIE_VALUE = `{"required":${required},"functional":${functional}}`;
+  Cypress.on('window:before:load', (window) => {
+    window.localStorage.setItem(COOKIE_NAME, COOKIE_VALUE);
+  });
+});
+
+Cypress.Commands.add('getTenantId2', (username, password) => {
+  cy.request({
+    method: 'GET',
+    url: '/tenant/currentTenant',
+    auth: {
+      username,
+      password,
+    },
+  }).then((response) => response.body.name);
+});
+
+Cypress.Commands.add('login2', (username, password) => {
+  cy.acceptCookieBanner(true, true);
+  cy.session(
+    username,
+    () => {
+      cy.getTenantId2(username, password).then((tenantId) => {
+        cy.request({
+          method: 'POST',
+          url: `/tenant/oauth?tenant_id=${tenantId}`,
+          body: {
+            grant_type: 'PASSWORD',
+            username,
+            password,
+            tfa_code: undefined,
+          },
+          form: true,
+        }).then((resp) => {
+          expect(resp.status).to.eq(200);
+          expect(resp).to.have.property('headers');
+        });
+      });
+    },
+    {
+      validate() {
+        cy.request('/user/currentUser').its('status').should('eq', 200);
+      },
+      cacheAcrossSpecs: true,
+    }
+  );
+});
 
 Cypress.Commands.add('interceptCurrentUser', (customRoles?: string[]) => {
   const defaultRoles = [

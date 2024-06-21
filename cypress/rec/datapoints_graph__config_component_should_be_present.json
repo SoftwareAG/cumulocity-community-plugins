@@ -34,11 +34,235 @@
   "records": [
     {
       "request": {
+        "url": "/user/currentUser",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "*/*",
+          "host": "localhost:4200",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "shouldResetPassword": false,
+          "userName": "ccw",
+          "phone": "+49 9 876 543 210",
+          "self": "https://t3304394.latest.stage.c8y.io/user/currentUser",
+          "effectiveRoles": [
+            {
+              "name": "ROLE_IDENTITY_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_IDENTITY_ADMIN",
+              "id": "ROLE_IDENTITY_ADMIN"
+            },
+            {
+              "name": "ROLE_DEVICE_CONTROL_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DEVICE_CONTROL_READ",
+              "id": "ROLE_DEVICE_CONTROL_READ"
+            },
+            {
+              "name": "ROLE_CEP_MANAGEMENT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_CEP_MANAGEMENT_READ",
+              "id": "ROLE_CEP_MANAGEMENT_READ"
+            },
+            {
+              "name": "ROLE_MEASUREMENT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_MEASUREMENT_READ",
+              "id": "ROLE_MEASUREMENT_READ"
+            },
+            {
+              "name": "ROLE_TENANT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_TENANT_ADMIN",
+              "id": "ROLE_TENANT_ADMIN"
+            },
+            {
+              "name": "ROLE_TENANT_STATISTICS_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_TENANT_STATISTICS_READ",
+              "id": "ROLE_TENANT_STATISTICS_READ"
+            },
+            {
+              "name": "ROLE_USER_MANAGEMENT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_ADMIN",
+              "id": "ROLE_USER_MANAGEMENT_ADMIN"
+            },
+            {
+              "name": "ROLE_OPTION_MANAGEMENT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_OPTION_MANAGEMENT_READ",
+              "id": "ROLE_OPTION_MANAGEMENT_READ"
+            },
+            {
+              "name": "ROLE_SCHEDULE_REPORT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_SCHEDULE_REPORT_ADMIN",
+              "id": "ROLE_SCHEDULE_REPORT_ADMIN"
+            },
+            {
+              "name": "ROLE_EVENT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_EVENT_ADMIN",
+              "id": "ROLE_EVENT_ADMIN"
+            },
+            {
+              "name": "ROLE_EVENT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_EVENT_READ",
+              "id": "ROLE_EVENT_READ"
+            },
+            {
+              "name": "ROLE_CEP_MANAGEMENT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_CEP_MANAGEMENT_ADMIN",
+              "id": "ROLE_CEP_MANAGEMENT_ADMIN"
+            },
+            {
+              "name": "ROLE_RETENTION_RULE_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_RETENTION_RULE_READ",
+              "id": "ROLE_RETENTION_RULE_READ"
+            },
+            {
+              "name": "ROLE_AUDIT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_AUDIT_ADMIN",
+              "id": "ROLE_AUDIT_ADMIN"
+            },
+            {
+              "name": "ROLE_ACCOUNT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ACCOUNT_ADMIN",
+              "id": "ROLE_ACCOUNT_ADMIN"
+            },
+            {
+              "name": "ROLE_ALARM_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ALARM_READ",
+              "id": "ROLE_ALARM_READ"
+            },
+            {
+              "name": "ROLE_ALARM_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ALARM_ADMIN",
+              "id": "ROLE_ALARM_ADMIN"
+            },
+            {
+              "name": "ROLE_DATA_BROKER_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DATA_BROKER_READ",
+              "id": "ROLE_DATA_BROKER_READ"
+            },
+            {
+              "name": "ROLE_USER_MANAGEMENT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_READ",
+              "id": "ROLE_USER_MANAGEMENT_READ"
+            },
+            {
+              "name": "ROLE_BULK_OPERATION_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_BULK_OPERATION_ADMIN",
+              "id": "ROLE_BULK_OPERATION_ADMIN"
+            },
+            {
+              "name": "ROLE_APPLICATION_MANAGEMENT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_APPLICATION_MANAGEMENT_READ",
+              "id": "ROLE_APPLICATION_MANAGEMENT_READ"
+            },
+            {
+              "name": "ROLE_DEVICE_CONTROL_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DEVICE_CONTROL_ADMIN",
+              "id": "ROLE_DEVICE_CONTROL_ADMIN"
+            },
+            {
+              "name": "ROLE_IDENTITY_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_IDENTITY_READ",
+              "id": "ROLE_IDENTITY_READ"
+            },
+            {
+              "name": "ROLE_OPTION_MANAGEMENT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_OPTION_MANAGEMENT_ADMIN",
+              "id": "ROLE_OPTION_MANAGEMENT_ADMIN"
+            },
+            {
+              "name": "ROLE_APPLICATION_MANAGEMENT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_APPLICATION_MANAGEMENT_ADMIN",
+              "id": "ROLE_APPLICATION_MANAGEMENT_ADMIN"
+            },
+            {
+              "name": "ROLE_USER_MANAGEMENT_OWN_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_OWN_READ",
+              "id": "ROLE_USER_MANAGEMENT_OWN_READ"
+            },
+            {
+              "name": "ROLE_USER_MANAGEMENT_PASSWORD_RESET",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_PASSWORD_RESET",
+              "id": "ROLE_USER_MANAGEMENT_PASSWORD_RESET"
+            },
+            {
+              "name": "ROLE_INVENTORY_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_INVENTORY_READ",
+              "id": "ROLE_INVENTORY_READ"
+            },
+            {
+              "name": "ROLE_MEASUREMENT_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_MEASUREMENT_ADMIN",
+              "id": "ROLE_MEASUREMENT_ADMIN"
+            },
+            {
+              "name": "ROLE_AUDIT_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_AUDIT_READ",
+              "id": "ROLE_AUDIT_READ"
+            },
+            {
+              "name": "ROLE_USER_MANAGEMENT_OWN_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_OWN_ADMIN",
+              "id": "ROLE_USER_MANAGEMENT_OWN_ADMIN"
+            },
+            {
+              "name": "ROLE_BULK_OPERATION_READ",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_BULK_OPERATION_READ",
+              "id": "ROLE_BULK_OPERATION_READ"
+            },
+            {
+              "name": "ROLE_DATA_BROKER_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DATA_BROKER_ADMIN",
+              "id": "ROLE_DATA_BROKER_ADMIN"
+            },
+            {
+              "name": "ROLE_INVENTORY_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_INVENTORY_ADMIN",
+              "id": "ROLE_INVENTORY_ADMIN"
+            },
+            {
+              "name": "ROLE_USER_MANAGEMENT_CREATE",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_CREATE",
+              "id": "ROLE_USER_MANAGEMENT_CREATE"
+            },
+            {
+              "name": "ROLE_RETENTION_RULE_ADMIN",
+              "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_RETENTION_RULE_ADMIN",
+              "id": "ROLE_RETENTION_RULE_ADMIN"
+            }
+          ],
+          "id": "ccw",
+          "lastPasswordChange": "2024-06-03T10:06:42.097Z",
+          "email": "test@test.com"
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:42 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.currentuser+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
         "url": "/inventory/managedObjects",
         "method": "POST",
         "headers": {
           "connection": "keep-alive",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "host": "localhost:4200",
           "content-type": "application/json",
@@ -50,35 +274,35 @@
         "status": 201,
         "statusText": "Created",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229",
-          "id": "666229",
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300",
+          "id": "737300",
           "type": "c8y_DeviceGroup",
           "name": "e2eCopyGroup",
-          "lastUpdated": "2024-06-21T10:12:02.614Z",
-          "creationTime": "2024-06-21T10:12:02.614Z",
+          "lastUpdated": "2024-06-21T12:34:42.979Z",
+          "creationTime": "2024-06-21T12:34:42.979Z",
           "owner": "ccw",
           "childDevices": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childDevices",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childDevices",
             "references": []
           },
           "childAssets": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAssets",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAssets",
             "references": []
           },
           "childAdditions": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAdditions",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAdditions",
             "references": []
           },
           "deviceParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/deviceParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/deviceParents",
             "references": []
           },
           "assetParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/assetParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/assetParents",
             "references": []
           },
           "additionParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/additionParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/additionParents",
             "references": []
           },
           "c8y_Notes": "",
@@ -86,10 +310,10 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:02 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:42 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
           "connection": "close",
-          "location": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229",
+          "location": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300",
           "x-content-type-options": "nosniff",
           "pragma": "no-cache",
           "expires": "0",
@@ -100,16 +324,16 @@
         "isOkStatusCode": true,
         "allRequestResponses": []
       },
-      "createdObject": "666229"
+      "createdObject": "737300"
     },
     {
       "request": {
-        "url": "/inventory/managedObjects/666229/childAdditions",
+        "url": "/inventory/managedObjects/737300/childAdditions",
         "method": "POST",
         "headers": {
           "connection": "keep-alive",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "host": "localhost:4200",
           "content-length": "844",
@@ -120,37 +344,36 @@
         "status": 201,
         "statusText": "Created",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
-          "id": "647288",
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
+          "id": "537301",
           "name": "e2eDashboard",
-          "lastUpdated": "2024-06-21T10:12:02.796Z",
-          "creationTime": "2024-06-21T10:12:02.796Z",
+          "lastUpdated": "2024-06-21T12:34:43.163Z",
+          "creationTime": "2024-06-21T12:34:43.163Z",
           "owner": "ccw",
           "childDevices": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childDevices",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childDevices",
             "references": []
           },
           "childAssets": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAssets",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAssets",
             "references": []
           },
           "childAdditions": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAdditions",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAdditions",
             "references": []
           },
           "deviceParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/deviceParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/deviceParents",
             "references": []
           },
           "assetParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/assetParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/assetParents",
             "references": []
           },
           "additionParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/additionParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/additionParents",
             "references": []
           },
-          "c8y_Dashboard!group!666229": {},
           "c8y_Dashboard": {
             "translateWidgetTitle": true,
             "children": {
@@ -195,14 +418,15 @@
               "panel-title-regular": true
             },
             "priority": 10000
-          }
+          },
+          "c8y_Dashboard!group!737300": {}
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:02 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:43 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
           "connection": "close",
-          "location": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
+          "location": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
           "x-content-type-options": "nosniff",
           "pragma": "no-cache",
           "expires": "0",
@@ -213,7 +437,7 @@
         "isOkStatusCode": true,
         "allRequestResponses": []
       },
-      "createdObject": "647288"
+      "createdObject": "537301"
     },
     {
       "request": {
@@ -223,16 +447,18 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "sec-ch-ua-platform": "\"Linux\"",
           "accept": "*/*",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US"
+          "accept-language": "en-US,en;q=0.9"
         }
       },
       "response": {
@@ -272,7 +498,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:03 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:43 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.loginoptioncollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -285,22 +511,24 @@
     },
     {
       "request": {
-        "url": "/apps/public/public-options@app-cockpit/options.json?nocache=1718964722914",
+        "url": "/apps/public/public-options@app-cockpit/options.json?nocache=1718973283352",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "sec-ch-ua-platform": "\"Linux\"",
           "accept": "*/*",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US"
+          "accept-language": "en-US,en;q=0.9"
         }
       },
       "response": {
@@ -309,10 +537,10 @@
         "body": "<html>\n<head><title>404 Not Found</title></head>\n<body bgcolor=\"white\">\n<center><h1>404 Application Not Found</h1></center>\n<hr><center>nginx</center>\n</body>\n</html>\n",
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:03 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:43 GMT",
           "content-type": "text/html",
           "connection": "close",
-          "etag": "W/\"66751d53-a7\"",
+          "etag": "W/\"66751b58-a7\"",
           "x-frame-options": "DENY",
           "strict-transport-security": "max-age=31536000; includeSubDomains"
         },
@@ -329,10 +557,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "content-type": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -341,7 +571,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -895,7 +1125,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.currenttenant+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -914,17 +1144,19 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "accept": "application/vnd.com.nsn.cumulocity.user+json;",
           "usexbasic": "true",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "sec-ch-ua-platform": "\"Linux\"",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -1285,524 +1517,9 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.user+json;charset=UTF-8;ver=0.9",
           "connection": "close",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/user/currentUser",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "content-type": "application/json",
-          "accept": "application/vnd.com.nsn.cumulocity.user+json;",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "newsletter": true,
-          "passwordStrength": "GREEN",
-          "roles": {
-            "next": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/roles?pageSize=5&currentPage=2",
-            "references": [
-              {
-                "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/roles/ROLE_TENANT_ADMIN/",
-                "role": {
-                  "name": "ROLE_TENANT_ADMIN",
-                  "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_TENANT_ADMIN",
-                  "id": "ROLE_TENANT_ADMIN"
-                }
-              }
-            ],
-            "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/roles?pageSize=5&currentPage=1",
-            "statistics": {
-              "pageSize": 5,
-              "currentPage": 1
-            }
-          },
-          "enabled": true,
-          "devicePermissions": {},
-          "supportUserEnabled": false,
-          "id": "ccw",
-          "email": "test@test.com",
-          "groups": {
-            "next": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/groups?pageSize=5&currentPage=2",
-            "references": [
-              {
-                "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/groups/2",
-                "group": {
-                  "customProperties": {},
-                  "roles": {
-                    "next": "https://t3304394.latest.stage.c8y.io/2/roles?pageSize=5&currentPage=2",
-                    "references": [
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_ALARM_ADMIN/",
-                        "role": {
-                          "name": "ROLE_ALARM_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ALARM_ADMIN",
-                          "id": "ROLE_ALARM_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_ALARM_READ/",
-                        "role": {
-                          "name": "ROLE_ALARM_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ALARM_READ",
-                          "id": "ROLE_ALARM_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_AUDIT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_AUDIT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_AUDIT_ADMIN",
-                          "id": "ROLE_AUDIT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_AUDIT_READ/",
-                        "role": {
-                          "name": "ROLE_AUDIT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_AUDIT_READ",
-                          "id": "ROLE_AUDIT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DEVICE_CONTROL_ADMIN/",
-                        "role": {
-                          "name": "ROLE_DEVICE_CONTROL_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DEVICE_CONTROL_ADMIN",
-                          "id": "ROLE_DEVICE_CONTROL_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DEVICE_CONTROL_READ/",
-                        "role": {
-                          "name": "ROLE_DEVICE_CONTROL_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DEVICE_CONTROL_READ",
-                          "id": "ROLE_DEVICE_CONTROL_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_EVENT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_EVENT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_EVENT_ADMIN",
-                          "id": "ROLE_EVENT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_EVENT_READ/",
-                        "role": {
-                          "name": "ROLE_EVENT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_EVENT_READ",
-                          "id": "ROLE_EVENT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_IDENTITY_ADMIN/",
-                        "role": {
-                          "name": "ROLE_IDENTITY_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_IDENTITY_ADMIN",
-                          "id": "ROLE_IDENTITY_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_IDENTITY_READ/",
-                        "role": {
-                          "name": "ROLE_IDENTITY_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_IDENTITY_READ",
-                          "id": "ROLE_IDENTITY_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_INVENTORY_ADMIN/",
-                        "role": {
-                          "name": "ROLE_INVENTORY_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_INVENTORY_ADMIN",
-                          "id": "ROLE_INVENTORY_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_INVENTORY_READ/",
-                        "role": {
-                          "name": "ROLE_INVENTORY_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_INVENTORY_READ",
-                          "id": "ROLE_INVENTORY_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_MEASUREMENT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_MEASUREMENT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_MEASUREMENT_ADMIN",
-                          "id": "ROLE_MEASUREMENT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_MEASUREMENT_READ/",
-                        "role": {
-                          "name": "ROLE_MEASUREMENT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_MEASUREMENT_READ",
-                          "id": "ROLE_MEASUREMENT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_TENANT_STATISTICS_READ/",
-                        "role": {
-                          "name": "ROLE_TENANT_STATISTICS_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_TENANT_STATISTICS_READ",
-                          "id": "ROLE_TENANT_STATISTICS_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_APPLICATION_MANAGEMENT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_APPLICATION_MANAGEMENT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_APPLICATION_MANAGEMENT_ADMIN",
-                          "id": "ROLE_APPLICATION_MANAGEMENT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_APPLICATION_MANAGEMENT_READ/",
-                        "role": {
-                          "name": "ROLE_APPLICATION_MANAGEMENT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_APPLICATION_MANAGEMENT_READ",
-                          "id": "ROLE_APPLICATION_MANAGEMENT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_USER_MANAGEMENT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_ADMIN",
-                          "id": "ROLE_USER_MANAGEMENT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_CREATE/",
-                        "role": {
-                          "name": "ROLE_USER_MANAGEMENT_CREATE",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_CREATE",
-                          "id": "ROLE_USER_MANAGEMENT_CREATE"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_READ/",
-                        "role": {
-                          "name": "ROLE_USER_MANAGEMENT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_READ",
-                          "id": "ROLE_USER_MANAGEMENT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_OWN_ADMIN/",
-                        "role": {
-                          "name": "ROLE_USER_MANAGEMENT_OWN_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_OWN_ADMIN",
-                          "id": "ROLE_USER_MANAGEMENT_OWN_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_OWN_READ/",
-                        "role": {
-                          "name": "ROLE_USER_MANAGEMENT_OWN_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_OWN_READ",
-                          "id": "ROLE_USER_MANAGEMENT_OWN_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_PASSWORD_RESET/",
-                        "role": {
-                          "name": "ROLE_USER_MANAGEMENT_PASSWORD_RESET",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_PASSWORD_RESET",
-                          "id": "ROLE_USER_MANAGEMENT_PASSWORD_RESET"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_CEP_MANAGEMENT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_CEP_MANAGEMENT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_CEP_MANAGEMENT_ADMIN",
-                          "id": "ROLE_CEP_MANAGEMENT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_CEP_MANAGEMENT_READ/",
-                        "role": {
-                          "name": "ROLE_CEP_MANAGEMENT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_CEP_MANAGEMENT_READ",
-                          "id": "ROLE_CEP_MANAGEMENT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_OPTION_MANAGEMENT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_OPTION_MANAGEMENT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_OPTION_MANAGEMENT_ADMIN",
-                          "id": "ROLE_OPTION_MANAGEMENT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_OPTION_MANAGEMENT_READ/",
-                        "role": {
-                          "name": "ROLE_OPTION_MANAGEMENT_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_OPTION_MANAGEMENT_READ",
-                          "id": "ROLE_OPTION_MANAGEMENT_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_RETENTION_RULE_ADMIN/",
-                        "role": {
-                          "name": "ROLE_RETENTION_RULE_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_RETENTION_RULE_ADMIN",
-                          "id": "ROLE_RETENTION_RULE_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_RETENTION_RULE_READ/",
-                        "role": {
-                          "name": "ROLE_RETENTION_RULE_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_RETENTION_RULE_READ",
-                          "id": "ROLE_RETENTION_RULE_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_BULK_OPERATION_ADMIN/",
-                        "role": {
-                          "name": "ROLE_BULK_OPERATION_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_BULK_OPERATION_ADMIN",
-                          "id": "ROLE_BULK_OPERATION_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_BULK_OPERATION_READ/",
-                        "role": {
-                          "name": "ROLE_BULK_OPERATION_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_BULK_OPERATION_READ",
-                          "id": "ROLE_BULK_OPERATION_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DATA_BROKER_ADMIN/",
-                        "role": {
-                          "name": "ROLE_DATA_BROKER_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DATA_BROKER_ADMIN",
-                          "id": "ROLE_DATA_BROKER_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DATA_BROKER_READ/",
-                        "role": {
-                          "name": "ROLE_DATA_BROKER_READ",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DATA_BROKER_READ",
-                          "id": "ROLE_DATA_BROKER_READ"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_ACCOUNT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_ACCOUNT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ACCOUNT_ADMIN",
-                          "id": "ROLE_ACCOUNT_ADMIN"
-                        }
-                      },
-                      {
-                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_SCHEDULE_REPORT_ADMIN/",
-                        "role": {
-                          "name": "ROLE_SCHEDULE_REPORT_ADMIN",
-                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_SCHEDULE_REPORT_ADMIN",
-                          "id": "ROLE_SCHEDULE_REPORT_ADMIN"
-                        }
-                      }
-                    ],
-                    "self": "https://t3304394.latest.stage.c8y.io/2/roles?pageSize=5&currentPage=1",
-                    "statistics": {
-                      "pageSize": 5,
-                      "currentPage": 1
-                    }
-                  },
-                  "name": "admins",
-                  "description": "Enables administrative permissions. The first user created for the tenant receives this role",
-                  "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/groups/2",
-                  "id": 2,
-                  "users": {
-                    "references": [],
-                    "self": "https://t3304394.latest.stage.c8y.io/2/users"
-                  },
-                  "devicePermissions": {},
-                  "applications": []
-                }
-              }
-            ],
-            "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/groups?pageSize=5&currentPage=1",
-            "statistics": {
-              "pageSize": 5,
-              "currentPage": 1
-            }
-          },
-          "shouldResetPassword": false,
-          "userName": "ccw",
-          "customProperties": {
-            "userOrigin": "BASIC"
-          },
-          "phone": "+49 9 876 543 210",
-          "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw",
-          "lastPasswordChange": "2024-06-03T10:06:42.097Z",
-          "applications": []
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.user+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/application/applications/cockpit/manifest",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json, text/plain, */*",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/application/applications/null/manifest",
-          "imports": [],
-          "application": {
-            "imports": [],
-            "id": 201731,
-            "globalTitle": "Cumulocity",
-            "dynamicOptionsUrl": true,
-            "upgrade": true,
-            "author": "Cumulocity GmbH",
-            "exports": [
-              {
-                "path": "@c8y/ngx-components/report-dashboard",
-                "module": "ReportDashboardModule",
-                "scope": "self",
-                "name": "Reports",
-                "description": "Reports list and navigator items reports"
-              }
-            ],
-            "rightDrawer": true,
-            "description": "The Cockpit application provides you with options to manage and monitor Internet of Things (IoT) assets and data from a business perspective.",
-            "contextHelp": true,
-            "tabsHorizontal": true,
-            "version": "1020.0.22",
-            "sensorPhone": true,
-            "contentSecurityPolicy": "base-uri 'none'; default-src 'self' 'unsafe-inline' http: https: ws: wss:; connect-src 'self' http: https: ws: wss: data:;  script-src 'self' *.bugherd.com *.twitter.com *.twimg.com *.aptrinsic.com 'unsafe-inline' 'unsafe-eval' data:; style-src * 'unsafe-inline' blob:; img-src * data: blob:; font-src * data:; frame-src *; worker-src 'self' blob:;",
-            "webSdkVersion": "1020.0.22",
-            "sensorAppOneLink": "http://onelink.to/pca6qe",
-            "breadcrumbs": false
-          }
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
-          "content-type": "application/json",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/tenant/security-options/password/limit.validity",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json, text/plain, */*",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/tenant/options/password/limit.validity",
-          "category": "password",
-          "value": "0",
-          "key": "limit.validity"
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.option+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
           "vary": "Accept-Encoding, User-Agent",
           "strict-transport-security": "max-age=31536000; includeSubDomains"
         },
@@ -1819,10 +1536,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -1830,7 +1549,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -2384,94 +2103,9 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.currenttenant+json;charset=UTF-8;ver=0.9",
           "connection": "close",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/application/applications/201731",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json, text/plain, */*",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "owner": {
-            "self": "https://t3304394.latest.stage.c8y.io/tenant/tenants/t3304394",
-            "tenant": {
-              "id": "t3304394"
-            }
-          },
-          "manifest": {
-            "globalTitle": "Cumulocity",
-            "dynamicOptionsUrl": true,
-            "upgrade": true,
-            "author": "Cumulocity GmbH",
-            "exports": [
-              {
-                "path": "@c8y/ngx-components/report-dashboard",
-                "module": "ReportDashboardModule",
-                "scope": "self",
-                "name": "Reports",
-                "description": "Reports list and navigator items reports"
-              }
-            ],
-            "rightDrawer": true,
-            "description": "The Cockpit application provides you with options to manage and monitor Internet of Things (IoT) assets and data from a business perspective.",
-            "contextHelp": true,
-            "tabsHorizontal": true,
-            "version": "1020.0.22",
-            "sensorPhone": true,
-            "contentSecurityPolicy": "base-uri 'none'; default-src 'self' 'unsafe-inline' http: https: ws: wss:; connect-src 'self' http: https: ws: wss: data:;  script-src 'self' *.bugherd.com *.twitter.com *.twimg.com *.aptrinsic.com 'unsafe-inline' 'unsafe-eval' data:; style-src * 'unsafe-inline' blob:; img-src * data: blob:; font-src * data:; frame-src *; worker-src 'self' blob:;",
-            "webSdkVersion": "1020.0.22",
-            "sensorAppOneLink": "http://onelink.to/pca6qe",
-            "breadcrumbs": false
-          },
-          "contextPath": "cockpit",
-          "availability": "PRIVATE",
-          "type": "HOSTED",
-          "resourcesUrl": "",
-          "activeVersionId": "4205",
-          "name": "cockpit",
-          "self": "https://t3304394.latest.stage.c8y.io/application/applications/201731",
-          "id": "201731",
-          "key": "cockpit-application-key"
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.application+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
           "vary": "Accept-Encoding, User-Agent",
           "strict-transport-security": "max-age=31536000; includeSubDomains"
         },
@@ -2488,18 +2122,20 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "usexbasic": "true",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json, text/plain, */*",
+          "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
-          "accept": "*/*",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -2539,7 +2175,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/json",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -2562,18 +2198,21 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/vnd.com.nsn.cumulocity.user+json",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "content-type": "application/json",
+          "accept": "application/vnd.com.nsn.cumulocity.user+json;",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -2934,7 +2573,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.user+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -2947,16 +2586,18 @@
     },
     {
       "request": {
-        "url": "/inventory/managedObjects?fragmentType=passwordExpirationAlertsDisplayedccw&pageSize=100&withTotalPages=true",
+        "url": "/tenant/security-options/password/limit.validity",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -2964,7 +2605,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -2972,55 +2613,15 @@
         "status": 200,
         "statusText": "OK",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=100&fragmentType=passwordExpirationAlertsDisplayedccw&currentPage=1&withTotalPages=true",
-          "managedObjects": [
-            {
-              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200",
-              "id": "382200",
-              "type": "c8y_UserPreference",
-              "lastUpdated": "2024-06-21T10:11:59.118Z",
-              "creationTime": "2024-06-03T10:07:55.826Z",
-              "owner": "ccw",
-              "childDevices": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/childDevices",
-                "references": []
-              },
-              "childAssets": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/childAssets",
-                "references": []
-              },
-              "childAdditions": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/childAdditions",
-                "references": []
-              },
-              "deviceParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/deviceParents",
-                "references": []
-              },
-              "assetParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/assetParents",
-                "references": []
-              },
-              "additionParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/additionParents",
-                "references": []
-              },
-              "passwordExpirationAlertsDisplayedccw": {
-                "LESS_THAN_DAY": null,
-                "LESS_THAN_WEEK": null
-              }
-            }
-          ],
-          "statistics": {
-            "totalPages": 1,
-            "pageSize": 100,
-            "currentPage": 1
-          }
+          "self": "https://t3304394.latest.stage.c8y.io/tenant/options/password/limit.validity",
+          "category": "password",
+          "value": "0",
+          "key": "limit.validity"
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:04 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.option+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
           "pragma": "no-cache",
@@ -3036,24 +2637,26 @@
     },
     {
       "request": {
-        "url": "/inventory/managedObjects?fragmentType=unitccw",
+        "url": "/user/currentUser",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json, text/plain, */*",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/vnd.com.nsn.cumulocity.user+json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -3061,23 +2664,362 @@
         "status": 200,
         "statusText": "OK",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=unitccw&currentPage=1",
-          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=unitccw&currentPage=2",
-          "managedObjects": [],
-          "statistics": {
-            "pageSize": 5,
-            "currentPage": 1
-          }
+          "newsletter": true,
+          "passwordStrength": "GREEN",
+          "roles": {
+            "next": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/roles?pageSize=5&currentPage=2",
+            "references": [
+              {
+                "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/roles/ROLE_TENANT_ADMIN/",
+                "role": {
+                  "name": "ROLE_TENANT_ADMIN",
+                  "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_TENANT_ADMIN",
+                  "id": "ROLE_TENANT_ADMIN"
+                }
+              }
+            ],
+            "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/roles?pageSize=5&currentPage=1",
+            "statistics": {
+              "pageSize": 5,
+              "currentPage": 1
+            }
+          },
+          "enabled": true,
+          "devicePermissions": {},
+          "supportUserEnabled": false,
+          "id": "ccw",
+          "email": "test@test.com",
+          "groups": {
+            "next": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/groups?pageSize=5&currentPage=2",
+            "references": [
+              {
+                "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/groups/2",
+                "group": {
+                  "customProperties": {},
+                  "roles": {
+                    "next": "https://t3304394.latest.stage.c8y.io/2/roles?pageSize=5&currentPage=2",
+                    "references": [
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_ALARM_ADMIN/",
+                        "role": {
+                          "name": "ROLE_ALARM_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ALARM_ADMIN",
+                          "id": "ROLE_ALARM_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_ALARM_READ/",
+                        "role": {
+                          "name": "ROLE_ALARM_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ALARM_READ",
+                          "id": "ROLE_ALARM_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_AUDIT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_AUDIT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_AUDIT_ADMIN",
+                          "id": "ROLE_AUDIT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_AUDIT_READ/",
+                        "role": {
+                          "name": "ROLE_AUDIT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_AUDIT_READ",
+                          "id": "ROLE_AUDIT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DEVICE_CONTROL_ADMIN/",
+                        "role": {
+                          "name": "ROLE_DEVICE_CONTROL_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DEVICE_CONTROL_ADMIN",
+                          "id": "ROLE_DEVICE_CONTROL_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DEVICE_CONTROL_READ/",
+                        "role": {
+                          "name": "ROLE_DEVICE_CONTROL_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DEVICE_CONTROL_READ",
+                          "id": "ROLE_DEVICE_CONTROL_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_EVENT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_EVENT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_EVENT_ADMIN",
+                          "id": "ROLE_EVENT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_EVENT_READ/",
+                        "role": {
+                          "name": "ROLE_EVENT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_EVENT_READ",
+                          "id": "ROLE_EVENT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_IDENTITY_ADMIN/",
+                        "role": {
+                          "name": "ROLE_IDENTITY_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_IDENTITY_ADMIN",
+                          "id": "ROLE_IDENTITY_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_IDENTITY_READ/",
+                        "role": {
+                          "name": "ROLE_IDENTITY_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_IDENTITY_READ",
+                          "id": "ROLE_IDENTITY_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_INVENTORY_ADMIN/",
+                        "role": {
+                          "name": "ROLE_INVENTORY_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_INVENTORY_ADMIN",
+                          "id": "ROLE_INVENTORY_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_INVENTORY_READ/",
+                        "role": {
+                          "name": "ROLE_INVENTORY_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_INVENTORY_READ",
+                          "id": "ROLE_INVENTORY_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_MEASUREMENT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_MEASUREMENT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_MEASUREMENT_ADMIN",
+                          "id": "ROLE_MEASUREMENT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_MEASUREMENT_READ/",
+                        "role": {
+                          "name": "ROLE_MEASUREMENT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_MEASUREMENT_READ",
+                          "id": "ROLE_MEASUREMENT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_TENANT_STATISTICS_READ/",
+                        "role": {
+                          "name": "ROLE_TENANT_STATISTICS_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_TENANT_STATISTICS_READ",
+                          "id": "ROLE_TENANT_STATISTICS_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_APPLICATION_MANAGEMENT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_APPLICATION_MANAGEMENT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_APPLICATION_MANAGEMENT_ADMIN",
+                          "id": "ROLE_APPLICATION_MANAGEMENT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_APPLICATION_MANAGEMENT_READ/",
+                        "role": {
+                          "name": "ROLE_APPLICATION_MANAGEMENT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_APPLICATION_MANAGEMENT_READ",
+                          "id": "ROLE_APPLICATION_MANAGEMENT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_USER_MANAGEMENT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_ADMIN",
+                          "id": "ROLE_USER_MANAGEMENT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_CREATE/",
+                        "role": {
+                          "name": "ROLE_USER_MANAGEMENT_CREATE",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_CREATE",
+                          "id": "ROLE_USER_MANAGEMENT_CREATE"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_READ/",
+                        "role": {
+                          "name": "ROLE_USER_MANAGEMENT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_READ",
+                          "id": "ROLE_USER_MANAGEMENT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_OWN_ADMIN/",
+                        "role": {
+                          "name": "ROLE_USER_MANAGEMENT_OWN_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_OWN_ADMIN",
+                          "id": "ROLE_USER_MANAGEMENT_OWN_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_OWN_READ/",
+                        "role": {
+                          "name": "ROLE_USER_MANAGEMENT_OWN_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_OWN_READ",
+                          "id": "ROLE_USER_MANAGEMENT_OWN_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_USER_MANAGEMENT_PASSWORD_RESET/",
+                        "role": {
+                          "name": "ROLE_USER_MANAGEMENT_PASSWORD_RESET",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_USER_MANAGEMENT_PASSWORD_RESET",
+                          "id": "ROLE_USER_MANAGEMENT_PASSWORD_RESET"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_CEP_MANAGEMENT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_CEP_MANAGEMENT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_CEP_MANAGEMENT_ADMIN",
+                          "id": "ROLE_CEP_MANAGEMENT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_CEP_MANAGEMENT_READ/",
+                        "role": {
+                          "name": "ROLE_CEP_MANAGEMENT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_CEP_MANAGEMENT_READ",
+                          "id": "ROLE_CEP_MANAGEMENT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_OPTION_MANAGEMENT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_OPTION_MANAGEMENT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_OPTION_MANAGEMENT_ADMIN",
+                          "id": "ROLE_OPTION_MANAGEMENT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_OPTION_MANAGEMENT_READ/",
+                        "role": {
+                          "name": "ROLE_OPTION_MANAGEMENT_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_OPTION_MANAGEMENT_READ",
+                          "id": "ROLE_OPTION_MANAGEMENT_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_RETENTION_RULE_ADMIN/",
+                        "role": {
+                          "name": "ROLE_RETENTION_RULE_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_RETENTION_RULE_ADMIN",
+                          "id": "ROLE_RETENTION_RULE_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_RETENTION_RULE_READ/",
+                        "role": {
+                          "name": "ROLE_RETENTION_RULE_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_RETENTION_RULE_READ",
+                          "id": "ROLE_RETENTION_RULE_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_BULK_OPERATION_ADMIN/",
+                        "role": {
+                          "name": "ROLE_BULK_OPERATION_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_BULK_OPERATION_ADMIN",
+                          "id": "ROLE_BULK_OPERATION_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_BULK_OPERATION_READ/",
+                        "role": {
+                          "name": "ROLE_BULK_OPERATION_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_BULK_OPERATION_READ",
+                          "id": "ROLE_BULK_OPERATION_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DATA_BROKER_ADMIN/",
+                        "role": {
+                          "name": "ROLE_DATA_BROKER_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DATA_BROKER_ADMIN",
+                          "id": "ROLE_DATA_BROKER_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_DATA_BROKER_READ/",
+                        "role": {
+                          "name": "ROLE_DATA_BROKER_READ",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_DATA_BROKER_READ",
+                          "id": "ROLE_DATA_BROKER_READ"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_ACCOUNT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_ACCOUNT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_ACCOUNT_ADMIN",
+                          "id": "ROLE_ACCOUNT_ADMIN"
+                        }
+                      },
+                      {
+                        "self": "https://t3304394.latest.stage.c8y.io/2/roles/ROLE_SCHEDULE_REPORT_ADMIN/",
+                        "role": {
+                          "name": "ROLE_SCHEDULE_REPORT_ADMIN",
+                          "self": "https://t3304394.latest.stage.c8y.io/user/roles/ROLE_SCHEDULE_REPORT_ADMIN",
+                          "id": "ROLE_SCHEDULE_REPORT_ADMIN"
+                        }
+                      }
+                    ],
+                    "self": "https://t3304394.latest.stage.c8y.io/2/roles?pageSize=5&currentPage=1",
+                    "statistics": {
+                      "pageSize": 5,
+                      "currentPage": 1
+                    }
+                  },
+                  "name": "admins",
+                  "description": "Enables administrative permissions. The first user created for the tenant receives this role",
+                  "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/groups/2",
+                  "id": 2,
+                  "users": {
+                    "references": [],
+                    "self": "https://t3304394.latest.stage.c8y.io/2/users"
+                  },
+                  "devicePermissions": {},
+                  "applications": []
+                }
+              }
+            ],
+            "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw/groups?pageSize=5&currentPage=1",
+            "statistics": {
+              "pageSize": 5,
+              "currentPage": 1
+            }
+          },
+          "shouldResetPassword": false,
+          "userName": "ccw",
+          "customProperties": {
+            "userOrigin": "BASIC"
+          },
+          "phone": "+49 9 876 543 210",
+          "self": "https://t3304394.latest.stage.c8y.io/user/t3304394/users/ccw",
+          "lastPasswordChange": "2024-06-03T10:06:42.097Z",
+          "applications": []
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.user+json;charset=UTF-8;ver=0.9",
           "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
           "vary": "Accept-Encoding, User-Agent",
           "strict-transport-security": "max-age=31536000; includeSubDomains"
         },
@@ -3094,18 +3036,20 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
           "sec-fetch-site": "same-origin",
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -3156,8 +3100,229 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.application+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/application/applications/cockpit/manifest",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "usexbasic": "true",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "accept": "*/*",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/application/applications/null/manifest",
+          "imports": [],
+          "application": {
+            "imports": [],
+            "id": 201731,
+            "globalTitle": "Cumulocity",
+            "dynamicOptionsUrl": true,
+            "upgrade": true,
+            "author": "Cumulocity GmbH",
+            "exports": [
+              {
+                "path": "@c8y/ngx-components/report-dashboard",
+                "module": "ReportDashboardModule",
+                "scope": "self",
+                "name": "Reports",
+                "description": "Reports list and navigator items reports"
+              }
+            ],
+            "rightDrawer": true,
+            "description": "The Cockpit application provides you with options to manage and monitor Internet of Things (IoT) assets and data from a business perspective.",
+            "contextHelp": true,
+            "tabsHorizontal": true,
+            "version": "1020.0.22",
+            "sensorPhone": true,
+            "contentSecurityPolicy": "base-uri 'none'; default-src 'self' 'unsafe-inline' http: https: ws: wss:; connect-src 'self' http: https: ws: wss: data:;  script-src 'self' *.bugherd.com *.twitter.com *.twimg.com *.aptrinsic.com 'unsafe-inline' 'unsafe-eval' data:; style-src * 'unsafe-inline' blob:; img-src * data: blob:; font-src * data:; frame-src *; worker-src 'self' blob:;",
+            "webSdkVersion": "1020.0.22",
+            "sensorAppOneLink": "http://onelink.to/pca6qe",
+            "breadcrumbs": false
+          }
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
+          "content-type": "application/json",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects?fragmentType=passwordExpirationAlertsDisplayedccw&pageSize=100&withTotalPages=true",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json, text/plain, */*",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=100&fragmentType=passwordExpirationAlertsDisplayedccw&currentPage=1&withTotalPages=true",
+          "managedObjects": [
+            {
+              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200",
+              "id": "382200",
+              "type": "c8y_UserPreference",
+              "lastUpdated": "2024-06-21T12:34:39.451Z",
+              "creationTime": "2024-06-03T10:07:55.826Z",
+              "owner": "ccw",
+              "childDevices": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/childDevices",
+                "references": []
+              },
+              "childAssets": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/childAssets",
+                "references": []
+              },
+              "childAdditions": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/childAdditions",
+                "references": []
+              },
+              "deviceParents": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/deviceParents",
+                "references": []
+              },
+              "assetParents": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/assetParents",
+                "references": []
+              },
+              "additionParents": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200/additionParents",
+                "references": []
+              },
+              "passwordExpirationAlertsDisplayedccw": {
+                "LESS_THAN_DAY": null,
+                "LESS_THAN_WEEK": null
+              }
+            }
+          ],
+          "statistics": {
+            "totalPages": 1,
+            "pageSize": 100,
+            "currentPage": 1
+          }
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects?fragmentType=unitccw",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json, text/plain, */*",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=unitccw&currentPage=1",
+          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=unitccw&currentPage=2",
+          "managedObjects": [],
+          "statistics": {
+            "pageSize": 5,
+            "currentPage": 1
+          }
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
           "pragma": "no-cache",
@@ -3179,10 +3344,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -3190,7 +3357,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4570,7 +4737,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.applicationcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -4590,10 +4757,12 @@
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
           "content-length": "261",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "content-type": "application/vnd.com.nsn.cumulocity.managedObject+json",
           "accept": "application/vnd.com.nsn.cumulocity.managedObject+json",
           "usexbasic": "true",
@@ -4602,7 +4771,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4613,7 +4782,7 @@
           "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/382200",
           "id": "382200",
           "type": "c8y_UserPreference",
-          "lastUpdated": "2024-06-21T10:12:05.143Z",
+          "lastUpdated": "2024-06-21T12:34:46.766Z",
           "creationTime": "2024-06-03T10:07:55.826Z",
           "owner": "ccw",
           "childDevices": {
@@ -4647,7 +4816,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -4663,16 +4832,18 @@
     },
     {
       "request": {
-        "url": "/tenant/options/configuration/system.support.url?evaluate=current",
+        "url": "/application/applications/201731",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -4680,7 +4851,94 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "owner": {
+            "self": "https://t3304394.latest.stage.c8y.io/tenant/tenants/t3304394",
+            "tenant": {
+              "id": "t3304394"
+            }
+          },
+          "manifest": {
+            "globalTitle": "Cumulocity",
+            "dynamicOptionsUrl": true,
+            "upgrade": true,
+            "author": "Cumulocity GmbH",
+            "exports": [
+              {
+                "path": "@c8y/ngx-components/report-dashboard",
+                "module": "ReportDashboardModule",
+                "scope": "self",
+                "name": "Reports",
+                "description": "Reports list and navigator items reports"
+              }
+            ],
+            "rightDrawer": true,
+            "description": "The Cockpit application provides you with options to manage and monitor Internet of Things (IoT) assets and data from a business perspective.",
+            "contextHelp": true,
+            "tabsHorizontal": true,
+            "version": "1020.0.22",
+            "sensorPhone": true,
+            "contentSecurityPolicy": "base-uri 'none'; default-src 'self' 'unsafe-inline' http: https: ws: wss:; connect-src 'self' http: https: ws: wss: data:;  script-src 'self' *.bugherd.com *.twitter.com *.twimg.com *.aptrinsic.com 'unsafe-inline' 'unsafe-eval' data:; style-src * 'unsafe-inline' blob:; img-src * data: blob:; font-src * data:; frame-src *; worker-src 'self' blob:;",
+            "webSdkVersion": "1020.0.22",
+            "sensorAppOneLink": "http://onelink.to/pca6qe",
+            "breadcrumbs": false
+          },
+          "contextPath": "cockpit",
+          "availability": "PRIVATE",
+          "type": "HOSTED",
+          "resourcesUrl": "",
+          "activeVersionId": "4205",
+          "name": "cockpit",
+          "self": "https://t3304394.latest.stage.c8y.io/application/applications/201731",
+          "id": "201731",
+          "key": "cockpit-application-key"
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:46 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.application+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/tenant/options/configuration/system.support.url?evaluate=current",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4694,7 +4952,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:47 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.error+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -4710,55 +4968,18 @@
     },
     {
       "request": {
-        "url": "/apps/sag-pkg-community-plugins/en.json",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "usexbasic": "true",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "accept": "*/*",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 404,
-        "statusText": "Not Found",
-        "body": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>openresty</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n",
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
-          "content-type": "text/html",
-          "connection": "close",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": false,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
         "url": "/tenant/options/configuration/system.support.url?evaluate=inherited",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -4766,7 +4987,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4780,7 +5001,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:47 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.option+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -4797,16 +5018,59 @@
     },
     {
       "request": {
+        "url": "/apps/sag-pkg-community-plugins/en.json",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "usexbasic": "true",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "accept": "*/*",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 404,
+        "statusText": "Not Found",
+        "body": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>openresty</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n",
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:47 GMT",
+          "content-type": "text/html",
+          "connection": "close",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": false,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
         "url": "/tenant/system/options/support/url",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -4814,7 +5078,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4828,7 +5092,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:47 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.error+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -4850,10 +5114,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -4861,7 +5127,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4875,7 +5141,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:05 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:47 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.option+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -4898,10 +5164,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -4909,7 +5177,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4923,7 +5191,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.option+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -4946,10 +5214,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -4957,7 +5227,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -4971,112 +5241,8 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.option+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/inventory/managedObjects?fragmentType=languageccw",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=languageccw&currentPage=1",
-          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=languageccw&currentPage=2",
-          "managedObjects": [],
-          "statistics": {
-            "pageSize": 5,
-            "currentPage": 1
-          }
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/inventory/managedObjects?fragmentType=bookmarksccw",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=bookmarksccw&currentPage=1",
-          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=bookmarksccw&currentPage=2",
-          "managedObjects": [],
-          "statistics": {
-            "pageSize": 5,
-            "currentPage": 1
-          }
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
           "pragma": "no-cache",
@@ -5098,10 +5264,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -5109,7 +5277,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -5127,7 +5295,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -5150,10 +5318,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -5161,7 +5331,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -5218,7 +5388,115 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects?fragmentType=languageccw",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=languageccw&currentPage=1",
+          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=languageccw&currentPage=2",
+          "managedObjects": [],
+          "statistics": {
+            "pageSize": 5,
+            "currentPage": 1
+          }
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects?fragmentType=bookmarksccw",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=bookmarksccw&currentPage=1",
+          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?pageSize=5&fragmentType=bookmarksccw&currentPage=2",
+          "managedObjects": [],
+          "statistics": {
+            "pageSize": 5,
+            "currentPage": 1
+          }
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -5241,10 +5519,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -5252,7 +5532,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -6677,7 +6957,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.applicationcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -6690,16 +6970,18 @@
     },
     {
       "request": {
-        "url": "/inventory/managedObjects/666229?withChildren=false",
+        "url": "/inventory/managedObjects/737300?withChildren=false",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -6707,7 +6989,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -6715,35 +6997,35 @@
         "status": 200,
         "statusText": "OK",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229",
-          "id": "666229",
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300",
+          "id": "737300",
           "type": "c8y_DeviceGroup",
           "name": "e2eCopyGroup",
-          "lastUpdated": "2024-06-21T10:12:02.811Z",
-          "creationTime": "2024-06-21T10:12:02.614Z",
+          "lastUpdated": "2024-06-21T12:34:43.176Z",
+          "creationTime": "2024-06-21T12:34:42.979Z",
           "owner": "ccw",
           "childDevices": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childDevices",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childDevices",
             "references": []
           },
           "childAssets": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAssets",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAssets",
             "references": []
           },
           "childAdditions": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAdditions",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAdditions",
             "references": []
           },
           "deviceParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/deviceParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/deviceParents",
             "references": []
           },
           "assetParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/assetParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/assetParents",
             "references": []
           },
           "additionParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/additionParents",
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/additionParents",
             "references": []
           },
           "c8y_Notes": "",
@@ -6751,7 +7033,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -6774,10 +7056,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -6785,7 +7069,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -8165,7 +8449,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.applicationcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -8178,16 +8462,18 @@
     },
     {
       "request": {
-        "url": "/inventory/managedObjects?query=%24filter%3D((has(%27c8y_Dashboard!group!666229%27))%20or%20(has(%27c8y_Dashboard!type!c8y_DeviceGroup%27)))&pageSize=1000",
+        "url": "/inventory/managedObjects?query=%24filter%3D((has(%27c8y_Dashboard!group!737300%27))%20or%20(has(%27c8y_Dashboard!type!c8y_DeviceGroup%27)))&pageSize=1000",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -8195,7 +8481,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -8203,41 +8489,40 @@
         "status": 200,
         "statusText": "OK",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!666229'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=1",
-          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!666229'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=2",
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!737300'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=1",
+          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!737300'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=2",
           "managedObjects": [
             {
-              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
-              "id": "647288",
+              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
+              "id": "537301",
               "name": "e2eDashboard",
-              "lastUpdated": "2024-06-21T10:12:02.827Z",
-              "creationTime": "2024-06-21T10:12:02.796Z",
+              "lastUpdated": "2024-06-21T12:34:43.190Z",
+              "creationTime": "2024-06-21T12:34:43.163Z",
               "owner": "ccw",
               "childDevices": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childDevices",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childDevices",
                 "references": []
               },
               "childAssets": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAssets",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAssets",
                 "references": []
               },
               "childAdditions": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAdditions",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAdditions",
                 "references": []
               },
               "deviceParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/deviceParents",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/deviceParents",
                 "references": []
               },
               "assetParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/assetParents",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/assetParents",
                 "references": []
               },
               "additionParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/additionParents",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/additionParents",
                 "references": []
               },
-              "c8y_Dashboard!group!666229": {},
               "c8y_Dashboard": {
                 "translateWidgetTitle": true,
                 "children": {
@@ -8282,7 +8567,8 @@
                   "panel-title-regular": true
                 },
                 "priority": 10000
-              }
+              },
+              "c8y_Dashboard!group!737300": {}
             }
           ],
           "statistics": {
@@ -8292,7 +8578,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:06 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -8315,10 +8601,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -8326,7 +8614,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -8383,7 +8671,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:48 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -8406,10 +8694,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json, text/plain, */*",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -8417,7 +8707,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -9797,7 +10087,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.applicationcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -9810,16 +10100,18 @@
     },
     {
       "request": {
-        "url": "/inventory/managedObjects?query=%24filter%3D((has(%27c8y_Dashboard!group!666229%27))%20or%20(has(%27c8y_Dashboard!type!c8y_DeviceGroup%27)))&pageSize=1000",
+        "url": "/inventory/managedObjects?query=%24filter%3D((has(%27c8y_Dashboard!group!737300%27))%20or%20(has(%27c8y_Dashboard!type!c8y_DeviceGroup%27)))&pageSize=1000",
         "method": "GET",
         "headers": {
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -9827,7 +10119,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -9835,41 +10127,40 @@
         "status": 200,
         "statusText": "OK",
         "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!666229'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=1",
-          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!666229'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=2",
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!737300'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=1",
+          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!737300'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=2",
           "managedObjects": [
             {
-              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
-              "id": "647288",
+              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
+              "id": "537301",
               "name": "e2eDashboard",
-              "lastUpdated": "2024-06-21T10:12:02.827Z",
-              "creationTime": "2024-06-21T10:12:02.796Z",
+              "lastUpdated": "2024-06-21T12:34:43.190Z",
+              "creationTime": "2024-06-21T12:34:43.163Z",
               "owner": "ccw",
               "childDevices": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childDevices",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childDevices",
                 "references": []
               },
               "childAssets": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAssets",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAssets",
                 "references": []
               },
               "childAdditions": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAdditions",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAdditions",
                 "references": []
               },
               "deviceParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/deviceParents",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/deviceParents",
                 "references": []
               },
               "assetParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/assetParents",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/assetParents",
                 "references": []
               },
               "additionParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/additionParents",
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/additionParents",
                 "references": []
               },
-              "c8y_Dashboard!group!666229": {},
               "c8y_Dashboard": {
                 "translateWidgetTitle": true,
                 "children": {
@@ -9914,7 +10205,8 @@
                   "panel-title-regular": true
                 },
                 "priority": 10000
-              }
+              },
+              "c8y_Dashboard!group!737300": {}
             }
           ],
           "statistics": {
@@ -9924,313 +10216,8 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/inventory/managedObjects?query=%24filter%3D((has(%27c8y_Dashboard!group!666229%27))%20or%20(has(%27c8y_Dashboard!type!c8y_DeviceGroup%27)))&pageSize=1000",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!666229'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=1",
-          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!666229'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=2",
-          "managedObjects": [
-            {
-              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
-              "id": "647288",
-              "name": "e2eDashboard",
-              "lastUpdated": "2024-06-21T10:12:02.827Z",
-              "creationTime": "2024-06-21T10:12:02.796Z",
-              "owner": "ccw",
-              "childDevices": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childDevices",
-                "references": []
-              },
-              "childAssets": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAssets",
-                "references": []
-              },
-              "childAdditions": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/childAdditions",
-                "references": []
-              },
-              "deviceParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/deviceParents",
-                "references": []
-              },
-              "assetParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/assetParents",
-                "references": []
-              },
-              "additionParents": {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288/additionParents",
-                "references": []
-              },
-              "c8y_Dashboard!group!666229": {},
-              "c8y_Dashboard": {
-                "translateWidgetTitle": true,
-                "children": {
-                  "1": {
-                    "componentId": "datapoints-graph",
-                    "classes": {
-                      "alerts-overlay": false,
-                      "card-dashboard": true,
-                      "panel-title-regular": true,
-                      "map": true,
-                      "card": true
-                    },
-                    "_x": 0,
-                    "_y": 0,
-                    "id": "1",
-                    "title": "Data points graph",
-                    "_width": 12,
-                    "config": {
-                      "xAxisSplitLines": false,
-                      "datapoints": [],
-                      "realtime": true,
-                      "canDecoupleGlobalTimeContext": false,
-                      "displayAggregationSelection": false,
-                      "yAxisSplitLines": false,
-                      "dateTo": "2023-04-27T12:10:00.000Z",
-                      "interval": "hours",
-                      "aggregation": null,
-                      "displayDateSelection": false,
-                      "widgetInstanceGlobalTimeContext": false,
-                      "dateFrom": "2023-04-27T12:00:00.000Z"
-                    },
-                    "_height": 6
-                  }
-                },
-                "classes": {
-                  "dashboard-theme-light": true
-                },
-                "c8y_IsNavigatorNode": null,
-                "name": "e2eDashboard",
-                "icon": "th",
-                "widgetClasses": {
-                  "panel-title-regular": true
-                },
-                "priority": 10000
-              }
-            }
-          ],
-          "statistics": {
-            "pageSize": 1000,
-            "currentPage": 1
-          }
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/inventory/managedObjects/666229",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json, text/plain, */*",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229",
-          "id": "666229",
-          "type": "c8y_DeviceGroup",
-          "name": "e2eCopyGroup",
-          "lastUpdated": "2024-06-21T10:12:02.811Z",
-          "creationTime": "2024-06-21T10:12:02.614Z",
-          "owner": "ccw",
-          "childDevices": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childDevices",
-            "references": []
-          },
-          "childAssets": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAssets",
-            "references": []
-          },
-          "childAdditions": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAdditions",
-            "references": [
-              {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAdditions/647288",
-                "managedObject": {
-                  "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
-                  "id": "647288",
-                  "name": "e2eDashboard"
-                }
-              }
-            ]
-          },
-          "deviceParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/deviceParents",
-            "references": []
-          },
-          "assetParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/assetParents",
-            "references": []
-          },
-          "additionParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/additionParents",
-            "references": []
-          },
-          "c8y_Notes": "",
-          "c8y_IsDeviceGroup": {}
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
-          "connection": "close",
-          "x-content-type-options": "nosniff",
-          "pragma": "no-cache",
-          "expires": "0",
-          "x-frame-options": "DENY",
-          "vary": "Accept-Encoding, User-Agent",
-          "strict-transport-security": "max-age=31536000; includeSubDomains"
-        },
-        "duration": 0,
-        "isOkStatusCode": true,
-        "allRequestResponses": []
-      }
-    },
-    {
-      "request": {
-        "url": "/inventory/managedObjects/666229?withParents=true",
-        "method": "GET",
-        "headers": {
-          "connection": "keep-alive",
-          "host": "localhost:4200",
-          "proxy-connection": "keep-alive",
-          "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
-          "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
-          "accept": "application/json",
-          "usexbasic": "true",
-          "sec-ch-ua-platform": "\"Linux\"",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-dest": "empty",
-          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
-          "X-XSRF-TOKEN": "****"
-        }
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "body": {
-          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229",
-          "id": "666229",
-          "type": "c8y_DeviceGroup",
-          "name": "e2eCopyGroup",
-          "lastUpdated": "2024-06-21T10:12:02.811Z",
-          "creationTime": "2024-06-21T10:12:02.614Z",
-          "owner": "ccw",
-          "childDevices": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childDevices",
-            "references": []
-          },
-          "childAssets": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAssets",
-            "references": []
-          },
-          "childAdditions": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAdditions",
-            "references": [
-              {
-                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/childAdditions/647288",
-                "managedObject": {
-                  "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/647288",
-                  "id": "647288",
-                  "name": "e2eDashboard"
-                }
-              }
-            ]
-          },
-          "deviceParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/deviceParents",
-            "references": []
-          },
-          "assetParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/assetParents",
-            "references": []
-          },
-          "additionParents": {
-            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/666229/additionParents",
-            "references": []
-          },
-          "c8y_Notes": "",
-          "c8y_IsDeviceGroup": {}
-        },
-        "headers": {
-          "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
-          "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
           "pragma": "no-cache",
@@ -10252,10 +10239,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -10263,7 +10252,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -10281,7 +10270,318 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects/737300",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json, text/plain, */*",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300",
+          "id": "737300",
+          "type": "c8y_DeviceGroup",
+          "name": "e2eCopyGroup",
+          "lastUpdated": "2024-06-21T12:34:43.176Z",
+          "creationTime": "2024-06-21T12:34:42.979Z",
+          "owner": "ccw",
+          "childDevices": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childDevices",
+            "references": []
+          },
+          "childAssets": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAssets",
+            "references": []
+          },
+          "childAdditions": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAdditions",
+            "references": [
+              {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAdditions/537301",
+                "managedObject": {
+                  "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
+                  "id": "537301",
+                  "name": "e2eDashboard"
+                }
+              }
+            ]
+          },
+          "deviceParents": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/deviceParents",
+            "references": []
+          },
+          "assetParents": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/assetParents",
+            "references": []
+          },
+          "additionParents": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/additionParents",
+            "references": []
+          },
+          "c8y_Notes": "",
+          "c8y_IsDeviceGroup": {}
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects/737300?withParents=true",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300",
+          "id": "737300",
+          "type": "c8y_DeviceGroup",
+          "name": "e2eCopyGroup",
+          "lastUpdated": "2024-06-21T12:34:43.176Z",
+          "creationTime": "2024-06-21T12:34:42.979Z",
+          "owner": "ccw",
+          "childDevices": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childDevices",
+            "references": []
+          },
+          "childAssets": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAssets",
+            "references": []
+          },
+          "childAdditions": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAdditions",
+            "references": [
+              {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/childAdditions/537301",
+                "managedObject": {
+                  "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
+                  "id": "537301",
+                  "name": "e2eDashboard"
+                }
+              }
+            ]
+          },
+          "deviceParents": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/deviceParents",
+            "references": []
+          },
+          "assetParents": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/assetParents",
+            "references": []
+          },
+          "additionParents": {
+            "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/737300/additionParents",
+            "references": []
+          },
+          "c8y_Notes": "",
+          "c8y_IsDeviceGroup": {}
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
+          "content-type": "application/vnd.com.nsn.cumulocity.managedobject+json;charset=UTF-8;ver=0.9",
+          "connection": "close",
+          "x-content-type-options": "nosniff",
+          "pragma": "no-cache",
+          "expires": "0",
+          "x-frame-options": "DENY",
+          "vary": "Accept-Encoding, User-Agent",
+          "strict-transport-security": "max-age=31536000; includeSubDomains"
+        },
+        "duration": 0,
+        "isOkStatusCode": true,
+        "allRequestResponses": []
+      }
+    },
+    {
+      "request": {
+        "url": "/inventory/managedObjects?query=%24filter%3D((has(%27c8y_Dashboard!group!737300%27))%20or%20(has(%27c8y_Dashboard!type!c8y_DeviceGroup%27)))&pageSize=1000",
+        "method": "GET",
+        "headers": {
+          "connection": "keep-alive",
+          "host": "localhost:4200",
+          "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
+          "x-cumulocity-application-key": "cockpit-application-key",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+          "sec-ch-ua-mobile": "?0",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "accept": "application/json",
+          "usexbasic": "true",
+          "sec-ch-ua-platform": "\"Linux\"",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-dest": "empty",
+          "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
+          "accept-language": "en-US,en;q=0.9",
+          "X-XSRF-TOKEN": "****"
+        }
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "body": {
+          "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!737300'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=1",
+          "next": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects?query=$filter%3D((has('c8y_Dashboard!group!737300'))%20or%20(has('c8y_Dashboard!type!c8y_DeviceGroup')))&pageSize=1000&currentPage=2",
+          "managedObjects": [
+            {
+              "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301",
+              "id": "537301",
+              "name": "e2eDashboard",
+              "lastUpdated": "2024-06-21T12:34:43.190Z",
+              "creationTime": "2024-06-21T12:34:43.163Z",
+              "owner": "ccw",
+              "childDevices": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childDevices",
+                "references": []
+              },
+              "childAssets": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAssets",
+                "references": []
+              },
+              "childAdditions": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/childAdditions",
+                "references": []
+              },
+              "deviceParents": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/deviceParents",
+                "references": []
+              },
+              "assetParents": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/assetParents",
+                "references": []
+              },
+              "additionParents": {
+                "self": "https://t3304394.latest.stage.c8y.io/inventory/managedObjects/537301/additionParents",
+                "references": []
+              },
+              "c8y_Dashboard": {
+                "translateWidgetTitle": true,
+                "children": {
+                  "1": {
+                    "componentId": "datapoints-graph",
+                    "classes": {
+                      "alerts-overlay": false,
+                      "card-dashboard": true,
+                      "panel-title-regular": true,
+                      "map": true,
+                      "card": true
+                    },
+                    "_x": 0,
+                    "_y": 0,
+                    "id": "1",
+                    "title": "Data points graph",
+                    "_width": 12,
+                    "config": {
+                      "xAxisSplitLines": false,
+                      "datapoints": [],
+                      "realtime": true,
+                      "canDecoupleGlobalTimeContext": false,
+                      "displayAggregationSelection": false,
+                      "yAxisSplitLines": false,
+                      "dateTo": "2023-04-27T12:10:00.000Z",
+                      "interval": "hours",
+                      "aggregation": null,
+                      "displayDateSelection": false,
+                      "widgetInstanceGlobalTimeContext": false,
+                      "dateFrom": "2023-04-27T12:00:00.000Z"
+                    },
+                    "_height": 6
+                  }
+                },
+                "classes": {
+                  "dashboard-theme-light": true
+                },
+                "c8y_IsNavigatorNode": null,
+                "name": "e2eDashboard",
+                "icon": "th",
+                "widgetClasses": {
+                  "panel-title-regular": true
+                },
+                "priority": 10000
+              },
+              "c8y_Dashboard!group!737300": {}
+            }
+          ],
+          "statistics": {
+            "pageSize": 1000,
+            "currentPage": 1
+          }
+        },
+        "headers": {
+          "x-powered-by": "Express",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
@@ -10304,10 +10604,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -10315,7 +10617,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -11035,7 +11337,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:07 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:49 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "vary": "Accept-Encoding, User-Agent",
@@ -11054,10 +11356,12 @@
           "connection": "keep-alive",
           "host": "localhost:4200",
           "proxy-connection": "keep-alive",
+          "pragma": "no-cache",
+          "cache-control": "no-cache",
           "x-cumulocity-application-key": "cockpit-application-key",
-          "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Chromium\";v=\"106\"",
+          "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
           "sec-ch-ua-mobile": "?0",
-          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/12.17.4 Chrome/106.0.5249.51 Electron/21.0.0 Safari/537.36",
+          "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
           "accept": "application/json",
           "usexbasic": "true",
           "sec-ch-ua-platform": "\"Linux\"",
@@ -11065,7 +11369,7 @@
           "sec-fetch-mode": "cors",
           "sec-fetch-dest": "empty",
           "referer": "http://localhost:4200/apps/cockpit/index.html?remotes=%7B%22sag-pkg-community-plugins%22%3A%5B%22ExampleWidgetPluginModule%22%2C%22DatapointsGraphWidgetModule%22%5D%7D",
-          "accept-language": "en-US",
+          "accept-language": "en-US,en;q=0.9",
           "X-XSRF-TOKEN": "****"
         }
       },
@@ -11083,7 +11387,7 @@
         },
         "headers": {
           "x-powered-by": "Express",
-          "date": "Fri, 21 Jun 2024 10:12:08 GMT",
+          "date": "Fri, 21 Jun 2024 12:34:50 GMT",
           "content-type": "application/vnd.com.nsn.cumulocity.managedobjectcollection+json;charset=UTF-8;ver=0.9",
           "connection": "close",
           "x-content-type-options": "nosniff",
