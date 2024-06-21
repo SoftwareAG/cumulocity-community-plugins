@@ -20,8 +20,21 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
   config.logLevel = 'debug';
 
   config.preprocessor = new C8yDefaultPactPreprocessor({
-    // TODO: add 'authorization' (lowercase) if needed
-    obfuscate: ['request.headers.Authorization', 'response.body.password'],
+    ignore: [
+      'request.headers.cookie',
+      'request.headers.accept-encoding',
+      'response.headers.cache-control',
+      'response.headers.content-length',
+      'response.headers.content-encoding',
+      'response.headers.transfer-encoding',
+      'response.headers.keep-alive',
+    ],
+    obfuscate: [
+      'request.headers.Authorization',
+      'request.headers.authorization',
+      'request.headers.X-XSRF-TOKEN',
+      'response.body.password',
+    ],
     obfuscationPattern: '****',
   });
 
