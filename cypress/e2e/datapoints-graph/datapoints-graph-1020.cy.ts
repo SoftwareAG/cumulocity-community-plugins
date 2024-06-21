@@ -4,13 +4,13 @@ describe('datapoints-graph', { tags: '@1020' }, () => {
       '/inventory/managedObjects?fragmentType=c8y_Dashboard!name!home-cockpit1&pageSize=1',
       { fixture: 'widgets/datapoints-graph/cockpit-dashboard.json' }
     ).as('cockpitDashboardConfig');
-    cy.getAuth('admin').login();
-    // TODO: make it configurable
+    cy.useAuth('admin').login();
+    // TODO: make it configurable OR make sure folder is called 'cockpit'
     cy.visit(
       '/apps/cockpit/index.html?remotes=%7B"sag-pkg-community-plugins"%3A%5B"ExampleWidgetPluginModule"%2C"DatapointsGraphWidgetModule"%5D%7D#/'
     );
     // cy.visit('/apps/sag-pkg-community-plugins/#/');
-    cy.wait('@cockpitDashboardConfig');
+    cy.wait('@cockpitDashboardConfig', { timeout: 10_000 });
   });
 
   it('view component should be present', () => {
