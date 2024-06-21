@@ -12,12 +12,19 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
+  SEVERITY_LABELS,
+  SeverityType,
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
 import { cloneDeep } from 'lodash-es';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -28,6 +35,8 @@ import { Subject } from 'rxjs/internal/Subject';
 export class DatapointsGraphWidgetViewComponent
   implements OnChanges, OnDestroy
 {
+  events: EventDetails[] = [];
+  alarms: AlarmDetails[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator;
@@ -50,6 +59,7 @@ export class DatapointsGraphWidgetViewComponent
   );
   readonly hideDatapointLabel = gettext('Hide data point');
   readonly showDatapointLabel = gettext('Show data point');
+  readonly severitiesList = Object.keys(SEVERITY_LABELS) as SeverityType[];
   private destroy$ = new Subject<void>();
 
   constructor(private formBuilder: FormBuilder) {
@@ -102,6 +112,50 @@ export class DatapointsGraphWidgetViewComponent
       (dp) => key(dp) === key(dpOutOfSync)
     );
     this.datapointsOutOfSync.set(dpMatch, true);
+  }
+
+  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent): void {
+    if (alarmOrEvent.timelineType === 'ALARM') {
+      this.alarms = this.alarms.map((alarm) => {
+        if (alarm.filters.type === alarmOrEvent.filters.type) {
+          alarm.__hidden = !alarm.__hidden;
+        }
+        return alarm;
+      });
+    } else {
+      this.events = this.events.map((event) => {
+        if (event.filters.type === alarmOrEvent.filters.type) {
+          event.__hidden = !event.__hidden;
+        }
+        return event;
+      });
+    }
+    this.displayConfig = { ...this.displayConfig };
+  }
+
+  updateAlarmsAndEvents(alarmsEventsConfigs: AlarmOrEvent[]): void {
+    this.alarms = alarmsEventsConfigs.filter(
+      (alarm) => alarm.timelineType === 'ALARM'
+    ) as AlarmDetails[];
+    this.events = alarmsEventsConfigs.filter(
+      (event) => event.timelineType === 'EVENT'
+    ) as EventDetails[];
+  }
+
+  filterSeverity(severity, eventTarget) {
+    const isChecked = eventTarget.checked;
+    this.alarms = this.alarms.map((alarm) => {
+      if (!alarm.__severity) {
+        alarm.__severity = [];
+      }
+      if (!isChecked) {
+        alarm.__severity = alarm.__severity.filter((sev) => sev !== severity);
+        return alarm;
+      }
+      alarm.__severity = [...alarm.__severity, severity];
+      return alarm;
+    });
+    this.displayConfig = { ...this.displayConfig };
   }
 
   private initForm(): void {

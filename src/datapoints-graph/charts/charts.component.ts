@@ -8,7 +8,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import type { ECharts, EChartsOption } from 'echarts';
+import type { ECharts, EChartsOption, SeriesOption } from 'echarts';
 import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
@@ -20,10 +20,12 @@ import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CustomMeasurementService } from './custom-measurements.service';
 import {
+  AlarmRealtimeService,
   CoreModule,
   DismissAlertStrategy,
   DynamicComponentAlert,
   DynamicComponentAlertAggregator,
+  EventRealtimeService,
   gettext,
   MeasurementRealtimeService,
 } from '@c8y/ngx-components';
@@ -31,7 +33,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { EchartsOptionsService } from './echarts-options.service';
 import { ChartRealtimeService } from './chart-realtime.service';
 import type { DataZoomOption } from 'echarts/types/src/component/dataZoom/DataZoomModel';
-import type { ECActionEvent } from 'echarts/types/src/util/types';
+import type {
+  ECActionEvent,
+  TooltipFormatterCallback,
+} from 'echarts/types/src/util/types';
 import { ChartTypesService } from './chart-types.service';
 import { CommonModule } from '@angular/common';
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from 'ngx-echarts';
@@ -39,6 +44,15 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
+import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
+import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
+import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
+import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -52,6 +66,8 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     },
     ChartRealtimeService,
     MeasurementRealtimeService,
+    AlarmRealtimeService,
+    EventRealtimeService,
     ChartTypesService,
     EchartsOptionsService,
     CustomMeasurementService,
@@ -72,6 +88,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   echartsInstance: ECharts;
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
+  alarms: IAlarm[];
+  events: IEvent[];
   @Input() config: DatapointsGraphWidgetConfig;
   @Input() alerts: DynamicComponentAlertAggregator;
   @Output() configChangeOnZoomOut =
@@ -80,6 +98,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
   >();
   @Output() datapointOutOfSync = new EventEmitter<DatapointsGraphKPIDetails>();
+  @Output() updateAlarmsAndEvents = new EventEmitter<AlarmOrEvent[]>();
   private configChangedSubject = new BehaviorSubject<void>(null);
 
   @HostListener('keydown.escape') onEscapeKeyDown() {
@@ -92,9 +111,12 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     private measurementService: CustomMeasurementService,
     private translateService: TranslateService,
     private echartsOptionsService: EchartsOptionsService,
-    private chartRealtimeService: ChartRealtimeService
+    private chartRealtimeService: ChartRealtimeService,
+    private chartEventsService: ChartEventsService,
+    private chartAlarmsService: ChartAlarmsService
   ) {
     this.chartOption$ = this.configChangedSubject.pipe(
+      switchMap(() => this.loadAlarmsAndEvents()),
       switchMap(() => this.fetchSeriesForDatapoints$()),
       switchMap((datapointsWithValues: DatapointWithValues[]) => {
         if (datapointsWithValues.length === 0) {
@@ -143,6 +165,114 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.chartRealtimeService.stopRealtime();
       }
     });
+    this.echartsInstance.on('click', this.onChartClick.bind(this));
+
+    let originalFormatter = null;
+    this.echartsInstance.on('mouseover', (params: any) => {
+      if (
+        params?.componentType !== 'markLine' &&
+        params?.componentType !== 'markPoint'
+      ) {
+        return;
+      }
+      const options = this.echartsInstance.getOption();
+      originalFormatter = originalFormatter ?? options.tooltip[0].formatter;
+
+      const updatedOptions: Partial<SeriesOption> = {
+        tooltip: options.tooltip,
+      };
+      updatedOptions.tooltip[0].formatter = (
+        tooltipParams: TooltipFormatterCallback<TopLevelFormatterParams>
+      ) => {
+        return this.echartsOptionsService.getTooltipFormatterForAlarmAndEvents(
+          tooltipParams,
+          params,
+          this.events,
+          this.alarms
+        );
+      };
+
+      this.echartsInstance.setOption(updatedOptions);
+    });
+
+    this.echartsInstance.on('mouseout', () => {
+      const options = this.echartsInstance.getOption();
+      if (originalFormatter) {
+        options.tooltip[0].formatter = originalFormatter;
+        this.echartsInstance.setOption(options);
+      }
+    });
+  }
+
+  onChartClick(params) {
+    const options = this.echartsInstance.getOption();
+    if (!this.isAlarmClick(params)) {
+      this.echartsInstance.setOption({
+        tooltip: { triggerOn: 'mousemove' },
+        series: [
+          {
+            markArea: {
+              data: [],
+            },
+            markLine: {
+              data: [],
+            },
+          },
+        ],
+      });
+      return;
+    }
+
+    const clickedAlarms = this.alarms.filter(
+      (alarm) => alarm.type === params.data.itemType
+    );
+
+    const updatedOptions = !this.hasMarkArea(options)
+      ? {
+          tooltip: {
+            enterable: true,
+            triggerOn: 'click',
+          },
+          series: [
+            {
+              markArea: {
+                label: {
+                  show: false,
+                },
+                data: this.getMarkedAreaData(clickedAlarms),
+              },
+              markLine: {
+                showSymbol: true,
+                symbol: ['none', 'none'],
+                data: this.getMarkedLineData(clickedAlarms),
+              },
+            },
+          ],
+        }
+      : // if markArea already exists, remove it and remove lastUpdated from markLine
+        {
+          tooltip: { triggerOn: 'mousemove' },
+          series: [
+            {
+              markArea: {
+                data: [],
+              },
+              markLine: {
+                data: [],
+              },
+            },
+          ],
+        };
+
+    this.echartsInstance.setOption(updatedOptions);
+  }
+
+  isAlarmClick(params): boolean {
+    return this.alarms.some((alarm) => alarm.type === params.data.itemType);
+  }
+
+  hasMarkArea(options): boolean {
+    return options?.series?.[0]?.markArea?.data?.length > 0;
   }
 
   toggleZoomIn(): void {
@@ -224,6 +354,102 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  private getMarkedAreaData(clickedAlarms: IAlarm[]) {
+    const timeRange = this.getTimeRange();
+    const clearedAlarmColor = 'rgba(221,255,221,1.00)';
+    const activeAlarmColor = 'rgba(255, 173, 177, 0.4)';
+
+    return clickedAlarms.map((clickedAlarm) => {
+      return [
+        {
+          name: clickedAlarm.type,
+          xAxis: clickedAlarm.creationTime,
+          itemStyle: {
+            color:
+              clickedAlarm.status === AlarmStatus.CLEARED
+                ? clearedAlarmColor
+                : activeAlarmColor,
+          },
+        },
+        {
+          xAxis:
+            clickedAlarm.lastUpdated === clickedAlarm.creationTime ||
+            clickedAlarm.status !== AlarmStatus.CLEARED
+              ? timeRange.dateTo
+              : clickedAlarm.lastUpdated,
+        },
+      ];
+    });
+  }
+
+  private getMarkedLineData(clickedAlarms: IAlarm[]) {
+    return clickedAlarms.reduce((acc, alarm) => {
+      const isClickedAlarmCleared = alarm.status === AlarmStatus.CLEARED;
+      if (isClickedAlarmCleared) {
+        return acc.concat([
+          {
+            xAxis: alarm.creationTime,
+            alarmType: alarm.type,
+            label: {
+              show: false,
+              formatter: alarm.type,
+            },
+            itemStyle: { color: alarm.color },
+          },
+          {
+            xAxis: alarm.lastUpdated,
+            alarmType: alarm.type,
+            label: {
+              show: false,
+              formatter: alarm.type,
+            },
+            itemStyle: { color: alarm.color },
+          },
+        ]);
+      }
+      return acc.concat([
+        {
+          xAxis: alarm.creationTime,
+          alarmType: alarm.type,
+          label: {
+            show: false,
+            formatter: alarm.type,
+          },
+          itemStyle: { color: alarm.color },
+        },
+      ]);
+    }, []);
+  }
+
+  private async loadAlarmsAndEvents(): Promise<void> {
+    const timeRange = this.getTimeRange();
+    const updatedTimeRange = {
+      lastUpdatedFrom: timeRange.dateFrom,
+      createdTo: timeRange.dateTo,
+    };
+    if (!this.config.alarmsEventsConfigs) return;
+    const visibleAlarmsOrEvents = this.config.alarmsEventsConfigs?.filter(
+      (alarmOrEvent) => !alarmOrEvent.__hidden
+    );
+    const alarms = visibleAlarmsOrEvents?.filter(
+      (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
+    ) as AlarmDetails[];
+    const events = visibleAlarmsOrEvents?.filter(
+      (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
+    ) as EventDetails[];
+
+    const [listedEvents, listedAlarms] = await Promise.all([
+      this.chartEventsService.listEvents(updatedTimeRange, events),
+      this.chartAlarmsService.listAlarms(updatedTimeRange, alarms),
+    ]);
+
+    this.events = listedEvents;
+    this.alarms = listedAlarms;
+    await this.addActiveAlarms(alarms);
+
+    this.updateAlarmsAndEvents.emit(this.config.alarmsEventsConfigs);
+  }
+
   private startRealtimeIfPossible(): void {
     if (this.config.realtime && this.echartsInstance) {
       this.chartRealtimeService.startRealtime(
@@ -231,9 +457,36 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.config.datapoints.filter((dp) => dp.__active),
         this.getTimeRange(),
         (dp) => this.datapointOutOfSync.emit(dp),
-        (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange)
+        (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange),
+        this.config.alarmsEventsConfigs
       );
     }
+  }
+
+  /*
+  This method should check and add active alarms from the begining of time to the alarm array 
+  */
+  private async addActiveAlarms(alarms: AlarmDetails[]): Promise<void> {
+    const timeRange = this.getTimeRange();
+    const params = {
+      dateFrom: '1970-01-01T01:00:00+01:00',
+      dateTo: timeRange.dateTo,
+      status: AlarmStatus.ACTIVE,
+    };
+
+    const activeAlarms = await this.chartAlarmsService.listAlarms(
+      params,
+      alarms
+    );
+    this.config.activeAlarmTypesOutOfRange = [];
+    // iterate through the activeAlarms and check if the alarm is in the alarms array, if not update the config.activeAlarmTypesOutOfRange prop
+    activeAlarms.forEach((activeAlarm) => {
+      const alarmType = activeAlarm.type;
+      const alarm = this.alarms.find((alarm) => alarm.type === alarmType);
+      if (!alarm) {
+        this.config.activeAlarmTypesOutOfRange.push(alarmType);
+      }
+    });
   }
 
   private updateZoomState(): void {
@@ -252,7 +505,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       {
         YAxis: this.config.yAxisSplitLines,
         XAxis: this.config.xAxisSplitLines,
-      }
+      },
+      this.events,
+      this.alarms
     );
   }
 

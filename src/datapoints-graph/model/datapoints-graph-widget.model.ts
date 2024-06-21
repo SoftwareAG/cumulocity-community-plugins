@@ -5,7 +5,7 @@ import {
   KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
 import { DateTimeContext, gettext } from '@c8y/ngx-components';
-import { aggregationType, IMeasurement, ISeries } from '@c8y/client';
+import { aggregationType, IMeasurement, ISeries, Severity } from '@c8y/client';
 import type {
   BarSeriesOption,
   LineSeriesOption,
@@ -27,6 +27,7 @@ export type DatapointsGraphWidgetConfig = {
   widgetInstanceGlobalTimeContext?: boolean;
   dateFrom?: Date;
   dateTo?: Date;
+  activeAlarmTypesOutOfRange?: string[];
   interval?: Interval['id'];
   aggregation?: aggregationType;
   realtime?: boolean;
@@ -115,6 +116,31 @@ export interface DatapointWithValues extends DatapointsGraphKPIDetails {
   values: DatapointApiValues;
 }
 
+type DataPointValues = {
+  min: number;
+  max: number;
+};
+export type DpValuesItem = {
+  time: number;
+  values: DataPointValues[];
+};
+
+export interface MarkPointData {
+  coord: [string, number | DataPointValues | null];
+  name: string;
+  itemType: string;
+  itemStyle: { color: string };
+  symbol: string; // Symbol to display for the mark point (reference to ICONS_MAP)
+  symbolSize: number;
+}
+
+export interface MarkLineData {
+  xAxis: number;
+  itemType: string;
+  label: { show: boolean; formatter: (params: any) => string };
+  itemStyle: { color: string };
+}
+
 export type DatapointLineType = (typeof CHART_LINE_TYPES)[number]['val'];
 export type EchartsSeriesOptions =
   | LineSeriesOption
@@ -162,3 +188,26 @@ export interface SeriesDatapointInfo {
   datapointLabel: string;
   datapointUnit: string;
 }
+
+export const SEVERITY_LABELS = {
+  CRITICAL: gettext('Critical`alarm`') as 'CRITICAL',
+  MAJOR: gettext('Major`alarm`') as 'MAJOR',
+  MINOR: gettext('Minor`alarm`') as 'MINOR',
+  WARNING: gettext('Warning`alarm`') as 'WARNING',
+} as const;
+
+export type SeverityType = keyof typeof Severity;
+
+export const ALARM_SEVERITY_ICON = {
+  CIRCLE: 'circle',
+  HIGH_PRIORITY: 'high-priority',
+  WARNING: 'warning',
+  EXCLAMATION_CIRCLE: 'exclamation-circle',
+} as const;
+
+export const ALARM_SEVERITY_ICON_MAP = {
+  [Severity.CRITICAL]: ALARM_SEVERITY_ICON.EXCLAMATION_CIRCLE,
+  [Severity.MAJOR]: ALARM_SEVERITY_ICON.WARNING,
+  [Severity.MINOR]: ALARM_SEVERITY_ICON.HIGH_PRIORITY,
+  [Severity.WARNING]: ALARM_SEVERITY_ICON.CIRCLE,
+} as const;
