@@ -88,7 +88,7 @@ jobs:
 
           # Unzip Cockpit to dist/apps
           cockpit_file="cockpit-${next_version}.zip"
-          destination_folder="dist/apps/cockpit-${next_version}"
+          destination_folder="dist/apps/cockpit"
           mkdir -p "$destination_folder"
 
           unzip -qq "$cockpit_file" -d "$destination_folder"
