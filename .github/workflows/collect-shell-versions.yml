@@ -111,7 +111,7 @@ jobs:
           browser: chrome
           record: false
           config-file: cypress.config.ts
-          env: C8Y_CTRL_MODE=recording,grepTags=@1020
+          env: C8Y_CTRL_MODE=mocking,grepTags=@1020
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v3
