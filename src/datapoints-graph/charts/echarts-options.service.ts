@@ -399,15 +399,40 @@ export class EchartsOptionsService {
     }, {} as any);
   }
 
-  private getClosestDpValueToTargetTime(
+  /**
+   * This method interpolates between two data points. The goal is to place the markPoint on the chart in the right place.
+   * @param dpValuesArray array of data points
+   * @param targetTime time of the alarm or event
+   * @returns interpolated data point
+   */
+  private interpolateBetweenTwoDps(
     dpValuesArray: DpValuesItem[],
     targetTime: number
   ): DpValuesItem {
-    return dpValuesArray.reduce((prev, curr) =>
-      Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime)
-        ? curr
-        : prev
-    );
+    return dpValuesArray.reduce((acc, curr, idx, arr) => {
+      if (new Date(curr.time).getTime() <= targetTime) {
+        if (idx === arr.length - 1) {
+          return curr;
+        }
+        const nextDp = arr[idx + 1];
+        if (new Date(nextDp.time).getTime() >= targetTime) {
+          const timeDiff =
+            new Date(nextDp.time).getTime() - new Date(curr.time).getTime();
+          const targetTimeDiff = targetTime - new Date(curr.time).getTime();
+          const minValueDiff = nextDp.values[0]?.min - curr.values[0]?.min;
+          const maxValueDiff = nextDp.values[0]?.max - curr.values[0]?.max;
+          const minValue =
+            curr.values[0]?.min + (minValueDiff * targetTimeDiff) / timeDiff;
+          const maxValue =
+            curr.values[0]?.max + (maxValueDiff * targetTimeDiff) / timeDiff;
+          return {
+            time: targetTime,
+            values: [{ min: minValue, max: maxValue }],
+          };
+        }
+      }
+      return acc;
+    });
   }
 
   /**
@@ -431,12 +456,12 @@ export class EchartsOptionsService {
       })
     );
     const creationTime = new Date(item.creationTime).getTime();
-    const closestDpValue = this.getClosestDpValueToTargetTime(
+    const closestDpValue = this.interpolateBetweenTwoDps(
       dpValuesArray,
       creationTime
     );
     const lastUpdatedTime = new Date(item.lastUpdated).getTime();
-    const closestDpValueLastUpdated = this.getClosestDpValueToTargetTime(
+    const closestDpValueLastUpdated = this.interpolateBetweenTwoDps(
       dpValuesArray,
       lastUpdatedTime
     );
