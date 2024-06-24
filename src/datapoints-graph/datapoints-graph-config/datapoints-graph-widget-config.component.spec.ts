@@ -28,6 +28,7 @@ import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { AlarmDetails, EventDetails } from '../alarm-event-selector';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
@@ -146,6 +147,28 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         component.formGroup
       );
     });
+
+    it('should update alarmsEventsConfigs when form value changes', fakeAsync(() => {
+      // given
+      const alarm = {
+        timelineType: 'ALARM',
+        filters: {
+          type: 'critical',
+        },
+      } as any as AlarmDetails;
+      const event = {
+        timelineType: 'EVENT',
+        filters: {
+          type: 'position',
+        },
+      } as any as EventDetails;
+      // when
+      component.ngOnInit();
+      component.formGroup.patchValue({ alarms: [alarm], events: [event] });
+      tick();
+      // then
+      expect(component.config.alarmsEventsConfigs).toEqual([alarm, event]);
+    }));
 
     describe('should init date selection', () => {
       it('as dashboard context', () => {
