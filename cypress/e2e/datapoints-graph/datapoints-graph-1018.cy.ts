@@ -1,4 +1,4 @@
-describe('datapoints-graph-1020', { tags: '@1020' }, () => {
+describe('datapoints-graph-1018', { tags: '@1018' }, () => {
   beforeEach(() => {
     cy.login2(
       // TODO: username should not be here, but without it, tests that are using mocks fails
@@ -86,15 +86,12 @@ describe('datapoints-graph-1020', { tags: '@1020' }, () => {
   });
 
   it('config component should be present', () => {
-    cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', { timeout: 10000 })
-      .should('be.visible')
+    cy.get('c8y-dashboard-child .header-actions button[title="Settings"]', {
+      timeout: 10000,
+    })
+      .should('exist')
       .click();
-    cy.get(
-      'c8y-dashboard-child .header-actions button[data-cy="c8y-dashboard-child--settings"]'
-    ).click({ force: true });
-    cy.get(
-      '.dropdown-menu button[data-cy="widgets-dashboard--Edit-widget"]'
-    ).click({ force: true });
+    cy.get('.dropdown-menu button[title="Edit widget"]').click();
     cy.get('c8y-datapoints-graph-widget-config button.c8y-realtime')
       .find('.c8y-pulse.active')
       .should('exist');
