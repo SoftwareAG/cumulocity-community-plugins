@@ -91,7 +91,13 @@ export class DatapointsGraphWidgetConfigComponent
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.config = { ...value };
+        this.config = {
+          ...value,
+          alarmsEventsConfigs: [
+            ...(this.formGroup.value.alarms || []),
+            ...(this.formGroup.value.events || []),
+          ],
+        };
         this.setActiveDatapointsExists();
       });
   }
