@@ -69,7 +69,7 @@ async function getLastNonDeprecatedVersions(packageName) {
     tag,
     version,
     major: version.split('.')[0],
-  })).slice(0,1); // TODO: remove slice, debug purposes only
+  }));
 }
 
 /**
