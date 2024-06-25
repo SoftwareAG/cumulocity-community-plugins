@@ -7,14 +7,14 @@ permissions:
 
 jobs:
   collect-shell-versions:
-    uses: ./.github/workflows/collect-shell-versions.yaml
+    uses: ./.github/workflows/collect-shell-versions.yml
 
   build-plugins:
     needs: collect-shell-versions
-    uses: ./.github/workflows/build-plugins.yaml
+    uses: ./.github/workflows/build-plugins.yml
 
   test-plugins-against-cockpit:
     needs: [collect-shell-versions, build-plugins]
-    uses: ./.github/workflows/test-plugins-against-cockpit.yaml
+    uses: ./.github/workflows/test-plugins-against-cockpit.yml
     with:
       non_deprecated_shell_versions: ${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
