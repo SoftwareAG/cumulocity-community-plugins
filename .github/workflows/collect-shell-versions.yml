@@ -33,6 +33,3 @@ jobs:
         id: extract-versions
         run: |
           echo "non_deprecated_shell_versions=${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}" >> $GITHUB_OUTPUT
-
-      - name: Debug Output
-        run: echo "non_deprecated_shell_versions=${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}" >> $GITHUB_ENV
