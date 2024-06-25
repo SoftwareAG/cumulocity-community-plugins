@@ -5,9 +5,6 @@ on:
       non_deprecated_shell_versions:
         required: true
         type: string
-defaults:
-  run:
-    shell: bash
 
 jobs:
   test-plugins-against-cockpit:
