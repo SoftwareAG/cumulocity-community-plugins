@@ -4,7 +4,7 @@ on:
     outputs:
       non_deprecated_shell_versions:
         description: "The first output string"
-        value: ${{ toJSON(jobs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}
+        value: ${{ jobs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
 
 jobs:
   collect-shell-versions:
