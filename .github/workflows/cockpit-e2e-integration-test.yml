@@ -9,9 +9,9 @@ jobs:
   collect-shell-versions:
     uses: ./.github/workflows/collect-shell-versions.yml
 
-  build-plugins:
-    needs: collect-shell-versions
-    uses: ./.github/workflows/build-plugins.yml
+#  build-plugins:
+#    needs: collect-shell-versions
+#    uses: ./.github/workflows/build-plugins.yml
 
  # TODO  debug step to check the value
   print-outputs:
@@ -19,10 +19,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Print Output Debug
-        run: echo "non_deprecated_shell_versions=${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}"
+        run: echo "non_deprecated_shell_versions=${{ toJson(needs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}"
 
   test-plugins-against-cockpit:
-    needs: [collect-shell-versions, build-plugins]
+#    needs: [collect-shell-versions, build-plugins]
+    needs: [collect-shell-versions]
     uses: ./.github/workflows/test-plugins-against-cockpit.yml
     with:
-      non_deprecated_shell_versions: ${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
+      non_deprecated_shell_versions: ${{ toJson(needs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}
