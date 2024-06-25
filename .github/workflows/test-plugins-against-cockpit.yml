@@ -1,20 +1,18 @@
 name: Run tests against shell versions
 on:
   workflow_call:
-    inputs:
-      non_deprecated_shell_versions:
-        required: true
-        type: string
 defaults:
   run:
     shell: bash
+env:
+  non_deprecated_shell_versions: ${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
 
 jobs:
   test-plugins-against-cockpit:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        version_data: ${{ fromJson(inputs.non_deprecated_shell_versions) }}
+        version_data: ${{ fromJson(env.non_deprecated_shell_versions) }}
     env:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
