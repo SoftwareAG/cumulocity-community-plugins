@@ -36,17 +36,8 @@ jobs:
         run: |
           echo "::set-output name=non_deprecated_shell_versions::${{steps.collect-shell-versions.outputs.non_deprecated_shell_versions}}"
 
-  run-tests-against-shell:
-    needs: collect-shell-versions
+  build-plugins:
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        version_data: ${{ fromJson(needs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}
-    env:
-      JSON: ${{ toJson(matrix.version_data) }}
-      VERSION: ${{ matrix.version_data.version }}
-      MAJOR: ${{ matrix.version_data.major }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -72,12 +63,36 @@ jobs:
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/sag-pkg-community-plugins/**
+            dist/apps/sag-pkg-community-plugins/**
 
-      - name: Copy files for http-server into apps subfolder
-        run: |
-          mkdir -p dist/apps/sag-pkg-community-plugins
-          cp -r dist/sag-pkg-community-plugins/* dist/apps/sag-pkg-community-plugins
+  run-tests-against-shell:
+    needs: [collect-shell-versions, build-plugins]
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        version_data: ${{ fromJson(needs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}
+    env:
+      JSON: ${{ toJson(matrix.version_data) }}
+      VERSION: ${{ matrix.version_data.version }}
+      MAJOR: ${{ matrix.version_data.major }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: dist/apps/sag-pkg-community-plugins/
 
       - name: Get shell app of particular version
         run: |
