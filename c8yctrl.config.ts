@@ -45,7 +45,7 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
   ) => {
     // log some details of request and responses for failing requests
 
-    // TODO: debugging only
+    // debugging only
     if ((res.status || 200) >= 400) {
       console.error({
         url: req.url,
@@ -78,7 +78,7 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
     // }
     // return record == null;
     return true;
-  }) as any; // TODO: remove any
+  }) as any; // TODO: remove any when new version of c8yctrl package is released
 
   config.logger = createLogger({
     transports: [

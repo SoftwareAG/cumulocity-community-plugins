@@ -16,7 +16,6 @@
     "cypress:open": "cypress open",
     "deploy": "c8ycli deploy",
     "http-server": "http-server -p 4200 ./dist",
-    "c8yctrl-server-proxy": "npx c8yctrl --port 4200 --staticRoot ./dist",
     "lint": "eslint --ext .ts,.html .",
     "lint:staged": "lint-staged",
     "prepare": "husky install",

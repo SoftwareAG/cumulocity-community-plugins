@@ -1,6 +1,6 @@
 name: Pull request
 on:
-  workflow_dispatch:
+  workflow_dispatch: # TODO: switch back to "pull_request"
 
 permissions:
   contents: read

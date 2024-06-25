@@ -57,8 +57,6 @@ function getSuiteTitles(suite) {
 }
 
 function c8yctrl(title: string | string[] = Cypress.currentTest.titlePath) {
-  // TODO: Cypress.env -> add version of cockpit if different recordings are needed
-
   const recording = Cypress.env('C8Y_CTRL_MODE') === 'recording';
   const parameter: string = recording
     ? '?recording=true&clear'
