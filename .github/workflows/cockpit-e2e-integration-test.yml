@@ -15,7 +15,7 @@ jobs:
 #    uses: ./.github/workflows/build-plugins.yml
 
   test-plugins-against-cockpit:
-    needs: [collect-shell-versions]
+    needs: [collect-shell-versions, build-plugins]
     uses: ./.github/workflows/test-plugins-against-cockpit.yml
     with:
       non_deprecated_shell_versions: ${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
