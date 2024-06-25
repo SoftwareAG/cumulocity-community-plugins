@@ -1,5 +1,10 @@
 name: Collect shell versions
-on: workflow_call
+on:
+  workflow_call:
+    outputs:
+      non_deprecated_shell_versions:
+        description: "The first output string"
+        value: ${{ jobs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
 
 jobs:
   collect-shell-versions:
