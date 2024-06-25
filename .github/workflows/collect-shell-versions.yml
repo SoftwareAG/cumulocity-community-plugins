@@ -63,7 +63,7 @@ jobs:
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/apps/sag-pkg-community-plugins/**
+            dist/sag-pkg-community-plugins/**
 
   run-tests-against-shell:
     needs: [collect-shell-versions, build-plugins]
