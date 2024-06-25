@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Print Output Debug
-        run: echo "non_deprecated_shell_versions=${{ fromJSON(needs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}"
+        run: echo "non_deprecated_shell_versions=${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}"
 
   test-plugins-against-cockpit:
 #    needs: [collect-shell-versions, build-plugins]
