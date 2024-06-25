@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        version_data: ${{ inputs.non_deprecated_shell_versions }}
+        version_data: ${{ fromJSON(inputs.non_deprecated_shell_versions) }}
     env:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
