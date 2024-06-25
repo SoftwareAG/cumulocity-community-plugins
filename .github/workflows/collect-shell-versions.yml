@@ -4,14 +4,14 @@ on:
     outputs:
       non_deprecated_shell_versions:
         description: "The first output string"
-        value: ${{ jobs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
+        value: ${{ toJSON(jobs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}
 
 jobs:
   collect-shell-versions:
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     outputs:
-      non_deprecated_shell_versions: ${{ toJSON(steps.extract-versions.outputs.non_deprecated_shell_versions) }}
+      non_deprecated_shell_versions: ${{ steps.extract-versions.outputs.non_deprecated_shell_versions }}
 
     steps:
       - name: Checkout
