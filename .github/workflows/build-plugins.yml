@@ -1,0 +1,32 @@
+name: Build plugins
+on: workflow_call
+
+jobs:
+  build-plugins:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          if-no-files-found: error
+          retention-days: 5
+          path: |
+            dist/sag-pkg-community-plugins/**

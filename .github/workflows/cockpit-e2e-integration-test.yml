@@ -1,0 +1,20 @@
+name: Main Workflow
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  collect-shell-versions:
+    uses: ./.github/workflows/collect-shell-versions.yaml
+
+  build-plugins:
+    needs: collect-shell-versions
+    uses: ./.github/workflows/build-plugins.yaml
+
+  test-plugins-against-cockpit:
+    needs: [collect-shell-versions, build-plugins]
+    uses: ./.github/workflows/test-plugins-against-cockpit.yaml
+    with:
+      non_deprecated_shell_versions: ${{ needs.collect-shell-versions.outputs.non_deprecated_shell_versions }}
