@@ -26,5 +26,4 @@ jobs:
 
       - name: Extract versions
         id: extract-versions
-        run: |
-          echo "::set-output name=non_deprecated_shell_versions::${{steps.collect-shell-versions.outputs.non_deprecated_shell_versions}}"
+        run: echo "non_deprecated_shell_versions=${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}" >> $GITHUB_OUTPUT
