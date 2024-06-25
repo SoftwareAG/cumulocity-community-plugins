@@ -9,9 +9,10 @@ jobs:
   collect-shell-versions:
     uses: ./.github/workflows/collect-shell-versions.yml
 
-  build-plugins:
-    needs: collect-shell-versions
-    uses: ./.github/workflows/build-plugins.yml
+#TODO: uncomment when debug done
+#  build-plugins:
+#    needs: collect-shell-versions
+#    uses: ./.github/workflows/build-plugins.yml
 
   test-plugins-against-cockpit:
     needs: [collect-shell-versions, build-plugins]

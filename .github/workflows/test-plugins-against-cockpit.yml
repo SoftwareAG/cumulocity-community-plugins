@@ -32,6 +32,10 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Debug Input
+        run: |
+          echo "Input non_deprecated_shell_versions: ${{ inputs.non_deprecated_shell_versions }}"
+
       - name: Download build artifact
         uses: actions/download-artifact@v3
         with:
