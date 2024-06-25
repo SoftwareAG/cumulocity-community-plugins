@@ -1,4 +1,4 @@
-name: Collect shell versions
+name: Test plugins against Cockpit
 on:
   pull_request: # TODO: change workflow trigger
 
