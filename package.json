@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-community-plugins",
-  "version": "3.0.0",
+  "version": "2.1.6",
   "description": "This is a set of plugins developed and maintained by the community.",
   "scripts": {
     "ng": "ng",
