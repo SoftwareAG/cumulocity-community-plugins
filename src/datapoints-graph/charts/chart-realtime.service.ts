@@ -62,7 +62,8 @@ export class ChartRealtimeService {
     timeRangeChangedCallback: (
       timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
     ) => void,
-    alarmOrEventConfig: AlarmOrEvent[] = []
+    alarmOrEventConfig: AlarmOrEvent[] = [],
+    displayOptions: { displayMarkedLine: boolean; displayMarkedPoint: boolean }
   ) {
     this.echartsInstance = echartsInstance;
     this.currentTimeRange = {
@@ -131,6 +132,7 @@ export class ChartRealtimeService {
         this.updateChartInstance(
           measurements,
           null,
+          displayOptions,
           datapointOutOfSyncCallback
         );
       });
@@ -158,6 +160,7 @@ export class ChartRealtimeService {
         this.updateChartInstance(
           [measurements],
           alarmOrEvent,
+          displayOptions,
           datapointOutOfSyncCallback
         );
       });
@@ -202,6 +205,7 @@ export class ChartRealtimeService {
   private updateChartInstance(
     receivedMeasurements: DatapointRealtimeMeasurements[],
     alarmOrEvent: IAlarm | IEvent | null,
+    displayOptions: { displayMarkedLine: boolean; displayMarkedPoint: boolean },
     datapointOutOfSyncCallback: (dp: DatapointsGraphKPIDetails) => void
   ) {
     const isEvent = (item: IAlarm | IEvent): item is IEvent =>
@@ -268,6 +272,7 @@ export class ChartRealtimeService {
               false,
               [alarmOrEvent],
               'event',
+              displayOptions,
               alarmOrEvent.creationTime
             );
           allDataSeries.push(...newEventSeries);
@@ -299,6 +304,7 @@ export class ChartRealtimeService {
                 false,
                 [alarmOrEvent],
                 'alarm',
+                displayOptions,
                 (alarmOrEvent as IEvent).id
               );
 

@@ -458,7 +458,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         this.getTimeRange(),
         (dp) => this.datapointOutOfSync.emit(dp),
         (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange),
-        this.config.alarmsEventsConfigs
+        this.config.alarmsEventsConfigs,
+        {
+          displayMarkedLine: this.config.displayMarkedLine,
+          displayMarkedPoint: this.config.displayMarkedPoint,
+        }
       );
     }
   }
@@ -507,7 +511,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         XAxis: this.config.xAxisSplitLines,
       },
       this.events,
-      this.alarms
+      this.alarms,
+      {
+        displayMarkedLine: this.config.displayMarkedLine,
+        displayMarkedPoint: this.config.displayMarkedPoint,
+      }
     );
   }
 

@@ -158,6 +158,8 @@ export class DatapointsGraphWidgetConfigComponent
       datapoints: [[], [Validators.required, Validators.minLength(1)]],
       alarms: [[]],
       events: [[]],
+      displayMarkedLine: [true, []],
+      displayMarkedPoint: [true, []],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],

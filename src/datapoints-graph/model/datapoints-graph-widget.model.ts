@@ -25,6 +25,8 @@ export type DatapointsGraphWidgetConfig = {
   displayDateSelection?: boolean;
   displayAggregationSelection?: boolean;
   widgetInstanceGlobalTimeContext?: boolean;
+  displayMarkedLine: boolean;
+  displayMarkedPoint: boolean;
   dateFrom?: Date;
   dateTo?: Date;
   activeAlarmTypesOutOfRange?: string[];

@@ -35,7 +35,8 @@ export class EchartsOptionsService {
     timeRange: { dateFrom: string; dateTo: string },
     showSplitLines: { YAxis: boolean; XAxis: boolean },
     events: IEvent[],
-    alarms: IAlarm[]
+    alarms: IAlarm[],
+    displayOptions: { displayMarkedLine: boolean; displayMarkedPoint: boolean }
   ): EChartsOption {
     const yAxis = this.yAxisService.getYAxis(datapointsWithValues, {
       showSplitLines: showSplitLines.YAxis,
@@ -114,7 +115,12 @@ export class EchartsOptionsService {
         },
       },
       yAxis,
-      series: this.getChartSeries(datapointsWithValues, events, alarms),
+      series: this.getChartSeries(
+        datapointsWithValues,
+        events,
+        alarms,
+        displayOptions
+      ),
     };
   }
 
@@ -133,9 +139,17 @@ export class EchartsOptionsService {
     isMinMaxChart = false,
     items: IAlarm[] | IEvent[] = [],
     itemType: 'alarm' | 'event' = 'alarm',
+    displayOptions = { displayMarkedLine: true, displayMarkedPoint: true },
     id?: string | number
   ): SeriesOption[] {
     if (!items.length) {
+      return [];
+    }
+
+    if (
+      !displayOptions.displayMarkedLine &&
+      !displayOptions.displayMarkedPoint
+    ) {
       return [];
     }
 
@@ -144,51 +158,82 @@ export class EchartsOptionsService {
     const itemsByType = this.groupByType(filteredItems, 'type');
     const isAlarm = itemType === 'alarm';
 
-    return Object.entries(itemsByType).map(
-      ([type, itemsOfType]: [string, any]) => ({
-        id: `${type}/${dp.__target.id}+${id ? id : ''}`,
-        name: type,
-        showSymbol: false,
-        // typeOfSeries is used for formatter to distinguish between events/alarms series
-        typeOfSeries: itemType,
-        data: itemsOfType.map((item) => [
+    return Object.entries(itemsByType).flatMap(
+      ([type, itemsOfType]: [string, any]) => {
+        // Main series data
+        const mainData = itemsOfType.map((item) => [
           item.creationTime,
           null,
           'markLineFlag',
-        ]),
-        markPoint: {
-          showSymbol: true,
-          data: itemsOfType.reduce((acc, item) => {
-            if (dp.__target.id === item.source.id) {
-              const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
-              const isEvent = !isAlarm;
-              return acc.concat(
-                this.createMarkPoint(item, dp, isCleared, isEvent)
-              );
-            } else {
-              return acc.concat([
-                {
-                  coord: [item.creationTime, null],
-                  name: item.type,
-                  itemType: item.type,
-                  itemStyle: { color: item.color },
-                },
-              ]);
-            }
-          }, [] as any),
-        },
-        markLine: {
-          showSymbol: false,
-          // no symbol should be shown in the beginning and end of the marked line
-          symbol: ['none', 'none'],
-          data: this.createMarkLine(itemsOfType),
-        },
-        ...this.chartTypesService.getSeriesOptions(
-          dp,
-          isMinMaxChart,
-          renderType
-        ),
-      })
+        ]);
+
+        // MarkPoint data
+        const markPointData = itemsOfType.reduce((acc, item) => {
+          if (dp.__target.id === item.source.id) {
+            const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
+            const isEvent = !isAlarm;
+            return acc.concat(
+              this.createMarkPoint(item, dp, isCleared, isEvent)
+            );
+          } else {
+            return acc.concat([
+              {
+                coord: [item.creationTime, null],
+                name: item.type,
+                itemType: item.type,
+                itemStyle: { color: item.color },
+              },
+            ]);
+          }
+        }, []);
+
+        // Construct series with markPoint
+        const seriesWithMarkPoint = {
+          id: `${type}/${dp.__target.id}+${id ? id : ''}-markPoint`,
+          name: `${type}-markPoint`,
+          typeOfSeries: itemType,
+          data: mainData,
+          markPoint: {
+            showSymbol: true,
+            data: markPointData,
+          },
+          ...this.chartTypesService.getSeriesOptions(
+            dp,
+            isMinMaxChart,
+            renderType
+          ),
+        };
+
+        // Construct series with markLine
+        const seriesWithMarkLine = {
+          id: `${type}/${dp.__target.id}+${id ? id : ''}-markLine`,
+          name: `${type}-markLine`,
+          typeOfSeries: itemType,
+          data: mainData,
+          markLine: {
+            showSymbol: false,
+            symbol: ['none', 'none'], // no symbol at the start/end of the line
+            data: this.createMarkLine(itemsOfType),
+          },
+          ...this.chartTypesService.getSeriesOptions(
+            dp,
+            isMinMaxChart,
+            renderType
+          ),
+        };
+
+        //depending on the options return only the required series
+        if (
+          displayOptions.displayMarkedLine &&
+          displayOptions.displayMarkedPoint
+        ) {
+          return [seriesWithMarkLine, seriesWithMarkPoint];
+        } else if (displayOptions.displayMarkedLine) {
+          return [seriesWithMarkLine];
+        } else if (displayOptions.displayMarkedPoint) {
+          return [seriesWithMarkPoint];
+        }
+      }
     ) as SeriesOption[];
   }
 
@@ -355,7 +400,8 @@ export class EchartsOptionsService {
   private getChartSeries(
     datapointsWithValues: DatapointWithValues[],
     events: IEvent[],
-    alarms: IAlarm[]
+    alarms: IAlarm[],
+    displayOptions: { displayMarkedLine: boolean; displayMarkedPoint: boolean }
   ): SeriesOption[] {
     const series: SeriesOption[] = [];
     let eventSeries: SeriesOption[] = [];
@@ -374,14 +420,16 @@ export class EchartsOptionsService {
         renderType,
         false,
         events,
-        'event'
+        'event',
+        displayOptions
       );
       const newAlarmSeries = this.getAlarmOrEventSeries(
         dp,
         renderType,
         false,
         alarms,
-        'alarm'
+        'alarm',
+        displayOptions
       );
       eventSeries = [...eventSeries, ...newEventSeries];
       alarmSeries = [...alarmSeries, ...newAlarmSeries];

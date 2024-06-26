@@ -76,6 +76,27 @@
           <span></span>
           <span translate>X axis helper lines</span>
         </label>
+        <label [title]="'Display marked line' | translate" class="c8y-checkbox">
+          <input
+            type="checkbox"
+            formControlName="displayMarkedLine"
+            name="displayMarkedLine"
+          />
+          <span></span>
+          <span translate>Display marked line</span>
+        </label>
+        <label
+          [title]="'Display marked point' | translate"
+          class="c8y-checkbox"
+        >
+          <input
+            type="checkbox"
+            formControlName="displayMarkedPoint"
+            name="displayMarkedPoint"
+          />
+          <span></span>
+          <span translate>Display marked point</span>
+        </label>
       </c8y-form-group>
 
       <c8y-datapoint-selection-list
