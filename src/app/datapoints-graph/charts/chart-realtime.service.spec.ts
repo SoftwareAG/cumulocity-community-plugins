@@ -75,7 +75,7 @@ describe('ChartRealtimeService', () => {
             (i) =>
               ({
                 [dp1.fragment]: { [dp1.series]: { value: i } },
-              } as IMeasurement)
+              }) as IMeasurement
           )
         )
       );
@@ -111,7 +111,7 @@ describe('ChartRealtimeService', () => {
               (i) =>
                 ({
                   [dp1.fragment]: { [dp1.series]: { value: i } },
-                } as IMeasurement)
+                }) as IMeasurement
             )
           )
         );
@@ -150,7 +150,7 @@ describe('ChartRealtimeService', () => {
               (i) =>
                 ({
                   [dp1.fragment]: { [dp1.series]: { value: i } },
-                } as IMeasurement)
+                }) as IMeasurement
             )
           )
         );
@@ -191,7 +191,7 @@ describe('ChartRealtimeService', () => {
               (i) =>
                 ({
                   [dp1.fragment]: { [dp1.series]: { value: i } },
-                } as IMeasurement)
+                }) as IMeasurement
             )
           )
         );
@@ -247,7 +247,7 @@ describe('ChartRealtimeService', () => {
                 ({
                   [fragment]: { [series]: { value: i } },
                   time: new Date().toISOString(),
-                } as IMeasurement)
+                }) as IMeasurement
             )
           )
         );
@@ -291,7 +291,7 @@ describe('ChartRealtimeService', () => {
                 ({
                   [fragment]: { [series]: { value: i } },
                   time: new Date().toISOString(),
-                } as IMeasurement)
+                }) as IMeasurement
             )
           )
         );
@@ -339,7 +339,7 @@ describe('ChartRealtimeService', () => {
                   [fragment]: { [series]: { value: i } },
                   // pass date from future
                   time: new Date(now.valueOf() + 1000).toISOString(),
-                } as IMeasurement)
+                }) as IMeasurement
             )
           )
         );

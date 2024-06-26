@@ -16,7 +16,7 @@ import {
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
 import { cloneDeep } from 'lodash-es';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
 import { aggregationType } from '@c8y/client';

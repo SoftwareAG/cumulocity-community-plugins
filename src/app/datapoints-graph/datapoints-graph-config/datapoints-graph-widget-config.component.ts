@@ -8,7 +8,6 @@ import {
 import {
   ControlContainer,
   FormBuilder,
-  FormGroup,
   NgForm,
   Validators,
 } from '@angular/forms';
@@ -31,7 +30,6 @@ import { Subject } from 'rxjs';
 import {
   DatapointAttributesFormConfig,
   DatapointSelectorModalOptions,
-  KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
 import { ActivatedRoute } from '@angular/router';
 import { aggregationType } from '@c8y/client';
