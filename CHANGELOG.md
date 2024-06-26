@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.0.0...v3.0.1) (2024-06-26)
+
+
+### Bug Fixes
+
+* **core:** add missing license ([aba8174](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/aba81743475d841c78ca2daa7c52ace50f3057a1))
+
 # [3.0.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.6...v3.0.0) (2024-06-26)
 
 
