@@ -45,9 +45,10 @@ const dp: DatapointsGraphKPIDetails = {
   selector: 'charts-wrapper',
   template: `<c8y-charts [config]="config" [alerts]="alerts"></c8y-charts>`,
   styles: [
-    `:host {
-        width:1000px;
-        heigth: 500px';
+    `
+      :host {
+        width: 1000px;
+        heigth: 500px;
       }
     `,
   ],
@@ -117,7 +118,7 @@ describe('ChartsComponent', () => {
       startRealtime: jest.fn().mockName('startRealtime'),
     };
     echartsInstance = {
-      on(eventName, cb) {
+      on(_eventName, cb) {
         dataZoomCallback = cb;
       },
       getOption() {

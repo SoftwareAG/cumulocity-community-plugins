@@ -82,7 +82,7 @@ describe('CustomMeasurementService', () => {
     const values = { [new Date().toString()]: [{ min: 0, max: 1 }] };
     (global as any).fetch = jest.fn().mockImplementationOnce(() =>
       Promise.resolve({
-        json: () => ({ values } as ISeries),
+        json: () => ({ values }) as ISeries,
       })
     );
     service.listSeries$({} as any).subscribe((val) => {
