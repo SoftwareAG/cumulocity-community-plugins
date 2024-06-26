@@ -19,7 +19,6 @@
     "lint": "eslint --ext .ts,.html .",
     "lint:staged": "lint-staged",
     "prepare": "husky install",
-    "collect-shell-versions": "node collect-shell-versions",
     "cypress:ctrl": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec"
   },
   "repository": {
