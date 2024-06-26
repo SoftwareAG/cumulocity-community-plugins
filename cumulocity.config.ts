@@ -35,6 +35,16 @@ export default {
         description: 'Adds data points graph widget to the shell application',
       },
     ],
+    versioningMatrix: {
+      '2.1.6': {
+        sdk: '>=1016.0.0 <1018.0.0',
+        api: '>=1016.0.0 <1018.0.0',
+      },
+      '3.0.0': {
+        sdk: '>=1018.0.0',
+        api: '>=1018.0.0',
+      },
+    },
   },
   buildTime: {
     federation: [
