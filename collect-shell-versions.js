@@ -1,5 +1,6 @@
 const { exec } = require('child_process');
 const util = require('util');
+const fs = require('fs');
 const execPromise = util.promisify(exec);
 
 /**
@@ -78,9 +79,12 @@ async function getLastNonDeprecatedVersions(packageName) {
 (async () => {
   const packageName = '@c8y/ngx-components';
   const nonDeprecatedVersions = await getLastNonDeprecatedVersions(packageName);
-  process.stdout.write(
-    `::set-output name=non_deprecated_shell_versions::${JSON.stringify(
-      nonDeprecatedVersions
-    )}`
-  );
+
+  const outputPath = process.env.GITHUB_OUTPUT;
+  if (outputPath) {
+    fs.appendFileSync(
+      outputPath,
+      `non_deprecated_shell_versions=${JSON.stringify(nonDeprecatedVersions)}\n`
+    );
+  }
 })();
