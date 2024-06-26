@@ -1,11 +1,13 @@
 import { EnvironmentOptions } from '@c8y/devkit/dist/options';
-import { author, description, version } from './package.json';
+import { author, description, version, license } from './package.json';
+import * as versioningMatrix from './versioningMatrix.json';
 
 export default {
   runTime: {
     author,
     description,
     version,
+    license,
     name: 'Cumulocity community plugins',
     contextPath: 'sag-pkg-community-plugins',
     key: 'sag-pkg-community-plugins-application-key',
@@ -35,16 +37,7 @@ export default {
         description: 'Adds data points graph widget to the shell application',
       },
     ],
-    versioningMatrix: {
-      '2.1.6': {
-        sdk: '>=1016.0.0 <1018.0.0',
-        api: '>=1016.0.0 <1018.0.0',
-      },
-      '3.0.0': {
-        sdk: '>=1018.0.0',
-        api: '>=1018.0.0',
-      },
-    },
+    versioningMatrix,
   },
   buildTime: {
     federation: [
