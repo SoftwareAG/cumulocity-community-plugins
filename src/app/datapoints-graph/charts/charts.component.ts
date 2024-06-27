@@ -177,10 +177,10 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         return;
       }
       const options = this.echartsInstance.getOption();
-      originalFormatter = originalFormatter ?? options.tooltip[0].formatter;
+      originalFormatter = originalFormatter ?? options['tooltip'][0].formatter;
 
       const updatedOptions: Partial<SeriesOption> = {
-        tooltip: options.tooltip,
+        tooltip: options['tooltip'],
       };
       updatedOptions.tooltip[0].formatter = (
         tooltipParams: TooltipFormatterCallback<TopLevelFormatterParams>
@@ -199,7 +199,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     this.echartsInstance.on('mouseout', () => {
       const options = this.echartsInstance.getOption();
       if (originalFormatter) {
-        options.tooltip[0].formatter = originalFormatter;
+        options['tooltip'][0].formatter = originalFormatter;
         this.echartsInstance.setOption(options);
       }
     });
@@ -373,10 +373,10 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         },
         {
           xAxis:
-            clickedAlarm.lastUpdated === clickedAlarm.creationTime ||
+            clickedAlarm['lastUpdated'] === clickedAlarm.creationTime ||
             clickedAlarm.status !== AlarmStatus.CLEARED
               ? timeRange.dateTo
-              : clickedAlarm.lastUpdated,
+              : clickedAlarm['lastUpdated'],
         },
       ];
     });
@@ -394,16 +394,16 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
               show: false,
               formatter: alarm.type,
             },
-            itemStyle: { color: alarm.color },
+            itemStyle: { color: alarm['color'] },
           },
           {
-            xAxis: alarm.lastUpdated,
+            xAxis: alarm['lastUpdated'],
             alarmType: alarm.type,
             label: {
               show: false,
               formatter: alarm.type,
             },
-            itemStyle: { color: alarm.color },
+            itemStyle: { color: alarm['color'] },
           },
         ]);
       }
@@ -415,7 +415,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
             show: false,
             formatter: alarm.type,
           },
-          itemStyle: { color: alarm.color },
+          itemStyle: { color: alarm['color'] },
         },
       ]);
     }, []);
@@ -467,7 +467,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   /*
-  This method should check and add active alarms from the begining of time to the alarm array 
+  This method should check and add active alarms from the begining of time to the alarm array
   */
   private async addActiveAlarms(alarms: AlarmDetails[]): Promise<void> {
     const timeRange = this.getTimeRange();

@@ -136,7 +136,7 @@ export class ChartRealtimeService {
             return aOrE.filters.type === alarmOrEvent.type;
           });
           if (foundAlarmOrEvent) {
-            alarmOrEvent.color = foundAlarmOrEvent.color;
+            alarmOrEvent['color'] = foundAlarmOrEvent.color;
           }
 
           return foundAlarmOrEvent ? { alarmOrEvent, measurements } : null;
@@ -252,8 +252,8 @@ export class ChartRealtimeService {
 
         if (isEvent(alarmOrEvent)) {
           // if event series with the same id already exists, return
-          const eventExists = allDataSeries.some((series: { data: any[] }) =>
-            series.data.some(
+          const eventExists = allDataSeries.some((series) =>
+            (series.data as { data: any[] }[]).some(
               (data) => data[0] === (alarmOrEvent as IEvent).creationTime
             )
           );
@@ -283,13 +283,13 @@ export class ChartRealtimeService {
               )
             );
             // update the last value of the markline to the new value
-            alarmSeries.markLine.data[1].xAxis = (
-              alarmOrEvent as IAlarm
-            ).lastUpdated;
+            alarmSeries.markLine.data[1].xAxis = (alarmOrEvent as IAlarm)[
+              'lastUpdated'
+            ];
             // update the last value of the markpoint to the new value
-            alarmSeries.markPoint.data[1].coord[0] = (
-              alarmOrEvent as IAlarm
-            ).lastUpdated;
+            alarmSeries.markPoint.data[1].coord[0] = (alarmOrEvent as IAlarm)[
+              'lastUpdated'
+            ];
           } else {
             const newAlarmSeries =
               this.echartsOptionsService.getAlarmOrEventSeries(

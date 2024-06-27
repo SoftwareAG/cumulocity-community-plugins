@@ -184,9 +184,9 @@ export type YAxisOptions = {
 };
 
 export interface SeriesDatapointInfo {
-  datapointId: string;
-  datapointLabel: string;
-  datapointUnit: string;
+  datapointId?: string;
+  datapointLabel?: string;
+  datapointUnit?: string;
 }
 
 export const SEVERITY_LABELS = {

@@ -1,5 +1,6 @@
-import { IIdentified, Severity } from '@c8y/client';
+import { IIdentified } from '@c8y/client';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
+import { SeverityType } from '@c8y/client/lib/src/core/Severity';
 
 export type TimelineType = 'ALARM' | 'EVENT';
 
@@ -31,7 +32,7 @@ export type AlarmDetails = AlarmOrEventBase & {
     type: string;
   };
   __hidden?: boolean;
-  __severity?: Severity[];
+  __severity?: SeverityType[];
 };
 
 export type EventDetails = AlarmOrEventBase & {

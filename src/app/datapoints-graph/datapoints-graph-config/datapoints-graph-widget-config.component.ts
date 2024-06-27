@@ -34,6 +34,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { omit } from 'lodash-es';
 import { aggregationType } from '@c8y/client';
+import { AlarmDetails, EventDetails } from '../alarm-event-selector';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -94,12 +95,12 @@ export class DatapointsGraphWidgetConfigComponent
     this.formGroup.controls.alarms.setValue(
       this.config?.alarmsEventsConfigs?.filter(
         (ae) => ae.timelineType === 'ALARM'
-      )
+      ) as AlarmDetails[]
     );
     this.formGroup.controls.events.setValue(
       this.config?.alarmsEventsConfigs?.filter(
         (ae) => ae.timelineType === 'EVENT'
-      )
+      ) as EventDetails[]
     );
 
     this.initDateSelection();
@@ -175,8 +176,8 @@ export class DatapointsGraphWidgetConfigComponent
         [] as DatapointsGraphKPIDetails[],
         [Validators.required, Validators.minLength(1)],
       ],
-      alarms: [[]],
-      events: [[]],
+      alarms: [[] as AlarmDetails[]],
+      events: [[] as EventDetails[]],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],
