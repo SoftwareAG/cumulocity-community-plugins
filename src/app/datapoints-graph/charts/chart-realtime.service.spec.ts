@@ -101,7 +101,8 @@ describe('ChartRealtimeService', () => {
       { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
       jest.fn(),
       timeRangeCallback,
-      []
+      [],
+      { displayMarkedLine: true, displayMarkedPoint: true }
     );
     jest.advanceTimersByTime(3000);
     // then
@@ -138,7 +139,8 @@ describe('ChartRealtimeService', () => {
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
         jest.fn(),
-        []
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
       );
       expect(counter).toBe(0);
       // first measurement emits
@@ -178,7 +180,8 @@ describe('ChartRealtimeService', () => {
         { dateFrom: last10Minutes.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
         jest.fn(),
-        []
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
       );
       expect(counter).toBe(0);
       // first measurement emitted
@@ -220,7 +223,8 @@ describe('ChartRealtimeService', () => {
         { dateFrom: lastWeek.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
         jest.fn(),
-        []
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
       );
       expect(counter).toBe(0);
       // first measurement emitted
@@ -239,7 +243,7 @@ describe('ChartRealtimeService', () => {
       jest.useFakeTimers();
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
-      let option;
+      let option: any;
       jest
         .spyOn(echartsInstance, 'setOption')
         .mockImplementation((val) => (option = val));
@@ -276,18 +280,19 @@ describe('ChartRealtimeService', () => {
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
         jest.fn(),
-        []
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
       );
       jest.advanceTimersByTime(750);
-      expect(option.series[0].data.length).toBe(3);
-      expect(option.series[1].data.length).toBe(3);
+      expect(option?.series[0].data.length).toBe(3);
+      expect(option?.series[1].data.length).toBe(3);
     });
 
     it('should remove values before time range except one closes to dateFrom', () => {
       jest.useFakeTimers();
       const now = new Date();
       const lastMinute = new Date(now.valueOf() - 60_000);
-      let option;
+      let option: any;
       jest
         .spyOn(echartsInstance, 'setOption')
         .mockImplementation((val) => (option = val));
@@ -321,7 +326,8 @@ describe('ChartRealtimeService', () => {
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         jest.fn(),
         jest.fn(),
-        []
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
       );
       // time to fill whole chart with more than time span of 1 minute of measurements with interval of 1s
       jest.advanceTimersByTime(70_000);
@@ -371,7 +377,8 @@ describe('ChartRealtimeService', () => {
         { dateFrom: lastMinute.toISOString(), dateTo: now.toISOString() },
         callback,
         jest.fn(),
-        []
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
       );
       jest.advanceTimersByTime(250);
       expect(callback).toHaveBeenCalledWith(dp1);

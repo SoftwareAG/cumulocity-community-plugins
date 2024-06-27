@@ -135,6 +135,8 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         dateTo: config.dateTo,
         displayAggregationSelection: false,
         displayDateSelection: false,
+        displayMarkedLine: true,
+        displayMarkedPoint: true,
         interval: 'hours',
         realtime: false,
         widgetInstanceGlobalTimeContext: false,
@@ -167,7 +169,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       component.formGroup.patchValue({ alarms: [alarm], events: [event] });
       tick();
       // then
-      expect(component.config.alarmsEventsConfigs).toEqual([alarm, event]);
+      expect(component.config?.alarmsEventsConfigs).toEqual([alarm, event]);
     }));
 
     describe('should init date selection', () => {
@@ -207,7 +209,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       component.formGroup.patchValue({ aggregation: aggregationType.MINUTELY });
       tick();
       // then
-      expect(component.config.aggregation).toBe(aggregationType.MINUTELY);
+      expect(component.config?.aggregation).toBe(aggregationType.MINUTELY);
     }));
   });
 
@@ -230,6 +232,8 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         dateTo: config.dateTo,
         displayAggregationSelection: false,
         displayDateSelection: false,
+        displayMarkedLine: true,
+        displayMarkedPoint: true,
         interval: 'hours',
         realtime: false,
         widgetInstanceGlobalTimeContext: false,
@@ -292,7 +296,9 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
   it('timePropsChanged should update form value but should not invoke valueChange', fakeAsync(() => {
     // given
     const newDateFrom = new Date('2023-03-15T11:00:19.710Z');
-    let formValue;
+    let formValue: ReturnType<
+      DatapointsGraphWidgetConfigComponent['initForm']
+    >['value'] = {};
     fixture.detectChanges();
     component.formGroup.valueChanges.pipe(take(1)).subscribe((val) => {
       formValue = val;
@@ -301,7 +307,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
     component.timePropsChanged({ dateFrom: newDateFrom });
     tick();
     // then
-    expect(formValue.dateFrom).toBe(newDateFrom);
+    expect(formValue?.dateFrom).toBe(newDateFrom);
   }));
 
   it('updateTimeRangeOnRealtime should update form value but should not invoke valueChange', fakeAsync(() => {

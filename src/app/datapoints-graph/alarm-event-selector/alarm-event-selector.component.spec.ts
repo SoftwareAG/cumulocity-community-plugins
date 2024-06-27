@@ -35,10 +35,10 @@ import { IIdentified } from '@c8y/client';
   ],
 })
 class MillerViewMockComponent {
-  @Input() config: AssetSelectorOptions;
+  @Input() config: AssetSelectorOptions | undefined;
   @Input() rootNode: any;
-  @Input() asset: string | number;
-  @Input() container: string;
+  @Input() asset: string | number | undefined;
+  @Input() container: string | undefined;
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onSelected = new EventEmitter<any>();
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -137,7 +137,7 @@ describe('AlarmEventSelectorComponent', () => {
         .mockReturnValue(
           new Promise((resolve) => setTimeout(() => resolve([alarm1]), 1000))
         );
-      let result: AlarmOrEvent[];
+      let result: AlarmOrEvent[] = [];
       // when
       fixture.detectChanges();
       tick();
@@ -174,7 +174,7 @@ describe('AlarmEventSelectorComponent', () => {
       jest
         .spyOn(alarmEventSelectorService, 'getItemsOfAsset')
         .mockReturnValue(Promise.resolve([alarm1, alarm2, alarm3]));
-      let result: AlarmOrEvent[];
+      let result: AlarmOrEvent[] = [];
       fixture.detectChanges();
       tick();
       component.filteredItems$.subscribe((items) => (result = items));
@@ -193,17 +193,16 @@ describe('AlarmEventSelectorComponent', () => {
       expect(result).toEqual([alarm1, alarm2]);
     }));
 
-    it('should emit selected asset if it is provided to component as input', fakeAsync(() => {
+    it('should emit selected asset if it is provided to component as input', (done) => {
       // given
-      let result;
-      component.assetSelection.subscribe((asset) => (result = asset));
+      component.assetSelection.subscribe((asset) => {
+        expect(asset).toEqual({ id: 1 });
+        done();
+      });
       // when
       component.contextAsset = asset1;
       fixture.detectChanges();
-      tick();
-      // then
-      expect(result).toEqual({ id: 1 });
-    }));
+    });
   });
 
   it('itemAdded', () => {
@@ -256,16 +255,18 @@ describe('AlarmEventSelectorComponent', () => {
       expect(component.assetSelection.value).toBe(asset1);
     });
 
-    it('when no assets are provided', () => {
+    it('when no assets are provided', (done) => {
       // given
       const event1: AssetSelectionChangeEvent = {
-        items: null,
+        items: [],
         change: {} as any,
       };
+      component.assetSelection.subscribe((asset) => {
+        expect(asset).toEqual(null);
+        done();
+      });
       // when
       component.assetSelectionChanged(event1);
-      // then
-      expect(component.assetSelection.value).toBe(null);
     });
   });
 });

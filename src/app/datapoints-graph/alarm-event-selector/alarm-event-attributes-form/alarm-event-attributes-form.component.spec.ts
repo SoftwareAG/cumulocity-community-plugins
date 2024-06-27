@@ -1,7 +1,7 @@
-import { AlarmEventAttributesFormComponent } from './alarm-event-attributes-form.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule, FormsModule } from '@c8y/ngx-components';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AlarmEventAttributesFormComponent } from './alarm-event-attributes-form.component';
 
 describe('AlarmEventAttributesFormComponent', () => {
   let component: AlarmEventAttributesFormComponent;

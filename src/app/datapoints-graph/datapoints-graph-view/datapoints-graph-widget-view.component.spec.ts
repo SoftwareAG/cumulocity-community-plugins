@@ -11,7 +11,11 @@ import {
   DynamicComponentAlertAggregator,
 } from '@c8y/ngx-components';
 import { TimeControlsModule } from '../time-controls';
-import { ChartsComponent } from '../charts';
+import {
+  ChartAlarmsService,
+  ChartEventsService,
+  ChartsComponent,
+} from '../charts';
 import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
@@ -56,6 +60,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         { provide: window, useValue: { ResizeObserver: {} } },
         { provide: FetchClient, useValue: client },
         { provide: Realtime, useValue: {} },
+        ChartEventsService,
+        ChartAlarmsService,
       ],
     });
     await TestBed.compileComponents();
@@ -114,8 +120,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         config: { currentValue: config },
       } as any as SimpleChanges);
       // then
-      expect(component.displayConfig.dateFrom).toEqual(dateFrom);
-      expect(component.displayConfig.dateTo).toEqual(dateTo);
+      expect(component.displayConfig?.dateFrom).toEqual(dateFrom);
+      expect(component.displayConfig?.dateTo).toEqual(dateTo);
     });
 
     it(`should not change dateFrom nor dateTo when changed config has "date" property
@@ -134,8 +140,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         config: { currentValue: config },
       } as any as SimpleChanges);
       // then
-      expect(component.displayConfig.dateFrom).toEqual(dateFrom);
-      expect(component.displayConfig.dateTo).toEqual(dateTo);
+      expect(component.displayConfig?.dateFrom).toEqual(dateFrom);
+      expect(component.displayConfig?.dateTo).toEqual(dateTo);
     });
 
     it(`should change dateFrom and dateTo when changed config has "date" property
@@ -156,8 +162,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       } as any as SimpleChanges);
       tick();
       // then
-      expect(component.displayConfig.dateFrom).toEqual(dashboardTimeRange[0]);
-      expect(component.displayConfig.dateTo).toEqual(dashboardTimeRange[1]);
+      expect(component.displayConfig?.dateFrom).toEqual(dashboardTimeRange[0]);
+      expect(component.displayConfig?.dateTo).toEqual(dashboardTimeRange[1]);
     }));
   });
 
@@ -171,8 +177,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     component.timePropsChanged({ dateFrom, dateTo });
     tick();
     // then
-    expect(component.displayConfig.dateFrom).toEqual(dateFrom);
-    expect(component.displayConfig.dateTo).toEqual(dateTo);
+    expect(component.displayConfig?.dateFrom).toEqual(dateFrom);
+    expect(component.displayConfig?.dateTo).toEqual(dateTo);
   }));
 
   it('updateTimeRangeOnRealtime should override set form values but not change config', fakeAsync(() => {
@@ -185,8 +191,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     component.updateTimeRangeOnRealtime({ dateFrom, dateTo });
     tick();
     // then
-    expect(component.displayConfig.dateFrom).toEqual(null);
-    expect(component.displayConfig.dateTo).toEqual(null);
+    expect(component.displayConfig?.dateFrom).toEqual(null);
+    expect(component.displayConfig?.dateTo).toEqual(null);
     expect(component.timeControlsFormGroup.value.dateFrom).toEqual(dateFrom);
     expect(component.timeControlsFormGroup.value.dateTo).toEqual(dateTo);
   }));
@@ -199,7 +205,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __active: true,
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
@@ -214,7 +220,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __active: true,
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
@@ -229,7 +235,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __active: false,
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
@@ -245,7 +251,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __target: { id: '1' },
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.handleDatapointOutOfSync(clonedDp);
     // then
