@@ -197,6 +197,7 @@ export class EchartsOptionsService {
           data: mainData,
           markPoint: {
             showSymbol: true,
+            symbolKeepAspect: true,
             data: markPointData,
           },
           ...this.chartTypesService.getSeriesOptions(
@@ -530,7 +531,7 @@ export class EchartsOptionsService {
           itemType: item.type,
           itemStyle: { color: item['color'] },
           symbol: ICONS_MAP.EVENT,
-          symbolSize: 15,
+          symbolSize: 20,
         },
       ];
     }
@@ -548,7 +549,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: item['color'] },
             symbol: ICONS_MAP[item.severity],
-            symbolSize: 15,
+            symbolSize: 20,
           },
           {
             coord: [
@@ -561,7 +562,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: item['color'] },
             symbol: ICONS_MAP.CLEARED,
-            symbolSize: 15,
+            symbolSize: 20,
           },
         ]
       : [
@@ -576,7 +577,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: item['color'] },
             symbol: ICONS_MAP[item.severity],
-            symbolSize: 15,
+            symbolSize: 20,
           },
           {
             coord: [
@@ -589,7 +590,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: item['color'] },
             symbol: ICONS_MAP[item.severity],
-            symbolSize: 15,
+            symbolSize: 20,
           },
         ];
   }
