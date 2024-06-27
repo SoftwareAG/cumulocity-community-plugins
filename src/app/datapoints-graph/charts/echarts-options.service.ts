@@ -161,7 +161,7 @@ export class EchartsOptionsService {
     const isAlarm = itemType === 'alarm';
 
     return Object.entries(itemsByType).flatMap(
-      ([type, itemsOfType]: [string, any]) => {
+      ([type, itemsOfType]: [string, (IAlarm | IEvent)[]]) => {
         // Main series data
         const mainData = itemsOfType.map((item) => [
           item.creationTime,
@@ -183,7 +183,7 @@ export class EchartsOptionsService {
                 coord: [item.creationTime, null],
                 name: item.type,
                 itemType: item.type,
-                itemStyle: { color: item.color },
+                itemStyle: { color: item['color'] },
               },
             ]);
           }
@@ -234,6 +234,8 @@ export class EchartsOptionsService {
           return [seriesWithMarkLine];
         } else if (displayOptions.displayMarkedPoint) {
           return [seriesWithMarkPoint];
+        } else {
+          return null;
         }
       }
     ) as SeriesOption[];
@@ -511,7 +513,7 @@ export class EchartsOptionsService {
       dpValuesArray,
       creationTime
     );
-    const lastUpdatedTime = new Date(item.lastUpdated).getTime();
+    const lastUpdatedTime = new Date(item['lastUpdated']).getTime();
     const closestDpValueLastUpdated = this.interpolateBetweenTwoDps(
       dpValuesArray,
       lastUpdatedTime
