@@ -20,14 +20,14 @@ jobs:
     timeout-minutes: 8
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -37,23 +37,23 @@ jobs:
         run: npm run lint
 
       - name: Build
-        run: npm run build:ci
+        run: npm run build
 
       - name: Zip build
         run: |
-          cd dist/apps/sag-pkg-community-plugins
+          cd dist/sag-pkg-community-plugins
           zip -r -q ../../build.zip *
-          cd ../../..
-          rm -r dist/apps
+          cd ../..
+          rm -r dist
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           if-no-files-found: error
           retention-days: 5
           path: |
-            dist/build.zip
+            build.zip
 
   release:
     name: Release
@@ -65,14 +65,14 @@ jobs:
       version: ${{ steps.save-version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '20'
 
       - name: Save initial Version
         id: save-initial-version
@@ -98,30 +98,30 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           ref: v${{ needs.release.outputs.version }}
-  
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'npm'
-  
+
       - name: Install dependencies
         run: npm ci
-  
+
       - name: Build
-        run: npm run build:ci
-  
+        run: npm run build
+
       - name: Zip build
         run: |
-          cd dist/apps/sag-pkg-community-plugins
-          zip -r -q ../../../cumulocity-community-plugins-${{ needs.release.outputs.version }}.zip *
-          cd ../../..
-          rm -r dist/apps
-  
+          cd dist/sag-pkg-community-plugins
+          zip -r -q ../../cumulocity-community-plugins-${{ needs.release.outputs.version }}.zip *
+          cd ../..
+          rm -r dist
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
