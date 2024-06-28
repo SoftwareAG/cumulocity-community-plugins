@@ -1,3 +1,26 @@
+## [3.0.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.0.0...v3.0.1) (2024-06-26)
+
+
+### Bug Fixes
+
+* **core:** add missing license ([aba8174](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/aba81743475d841c78ca2daa7c52ace50f3057a1))
+
+# [3.0.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.6...v3.0.0) (2024-06-26)
+
+
+### Features
+
+* **core:** [no-issue] upgrade to v1020 of Web SDK and migrate to ng cli ([#25](https://github.com/SoftwareAG/cumulocity-community-plugins/issues/25)) ([1117a54](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/1117a546ba3b5d02720460b3d22d7c839a56e96e))
+
+
+### BREAKING CHANGES
+
+* **core:** Compatibility with versions lower than 1018.0.0 is no longer ensured.
+
+Signed-off-by: Tristan Bastian <tristan.bastian@softwareag.com>
+Co-authored-by: Dawid Janusz <daj@softwareag.com>
+Co-authored-by: jdre <jdre@softwareag.com>
+
 ## [2.1.6](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v2.1.5...v2.1.6) (2023-11-27)
 
 

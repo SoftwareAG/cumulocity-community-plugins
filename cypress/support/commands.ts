@@ -8,6 +8,7 @@ declare global {
       interceptCurrentTenant(): Chainable<void>;
       interceptLoginOptions(): Chainable<void>;
       interceptAppManifest(): Chainable<void>;
+      interceptAppManifest(): Chainable<void>;
       /**
        * Below is the overwritten cy.request command with custom headers
        * @param {object} originalFn - Original request fn
@@ -146,6 +147,17 @@ Cypress.Commands.add('interceptLoginOptions', () => {
       loginOptions: [],
     });
   }).as('loginOptions');
+});
+
+Cypress.Commands.add('interceptAppManifest', () => {
+  cy.intercept(
+    '/application/applications/sag-pkg-community-plugins/manifest',
+    (req) => {
+      req.reply((res) => {
+        res.send(404);
+      });
+    }
+  ).as('appManifest');
 });
 
 Cypress.Commands.add('interceptAppManifest', () => {
