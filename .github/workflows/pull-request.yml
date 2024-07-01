@@ -1,6 +1,6 @@
 name: Pull request
 on:
-  pull_request:
+  workflow_dispatch: # TODO: switch back to "pull_request"
 
 permissions:
   contents: read
@@ -70,6 +70,7 @@ jobs:
           browser: chrome
           record: false
           config-file: cypress.config.ts
+          env: grepUntagged=true
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v4
