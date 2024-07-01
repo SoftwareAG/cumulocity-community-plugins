@@ -106,48 +106,7 @@ jobs:
           path: dist/apps/sag-pkg-community-plugins/
 
       - name: Get shell app of particular version
-        run: |
-          set -e  # Exit the script if any command fails
-          # Get shell version from current env
-          shell_version="${{ env.VERSION }}"
-          echo "Shell version is: $shell_version"
-
-          # Construct the file URL
-          file_url="http://resources.cumulocity.com/webapps/ui-releases/apps-${shell_version}.tgz"
-          echo "Shell file url is: $file_url"
-
-          # Download the file
-          echo "Downloading file..."
-          curl -O $file_url
-          if [ ! -f "apps-${shell_version}.tgz" ]; then
-            echo "Downloaded file not found!"
-            exit 1
-          fi
-          echo "File downloaded successfully."
-
-          # Extract the downloaded tar.gz file
-          echo "Extracting apps from downloaded file..."
-          tar -xzf "apps-${shell_version}.tgz"
-          if [ $? -ne 0 ]; then
-            echo "Extraction failed!"
-            exit 1
-          fi
-          echo "Apps extracted successfully."
-
-          # Unzip Cockpit to dist/apps
-          cockpit_file="cockpit-${shell_version}.zip"
-          destination_folder="dist/apps/cockpit"
-          mkdir -p "$destination_folder"
-          unzip -qq "$cockpit_file" -d "$destination_folder"
-          if [ $? -ne 0 ]; then
-            echo "Extracting cockpit file failed!"
-            exit 1
-          fi
-          echo "Cockpit extracted successfully."
-
-          # Echo the elements of dist/apps
-          echo "Contents of dist/apps:"
-          ls dist/apps
+        run: node get-shell-app.js
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
