@@ -1,16 +1,16 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
+    "outDir": "./out-tsc/app",
     "noImplicitOverride": false,
     "skipLibCheck": true,
     "strict": false
   },
   "files": [
-    "main.ts"
+    "src/main.ts"
   ],
   "include": [
-    "**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "**/*.spec.ts"
