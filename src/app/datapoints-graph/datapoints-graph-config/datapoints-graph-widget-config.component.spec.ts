@@ -7,6 +7,7 @@ import {
 import { DatapointsGraphWidgetConfigComponent } from './datapoints-graph-widget-config.component';
 import {
   CommonModule,
+  CoreModule,
   DynamicComponentAlertAggregator,
   FormsModule,
 } from '@c8y/ngx-components';
@@ -25,6 +26,9 @@ import { aggregationType } from '@c8y/client';
 import { AnimationBuilder } from '@angular/animations';
 import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { AlarmDetails, EventDetails } from '../alarm-event-selector';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
@@ -69,8 +73,13 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         ReactiveFormsModule,
         PopoverModule,
         DatapointSelectorModule,
+        CoreModule,
+        DragDropModule,
       ],
-      declarations: [DatapointsGraphWidgetConfigComponent],
+      declarations: [
+        DatapointsGraphWidgetConfigComponent,
+        AlarmEventSelectionListComponent,
+      ],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         NgForm,
@@ -126,6 +135,8 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         dateTo: config.dateTo,
         displayAggregationSelection: false,
         displayDateSelection: false,
+        displayMarkedLine: true,
+        displayMarkedPoint: true,
         interval: 'hours',
         realtime: false,
         widgetInstanceGlobalTimeContext: false,
@@ -138,6 +149,28 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         component.formGroup
       );
     });
+
+    it('should update alarmsEventsConfigs when form value changes', fakeAsync(() => {
+      // given
+      const alarm = {
+        timelineType: 'ALARM',
+        filters: {
+          type: 'critical',
+        },
+      } as any as AlarmDetails;
+      const event = {
+        timelineType: 'EVENT',
+        filters: {
+          type: 'position',
+        },
+      } as any as EventDetails;
+      // when
+      component.ngOnInit();
+      component.formGroup.patchValue({ alarms: [alarm], events: [event] });
+      tick();
+      // then
+      expect(component.config?.alarmsEventsConfigs).toEqual([alarm, event]);
+    }));
 
     describe('should init date selection', () => {
       it('as dashboard context', () => {
@@ -176,7 +209,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       component.formGroup.patchValue({ aggregation: aggregationType.MINUTELY });
       tick();
       // then
-      expect(component.config.aggregation).toBe(aggregationType.MINUTELY);
+      expect(component.config?.aggregation).toBe(aggregationType.MINUTELY);
     }));
   });
 
@@ -193,11 +226,14 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       expect(result).toBeTruthy();
       expect(configToSave).toEqual({
         aggregation: null,
+        alarmsEventsConfigs: [],
         datapoints: [dp],
         dateFrom: config.dateFrom,
         dateTo: config.dateTo,
         displayAggregationSelection: false,
         displayDateSelection: false,
+        displayMarkedLine: true,
+        displayMarkedPoint: true,
         interval: 'hours',
         realtime: false,
         widgetInstanceGlobalTimeContext: false,
@@ -212,7 +248,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
       fixture.detectChanges();
       component.formGroup.patchValue({ dateFrom: null });
       // when
-      const result = component.onBeforeSave(null);
+      const result = component.onBeforeSave(undefined);
       // then
       expect(result).toBeFalsy();
     });
@@ -260,7 +296,9 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
   it('timePropsChanged should update form value but should not invoke valueChange', fakeAsync(() => {
     // given
     const newDateFrom = new Date('2023-03-15T11:00:19.710Z');
-    let formValue;
+    let formValue: ReturnType<
+      DatapointsGraphWidgetConfigComponent['initForm']
+    >['value'] = {};
     fixture.detectChanges();
     component.formGroup.valueChanges.pipe(take(1)).subscribe((val) => {
       formValue = val;
@@ -269,7 +307,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
     component.timePropsChanged({ dateFrom: newDateFrom });
     tick();
     // then
-    expect(formValue.dateFrom).toBe(newDateFrom);
+    expect(formValue?.dateFrom).toBe(newDateFrom);
   }));
 
   it('updateTimeRangeOnRealtime should update form value but should not invoke valueChange', fakeAsync(() => {

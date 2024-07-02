@@ -8,6 +8,7 @@ import {
   HOOK_COMPONENTS,
 } from '@c8y/ngx-components';
 import { ContextWidgetConfig } from '@c8y/ngx-components/context-dashboard';
+import { ChartAlarmsService, ChartEventsService } from './charts';
 
 async function loadViewComponent() {
   const { DatapointsGraphWidgetViewComponent } = await import(
@@ -61,6 +62,8 @@ async function loadConfigComponent() {
         } as DynamicComponentDefinition,
       ],
     },
+    ChartAlarmsService,
+    ChartEventsService,
   ],
 })
 export class DatapointsGraphWidgetModule {}

@@ -12,6 +12,8 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
+  SEVERITY_LABELS,
+  SeverityType,
   Interval,
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
@@ -19,7 +21,18 @@ import { cloneDeep } from 'lodash-es';
 import { FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
-import { aggregationType } from '@c8y/client';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
+import {
+  ALARM_STATUS_LABELS,
+  AlarmStatusType,
+  SeverityFilter,
+  SeveritySettings,
+  aggregationType,
+} from '@c8y/client';
 import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 
 @Component({
@@ -31,6 +44,8 @@ import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 export class DatapointsGraphWidgetViewComponent
   implements OnChanges, OnDestroy
 {
+  events: EventDetails[] = [];
+  alarms: AlarmDetails[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator | undefined;
@@ -55,6 +70,7 @@ export class DatapointsGraphWidgetViewComponent
   );
   readonly hideDatapointLabel = gettext('Hide data point');
   readonly showDatapointLabel = gettext('Show data point');
+  readonly severitiesList = Object.keys(SEVERITY_LABELS) as SeverityType[];
   private destroy$ = new Subject<void>();
 
   constructor(private formBuilder: FormBuilder) {
@@ -112,6 +128,60 @@ export class DatapointsGraphWidgetViewComponent
       return;
     }
     this.datapointsOutOfSync.set(dpMatch, true);
+  }
+
+  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent): void {
+    if (alarmOrEvent.timelineType === 'ALARM') {
+      this.alarms = this.alarms.map((alarm) => {
+        if (alarm.filters.type === alarmOrEvent.filters.type) {
+          alarm.__hidden = !alarm.__hidden;
+        }
+        return alarm;
+      });
+    } else {
+      this.events = this.events.map((event) => {
+        if (event.filters.type === alarmOrEvent.filters.type) {
+          event.__hidden = !event.__hidden;
+        }
+        return event;
+      });
+    }
+    this.displayConfig = { ...this.displayConfig };
+  }
+
+  updateAlarmsAndEvents(alarmsEventsConfigs: AlarmOrEvent[]): void {
+    this.alarms = alarmsEventsConfigs.filter(
+      (alarm) => alarm.timelineType === 'ALARM'
+    ) as AlarmDetails[];
+    this.events = alarmsEventsConfigs.filter(
+      (event) => event.timelineType === 'EVENT'
+    ) as EventDetails[];
+  }
+
+  filterSeverity(eventTarget: {
+    showCleared: boolean;
+    severityOptions: SeveritySettings;
+  }): void {
+    this.alarms = this.alarms.map((alarm) => {
+      if (!alarm.__severity) {
+        alarm.__severity = [];
+      }
+      alarm.__severity = Object.keys(eventTarget.severityOptions).filter(
+        (severity): severity is keyof SeveritySettings =>
+          eventTarget.severityOptions[severity as keyof SeveritySettings]
+      ) as SeverityType[];
+
+      if (!alarm.__status) {
+        alarm.__status = [];
+      }
+      const statuses = Object.keys(ALARM_STATUS_LABELS) as AlarmStatusType[];
+      const filteredStatuses = eventTarget.showCleared
+        ? statuses
+        : statuses.filter((status) => status !== 'CLEARED');
+      alarm.__status = filteredStatuses;
+      return alarm;
+    });
+    this.displayConfig = { ...this.displayConfig };
   }
 
   private initForm() {

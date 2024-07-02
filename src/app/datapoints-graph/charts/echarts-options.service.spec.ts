@@ -89,10 +89,17 @@ describe('EchartsOptionsService', () => {
 
   it('should get options with static values', () => {
     // when
-    const options = service.getChartOptions([], timeRange, {
-      YAxis: false,
-      XAxis: false,
-    });
+    const options = service.getChartOptions(
+      [],
+      timeRange,
+      {
+        YAxis: false,
+        XAxis: false,
+      },
+      [],
+      [],
+      { displayMarkedLine: true, displayMarkedPoint: true }
+    );
     // then
     expect(JSON.stringify(options)).toBe(
       JSON.stringify({
@@ -130,10 +137,6 @@ describe('EchartsOptionsService', () => {
         },
         legend: {
           show: false,
-          itemHeight: 8,
-          textStyle: {
-            fontSize: 10,
-          },
         },
         xAxis: {
           min: timeRange.dateFrom,
@@ -171,10 +174,17 @@ describe('EchartsOptionsService', () => {
         .spyOn(yAxisService, 'getYAxis')
         .mockReturnValue([{ position: 'left' }]);
       // when
-      const options = service.getChartOptions([], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      });
+      const options = service.getChartOptions(
+        [],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      );
       // then
       expect(options.grid).toEqual({
         containLabel: false,
@@ -191,10 +201,17 @@ describe('EchartsOptionsService', () => {
         .spyOn(yAxisService, 'getYAxis')
         .mockReturnValue([{ position: 'left' }, { position: 'right' }]);
       // when
-      const options = service.getChartOptions([], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      });
+      const options = service.getChartOptions(
+        [],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      );
       // then
       expect(options.grid).toEqual({
         containLabel: false,
@@ -217,10 +234,17 @@ describe('EchartsOptionsService', () => {
           { position: 'right' },
         ]);
       // when
-      const options = service.getChartOptions([], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      });
+      const options = service.getChartOptions(
+        [],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      );
       // then
       expect(options.grid).toEqual({
         containLabel: false,
@@ -235,42 +259,70 @@ describe('EchartsOptionsService', () => {
   describe('handle bars charts', () => {
     it('should set dataZoom filterMode "filter" when there is at least one bars chart', () => {
       // when
-      const dataZoomOptions = service.getChartOptions([dp1, dp2], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).dataZoom as DataZoomComponentOption;
+      const dataZoomOptions = service.getChartOptions(
+        [dp1, dp2],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).dataZoom as DataZoomComponentOption;
       // then
       expect(dataZoomOptions.filterMode).toBe('filter');
     });
 
     it('should set dataZoom filterMode "none" when there is no bars chart', () => {
       // when
-      const dataZoomOptions = service.getChartOptions([dp1], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).dataZoom as DataZoomComponentOption;
+      const dataZoomOptions = service.getChartOptions(
+        [dp1],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).dataZoom as DataZoomComponentOption;
       // then
       expect(dataZoomOptions.filterMode).toBe('none');
     });
 
     it('should set xAxis axisLine onZeroAxisIndex to "-1" when there are no bars chart', () => {
       // when
-      const xAxisOptions = service.getChartOptions([dp1], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).xAxis as XAXisOption;
+      const xAxisOptions = service.getChartOptions(
+        [dp1],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).xAxis as XAXisOption;
       // then
-      expect(xAxisOptions.axisLine.onZeroAxisIndex).toBe(-1);
+      expect(xAxisOptions.axisLine?.onZeroAxisIndex).toBe(-1);
     });
 
     it('should set xAxis axisLine onZeroAxisIndex to "1" when there is bars chart on index 1', () => {
       // when
-      const xAxisOptions = service.getChartOptions([dp1, dp2], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).xAxis as XAXisOption;
+      const xAxisOptions = service.getChartOptions(
+        [dp1, dp2],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).xAxis as XAXisOption;
       // then
-      expect(xAxisOptions.axisLine.onZeroAxisIndex).toBe(1);
+      expect(xAxisOptions.axisLine?.onZeroAxisIndex).toBe(1);
     });
   });
 
@@ -278,10 +330,10 @@ describe('EchartsOptionsService', () => {
     it('for one datapoint', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
+      jest.spyOn(service.echartsInstance!, 'getOption').mockReturnValue({
         series: [
           {
-            id: dp1.__target.id + dp1.fragment + dp1.series,
+            id: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
@@ -291,13 +343,20 @@ describe('EchartsOptionsService', () => {
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1], timeRange, {
-          YAxis: false,
-          XAxis: false,
-        }).tooltip as TooltipOption
+        service.getChartOptions(
+          [dp1],
+          timeRange,
+          {
+            YAxis: false,
+            XAxis: false,
+          },
+          [],
+          [],
+          { displayMarkedLine: true, displayMarkedPoint: true }
+        ).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
-      const tooltipInnerHtml = tooltipFormatter(params, null);
+      const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
         `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div>`
@@ -307,17 +366,17 @@ describe('EchartsOptionsService', () => {
     it('for two datapoints that has no value on exact timestamp', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
+      jest.spyOn(service.echartsInstance!, 'getOption').mockReturnValue({
         series: [
           {
-            id: dp1.__target.id + dp1.fragment + dp1.series,
+            id: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
             datapointUnit: 'C',
           },
           {
-            id: dp3.__target.id + dp3.fragment + dp3.series,
+            id: dp3.__target?.id + dp3.fragment + dp3.series,
             data: [
               ['2023-03-20T10:08:00.000Z', 0],
               ['2023-03-20T10:09:00.000Z', 2],
@@ -331,13 +390,20 @@ describe('EchartsOptionsService', () => {
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1, dp3], timeRange, {
-          YAxis: false,
-          XAxis: false,
-        }).tooltip as TooltipOption
+        service.getChartOptions(
+          [dp1, dp3],
+          timeRange,
+          {
+            YAxis: false,
+            XAxis: false,
+          },
+          [],
+          [],
+          { displayMarkedLine: true, displayMarkedPoint: true }
+        ).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
-      const tooltipInnerHtml = tooltipFormatter(params, null);
+      const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
         `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10 C<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div><span style='display: inline-block; background-color: red ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>2 C<div style="font-size: 11px">2023-03-20T10:09:00.000Z</div>`
@@ -350,31 +416,31 @@ describe('EchartsOptionsService', () => {
       const oneMinuteAfterXAxisValue = new Date(
         new Date(XAxisValue).valueOf() + 60_000
       );
-      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
+      jest.spyOn(service.echartsInstance!, 'getOption').mockReturnValue({
         series: [
           {
-            id: dp1.__target.id + dp1.fragment + dp1.series,
+            id: dp1.__target?.id + dp1.fragment + dp1.series,
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
             datapointUnit: 'C',
           },
           {
-            id: dp2.__target.id + dp2.fragment + dp2.series + '/min',
+            id: dp2.__target?.id + dp2.fragment + dp2.series + '/min',
             data: [[oneMinuteAfterXAxisValue, -10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
             datapointUnit: 'C',
           },
           {
-            id: dp2.__target.id + dp2.fragment + dp2.series + '/max',
+            id: dp2.__target?.id + dp2.fragment + dp2.series + '/max',
             data: [[oneMinuteAfterXAxisValue, 10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
             datapointUnit: 'C',
           },
           {
-            id: dp3.__target.id + dp3.fragment + dp3.series,
+            id: dp3.__target?.id + dp3.fragment + dp3.series,
             data: [[oneMinuteAfterXAxisValue, 0]],
             itemStyle: { color: 'red' },
             datapointLabel: 'c8y_Temperature → T',
@@ -385,13 +451,20 @@ describe('EchartsOptionsService', () => {
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1, dp3], timeRange, {
-          YAxis: false,
-          XAxis: false,
-        }).tooltip as TooltipOption
+        service.getChartOptions(
+          [dp1, dp3],
+          timeRange,
+          {
+            YAxis: false,
+            XAxis: false,
+          },
+          [],
+          [],
+          { displayMarkedLine: true, displayMarkedPoint: true }
+        ).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
-      const tooltipInnerHtml = tooltipFormatter(params, null);
+      const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
         `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10 C<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div>`
@@ -401,17 +474,17 @@ describe('EchartsOptionsService', () => {
     it('for one datapoint and chart render type is "area"', () => {
       // given
       const XAxisValue = '2023-03-20T10:10:00.000Z';
-      jest.spyOn(service.echartsInstance, 'getOption').mockReturnValue({
+      jest.spyOn(service.echartsInstance!, 'getOption').mockReturnValue({
         series: [
           {
-            id: dp1.__target.id + dp1.fragment + dp1.series + '/min',
+            id: dp1.__target?.id + dp1.fragment + dp1.series + '/min',
             data: [[XAxisValue, -10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
             datapointUnit: 'C',
           },
           {
-            id: dp1.__target.id + dp1.fragment + dp1.series + '/max',
+            id: dp1.__target?.id + dp1.fragment + dp1.series + '/max',
             data: [[XAxisValue, 10]],
             itemStyle: { color: 'blue' },
             datapointLabel: 'c8y_Temperature → T',
@@ -422,13 +495,20 @@ describe('EchartsOptionsService', () => {
       const params = [{ data: [XAxisValue, -10] }] as any;
 
       const tooltipFormatter = (
-        service.getChartOptions([dp1], timeRange, {
-          YAxis: false,
-          XAxis: false,
-        }).tooltip as TooltipOption
+        service.getChartOptions(
+          [dp1],
+          timeRange,
+          {
+            YAxis: false,
+            XAxis: false,
+          },
+          [],
+          [],
+          { displayMarkedLine: true, displayMarkedPoint: true }
+        ).tooltip as TooltipOption
       ).formatter as TooltipFormatterCallback<TopLevelFormatterParams>;
       // when
-      const tooltipInnerHtml = tooltipFormatter(params, null);
+      const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
         `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10 — 10 C<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div>`
@@ -445,14 +525,21 @@ describe('EchartsOptionsService', () => {
           '2023-03-20T10:09:00.000Z': [{ min: 2, max: 2 }],
         },
       };
-      const series = service.getChartOptions([dpWithValues], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).series as SeriesOption[];
+      const series = service.getChartOptions(
+        [dpWithValues],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).series as SeriesOption[];
       // then
       expect(series).toHaveLength(1);
       expect((series[0] as any).id).toBe(
-        dp1.__target.id + dp1.fragment + dp1.series
+        dp1.__target?.id + dp1.fragment + dp1.series
       );
       expect((series[0] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', 1],
@@ -469,17 +556,24 @@ describe('EchartsOptionsService', () => {
           '2023-03-20T10:09:00.000Z': [{ min: 4, max: 12 }],
         },
       };
-      const series = service.getChartOptions([dpWithValues], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).series as SeriesOption[];
+      const series = service.getChartOptions(
+        [dpWithValues],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).series as SeriesOption[];
       // then
       expect(series).toHaveLength(2);
       expect((series[0] as any).id).toBe(
-        dp1.__target.id + dp1.fragment + dp1.series + '/min'
+        dp1.__target?.id + dp1.fragment + dp1.series + '/min'
       );
       expect((series[1] as any).id).toBe(
-        dp1.__target.id + dp1.fragment + dp1.series + '/max'
+        dp1.__target?.id + dp1.fragment + dp1.series + '/max'
       );
       expect((series[0] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', -10],
@@ -501,17 +595,24 @@ describe('EchartsOptionsService', () => {
           '2023-03-20T10:09:00.000Z': [{ min: 4, max: 12 }],
         },
       };
-      const series = service.getChartOptions([dpWithValues], timeRange, {
-        YAxis: false,
-        XAxis: false,
-      }).series as SeriesOption[];
+      const series = service.getChartOptions(
+        [dpWithValues],
+        timeRange,
+        {
+          YAxis: false,
+          XAxis: false,
+        },
+        [],
+        [],
+        { displayMarkedLine: true, displayMarkedPoint: true }
+      ).series as SeriesOption[];
       // then
       expect(series).toHaveLength(2);
       expect((series[0] as any).id).toBe(
-        dp2.__target.id + dp2.fragment + dp2.series + '/min'
+        dp2.__target?.id + dp2.fragment + dp2.series + '/min'
       );
       expect((series[1] as any).id).toBe(
-        dp2.__target.id + dp2.fragment + dp2.series + '/max'
+        dp2.__target?.id + dp2.fragment + dp2.series + '/max'
       );
       expect((series[0] as any).data).toEqual([
         ['2023-03-20T10:08:00.000Z', -10],

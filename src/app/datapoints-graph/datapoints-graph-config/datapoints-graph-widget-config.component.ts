@@ -32,7 +32,9 @@ import {
   DatapointSelectorModalOptions,
 } from '@c8y/ngx-components/datapoint-selector';
 import { ActivatedRoute } from '@angular/router';
+import { omit } from 'lodash-es';
 import { aggregationType } from '@c8y/client';
+import { AlarmDetails, EventDetails } from '../alarm-event-selector';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -90,13 +92,29 @@ export class DatapointsGraphWidgetConfigComponent
     }
     this.form.form.addControl('config', this.formGroup);
     this.formGroup.patchValue(this.config || {});
+    this.formGroup.controls.alarms.setValue(
+      this.config?.alarmsEventsConfigs?.filter(
+        (ae) => ae.timelineType === 'ALARM'
+      ) as AlarmDetails[]
+    );
+    this.formGroup.controls.events.setValue(
+      this.config?.alarmsEventsConfigs?.filter(
+        (ae) => ae.timelineType === 'EVENT'
+      ) as EventDetails[]
+    );
 
     this.initDateSelection();
     this.setActiveDatapointsExists();
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.config = { ...value };
+        this.config = {
+          ...value,
+          alarmsEventsConfigs: [
+            ...(this.formGroup.value.alarms || []),
+            ...(this.formGroup.value.events || []),
+          ],
+        };
         this.setActiveDatapointsExists();
       });
   }
@@ -110,7 +128,13 @@ export class DatapointsGraphWidgetConfigComponent
     config?: DatapointsGraphWidgetConfig
   ): boolean | Promise<boolean> | Observable<boolean> {
     if (this.formGroup.valid && config) {
-      Object.assign(config, this.formGroup.value);
+      Object.assign(config, omit(this.formGroup.value, ['alarms', 'events']), {
+        alarmsEventsConfigs: [
+          ...(this.formGroup.value.alarms || []),
+          ...(this.formGroup.value.events || []),
+        ],
+      });
+
       return true;
     }
     return false;
@@ -152,6 +176,10 @@ export class DatapointsGraphWidgetConfigComponent
         [] as DatapointsGraphKPIDetails[],
         [Validators.required, Validators.minLength(1)],
       ],
+      alarms: [[] as AlarmDetails[]],
+      events: [[] as EventDetails[]],
+      displayMarkedLine: [true, []],
+      displayMarkedPoint: [true, []],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],
