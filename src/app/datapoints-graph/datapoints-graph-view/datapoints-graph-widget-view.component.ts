@@ -26,7 +26,13 @@ import {
   AlarmOrEvent,
   EventDetails,
 } from '../alarm-event-selector';
-import { aggregationType } from '@c8y/client';
+import {
+  ALARM_STATUS_LABELS,
+  AlarmStatusType,
+  SeverityFilter,
+  SeveritySettings,
+  aggregationType,
+} from '@c8y/client';
 import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 
 @Component({
@@ -152,17 +158,27 @@ export class DatapointsGraphWidgetViewComponent
     ) as EventDetails[];
   }
 
-  filterSeverity(severity, eventTarget) {
-    const isChecked = eventTarget.checked;
+  filterSeverity(eventTarget: {
+    showCleared: boolean;
+    severityOptions: SeveritySettings;
+  }): void {
     this.alarms = this.alarms.map((alarm) => {
       if (!alarm.__severity) {
         alarm.__severity = [];
       }
-      if (!isChecked) {
-        alarm.__severity = alarm.__severity.filter((sev) => sev !== severity);
-        return alarm;
+      alarm.__severity = Object.keys(eventTarget.severityOptions).filter(
+        (severity): severity is keyof SeveritySettings =>
+          eventTarget.severityOptions[severity as keyof SeveritySettings]
+      ) as SeverityType[];
+
+      if (!alarm.__status) {
+        alarm.__status = [];
       }
-      alarm.__severity = [...alarm.__severity, severity];
+      const statuses = Object.keys(ALARM_STATUS_LABELS) as AlarmStatusType[];
+      const filteredStatuses = eventTarget.showCleared
+        ? statuses
+        : statuses.filter((status) => status !== 'CLEARED');
+      alarm.__status = filteredStatuses;
       return alarm;
     });
     this.displayConfig = { ...this.displayConfig };

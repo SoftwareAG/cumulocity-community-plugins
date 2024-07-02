@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ChartAlarmsService } from './chart-alarms.service';
-import { AlarmService, IAlarm } from '@c8y/client';
+import { AlarmService, IAlarm, IFetchResponse, IResultList } from '@c8y/client';
+import { AlarmDetails } from '../alarm-event-selector';
 
 describe('ChartAlarmsService', () => {
   let service: ChartAlarmsService;
@@ -20,29 +21,26 @@ describe('ChartAlarmsService', () => {
 
   describe('listAlarms', () => {
     it('should return a list of alarms', async () => {
-      const mockAlarms: IAlarm[] = [
-        { id: '1', text: 'Alarm 1' },
-        { id: '2', text: 'Alarm 2' },
-        { id: '3', text: 'Alarm 3' },
+      const mockAlarmsData: IAlarm[] = [
+        { id: '1', text: 'Alarm 1' } as IAlarm,
+        { id: '2', text: 'Alarm 2' } as IAlarm,
+        { id: '3', text: 'Alarm 3' } as IAlarm,
       ];
+      const mockAlarms = Promise.resolve({
+        data: mockAlarmsData,
+        res: { status: 200, headers: {} } as IFetchResponse,
+      });
       jest.spyOn(alarmService, 'list').mockResolvedValue(mockAlarms);
 
-      const result = await service.listAlarms();
+      const result = await service.listAlarms({}, [
+        {
+          timelineType: 'ALARM',
+          filters: { type: 'type' },
+          __target: { id: '1' },
+        } as AlarmDetails,
+      ]);
 
-      expect(result).toEqual(mockAlarms);
-    });
-
-    it('should filter alarms based on the provided parameters', async () => {
-      const mockAlarms: IAlarm[] = [
-        { id: '1', text: 'Alarm 1', severity: 'MAJOR' },
-        { id: '2', text: 'Alarm 2', severity: 'MINOR' },
-        { id: '3', text: 'Alarm 3', severity: 'CRITICAL' },
-      ];
-      jest.spyOn(alarmService, 'list').mockResolvedValue(mockAlarms);
-
-      const result = await service.listAlarms({ severity: 'MAJOR' });
-
-      expect(result).toEqual([{ id: '1', text: 'Alarm 1', severity: 'MAJOR' }]);
+      expect(result).toEqual(mockAlarmsData);
     });
   });
 });

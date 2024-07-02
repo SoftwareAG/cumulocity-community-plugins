@@ -39,23 +39,10 @@
       ></c8y-time-controls>
     </div>
 
-    <li
-      class="p-l-16 p-r-16 p-t-4 p-b-4 d-flex a-i-center"
-      *ngFor="let severity of severitiesList"
-    >
-      <label class="c8y-checkbox d-flex a-i-center" [title]="severity">
-        <input
-          type="checkbox"
-          (change)="filterSeverity(severity, $event.target)"
-        />
-        <span></span>
-        <i
-          class="status stroked-icon m-l-8 icon-20"
-          [ngClass]="severity | lowercase"
-        ></i>
-        <span class="m-l-8">{{ severity | translate }}</span>
-      </label>
-    </li>
+    <c8y-alarms-filter
+      [contextSourceId]="''"
+      (onFilterApplied)="filterSeverity($event)"
+    ></c8y-alarms-filter>
 
     <div class="m-l-auto btn-group btn-group-sm">
       <button

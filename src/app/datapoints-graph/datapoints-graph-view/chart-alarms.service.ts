@@ -12,16 +12,23 @@ export class ChartAlarmsService {
    * @param alarms List of alarm types with details like color, target, etc.
    * @returns List of alarms for the given alarm details
    */
-  async listAlarms(params?, alarms?: AlarmDetails[]): Promise<IAlarm[]> {
+  async listAlarms(params?: any, alarms?: AlarmDetails[]): Promise<IAlarm[]> {
     if (!alarms) {
       return [];
     }
     const promises = alarms.map((alarm) => {
-      if (alarm.__severity?.length > 0) {
+      if (alarm.__severity && alarm.__severity?.length > 0) {
         const severities = alarm.__severity.join(',');
         params = {
           ...params,
           severity: severities,
+        };
+      }
+      if (alarm.__status && alarm.__status?.length > 0) {
+        const statuses = alarm.__status.join(',');
+        params = {
+          ...params,
+          status: statuses,
         };
       }
       const fetchOptions: IFetchOptions = {

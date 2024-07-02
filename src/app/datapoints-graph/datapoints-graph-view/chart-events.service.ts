@@ -12,7 +12,7 @@ export class ChartEventsService {
    * @param events List of event types with details like color, target, etc.
    * @returns List of events for the given event details
    */
-  async listEvents(params?, events?: EventDetails[]): Promise<IEvent[]> {
+  async listEvents(params?: any, events?: EventDetails[]): Promise<IEvent[]> {
     if (!events) {
       return [];
     }

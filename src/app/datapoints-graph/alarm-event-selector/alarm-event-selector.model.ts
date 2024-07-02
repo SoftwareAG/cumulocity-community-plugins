@@ -1,4 +1,4 @@
-import { IIdentified } from '@c8y/client';
+import { AlarmStatusType, IIdentified } from '@c8y/client';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 import { SeverityType } from '@c8y/client/lib/src/core/Severity';
 
@@ -33,6 +33,7 @@ export type AlarmDetails = AlarmOrEventBase & {
   };
   __hidden?: boolean;
   __severity?: SeverityType[];
+  __status?: AlarmStatusType[];
 };
 
 export type EventDetails = AlarmOrEventBase & {

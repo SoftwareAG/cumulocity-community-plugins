@@ -12,6 +12,8 @@ import type {
   ScatterSeriesOption,
 } from 'echarts';
 import { AlarmOrEvent } from '../alarm-event-selector';
+import { TooltipFormatterCallback } from 'echarts/types/src/util/types';
+import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
 
 export type DatapointsGraphKPIDetails = KPIDetails & {
   lineType?: DatapointLineType;
@@ -132,14 +134,17 @@ export interface MarkPointData {
   name: string;
   itemType: string;
   itemStyle: { color: string };
-  symbol: string; // Symbol to display for the mark point (reference to ICONS_MAP)
-  symbolSize: number;
+  symbol?: string; // Symbol to display for the mark point (reference to ICONS_MAP)
+  symbolSize?: number;
 }
 
 export interface MarkLineData {
-  xAxis: number;
+  xAxis: string | undefined;
   itemType: string;
-  label: { show: boolean; formatter: (params: any) => string };
+  label: {
+    show: boolean;
+    formatter: TooltipFormatterCallback<TopLevelFormatterParams> | string;
+  };
   itemStyle: { color: string };
 }
 

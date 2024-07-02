@@ -1,0 +1,146 @@
+<form class="d-flex a-i-center" [formGroup]="formGroup">
+  <label>
+    {{ 'Filter alarms' | translate }}
+  </label>
+  <div
+    class="dropdown"
+    dropdown
+    #filtersDropdown="bs-dropdown"
+    [cdkTrapFocus]="filtersDropdown.isOpen"
+    [insideClick]="true"
+  >
+    <div class="input-group">
+      <div class="form-control">
+        <ng-container
+          *ngIf="chips.length !== severitiesList.length; else allAlarms"
+        >
+          <span class="label label-info chip" *ngFor="let chip of chips">
+            <button
+              class="btn btn-xs btn-clean text-10"
+              title="{{ 'Remove' | translate }}"
+              type="button"
+              (click)="deselectChip(chip); $event.stopPropagation()"
+            >
+              <i c8yIcon="times"></i>
+            </button>
+            <i
+              class="status stroked-icon m-l-4 m-r-4 icon-12"
+              [c8yIcon]="chip | AlarmSeverityToIcon"
+              [ngClass]="chip | lowercase"
+            ></i>
+            {{ SEVERITY_LABELS[chip] | translate }}
+          </span>
+        </ng-container>
+        <ng-template #allAlarms>
+          {{ 'All alarms' | translate }}
+        </ng-template>
+      </div>
+      <div class="input-group-btn input-group-btn--last">
+        <button
+          class="btn-default btn btn--caret"
+          title="{{ chips | AlarmSeveritiesToTitle }}"
+          data-cy="c8y-alarm-filter"
+          dropdownToggle
+          (click)="resetForm()"
+        >
+          <i class="caret"></i>
+        </button>
+      </div>
+    </div>
+    <ul class="dropdown-menu dropdown-menu-action-bar" *dropdownMenu>
+      <li
+        class="p-l-16 p-r-16 p-t-4 p-b-4 d-flex a-i-center sticky-top separator-bottom"
+      >
+        <label
+          class="c8y-checkbox d-flex a-i-center"
+          [title]="'All' | translate"
+        >
+          <input
+            type="checkbox"
+            data-cy="c8y-alarm-filter--all"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="allChanged($event)"
+            [ngModel]="isEachCheckboxSelected$ | async"
+            (click)="markSeveritiesAsTouched()"
+          />
+          <span></span>
+          <i class="status stroked-icon m-l-8 icon-20" [c8yIcon]="'bell'"></i>
+          <span class="m-l-8">{{ 'All' | translate }}</span>
+        </label>
+      </li>
+      <li
+        class="p-l-16 p-r-16 p-t-4 p-b-4 d-flex a-i-center"
+        *ngFor="let severity of severitiesList"
+      >
+        <label
+          class="c8y-checkbox d-flex a-i-center"
+          [title]="SEVERITY_LABELS[severity] | translate"
+        >
+          <input
+            type="checkbox"
+            [attr.data-cy]="'c8y-alarm-filter--' + severity"
+            [formControlName]="severity"
+            [value]="severity"
+            (click)="markSeveritiesAsTouched()"
+          />
+          <span></span>
+          <i
+            class="status stroked-icon m-l-8 icon-20"
+            [c8yIcon]="severity | AlarmSeverityToIcon"
+            [ngClass]="severity | lowercase"
+          ></i>
+          <span class="m-l-8">{{ SEVERITY_LABELS[severity] | translate }}</span>
+        </label>
+        <!-- badge -->
+        <div
+          class="badge badge-info m-l-auto"
+          *ngIf="alarmCounts[severity] || alarmCounts[severity] === 0"
+        >
+          <i
+            class="icon-spin"
+            [c8yIcon]="'circle-o-notch'"
+            *ngIf="countLoading"
+          ></i>
+          <span *ngIf="!countLoading" [attr.data-cy]="severity + '-badge'">
+            {{ alarmCounts[severity] < 99 ? alarmCounts[severity] : '99+' }}
+          </span>
+        </div>
+      </li>
+      <li class="p-l-16 p-r-16 p-t-4 p-b-4 d-flex a-i-center separator-top">
+        <label
+          class="c8y-switch"
+          [attr.aria-label]="'Show cleared alarms' | translate"
+          [attr.data-cy]="'c8y-alarms-filter--cleared'"
+        >
+          <input
+            type="checkbox"
+            #showClearedCheckbox
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="showCleared"
+            (click)="markSeveritiesAsTouched()"
+          />
+          <span></span>
+          <span
+            class="text-truncate"
+            title="{{ 'Show cleared alarms' | translate }}"
+          >
+            {{ 'Show cleared alarms' | translate }}
+          </span>
+        </label>
+      </li>
+
+      <div class="p-16 d-flex sticky-bottom separator-top">
+        <button
+          [attr.data-cy]="'c8y-alarms-filter--apply'"
+          class="btn btn-primary btn-sm flex-grow"
+          title="{{ 'Apply' | translate }}"
+          type="button"
+          (click)="applyFilters(); closeDropdown()"
+          [disabled]="shouldDisableApplyButton$ | async"
+        >
+          {{ 'Apply' | translate }}
+        </button>
+      </div>
+    </ul>
+  </div>
+</form>

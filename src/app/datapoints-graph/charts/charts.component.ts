@@ -15,6 +15,7 @@ import {
   DatapointsGraphWidgetTimeProps,
   DatapointWithValues,
   INTERVALS,
+  MarkLineData,
 } from '../model';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -34,6 +35,7 @@ import { EchartsOptionsService } from './echarts-options.service';
 import { ChartRealtimeService } from './chart-realtime.service';
 import type { DataZoomOption } from 'echarts/types/src/component/dataZoom/DataZoomModel';
 import type {
+  CallbackDataParams,
   ECActionEvent,
   TooltipFormatterCallback,
 } from 'echarts/types/src/util/types';
@@ -52,6 +54,7 @@ import {
 } from '../alarm-event-selector';
 import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
 import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
+import { EchartsCustomOptions } from './chart.model';
 import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
@@ -85,13 +88,13 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 })
 export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   chartOption$: Observable<EChartsOption>;
-  echartsInstance: ECharts;
+  echartsInstance!: ECharts;
   zoomHistory: ZoomState[] = [];
   zoomInActive = false;
-  alarms: IAlarm[];
-  events: IEvent[];
-  @Input() config: DatapointsGraphWidgetConfig;
-  @Input() alerts: DynamicComponentAlertAggregator;
+  alarms: IAlarm[] = [];
+  events: IEvent[] = [];
+  @Input() config!: DatapointsGraphWidgetConfig;
+  @Input() alerts!: DynamicComponentAlertAggregator;
   @Output() configChangeOnZoomOut =
     new EventEmitter<DatapointsGraphWidgetTimeProps>();
   @Output() timeRangeChangeOnRealtime = new EventEmitter<
@@ -99,7 +102,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   >();
   @Output() datapointOutOfSync = new EventEmitter<DatapointsGraphKPIDetails>();
   @Output() updateAlarmsAndEvents = new EventEmitter<AlarmOrEvent[]>();
-  private configChangedSubject = new BehaviorSubject<void>(null);
+  private configChangedSubject = new BehaviorSubject<void | null>(null);
 
   @HostListener('keydown.escape') onEscapeKeyDown() {
     if (this.zoomInActive) {
@@ -121,7 +124,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       switchMap((datapointsWithValues: DatapointWithValues[]) => {
         if (datapointsWithValues.length === 0) {
           this.echartsInstance?.clear();
-          return of(null);
+          return of(this.getDefaultChartOptions());
         }
         return of(this.getChartOptions(datapointsWithValues));
       }),
@@ -168,7 +171,12 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
     this.echartsInstance.on('click', this.onChartClick.bind(this));
 
-    let originalFormatter = null;
+    let originalFormatter:
+      | TooltipFormatterCallback<TopLevelFormatterParams>
+      | string
+      | null
+      | undefined = null;
+
     this.echartsInstance.on('mouseover', (params: any) => {
       if (
         params?.componentType !== 'markLine' &&
@@ -176,14 +184,22 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       ) {
         return;
       }
-      const options = this.echartsInstance.getOption();
+
+      const options = this.echartsInstance.getOption() as EChartsOption;
+      if (!options.tooltip || !Array.isArray(options.tooltip)) {
+        return;
+      }
       originalFormatter = originalFormatter ?? options['tooltip'][0].formatter;
 
       const updatedOptions: Partial<SeriesOption> = {
-        tooltip: options['tooltip'],
+        tooltip: options['tooltip'][0],
       };
-      updatedOptions.tooltip[0].formatter = (
-        tooltipParams: TooltipFormatterCallback<TopLevelFormatterParams>
+
+      if (!updatedOptions.tooltip) {
+        return;
+      }
+      updatedOptions.tooltip.formatter = (
+        tooltipParams: CallbackDataParams
       ) => {
         return this.echartsOptionsService.getTooltipFormatterForAlarmAndEvents(
           tooltipParams,
@@ -197,7 +213,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
 
     this.echartsInstance.on('mouseout', () => {
-      const options = this.echartsInstance.getOption();
+      const options = this.echartsInstance.getOption() as EchartsCustomOptions;
       if (originalFormatter) {
         options['tooltip'][0].formatter = originalFormatter;
         this.echartsInstance.setOption(options);
@@ -205,7 +221,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  onChartClick(params) {
+  onChartClick(params: any) {
     const options = this.echartsInstance.getOption();
     if (!this.isAlarmClick(params)) {
       this.echartsInstance.setOption({
@@ -268,11 +284,11 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     this.echartsInstance.setOption(updatedOptions);
   }
 
-  isAlarmClick(params): boolean {
+  isAlarmClick(params: any): boolean {
     return this.alarms.some((alarm) => alarm.type === params.data.itemType);
   }
 
-  hasMarkArea(options): boolean {
+  hasMarkArea(options: any): boolean {
     return options?.series?.[0]?.markArea?.data?.length > 0;
   }
 
@@ -354,6 +370,22 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  private getDefaultChartOptions(): EChartsOption {
+    return {
+      title: {
+        text: 'No Data Available',
+      },
+      xAxis: {
+        type: 'category',
+        data: [],
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: [],
+    };
+  }
+
   private getMarkedAreaData(clickedAlarms: IAlarm[]) {
     const timeRange = this.getTimeRange();
     const clearedAlarmColor = 'rgba(221,255,221,1.00)';
@@ -383,25 +415,25 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private getMarkedLineData(clickedAlarms: IAlarm[]) {
-    return clickedAlarms.reduce((acc, alarm) => {
+    return clickedAlarms.reduce<MarkLineData[]>((acc, alarm) => {
       const isClickedAlarmCleared = alarm.status === AlarmStatus.CLEARED;
       if (isClickedAlarmCleared) {
         return acc.concat([
           {
             xAxis: alarm.creationTime,
-            alarmType: alarm.type,
+            itemType: alarm.type,
             label: {
               show: false,
-              formatter: alarm.type,
+              formatter: () => alarm.type,
             },
             itemStyle: { color: alarm['color'] },
           },
           {
             xAxis: alarm['lastUpdated'],
-            alarmType: alarm.type,
+            itemType: alarm.type,
             label: {
               show: false,
-              formatter: alarm.type,
+              formatter: () => alarm.type,
             },
             itemStyle: { color: alarm['color'] },
           },
@@ -410,10 +442,10 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       return acc.concat([
         {
           xAxis: alarm.creationTime,
-          alarmType: alarm.type,
+          itemType: alarm.type,
           label: {
             show: false,
-            formatter: alarm.type,
+            formatter: () => alarm.type,
           },
           itemStyle: { color: alarm['color'] },
         },
@@ -429,7 +461,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     };
     if (!this.config.alarmsEventsConfigs) return;
     const visibleAlarmsOrEvents = this.config.alarmsEventsConfigs?.filter(
-      (alarmOrEvent) => !alarmOrEvent.__hidden
+      (alarmOrEvent) => !alarmOrEvent.__hidden && alarmOrEvent.__active
     );
     const alarms = visibleAlarmsOrEvents?.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
@@ -463,8 +495,8 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         (timeRange) => this.timeRangeChangeOnRealtime.emit(timeRange),
         this.config.alarmsEventsConfigs,
         {
-          displayMarkedLine: this.config.displayMarkedLine,
-          displayMarkedPoint: this.config.displayMarkedPoint,
+          displayMarkedLine: this.config.displayMarkedLine || false,
+          displayMarkedPoint: this.config.displayMarkedPoint || false,
         }
       );
     }
@@ -490,7 +522,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     activeAlarms.forEach((activeAlarm) => {
       const alarmType = activeAlarm.type;
       const alarm = this.alarms.find((alarm) => alarm.type === alarmType);
-      if (!alarm) {
+      if (!alarm && this.config.activeAlarmTypesOutOfRange) {
         this.config.activeAlarmTypesOutOfRange.push(alarmType);
       }
     });
@@ -499,7 +531,9 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   private updateZoomState(): void {
     const dataZoom: any = this.echartsInstance.getOption()['dataZoom'];
     const { startValue, endValue }: DataZoomOption = dataZoom[0];
-    this.zoomHistory.push({ startValue, endValue });
+    if (startValue && endValue) {
+      this.zoomHistory.push({ startValue, endValue });
+    }
   }
 
   private getChartOptions(
@@ -510,14 +544,14 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       datapointsWithValues,
       timeRange,
       {
-        YAxis: this.config.yAxisSplitLines,
-        XAxis: this.config.xAxisSplitLines,
+        YAxis: this.config.yAxisSplitLines || false,
+        XAxis: this.config.xAxisSplitLines || false,
       },
       this.events,
       this.alarms,
       {
-        displayMarkedLine: this.config.displayMarkedLine,
-        displayMarkedPoint: this.config.displayMarkedPoint,
+        displayMarkedLine: this.config.displayMarkedLine || false,
+        displayMarkedPoint: this.config.displayMarkedPoint || false,
       }
     );
   }
@@ -535,7 +569,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       const request = this.measurementService
         .listSeries$({
           ...timeRange,
-          source: dp.__target.id,
+          source: dp.__target?.id || '',
           series: [`${dp.fragment}.${dp.series}`],
           ...(this.config.aggregation && {
             aggregationType: this.config.aggregation,
@@ -544,7 +578,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         .pipe(
           map((res) => {
             const values = res.data.values;
-            if (res.data.truncated) {
+            if (res.data.truncated && this.config.dateFrom) {
               values[this.config.dateFrom.toISOString()] = [
                 { min: null, max: null },
               ];
@@ -595,19 +629,19 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       (this.config.interval === 'custom' && !this.config.realtime)
     ) {
       timeRange = {
-        dateFrom: new Date(this.config.dateFrom),
-        dateTo: new Date(this.config.dateTo),
+        dateFrom: new Date(this.config.dateFrom as Date),
+        dateTo: new Date(this.config.dateTo as Date),
       };
     } else {
-      let timeRangeInMs: number;
+      let timeRangeInMs: number = 0;
       if (this.config.interval && this.config.interval !== 'custom') {
-        timeRangeInMs = INTERVALS.find(
-          (i) => i.id === this.config.interval
-        ).timespanInMs;
+        timeRangeInMs =
+          INTERVALS.find((i) => i.id === this.config.interval)?.timespanInMs ||
+          0;
       } else if (this.config.realtime) {
         timeRangeInMs =
-          new Date(this.config.dateTo).valueOf() -
-          new Date(this.config.dateFrom).valueOf();
+          new Date(this.config.dateTo as Date).valueOf() -
+          new Date(this.config.dateFrom as Date).valueOf();
       }
       const now = new Date();
       timeRange = {

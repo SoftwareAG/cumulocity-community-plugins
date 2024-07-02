@@ -15,6 +15,7 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointWithValues,
+  MarkLineData,
   SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
@@ -27,6 +28,11 @@ import {
 import type { ECharts, SeriesOption } from 'echarts';
 import { EchartsOptionsService } from './echarts-options.service';
 import { AlarmOrEvent } from '../alarm-event-selector';
+import {
+  customSeriesMarkLineData,
+  customSeriesMarkPointData,
+  CustomSeriesOptions,
+} from './chart.model';
 
 type Milliseconds = number;
 
@@ -35,10 +41,10 @@ export class ChartRealtimeService {
   private INTERVAL: Milliseconds = 1000;
   private MIN_REALTIME_TIMEOUT: Milliseconds = 250;
   private MAX_REALTIME_TIMEOUT: Milliseconds = 5_000;
-  private realtimeSubscriptionMeasurements: Subscription;
-  private realtimeSubscriptionAlarmsEvents: Subscription;
-  private echartsInstance: ECharts;
-  private currentTimeRange: { dateFrom: Date; dateTo: Date };
+  private realtimeSubscriptionMeasurements!: Subscription;
+  private realtimeSubscriptionAlarmsEvents!: Subscription;
+  private echartsInstance: ECharts | undefined;
+  private currentTimeRange: { dateFrom: Date; dateTo: Date } | undefined;
 
   constructor(
     private measurementRealtime: MeasurementRealtimeService,
@@ -65,7 +71,7 @@ export class ChartRealtimeService {
     };
 
     const activeAlarmsOrEvents = alarmOrEventConfig.filter(
-      (alarmOrEvent) => alarmOrEvent.__active
+      (alarmOrEvent) => alarmOrEvent.__active && !alarmOrEvent.__hidden
     );
     const uniqueAlarmOrEventTargets = Array.from(
       new Set(activeAlarmsOrEvents.map((aOrE) => aOrE.__target.id))
@@ -222,7 +228,7 @@ export class ChartRealtimeService {
 
     const allDataSeries = this.echartsInstance?.getOption()[
       'series'
-    ] as (SeriesOption & SeriesDatapointInfo)[];
+    ] as CustomSeriesOptions[];
 
     seriesDataToUpdate.forEach((measurements, datapoint) => {
       const newValues: SeriesValue[] = measurements.map((m) => [
@@ -232,15 +238,17 @@ export class ChartRealtimeService {
       const datapointId =
         datapoint.__target?.id + datapoint.fragment + datapoint.series;
       const seriesMatchingDatapoint = allDataSeries.find(
-        (s) => s.datapointId === datapointId
+        (s) => s['datapointId'] === datapointId
       );
       if (!seriesMatchingDatapoint) {
         return;
       }
-      const seriesDataToUpdate = seriesMatchingDatapoint.data as SeriesValue[];
+      const seriesDataToUpdate = seriesMatchingDatapoint[
+        'data'
+      ] as SeriesValue[];
       seriesDataToUpdate.push(...newValues);
 
-      seriesMatchingDatapoint.data = this.removeValuesBeforeTimeRange(
+      seriesMatchingDatapoint['data'] = this.removeValuesBeforeTimeRange(
         seriesMatchingDatapoint
       );
 
@@ -249,7 +257,7 @@ export class ChartRealtimeService {
           datapoint.renderType || 'min';
         const dp: DatapointWithValues = {
           ...datapoint,
-          values: seriesMatchingDatapoint.data as {
+          values: seriesMatchingDatapoint['data'] as {
             [date: string]: { min: number; max: number }[];
           },
         };
@@ -257,7 +265,7 @@ export class ChartRealtimeService {
         if (isEvent(alarmOrEvent)) {
           // if event series with the same id already exists, return
           const eventExists = allDataSeries.some((series) =>
-            (series.data as { data: any[] }[]).some(
+            (series['data'] as string[][]).some(
               (data) => data[0] === (alarmOrEvent as IEvent).creationTime
             )
           );
@@ -276,23 +284,42 @@ export class ChartRealtimeService {
             );
           allDataSeries.push(...newEventSeries);
         } else if (isAlarm(alarmOrEvent)) {
-          const alarmExists = allDataSeries.some((series: { data: any[] }) =>
-            series.data.some(
-              (data) => data[0] === (alarmOrEvent as IEvent).creationTime
-            )
+          const alarmExists = allDataSeries.some(
+            (series: CustomSeriesOptions) => {
+              const seriesData = series['data'] as SeriesValue[];
+              return seriesData.some(
+                (data: SeriesValue) =>
+                  data[0] === (alarmOrEvent as IEvent).creationTime
+              );
+            }
           );
           if (alarmExists) {
-            const alarmSeries = allDataSeries.find((series: { data: any[] }) =>
-              series.data.some(
-                (data) => data[0] === (alarmOrEvent as IAlarm).creationTime
-              )
+            const alarmSeries = allDataSeries.filter(
+              (series: CustomSeriesOptions) => {
+                const seriesData = series['data'] as SeriesValue[];
+                return seriesData.some(
+                  (data: SeriesValue) =>
+                    data[0] === (alarmOrEvent as IAlarm).creationTime
+                );
+              }
             );
             // update the last value of the markline to the new value
-            alarmSeries.markLine.data[1].xAxis = (alarmOrEvent as IAlarm)[
+            const markLine = alarmSeries.find((series) => series['markLine']);
+            const alarmSeriesMarkLine = markLine![
+              'markLine'
+            ] as customSeriesMarkLineData;
+            alarmSeriesMarkLine.data[1].xAxis = (alarmOrEvent as IAlarm)[
               'lastUpdated'
             ];
             // update the last value of the markpoint to the new value
-            alarmSeries.markPoint.data[1].coord[0] = (alarmOrEvent as IAlarm)[
+            const markPoint = alarmSeries.find((series) => series['markPoint']);
+            const alarmSeriesMarkPoint = markPoint![
+              'markPoint'
+            ] as customSeriesMarkPointData;
+            alarmSeriesMarkPoint.data[2].coord[0] = (alarmOrEvent as IAlarm)[
+              'lastUpdated'
+            ];
+            alarmSeriesMarkPoint.data[3].coord[0] = (alarmOrEvent as IAlarm)[
               'lastUpdated'
             ];
           } else {
@@ -313,7 +340,7 @@ export class ChartRealtimeService {
       }
 
       this.checkForValuesAfterTimeRange(
-        seriesMatchingDatapoint.data as SeriesValue[],
+        seriesMatchingDatapoint['data'] as SeriesValue[],
         datapoint,
         datapointOutOfSyncCallback
       );
