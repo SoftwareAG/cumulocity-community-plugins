@@ -1,7 +1,4 @@
 <form class="d-flex a-i-center" [formGroup]="formGroup">
-  <label>
-    {{ 'Filter alarms' | translate }}
-  </label>
   <div
     class="dropdown"
     dropdown
@@ -9,8 +6,8 @@
     [cdkTrapFocus]="filtersDropdown.isOpen"
     [insideClick]="true"
   >
-    <div class="input-group">
-      <div class="form-control">
+    <div class="input-group input-group-sm">
+      <div class="form-control d-flex a-i-center">
         <ng-container
           *ngIf="chips.length !== severitiesList.length; else allAlarms"
         >
@@ -37,13 +34,13 @@
       </div>
       <div class="input-group-btn input-group-btn--last">
         <button
-          class="btn-default btn btn--caret"
+          class="btn-default btn btn--caret p-l-8 p-r-8"
           title="{{ chips | AlarmSeveritiesToTitle }}"
           data-cy="c8y-alarm-filter"
           dropdownToggle
           (click)="resetForm()"
         >
-          <i class="caret"></i>
+          <i class="caret m-r-4"></i>
         </button>
       </div>
     </div>
