@@ -22,6 +22,8 @@ import type { TopLevelFormatterParams } from 'echarts/types/src/component/toolti
 import { AlarmStatus, IAlarm, IEvent, SeverityType } from '@c8y/client';
 import { ICONS_MAP } from './svg-icons.model';
 import { CustomSeriesOptions } from './chart.model';
+import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
+import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 
 @Injectable()
 export class EchartsOptionsService {
@@ -30,7 +32,9 @@ export class EchartsOptionsService {
   constructor(
     private datePipe: DatePipe,
     private yAxisService: YAxisService,
-    private chartTypesService: ChartTypesService
+    private chartTypesService: ChartTypesService,
+    private severityIconPipe: AlarmSeverityToIconPipe,
+    private severityLabelPipe: AlarmSeverityToLabelPipe
   ) {}
 
   getChartOptions(
@@ -298,7 +302,8 @@ export class EchartsOptionsService {
     YAxisReadings.push(value);
 
     return (
-      this.datePipe.transform(XAxisValue) + '<br/>' + YAxisReadings.join('')
+      // this.datePipe.transform(XAxisValue) + '<br/>' +
+      YAxisReadings.join('')
     );
   }
 
@@ -323,9 +328,9 @@ export class EchartsOptionsService {
 
       if (value) {
         YAxisReadings.push(
-          `<span style='display: inline-block; background-color: ${series.itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
-            `<strong>${series.datapointLabel}: </strong>` + // name
-            value // single value or min-max range
+          `<div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: ${series.itemStyle.color};'></span>` + // color circle
+            `<strong>${series.datapointLabel}</strong></div>` + // name
+            `${value}` // single value or min-max range
         );
       }
     });
@@ -358,11 +363,10 @@ export class EchartsOptionsService {
       XAxisValue
     );
     return (
-      `${minValue[1]} — ${maxValue![1]}` +
+      `<div class="d-flex a-i-center separator-top p-t-8"><label class="text-12 m-r-8 m-b-0">${this.datePipe.transform(minValue[0])}</label>` +
+      `<span class="m-l-auto text-12">${minValue[1]} — ${maxValue![1]}` +
       (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-      `<div style="font-size: 11px">${this.datePipe.transform(
-        minValue[0]
-      )}</div>`
+      `</span></div>`
     );
   }
 
@@ -381,11 +385,13 @@ export class EchartsOptionsService {
       return '';
     }
     return (
+      `<div class="d-flex a-i-center p-t-8 p-b-8 separator-top">` +
+      `<label class="m-b-0 m-r-8 text-12">${this.datePipe.transform(
+        seriesValue[0]
+      )}</label><span class="m-l-auto text-12">` +
       seriesValue[1]?.toString() +
       (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
-      `<div style="font-size: 11px">${this.datePipe.transform(
-        seriesValue[0]
-      )}</div>`
+      `</span></div>`
     );
   }
 
@@ -395,9 +401,11 @@ export class EchartsOptionsService {
    * @returns The processed value.
    */
   private processEvent(event: IEvent): string {
-    let value = `<div style="font-size: 11px">Event Type: ${event.type}</div>`;
-    value += `<div style="font-size: 11px">Event Text: ${event.text}</div>`;
-    value += `<div style="font-size: 11px">Event Last Updated: ${event['lastUpdated']}</div>`;
+    let value = `<ul class="list-unstyled small separator-top">`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="small m-b-0 m-r-8">Event type</label><code class="m-l-auto">${event.type}</code></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="small m-b-0 m-r-8">Event text</label><span class="m-l-auto">${event.text}<span></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="small m-b-0 m-r-8">Last update</label><span class="m-l-auto">${this.datePipe.transform(event['lastUpdated'])}<span></li>`;
+    value += `</ul>`;
     return value;
   }
 
@@ -407,11 +415,14 @@ export class EchartsOptionsService {
    * @returns The processed value.
    */
   private processAlarm(alarm: IAlarm): string {
-    let value = `<div style="font-size: 11px">Alarm Severity: ${alarm.severity}</div>`;
-    value += `<div style="font-size: 11px">Alarm Type: ${alarm.type}</div>`;
-    value += `<div style="font-size: 11px">Alarm Text: ${alarm.text}</div>`;
-    value += `<div style="font-size: 11px">Alarm Last Updated: ${alarm['lastUpdated']}</div>`;
-    value += `<div style="font-size: 11px">Alarm Count: ${alarm.count}</div>`;
+    let value = `<ul class="list-unstyled small separator-top m-0">`;
+    value += `<li class="p-t-4 p-b-4 d-flex a-i-center separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Severity</label>`;
+    value += `<span class="small d-inline-flex a-i-center gap-4 m-l-auto"><i class="stroked-icon icon-14 status dlt-c8y-icon-${this.severityIconPipe.transform(alarm.severity)} ${alarm.severity.toLowerCase()}" > </i> ${this.severityLabelPipe.transform(alarm.severity)} </span></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Type</label><span class="small m-l-auto"><code>${alarm.type}</code></span></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Message</label><span class="small m-l-auto">${alarm.text}</span></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Last Updated</label><span class="small m-l-auto">${this.datePipe.transform(alarm['lastUpdated'])}</span></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm count</label><span class="small m-l-auto"><span class="badge badge-info">${alarm.count}</span></span></li>`;
+    value += `</ul>`;
     return value;
   }
 
@@ -549,7 +560,7 @@ export class EchartsOptionsService {
             color: item['color'],
           },
           symbol: 'circle',
-          symbolSize: 25,
+          symbolSize: 24,
         },
         {
           coord: [
@@ -560,7 +571,7 @@ export class EchartsOptionsService {
           itemType: item.type,
           itemStyle: { color: 'white' },
           symbol: ICONS_MAP.EVENT,
-          symbolSize: 20,
+          symbolSize: 16,
         },
       ];
     }
@@ -580,7 +591,7 @@ export class EchartsOptionsService {
               color: item['color'],
             },
             symbol: 'circle',
-            symbolSize: 25,
+            symbolSize: 24,
           },
           {
             coord: [
@@ -593,7 +604,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: 'white' },
             symbol: ICONS_MAP[item.severity as SeverityType],
-            symbolSize: 20,
+            symbolSize: 16,
           },
           {
             coord: [
@@ -608,7 +619,7 @@ export class EchartsOptionsService {
               color: item['color'],
             },
             symbol: 'circle',
-            symbolSize: 25,
+            symbolSize: 24,
           },
           {
             coord: [
@@ -621,7 +632,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: 'white' },
             symbol: ICONS_MAP.CLEARED,
-            symbolSize: 20,
+            symbolSize: 16,
           },
         ]
       : [
@@ -638,7 +649,7 @@ export class EchartsOptionsService {
               color: item['color'],
             },
             symbol: 'circle',
-            symbolSize: 25,
+            symbolSize: 24,
           },
           {
             coord: [
@@ -651,7 +662,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: 'white' },
             symbol: ICONS_MAP[item.severity as SeverityType],
-            symbolSize: 20,
+            symbolSize: 16,
           },
           {
             coord: [
@@ -666,7 +677,7 @@ export class EchartsOptionsService {
               color: item['color'],
             },
             symbol: 'circle',
-            symbolSize: 25,
+            symbolSize: 24,
           },
           {
             coord: [
@@ -679,7 +690,7 @@ export class EchartsOptionsService {
             itemType: item.type,
             itemStyle: { color: 'white' },
             symbol: ICONS_MAP[item.severity as SeverityType],
-            symbolSize: 20,
+            symbolSize: 16,
           },
         ];
   }
@@ -794,11 +805,11 @@ export class EchartsOptionsService {
             return;
           }
           value =
-            `${minValue[1]} — ${maxValue[1]}` +
+            `<div class="p-t-8 p-b-8">` +
+            `<label class="m-b-0 m-r-8 small">${this.datePipe.transform(minValue[0])}</label>` +
+            `<div class="m-l-auto text-12" >${minValue[1]} — ${maxValue[1]}` +
             (series['datapointUnit'] ? ` ${series['datapointUnit']}` : '') +
-            `<div style="font-size: 11px">${this.datePipe.transform(
-              minValue[0]
-            )}</div>`;
+            `</div></div>`;
         } else if (id.endsWith('/max')) {
           // do nothing, value is handled  in 'min' case
           return;
@@ -811,24 +822,25 @@ export class EchartsOptionsService {
             return;
           }
           value =
-            seriesValue[1]?.toString() +
+            `<div class="p-t-8 p-b-8">` +
+            `<label class="m-b-0 m-r-8 small">${this.datePipe.transform(seriesValue[0])}</label>` +
+            `<div class="m-l-auto text-12" >${seriesValue[1]?.toString()}` +
             (series['datapointUnit'] ? ` ${series['datapointUnit']}` : '') +
-            `<div style="font-size: 11px">${this.datePipe.transform(
-              seriesValue[0]
-            )}</div>`;
+            `</div></div>`;
         }
 
         const itemStyle = series['itemStyle'] as { color: string };
 
         YAxisReadings.push(
-          `<span style='display: inline-block; background-color: ${itemStyle.color} ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span>` + // color circle
-            `<strong>${series['datapointLabel']}: </strong>` + // name
-            value // single value or min-max range
+          `<div class="d-flex a-i-center"><span class='dlt-c8y-icon-circle m-r-4' style='color: ${itemStyle.color}'></span>` + // color circle
+            `<strong>${series['datapointLabel']} </strong></div>` + // name
+            `${value}` // single value or min-max range
         );
       });
 
       return (
-        this.datePipe.transform(XAxisValue) + '<br/>' + YAxisReadings.join('')
+        //this.datePipe.transform(XAxisValue) + '<br/>' +
+        YAxisReadings.join('')
       );
     };
   }

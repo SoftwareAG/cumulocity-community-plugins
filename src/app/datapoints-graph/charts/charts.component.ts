@@ -56,6 +56,8 @@ import { ChartEventsService } from '../datapoints-graph-view/chart-events.servic
 import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
 import { EchartsCustomOptions } from './chart.model';
 import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
+import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
+import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -67,6 +69,8 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
       provide: NGX_ECHARTS_CONFIG,
       useFactory: () => ({ echarts: () => import('echarts') }),
     },
+    AlarmSeverityToIconPipe,
+    AlarmSeverityToLabelPipe,
     ChartRealtimeService,
     MeasurementRealtimeService,
     AlarmRealtimeService,
