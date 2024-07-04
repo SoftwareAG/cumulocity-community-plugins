@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Hello world action step
         id: hello
-        uses: SoftwareAG/plugins-e2e-setup@main
+        uses: SoftwareAG/plugins-e2e-setup/hello-world@main
         with:
           who-to-greet: 'Mona the Octocat'
       # Use the output from the `hello` step
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Collect Shell Versions
         id: collect-shell-versions
-        uses: SoftwareAG/plugins-e2e-setup@main
+        uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
 
       - name: Get the output time
         run: echo "Shell versions are ${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}"
