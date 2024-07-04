@@ -1,155 +1,168 @@
 <div class="row no-card-context d-flex">
-  <div class="col-md-5 bg-level-1 conf-col inner-scroll p-l-24">
-    <div class="form-group p-b-16 p-t-8">
-      <label translate class="d-inline-block">Date selection</label>
-      <button
-        class="btn-clean m-l-4"
-        [attr.aria-label]="'Help' | translate"
-        [popover]="dateSelectionHelpTemplate"
-        container="body"
-        [adaptivePosition]="false"
-        placement="bottom"
-        triggers="focus"
-      >
-        <i [c8yIcon]="'question-circle-o'" class="text-primary"></i>
-      </button>
-
-      <div class="c8y-select-wrapper">
-        <select
-          class="form-control input-sm"
-          [ngModel]="dateSelection"
-          (ngModelChange)="dateSelectionChange($event)"
-          [ngModelOptions]="{ standalone: true }"
-        >
-          <option
-            title="{{ 'Widget configuration' | translate }}"
-            [value]="DATE_SELECTION.CONFIG"
+  <div class="col-md-5 bg-level-1 conf-col inner-scroll">
+    <div class="p-l-24">
+      <div class="form-group p-t-8">
+        <div class="d-flex a-i-center">
+          <label translate class="m-b-0">Date selection</label>
+          <button
+            class="btn-help btn-help--sm"
+            [attr.aria-label]="'Help' | translate"
+            [popover]="dateSelectionHelpTemplate"
+            [adaptivePosition]="false"
+            placement="bottom"
+            container="body"
+            triggers="focus"
+          ></button>
+        </div>
+        <div class="c8y-select-wrapper">
+          <select
+            class="form-control input-sm"
+            [ngModel]="dateSelection"
+            (ngModelChange)="dateSelectionChange($event)"
+            [ngModelOptions]="{ standalone: true }"
           >
-            {{ 'Widget configuration' | translate }}
-          </option>
-          <option
-            title="{{ 'Widget and widget configuration' | translate }}"
-            [value]="DATE_SELECTION.VIEW_AND_CONFIG"
-          >
-            {{ 'Widget and widget configuration' | translate }}
-          </option>
-          <option
-            title="{{ 'Dashboard time range' | translate }}"
-            [value]="DATE_SELECTION.DASHBOARD_CONTEXT"
-          >
-            {{ 'Dashboard time range' | translate }}
-          </option>
-        </select>
-        <span></span>
+            <option
+              title="{{ 'Widget configuration' | translate }}"
+              [value]="DATE_SELECTION.CONFIG"
+            >
+              {{ 'Widget configuration' | translate }}
+            </option>
+            <option
+              title="{{ 'Widget and widget configuration' | translate }}"
+              [value]="DATE_SELECTION.VIEW_AND_CONFIG"
+            >
+              {{ 'Widget and widget configuration' | translate }}
+            </option>
+            <option
+              title="{{ 'Dashboard time range' | translate }}"
+              [value]="DATE_SELECTION.DASHBOARD_CONTEXT"
+            >
+              {{ 'Dashboard time range' | translate }}
+            </option>
+          </select>
+          <span></span>
+        </div>
       </div>
+      <form [formGroup]="formGroup">
+        <label>{{ 'Display options' | translate }}</label>
+        <fieldset class="c8y-fieldset m-b-24 m-t-0">
+          <c8y-form-group class="p-b-16 m-b-0 p-t-8">
+            <label
+              [title]="'Display aggregation selection on view' | translate"
+              class="c8y-checkbox"
+            >
+              <input
+                type="checkbox"
+                formControlName="displayAggregationSelection"
+                name="displayAggregationSelection"
+              />
+              <span></span>
+              <span translate>Display aggregation selection on view</span>
+            </label>
+            <label
+              [title]="'Y axis helper lines' | translate"
+              class="c8y-checkbox"
+            >
+              <input
+                type="checkbox"
+                formControlName="yAxisSplitLines"
+                name="yAxisSplitLines"
+              />
+              <span></span>
+              <span translate>Y axis helper lines</span>
+            </label>
+            <label
+              [title]="'X axis helper lines' | translate"
+              class="c8y-checkbox"
+            >
+              <input
+                type="checkbox"
+                formControlName="xAxisSplitLines"
+                name="xAxisSplitLines"
+              />
+              <span></span>
+              <span translate>X axis helper lines</span>
+            </label>
+            <label
+              [title]="'Display marked line' | translate"
+              class="c8y-checkbox"
+            >
+              <input
+                type="checkbox"
+                formControlName="displayMarkedLine"
+                name="displayMarkedLine"
+              />
+              <span></span>
+              <span translate>Display marked line</span>
+            </label>
+            <label
+              [title]="'Display marked point' | translate"
+              class="c8y-checkbox"
+            >
+              <input
+                type="checkbox"
+                formControlName="displayMarkedPoint"
+                name="displayMarkedPoint"
+              />
+              <span></span>
+              <span translate>Display marked point</span>
+            </label>
+          </c8y-form-group>
+        </fieldset>
+
+        <c8y-datapoint-selection-list
+          [minActiveCount]="1"
+          [config]="datapointSelectionConfig"
+          formControlName="datapoints"
+          name="datapoints"
+          class="bg-level-1 separator-bottom d-block"
+        ></c8y-datapoint-selection-list>
+
+        <c8y-alarm-event-selection-list
+          formControlName="alarms"
+          name="alarms"
+          class="bg-level-1 separator-bottom d-block"
+          [timelineType]="'ALARM'"
+        ></c8y-alarm-event-selection-list>
+
+        <c8y-alarm-event-selection-list
+          formControlName="events"
+          name="events"
+          class="bg-inherit"
+          [timelineType]="'EVENT'"
+        ></c8y-alarm-event-selection-list>
+      </form>
     </div>
-    <form [formGroup]="formGroup" class="bg-component">
-      <label>{{ 'Display options' | translate }}</label>
-      <c8y-form-group class="p-b-16 m-b-0 separator-bottom">
-        <label
-          [title]="'Display aggregation selection on view' | translate"
-          class="c8y-checkbox"
-        >
-          <input
-            type="checkbox"
-            formControlName="displayAggregationSelection"
-            name="displayAggregationSelection"
-          />
-          <span></span>
-          <span translate>Display aggregation selection on view</span>
-        </label>
-        <label [title]="'Y axis helper lines' | translate" class="c8y-checkbox">
-          <input
-            type="checkbox"
-            formControlName="yAxisSplitLines"
-            name="yAxisSplitLines"
-          />
-          <span></span>
-          <span translate>Y axis helper lines</span>
-        </label>
-        <label [title]="'X axis helper lines' | translate" class="c8y-checkbox">
-          <input
-            type="checkbox"
-            formControlName="xAxisSplitLines"
-            name="xAxisSplitLines"
-          />
-          <span></span>
-          <span translate>X axis helper lines</span>
-        </label>
-        <label [title]="'Display marked line' | translate" class="c8y-checkbox">
-          <input
-            type="checkbox"
-            formControlName="displayMarkedLine"
-            name="displayMarkedLine"
-          />
-          <span></span>
-          <span translate>Display marked line</span>
-        </label>
-        <label
-          [title]="'Display marked point' | translate"
-          class="c8y-checkbox"
-        >
-          <input
-            type="checkbox"
-            formControlName="displayMarkedPoint"
-            name="displayMarkedPoint"
-          />
-          <span></span>
-          <span translate>Display marked point</span>
-        </label>
-      </c8y-form-group>
-
-      <c8y-datapoint-selection-list
-        [minActiveCount]="1"
-        [config]="datapointSelectionConfig"
-        formControlName="datapoints"
-        name="datapoints"
-        class="bg-inherit separator-bottom"
-      ></c8y-datapoint-selection-list>
-
-      <c8y-alarm-event-selection-list
-        formControlName="alarms"
-        name="alarms"
-        class="bg-inherit separator-bottom"
-        [timelineType]="'ALARM'"
-      ></c8y-alarm-event-selection-list>
-
-      <c8y-alarm-event-selection-list
-        formControlName="events"
-        name="events"
-        class="bg-inherit"
-        [timelineType]="'EVENT'"
-      ></c8y-alarm-event-selection-list>
-    </form>
   </div>
 
-  <div class="col-md-7 sticky-top p-t-8 p-r-24">
-    <label>{{ 'Options' | translate }}</label>
-    <c8y-time-controls
-      *ngIf="!config?.widgetInstanceGlobalTimeContext"
-      [config]="formGroup.value"
-      (configTimePropsChange)="timePropsChanged($event)"
-      class="d-flex gap-4"
-    ></c8y-time-controls>
-    <c8y-charts
-      *ngIf="activeDatapointsExists"
-      [config]="config"
-      [alerts]="alerts"
-      class="d-block p-relative overflow-hidden"
-      style="--chart-spacer: 0px; height: calc(100vh - 500px)"
-      (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"
-    ></c8y-charts>
+  <div class="col-md-7 sticky-top p-t-8">
+    <div class="p-r-24">
+      <label>{{ 'Options' | translate }}</label>
+      <c8y-time-controls
+        *ngIf="!config?.widgetInstanceGlobalTimeContext"
+        [config]="formGroup.value"
+        (configTimePropsChange)="timePropsChanged($event)"
+        class="d-flex gap-4"
+      ></c8y-time-controls>
+      <c8y-charts
+        *ngIf="activeDatapointsExists"
+        [config]="config"
+        [alerts]="alerts"
+        class="d-block p-relative overflow-hidden"
+        style="--chart-spacer: 0px; height: calc(100vh - 500px)"
+        (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"
+      ></c8y-charts>
 
-    <c8y-ui-empty-state
-      *ngIf="!activeDatapointsExists"
-      [icon]="'search'"
-      [title]="'No data points selected' | translate"
-      [subtitle]="'Select data point to render chart' | translate"
-      class="d-block m-t-24"
-    ></c8y-ui-empty-state>
+      <c8y-ui-empty-state
+        *ngIf="!activeDatapointsExists"
+        [icon]="'search'"
+        [title]="'No data points selected' | translate"
+        [subtitle]="'Select data point to render chart' | translate"
+        class="d-block m-t-24"
+      ></c8y-ui-empty-state>
+    </div>
   </div>
 </div>
-
 <ng-template #dateSelectionHelpTemplate>
   <div [innerHTML]="dateSelectionHelp"></div>
 </ng-template>
