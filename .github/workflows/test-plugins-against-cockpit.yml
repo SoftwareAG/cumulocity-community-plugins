@@ -98,7 +98,9 @@ jobs:
           path: dist/apps/sag-pkg-community-plugins/
 
       - name: Get shell app of particular version
-        run: node get-shell-app.js
+        uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
+        with:
+          shell-version: env.VERSION
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
