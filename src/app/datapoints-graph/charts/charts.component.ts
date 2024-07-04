@@ -79,6 +79,7 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     EchartsOptionsService,
     CustomMeasurementService,
     YAxisService,
+    AlarmSeverityToIconPipe,
   ],
   standalone: true,
   imports: [
@@ -372,6 +373,92 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
         show: false,
       },
     });
+  }
+
+  createHorizontalBarChartOptions(): EChartsOption {
+    const alarmTypes = this.config.alarmsEventsConfigs?.filter(
+      (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
+    );
+    const timeRange = this.getTimeRange();
+    const alarmsByType = this.alarms.reduce(
+      (acc, alarm) => {
+        const type = alarm.type;
+        acc[type] = acc[type] || [];
+        acc[type].push(alarm);
+        return acc;
+      },
+      {} as { [key: string]: IAlarm[] }
+    );
+
+    const seriesData = Object.entries(alarmsByType).map(([type, alarms]) => ({
+      name: type,
+      data: alarms.map((alarm) => {
+        const lastUpdated = new Date(alarm['lastUpdated'] || Date.now());
+        const creationTime = new Date(alarm['creationTime'] || Date.now());
+
+        // Calculate the difference in milliseconds as a number
+        const value = lastUpdated.getTime() - creationTime.getTime();
+
+        return {
+          value: value,
+          start: creationTime.getTime(),
+        };
+      }),
+    }));
+
+    const chartOptions: EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+      xAxis: {
+        min: new Date(timeRange.dateFrom).getTime(),
+        max: new Date(timeRange.dateTo).getTime(),
+        type: 'value',
+        axisLabel: {
+          show: false,
+        },
+      },
+      yAxis: {
+        type: 'category',
+        axisLabel: {
+          show: false,
+        },
+        data: alarmTypes?.map((alarm) => alarm.filters.type) || [],
+      },
+      series: [
+        {
+          name: 'Placeholder',
+          type: 'bar',
+          stack: 'Total',
+          itemStyle: {
+            borderColor: 'transparent',
+            color: 'transparent',
+          },
+          emphasis: {
+            itemStyle: {
+              borderColor: 'transparent',
+              color: 'transparent',
+            },
+          },
+          data: [0, 0],
+        },
+        ...seriesData[0].data.map((alarm) => ({
+          name: 'asds',
+          type: 'bar',
+          stack: 'Total',
+          label: {
+            show: false,
+            position: 'inside',
+          },
+          data: [alarm.value, 0],
+        })),
+      ],
+    } as any;
+    console.log(chartOptions);
+    return chartOptions;
   }
 
   private getDefaultChartOptions(): EChartsOption {
