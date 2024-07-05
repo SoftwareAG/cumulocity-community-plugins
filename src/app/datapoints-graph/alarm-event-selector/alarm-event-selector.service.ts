@@ -103,36 +103,6 @@ export class AlarmEventSelectorService {
       : await this.getEventsOfAsset(parentReference, filters);
   }
 
-  getBlankItem(
-    timelineType: TimelineType,
-    asset: IIdentified,
-    blankItemColor: string
-  ): AlarmOrEvent | null {
-    if (!asset) {
-      return null;
-    } else if (timelineType === 'ALARM') {
-      return {
-        timelineType: 'ALARM',
-        color: blankItemColor,
-        label: '',
-        filters: {
-          type: '',
-        },
-        __target: asset,
-      };
-    } else {
-      return {
-        timelineType: 'EVENT',
-        color: blankItemColor,
-        label: '',
-        filters: {
-          type: '',
-        },
-        __target: asset,
-      };
-    }
-  }
-
   private async getAlarmsOfAsset(
     parentReference: IIdentified,
     filters: { pageSize: number; source: string | number }

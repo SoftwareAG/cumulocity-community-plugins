@@ -71,10 +71,6 @@ describe('AlarmEventSelectorComponent', () => {
     };
 
     alarmEventSelectorService = {
-      getBlankItem: jest
-        .fn()
-        .mockName('getBlankItem')
-        .mockImplementation(() => null),
       getItemsOfAsset: jest
         .fn()
         .mockName('getItemsOfAsset')
@@ -120,18 +116,6 @@ describe('AlarmEventSelectorComponent', () => {
   describe('ngOnInit', () => {
     it('should setup items$ observable and emit values', fakeAsync(() => {
       // given
-      const blankItem: AlarmDetails = {
-        timelineType: 'ALARM',
-        color: defaultColor,
-        label: '',
-        filters: {
-          type: '',
-        },
-        __target: asset1,
-      };
-      jest
-        .spyOn(alarmEventSelectorService, 'getBlankItem')
-        .mockReturnValue(blankItem);
       jest
         .spyOn(alarmEventSelectorService, 'getItemsOfAsset')
         .mockReturnValue(
