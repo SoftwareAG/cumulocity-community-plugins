@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     outputs:
-      non_deprecated_shell_versions: ${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}
+      shell_versions: ${{ steps.collect-shell-versions.outputs.shell_versions }}
 
     steps:
       - name: Collect Shell Versions
@@ -21,7 +21,7 @@ jobs:
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
 
       - name: Verify shell versions output
-        run: echo "Shell versions are ${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}"
+        run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
 
   build-plugins:
     runs-on: ubuntu-22.04
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        version_data: ${{ fromJson(needs.collect-shell-versions.outputs.non_deprecated_shell_versions) }}
+        version_data: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) }}
     env:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
