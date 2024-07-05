@@ -24,6 +24,7 @@ import { ICONS_MAP } from './svg-icons.model';
 import { CustomSeriesOptions } from './chart.model';
 import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
 import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class EchartsOptionsService {
@@ -34,7 +35,8 @@ export class EchartsOptionsService {
     private yAxisService: YAxisService,
     private chartTypesService: ChartTypesService,
     private severityIconPipe: AlarmSeverityToIconPipe,
-    private severityLabelPipe: AlarmSeverityToLabelPipe
+    private severityLabelPipe: AlarmSeverityToLabelPipe,
+    private router: Router
   ) {}
 
   getChartOptions(
@@ -421,9 +423,23 @@ export class EchartsOptionsService {
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Type</label><span class="small m-l-auto"><code>${alarm.type}</code></span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Message</label><span class="small m-l-auto">${alarm.text}</span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Last Updated</label><span class="small m-l-auto">${this.datePipe.transform(alarm['lastUpdated'])}</span></li>`;
+    if (this.alarmRouteExists(alarm)) {
+      value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href="/alarms/${alarm.id}">Alarm Details</a></span></li>`;
+    }
     value += `<li class="p-t-4 p-b-4 d-flex text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm count</label><span class="small m-l-auto"><span class="badge badge-info">${alarm.count}</span></span></li>`;
     value += `</ul>`;
     return value;
+  }
+
+  private alarmRouteExists(alarm: IAlarm): boolean {
+    try {
+      this.router.navigateByUrl(`/alarms/${alarm.id}`, {
+        skipLocationChange: true,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   private getChartSeries(
@@ -486,10 +502,15 @@ export class EchartsOptionsService {
     dpValuesArray: DpValuesItem[],
     targetTime: number
   ): DpValuesItem {
+    let maxValue: number;
+    let minValue: number;
     return dpValuesArray.reduce((acc, curr, idx, arr) => {
       if (new Date(curr.time).getTime() <= targetTime) {
         if (idx === arr.length - 1) {
-          return curr;
+          return {
+            time: targetTime,
+            values: [{ min: minValue, max: maxValue }],
+          };
         }
         const nextDp = arr[idx + 1];
         if (new Date(nextDp.time).getTime() >= targetTime) {
@@ -498,9 +519,9 @@ export class EchartsOptionsService {
           const targetTimeDiff = targetTime - new Date(curr.time).getTime();
           const minValueDiff = nextDp.values[0]?.min - curr.values[0]?.min;
           const maxValueDiff = nextDp.values[0]?.max - curr.values[0]?.max;
-          const minValue =
+          minValue =
             curr.values[0]?.min + (minValueDiff * targetTimeDiff) / timeDiff;
-          const maxValue =
+          maxValue =
             curr.values[0]?.max + (maxValueDiff * targetTimeDiff) / timeDiff;
           return {
             time: targetTime,

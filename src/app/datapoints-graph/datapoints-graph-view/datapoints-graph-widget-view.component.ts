@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -29,11 +30,11 @@ import {
 import {
   ALARM_STATUS_LABELS,
   AlarmStatusType,
-  SeverityFilter,
   SeveritySettings,
   aggregationType,
 } from '@c8y/client';
 import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
+import { ChartsComponent } from '../charts';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -63,6 +64,7 @@ export class DatapointsGraphWidgetViewComponent
       '"config" property should not be referenced in view component to avoid mutating data.'
     );
   }
+  @ViewChild(ChartsComponent) chartComponent!: ChartsComponent;
   displayConfig: DatapointsGraphWidgetConfig | undefined;
   readonly disableZoomInLabel = gettext('Disable zoom in');
   readonly enableZoomInLabel = gettext(
@@ -128,6 +130,15 @@ export class DatapointsGraphWidgetViewComponent
       return;
     }
     this.datapointsOutOfSync.set(dpMatch, true);
+  }
+
+  toggleMarkedArea(alarm: AlarmDetails) {
+    const params = {
+      data: {
+        itemType: alarm.filters.type,
+      },
+    };
+    this.chartComponent.onChartClick(params);
   }
 
   toggleAlarmEventType(alarmOrEvent: AlarmOrEvent): void {

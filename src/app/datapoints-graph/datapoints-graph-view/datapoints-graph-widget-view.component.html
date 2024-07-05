@@ -181,9 +181,10 @@
             class="icon-14"
           ></i>
         </button>
-        <div
+        <button
           class="c8y-alarm-pill__label"
           style="padding-top: 3px; padding-bottom: 2px"
+          (click)="toggleMarkedArea(alarm)"
         >
           <i
             c8yIcon="bell"
@@ -203,7 +204,7 @@
               {{ alarm.__target.name }}
             </small>
           </span>
-        </div>
+        </button>
       </div>
       <!-- Events -->
       <div
