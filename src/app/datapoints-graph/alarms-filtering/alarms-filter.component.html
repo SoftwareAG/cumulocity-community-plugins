@@ -1,17 +1,17 @@
-<form class="d-flex a-i-center" [formGroup]="formGroup">
+<form class="d-contents" [formGroup]="formGroup">
   <div
-    class="dropdown"
+    class="dropdown min-width-0"
     dropdown
     #filtersDropdown="bs-dropdown"
     [cdkTrapFocus]="filtersDropdown.isOpen"
     [insideClick]="true"
   >
-    <div class="input-group input-group-sm">
-      <div class="form-control d-flex a-i-center">
+    <div class="input-group input-group-sm fit-w">
+      <div class="form-control d-flex a-i-center inner-scroll p-b-0 p-t-0">
         <ng-container
           *ngIf="chips.length !== severitiesList.length; else allAlarms"
         >
-          <span class="label label-info chip" *ngFor="let chip of chips">
+          <span class="tag tag--info chip" *ngFor="let chip of chips">
             <button
               class="btn btn-xs btn-clean text-10"
               title="{{ 'Remove' | translate }}"
@@ -21,7 +21,7 @@
               <i c8yIcon="times"></i>
             </button>
             <i
-              class="status stroked-icon m-l-4 m-r-4 icon-12"
+              class="status stroked-icon icon-12"
               [c8yIcon]="chip | AlarmSeverityToIcon"
               [ngClass]="chip | lowercase"
             ></i>
@@ -29,7 +29,9 @@
           </span>
         </ng-container>
         <ng-template #allAlarms>
-          {{ 'All alarms' | translate }}
+          <span class="flex-no-shrink">
+            {{ 'All alarms' | translate }}
+          </span>
         </ng-template>
       </div>
       <div class="input-group-btn input-group-btn--last">

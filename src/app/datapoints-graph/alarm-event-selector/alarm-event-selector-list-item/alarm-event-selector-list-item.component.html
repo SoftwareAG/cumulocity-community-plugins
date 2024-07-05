@@ -52,8 +52,16 @@
           (click)="$event.stopPropagation()"
           [ngStyle]="{ 'pointer-events': allowItemEdit ? 'auto' : 'none' }"
         />
-        <span [style.background-color]="formGroup.value.color">
-          <i [c8yIcon]="timelineType === 'EVENT' ? 'c8y-events' : 'bell'"></i>
+        <span
+          class="circle-icon-wrapper"
+          style="background-color: {{ formGroup.value.color }}; padding-top: {{
+            timelineType === 'EVENT' ? '3px' : '0'
+          }};"
+        >
+          <i
+            [c8yIcon]="timelineType === 'EVENT' ? 'c8y-events' : 'bell'"
+            class="icon-stroked"
+          ></i>
         </span>
       </div>
     </div>

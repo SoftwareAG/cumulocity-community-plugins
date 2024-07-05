@@ -39,20 +39,4 @@ c8y-datapoints-graph-widget-config {
   > input{
     cursor: pointer;
   }
-  &--alarm, &--event{
-    input + span{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: var(--component-background-default, var(--c8y-root-component-background-default, #fff));
-    }
-  }
-  &--alarm{
-    input + span{
-      > i{
-        transform: translateY(-1px);
-      }
-    }
-  }
 }

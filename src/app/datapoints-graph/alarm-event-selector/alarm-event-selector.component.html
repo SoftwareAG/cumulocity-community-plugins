@@ -32,7 +32,7 @@
     <ng-template #noDeviceEmptyState>
       <div class="p-16">
         <div class="c8y-empty-state text-left">
-          <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+          <div class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></div>
           <div>
             <p>
               <strong>{{
@@ -214,12 +214,24 @@
         >
           <i c8yIcon="remove" class="icon-14"></i>
         </button>
-        <div class="c8y-datapoint-pill__label" [title]="selectedItem.label">
-          <i
-            [c8yIcon]="timelineType === 'ALARM' ? 'bell' : 'c8y-events'"
-            class="m-r-4 icon-14"
-            [style.color]="selectedItem.color"
-          ></i>
+        <div
+          [ngClass]="{
+            'c8y-alarm-pill__label': timelineType === 'ALARM',
+            'c8y-event-pill__label': timelineType === 'EVENT',
+          }"
+          [title]="selectedItem.label"
+        >
+          <span
+            class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
+            style="background-color: {{ selectedItem.color }}; padding-top: {{
+              timelineType === 'EVENT' ? '3px' : '0'
+            }};"
+          >
+            <i
+              [c8yIcon]="timelineType === 'ALARM' ? 'bell' : 'c8y-events'"
+              class="stroked-icon"
+            ></i>
+          </span>
           <span class="text-truncate">
             <span class="text-truncate">{{ selectedItem.label }}</span>
             <small
@@ -234,7 +246,7 @@
     </div>
     <div class="p-16" *ngIf="!selectedItems || !selectedItems.length">
       <div class="c8y-empty-state text-left">
-        <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+        <div class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></div>
         <p>
           <strong>{{
             timelineTypeTexts.noSelectedItemsTitle | translate

@@ -32,6 +32,7 @@
 body .c8y-datapoint-pill{
   box-shadow: none;
   border: 1px solid @primary;
+  max-height: var(--c8y-form-control-height-base);
 }
 .c8y-alarm-pill {
   --component-brand-primary: var(--palette-gray-50, var(--c8y-palette-gray-50, #36597D));
@@ -45,6 +46,7 @@ body .c8y-datapoint-pill{
   border: 1px solid @primary;
   font-size: calc(var(--c8y-font-size-base, 14px) * 0.85);
   line-height: 1;
+  max-height: var(--c8y-form-control-height-base);
   &__btn {
     .btn-cleaned();
     align-self: stretch;
@@ -52,6 +54,15 @@ body .c8y-datapoint-pill{
     border-right: 1px solid var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
     color: var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
     line-height: 1;
+    &:last-child {
+      border-right: 0;
+    }
+    &:hover{
+      color: var(--c8y-brand-primary);
+    }
+    &.active{
+      background-color: var(--c8y-brand-80);
+    }
   }
   &__label {
     display: flex;
@@ -74,6 +85,7 @@ body .c8y-datapoint-pill{
   border: 1px dotted var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
   font-size: calc(var(--c8y-font-size-base, 14px) * 0.85);
   line-height: 1;
+  max-height: var(--c8y-form-control-height-base);
   &__btn {
     .btn-cleaned();
     align-self: stretch;
@@ -81,6 +93,15 @@ body .c8y-datapoint-pill{
     border-right: 1px solid var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));;
     color: var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
     line-height: 1;
+    &:last-child {
+      border-right: 0;
+    }
+    &:hover{
+      color: var(--c8y-brand-primary);
+    }
+    &.active{
+      background-color: var(--c8y-brand-80);
+    }
   }
   &__label {
     display: flex;
@@ -91,42 +112,44 @@ body .c8y-datapoint-pill{
   }
 }
 
-.c8y-event-pill {
-  --component-brand-primary: var(
-    --palette-gray-30,
-    var(--c8y-palette-gray-30, #36597d)
-  );
-  display: flex;
-  overflow: hidden;
-  align-items: center;
-  min-height: 24px;
-  max-width: 100%;
-  border-radius: 2px;
-  background-color: var(
-    --component-background,
-    var(--root-component-background, white)
-  );
-  border: 1px dotted
-    var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
-  font-size: calc(var(--c8y-font-size-base, 14px) * 0.85);
-  line-height: 1;
-  &__btn {
-    align-self: stretch;
-    padding: 4px;
-    border-right: 1px solid
-      var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
-    color: var(--text-muted, var(--c8y-text-muted, var(--gray-text, #6c757d)));
-    line-height: 1;
+
+.c8y-datapoint-pill__btn{
+  &:last-child {
+    border-right: 0;
   }
-  &__label {
-    display: flex;
-    overflow: hidden;
-    align-items: center;
-    padding: 4px 12px 4px 4px;
-    line-height: 1;
-  }
+}
+
+div.c8y-datapoint-pill__btn,
+div.c8y-alarm-pill__btn,
+div.c8y-event-pill__btn{
+  pointer-events: none;
 }
 
 c8y-alarm-event-selector-list-item .c8y-list__item__collapse--container{
   padding: var(--c8y-component-padding, var(--c8y-root-component-padding));
+}
+
+
+
+.circle-icon-wrapper{
+  border-radius: 50%;
+  color: white;
+  width: 24px;
+  aspect-ratio: 1/1;
+  text-align: center;
+  --c8y-icon-stroke-color: var(--c8y-component-text-color, var(--c8y-text-color));
+  padding-bottom: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  > i{
+    font-size: 16px;
+  }
+  &--small{
+    width: 16px;
+    height: 16px;
+    > i{
+      font-size: 12px;
+    }
+  }
 }
