@@ -423,23 +423,25 @@ export class EchartsOptionsService {
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Type</label><span class="small m-l-auto"><code>${alarm.type}</code></span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Message</label><span class="small m-l-auto">${alarm.text}</span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Last Updated</label><span class="small m-l-auto">${this.datePipe.transform(alarm['lastUpdated'])}</span></li>`;
-    if (this.alarmRouteExists(alarm)) {
-      value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href="/alarms/${alarm.id}">Alarm Details</a></span></li>`;
-    }
+    this.alarmRouteExists(alarm).then((exists) => {
+      if (exists) {
+        value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href="/alarms/${alarm.id}">Alarm Details</a></span></li>`;
+      }
+    });
     value += `<li class="p-t-4 p-b-4 d-flex text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm count</label><span class="small m-l-auto"><span class="badge badge-info">${alarm.count}</span></span></li>`;
     value += `</ul>`;
     return value;
   }
 
-  private alarmRouteExists(alarm: IAlarm): boolean {
-    try {
-      this.router.navigateByUrl(`/alarms/${alarm.id}`, {
-        skipLocationChange: true,
-      });
-      return true;
-    } catch (error) {
-      return false;
-    }
+  private alarmRouteExists(alarm: IAlarm): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.router.navigateByUrl(`/alarms/${alarm.id}`);
+        resolve(true); // Navigation successful
+      } catch (error) {
+        resolve(false);
+      }
+    });
   }
 
   private getChartSeries(
