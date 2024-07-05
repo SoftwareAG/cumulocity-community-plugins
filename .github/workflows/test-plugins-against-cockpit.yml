@@ -20,7 +20,7 @@ jobs:
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
 
-      - name: Get the output time
+      - name: Verify shell versions output
         run: echo "Shell versions are ${{ steps.collect-shell-versions.outputs.non_deprecated_shell_versions }}"
 
   build-plugins:
