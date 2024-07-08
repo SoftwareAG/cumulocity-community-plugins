@@ -87,6 +87,7 @@ jobs:
       - name: Get shell app of particular version
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
         with:
+          shell-name: cockpit
           shell-version: ${{ env.VERSION }}
 
 
