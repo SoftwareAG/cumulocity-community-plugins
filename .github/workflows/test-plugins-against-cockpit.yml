@@ -19,8 +19,6 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
-        with:
-          versions-length: 4
 
       - name: Verify shell versions output
         run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
@@ -89,7 +87,9 @@ jobs:
       - name: Get shell app of particular version
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
         with:
+          shell-name: administration
           shell-version: ${{ env.VERSION }}
+
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
