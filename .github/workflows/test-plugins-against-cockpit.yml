@@ -22,6 +22,7 @@ jobs:
         with:
           versions-length: 1
           include-deprecated: false
+          include-latest: true
           exact-tags: y2024-lts,1018.0-lts,1011.0-lts,some-non-existing-version-1033
 
       - name: Verify shell versions output
