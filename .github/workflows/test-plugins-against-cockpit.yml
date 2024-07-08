@@ -20,8 +20,9 @@ jobs:
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
         with:
-          versions-length: 10
-          include-deprecated: true
+          versions-length: 1
+          include-deprecated: false
+          exact-tags: y2024-lts,1018.0-lts,1011.0-lts,some-non-existing-version-1033
 
       - name: Verify shell versions output
         run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
