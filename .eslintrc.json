@@ -76,7 +76,14 @@
         "plugin:@angular-eslint/template/recommended",
         "plugin:prettier/recommended" // <--- here we inherit from the recommended setup from eslint-plugin-prettier for HTML
       ],
-      "rules": {}
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "trailingComma": "none"
+          }
+        ]
+      }
     }
   ]
 }
