@@ -82,13 +82,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-          path: dist/apps/sag-pkg-community-plugins/
+          path: dist/apps/e2e/sag-pkg-community-plugins/ # TODO remove subpath e2e
 
       - name: Get shell app of particular version
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
         with:
           shell-name: cockpit
           shell-version: ${{ env.VERSION }}
+          shell-path: dist/apps/e2e
 
 
       - name: Cypress run
