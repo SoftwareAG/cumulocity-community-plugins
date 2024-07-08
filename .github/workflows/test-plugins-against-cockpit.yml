@@ -21,6 +21,7 @@ jobs:
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
         with:
           versions-length: 10
+          include-deprecated: true
 
       - name: Verify shell versions output
         run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
