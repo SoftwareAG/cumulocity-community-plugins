@@ -21,7 +21,7 @@ jobs:
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
         with:
           versions-length: 1
-          include-deprecated: false
+          include-deprecated: true
           include-latest: true
           exact-tags: y2024-lts,1018.0-lts,1011.0-lts,some-non-existing-version-1033
 
