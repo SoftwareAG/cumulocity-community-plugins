@@ -56,9 +56,9 @@ jobs:
     needs: [collect-shell-versions, build-plugins]
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         version_data: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) }}
-        fail-fast: false
     env:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
