@@ -1,6 +1,6 @@
 name: Test plugins against Cockpit
 on:
-  pull_request: # TODO: change workflow trigger
+  pull_request:
 
 permissions:
   contents: read
