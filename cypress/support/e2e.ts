@@ -31,8 +31,6 @@ registerCypressGrep();
 before(() => {
   Cypress.session.clearAllSavedSessions();
 
-  // Cypress.env('C8Y_CTRL_MODE', 'recording'); // TODO: mock or recording provide from cli
-
   if (Cypress.env('C8Y_CTRL_MODE') != null) {
     cy.wrap(c8yctrl('global before hook'), { log: false }).then(() => {
       // do your requests to record in here

@@ -1,7 +1,6 @@
 describe('datapoints-graph-1020', { tags: '@1020' }, () => {
   beforeEach(() => {
     cy.login2(
-      // TODO: username should not be here, but without it, tests that are using mocks fails
       Cypress.env('admin_username') || 'ccw',
       Cypress.env('admin_password')
     );
