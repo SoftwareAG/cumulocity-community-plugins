@@ -436,8 +436,14 @@ export class EchartsOptionsService {
   private alarmRouteExists(alarm: IAlarm): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        this.router.navigateByUrl(`/alarms/${alarm.id}`);
-        resolve(true); // Navigation successful
+        this.router
+          .navigateByUrl(`/alarms/${alarm.id}`)
+          .then(() => {
+            resolve(true);
+          })
+          .catch(() => {
+            resolve(false);
+          });
       } catch (error) {
         resolve(false);
       }

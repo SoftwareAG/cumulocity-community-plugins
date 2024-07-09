@@ -55,6 +55,11 @@ export class DatapointsGraphWidgetViewComponent
   timeControlsFormGroup: ReturnType<
     DatapointsGraphWidgetViewComponent['initForm']
   >;
+  isMarkedAreaEnabled = false;
+  /*
+   * @description: The type of alarm that has marked area enabled.
+   */
+  enabledMarkedAreaAlarmType: string | undefined;
 
   @Input() set config(value: DatapointsGraphWidgetConfig) {
     this.displayConfig = cloneDeep(value);
@@ -133,6 +138,7 @@ export class DatapointsGraphWidgetViewComponent
   }
 
   toggleMarkedArea(alarm: AlarmDetails) {
+    this.enabledMarkedAreaAlarmType = alarm.filters.type;
     const params = {
       data: {
         itemType: alarm.filters.type,

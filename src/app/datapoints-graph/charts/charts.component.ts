@@ -106,6 +106,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   >();
   @Output() datapointOutOfSync = new EventEmitter<DatapointsGraphKPIDetails>();
   @Output() updateAlarmsAndEvents = new EventEmitter<AlarmOrEvent[]>();
+  @Output() isMarkedAreaEnabled = new EventEmitter<boolean>();
   private configChangedSubject = new BehaviorSubject<void | null>(null);
 
   @HostListener('keydown.escape') onEscapeKeyDown() {
@@ -248,6 +249,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       (alarm) => alarm.type === params.data.itemType
     );
 
+    this.isMarkedAreaEnabled.emit(this.hasMarkArea(options));
     const updatedOptions = !this.hasMarkArea(options)
       ? {
           tooltip: {

@@ -185,7 +185,11 @@
         <button
           class="c8y-alarm-pill__label c8y-alarm-pill__btn"
           (click)="toggleMarkedArea(alarm)"
-          [ngClass]="{ active: true }"
+          [ngClass]="{
+            active:
+              !isMarkedAreaEnabled &&
+              alarm.filters.type === enabledMarkedAreaAlarmType,
+          }"
         >
           <span
             class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
@@ -257,4 +261,5 @@
   (configChangeOnZoomOut)="timePropsChanged($event)"
   (datapointOutOfSync)="handleDatapointOutOfSync($event)"
   (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"
+  (isMarkedAreaEnabled)="isMarkedAreaEnabled = $event"
 ></c8y-charts>
