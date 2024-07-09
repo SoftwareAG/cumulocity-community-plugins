@@ -1,6 +1,8 @@
 name: Test plugins against Cockpit
 on:
   pull_request:
+  schedule:
+    - cron: '15 4 * * 1-5'
 
 permissions:
   contents: read
@@ -85,7 +87,29 @@ jobs:
           name: build
           path: dist/apps/sag-pkg-community-plugins/
 
+      - name: Restore version cache
+        id: cache-restore
+        uses: actions/cache@v4
+        with:
+          path: cache/ # Specify the path where the cache file will be stored
+          key: ${{ env.VERSION }}
+
+      - name: Check if version is cached
+        id: check-cache
+        run: |
+          if [ -f "cache/${{ env.VERSION }}" ]; then
+            echo "Version $VERSION is already cached."
+            echo "cached=true" >> $GITHUB_ENV
+          else
+            echo "cached=false" >> $GITHUB_ENV
+          fi
+
+      - name: Skip or run tests based on cache
+        if: env.cached == 'false'
+        run: echo "Running tests as version is not cached."
+
       - name: Get shell app of particular version
+        if: env.cached == 'false'
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
         with:
           shell-name: cockpit
@@ -93,6 +117,7 @@ jobs:
           shell-path: dist/apps
 
       - name: Cypress run
+        if: env.cached == 'false'
         uses: cypress-io/github-action@v5
         with:
           start: npm run cypress:ctrl
@@ -104,17 +129,27 @@ jobs:
           env: C8Y_CTRL_MODE=mocking,grepTags=@${{ env.MAJOR }}
 
       - name: Upload cypress screenshots
+        if: failure() && env.cached == 'false'
         uses: actions/upload-artifact@v4
-        if: failure()
         with:
           retention-days: 5
           name: cypress-screenshots
           path: cypress/screenshots
 
       - name: Upload cypress videos
+        if: always() && env.cached == 'false'
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           retention-days: 5
           name: cypress-videos
           path: cypress/videos
+
+      - name: Save version cache
+        if: success() && env.cached == 'false'
+        run: |
+          echo "{\"lastSuccess\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"}" > cache/${{ env.VERSION }}
+        # Save the cache only if the tests run successfully and the version was not already cached
+        uses: actions/cache@v4
+        with:
+          path: cache/
+          key: ${{ env.VERSION }}
