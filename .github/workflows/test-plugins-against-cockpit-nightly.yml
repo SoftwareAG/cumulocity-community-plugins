@@ -1,6 +1,7 @@
 name: Test plugins against Cockpit
 on:
   pull_request:
+    # TODO: add cron to test nightly
 
 permissions:
   contents: read
