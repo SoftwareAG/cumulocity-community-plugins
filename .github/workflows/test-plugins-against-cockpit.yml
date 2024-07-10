@@ -27,7 +27,11 @@ jobs:
         run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
 
   build-plugins:
+    timeout-minutes: 30
     runs-on: ubuntu-22.04
+    outputs:
+      plugins_version: ${{ steps.extract-plugins-version.outputs.version }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +49,10 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Extract Plugins Version
+        id: extract-plugins-version
+        run: echo "version=$(jq -r .version cumulocity.json)" >> $GITHUB_ENV
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -67,6 +75,7 @@ jobs:
       VERSION: ${{ matrix.version_data.version }}
       MAJOR: ${{ matrix.version_data.major }}
       TAG: ${{ matrix.version_data.tag }}
+      PLUGINS_VERSION: ${{ needs.build-plugins.outputs.plugins_version }}
 
     steps:
       - name: Checkout
@@ -75,35 +84,36 @@ jobs:
           fetch-depth: 0
 
       - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'pull_request' }} #TODO: switch back to schedule
+        if: ${{ github.event_name == 'schedule' }}
         id: retrieve-cache
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}
+          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
           restore-keys: |
-            cache-json-files-${{ runner.os }}-${{ env.TAG }}
+            cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
 
       - name: Check if version is already tested
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         id: check-version
         run: |
           mkdir -p ./cache-files
-          file="./cache-files/${{ env.TAG }}.json"
+          file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
           if [ -f "$file" ]; then
             echo "Cache file exists: $file"
-            alreadyTestedVersion=$(jq -r '.version' $file)
-            if [[ "$alreadyTestedVersion" == "${{ env.VERSION }}" ]]; then
-              echo "Version $alreadyTestedVersion already tested."
+            alreadyTestedShellVersion=$(jq -r '.shellVersion' $file)
+            alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $file)
+            if [[ "alreadyTestedShellVersion" == "${{ env.VERSION }}" && "$alreadyTestedPluginsVersion" == "${{ env.PLUGINS_VERSION }}" ]]; then
+              echo "Shell version alreadyTestedShellVersion with plugins of version $alreadyTestedPluginsVersion already tested."
               echo "skip_job=true" >> $GITHUB_ENV
             fi
           else
-            echo "No cache file found for ${{ env.TAG }}"
+            echo "No cache file found for ${{ env.TAG }} with plugins version ${{ env.PLUGINS_VERSION }}"
           fi
 
       - name: Skip if already tested
         if: ${{ env.skip_job == 'true' }}
-        run: echo "Skipping job for ${{ env.VERSION }}"
+        run: echo "Skipping job for shell version ${{ env.VERSION }} and plugins version ${{ env.PLUGINS_VERSION }}"
 
       - name: Setup Node.js
         if: ${{ env.skip_job != 'true' }}
@@ -160,16 +170,16 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ env.skip_job != 'true' && github.event_name == 'pull_request' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
         run: |
-          file="./cache-files/${{ env.TAG }}.json"
+          file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
           now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
-          jq -n --arg version "${{ env.VERSION }}" --arg lastSuccess "$now" '{version: $version, lastSuccess: $lastSuccess}' > $file
+          jq -n --arg shellVersion "${{ env.VERSION }}" --arg pluginsVersion "${{ env.PLUGINS_VERSION }}" --arg lastSuccess "$now" '{shellVersion: $shellVersion, pluginsVersion: $pluginsVersion, lastSuccess: $lastSuccess}' > $file
           cat $file
 
       - name: Upload updated JSON file to cache
-        if: ${{ env.skip_job != 'true' && github.event_name == 'pull_request' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}
+          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
