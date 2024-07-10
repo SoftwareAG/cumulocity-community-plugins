@@ -2,7 +2,7 @@ name: Test plugins against Cockpit
 
 on:
   pull_request:
-  schedule: # TODO: revert pull_request to schedule in the rest of workflow 1
+  schedule:
     - cron: '15 4 * * 1-5'
 
 permissions:
@@ -51,9 +51,6 @@ jobs:
           echo "plugins_version=${plugins_version}" >> $GITHUB_ENV
           echo "::set-output name=plugins_version::${plugins_version}"
 
-      - name: Verify plugins version output
-        run: echo "Plugin version ${{ steps.extract-plugins-version.outputs.plugins_version }}"
-
       - name: Install dependencies
         run: npm ci
 
@@ -90,7 +87,7 @@ jobs:
           fetch-depth: 0
 
       - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         id: retrieve-cache
         uses: actions/cache@v4
         with:
@@ -100,7 +97,7 @@ jobs:
             cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
 
       - name: Check if version is already tested
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         id: check-version
         run: |
           mkdir -p ./cache-files
@@ -176,7 +173,7 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ env.skip_job != 'true' && github.event_name == 'pull_request' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
         run: |
           file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
           now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
@@ -184,7 +181,7 @@ jobs:
           cat $file
 
       - name: Upload updated JSON file to cache
-        if: ${{ env.skip_job != 'true' && github.event_name == 'pull_request' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
