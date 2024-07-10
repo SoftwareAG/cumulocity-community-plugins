@@ -75,7 +75,7 @@ jobs:
           fetch-depth: 0
 
       - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }} #TODO: switch back to schedule
         id: retrieve-cache
         uses: actions/cache@v4
         with:
