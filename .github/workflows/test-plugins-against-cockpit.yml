@@ -110,7 +110,7 @@ jobs:
             alreadyTestedShellVersion=$(jq -r '.shellVersion' $file)
             alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $file)
             if [[ "$alreadyTestedShellVersion" == "${{ env.VERSION }}" && "$alreadyTestedPluginsVersion" == "${{ env.PLUGINS_VERSION }}" ]]; then
-              echo "Shell version alreadyTestedShellVersion with plugins of version $alreadyTestedPluginsVersion already tested."
+              echo "Shell version $alreadyTestedShellVersion with plugins of version $alreadyTestedPluginsVersion already tested."
               echo "skip_job=true" >> $GITHUB_ENV
             fi
           else
