@@ -299,14 +299,29 @@ export class EchartsOptionsService {
     }
 
     if (alarm) {
-      value = this.processAlarm(alarm);
+      this.processAlarm(alarm).then((alarmVal) => {
+        value = alarmVal;
+        YAxisReadings.push(value);
+        const options = this.echartsInstance?.getOption() as EChartsOption;
+        if (!options.tooltip || !Array.isArray(options.tooltip)) {
+          return;
+        }
+        const updatedOptions: Partial<SeriesOption> = {
+          tooltip: options['tooltip'][0],
+        };
+
+        if (!updatedOptions.tooltip) {
+          return;
+        }
+        updatedOptions.tooltip.formatter = YAxisReadings.join('');
+
+        this.echartsInstance?.setOption(updatedOptions);
+        return;
+      });
     }
     YAxisReadings.push(value);
 
-    return (
-      // this.datePipe.transform(XAxisValue) + '<br/>' +
-      YAxisReadings.join('')
-    );
+    return YAxisReadings.join('');
   }
 
   /**
@@ -416,38 +431,27 @@ export class EchartsOptionsService {
    * @param alarm - The alarm object.
    * @returns The processed value.
    */
-  private processAlarm(alarm: IAlarm): string {
+  private async processAlarm(alarm: IAlarm): Promise<string> {
     let value = `<ul class="list-unstyled small separator-top m-0">`;
     value += `<li class="p-t-4 p-b-4 d-flex a-i-center separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Severity</label>`;
     value += `<span class="small d-inline-flex a-i-center gap-4 m-l-auto"><i class="stroked-icon icon-14 status dlt-c8y-icon-${this.severityIconPipe.transform(alarm.severity)} ${alarm.severity.toLowerCase()}" > </i> ${this.severityLabelPipe.transform(alarm.severity)} </span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Type</label><span class="small m-l-auto"><code>${alarm.type}</code></span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Message</label><span class="small m-l-auto">${alarm.text}</span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Last Updated</label><span class="small m-l-auto">${this.datePipe.transform(alarm['lastUpdated'])}</span></li>`;
-    this.alarmRouteExists(alarm).then((exists) => {
-      if (exists) {
-        value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href="/alarms/${alarm.id}">Alarm Details</a></span></li>`;
-      }
-    });
+    const exists = await this.alarmRouteExists();
+    if (exists) {
+      value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href = "${this.router.url}/alarms/${alarm.id}">Alarm Details</a></span></li>`;
+    }
     value += `<li class="p-t-4 p-b-4 d-flex text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm count</label><span class="small m-l-auto"><span class="badge badge-info">${alarm.count}</span></span></li>`;
     value += `</ul>`;
     return value;
   }
 
-  private alarmRouteExists(alarm: IAlarm): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      try {
-        this.router
-          .navigateByUrl(`/alarms/${alarm.id}`)
-          .then(() => {
-            resolve(true);
-          })
-          .catch(() => {
-            resolve(false);
-          });
-      } catch (error) {
-        resolve(false);
-      }
+  private async alarmRouteExists(): Promise<boolean> {
+    const exists = this.router.config.some((route) => {
+      return `${route.path}` === 'alarms';
     });
+    return exists;
   }
 
   private getChartSeries(
