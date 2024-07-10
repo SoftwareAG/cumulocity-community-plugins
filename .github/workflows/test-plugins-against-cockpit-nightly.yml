@@ -21,7 +21,7 @@ jobs:
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
         with:
-          include-latest: true # TODO: remove
+          include-latest: true # TODO: remove this line
 
       - name: Verify shell versions output
         run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
