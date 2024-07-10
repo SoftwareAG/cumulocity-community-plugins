@@ -1,7 +1,7 @@
 name: Test plugins against Cockpit- nightly run
 on:
   schedule:
-    - cron:  '22 8 * * 1-5'
+    - cron:  '29 08 * * 1-5'
 
 permissions:
   contents: read
