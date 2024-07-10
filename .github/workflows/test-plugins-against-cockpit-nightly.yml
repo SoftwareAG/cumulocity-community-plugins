@@ -76,9 +76,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}
+          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}
           restore-keys: |
-            cache-json-files-
+            cache-json-files-${{ runner.os }}-${{ env.TAG }}
 
       - name: Check if version is already tested
         id: check-version
@@ -166,4 +166,4 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}
+          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}
