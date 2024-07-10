@@ -75,7 +75,7 @@ jobs:
           fetch-depth: 0
 
       - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' }}
         id: retrieve-cache
         uses: actions/cache@v4
         with:
@@ -85,7 +85,7 @@ jobs:
             cache-json-files-${{ runner.os }}-${{ env.TAG }}
 
       - name: Check if version is already tested
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' }}
         id: check-version
         run: |
           mkdir -p ./cache-files
@@ -160,7 +160,7 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'pull_request' }}
         run: |
           file="./cache-files/${{ env.TAG }}.json"
           now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
@@ -168,7 +168,7 @@ jobs:
           cat $file
 
       - name: Upload updated JSON file to cache
-        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'pull_request' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
