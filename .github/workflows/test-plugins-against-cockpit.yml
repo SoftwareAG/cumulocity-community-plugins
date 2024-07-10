@@ -48,7 +48,7 @@ jobs:
         id: extract-plugins-version
         run: |
           plugins_version=$(jq -r '.version' package.json)
-          echo "version=${plugins_version}" >> $GITHUB_ENV
+          echo "plugins_version=${plugins_version}" >> $GITHUB_ENV
           echo "::set-output name=version::${plugins_version}"
 
       - name: Verify plugins version output
