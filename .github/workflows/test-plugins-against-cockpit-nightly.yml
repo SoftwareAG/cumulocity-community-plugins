@@ -63,6 +63,7 @@ jobs:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
       MAJOR: ${{ matrix.version_data.major }}
+      TAG: ${{ matrix.version_data.tag }}
 
     steps:
       - name: Checkout
@@ -70,22 +71,55 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Retrieve cached JSON files
+        id: retrieve-cache
+        uses: actions/cache@v4
+        with:
+          path: ./cache-files
+          key: cache-json-files-${{ runner.os }}
+          restore-keys: |
+            cache-json-files-
+
+      - name: Check if version is already tested
+        id: check-version
+        run: |
+          mkdir -p ./cache-files
+          file="./cache-files/${{ env.TAG }}.json"
+          if [ -f "$file" ]; then
+            echo "Cache file exists: $file"
+            lastSuccess=$(jq -r '.version' $file)
+            if [[ "$lastSuccess" == "${{ env.VERSION }}" ]]; then
+              echo "Version $lastSuccess already tested."
+              echo "skip_job=true" >> $GITHUB_ENV
+            fi
+          else
+            echo "No cache file found for ${{ env.TAG }}"
+          fi
+
+      - name: Skip if already tested
+        if: env.skip_job == 'true'
+        run: echo "Skipping job for ${{ env.VERSION }}"
+
       - name: Setup Node.js
+        if: env.skip_job != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
+        if: env.skip_job != 'true'
         run: npm ci
 
       - name: Download build artifact
+        if: env.skip_job != 'true'
         uses: actions/download-artifact@v4
         with:
           name: build
           path: dist/apps/sag-pkg-community-plugins/
 
       - name: Get shell app of particular version
+        if: env.skip_job != 'true'
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
         with:
           shell-name: cockpit
@@ -93,6 +127,7 @@ jobs:
           shell-path: dist/apps
 
       - name: Cypress run
+        if: env.skip_job != 'true'
         uses: cypress-io/github-action@v5
         with:
           start: npm run cypress:ctrl
@@ -104,17 +139,31 @@ jobs:
           env: C8Y_CTRL_MODE=mocking,grepTags=@${{ env.MAJOR }}
 
       - name: Upload cypress screenshots
+        if: failure() && env.skip_job != 'true'
         uses: actions/upload-artifact@v4
-        if: failure()
         with:
           retention-days: 5
           name: cypress-screenshots
           path: cypress/screenshots
 
       - name: Upload cypress videos
+        if: always() && env.skip_job != 'true'
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           retention-days: 5
           name: cypress-videos
           path: cypress/videos
+
+      - name: Create or update JSON file
+        if: env.skip_job != 'true'
+        run: |
+          file="./cache-files/${{ env.TAG }}.json"
+          now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
+          jq -n --arg version "${{ env.VERSION }}" --arg lastSuccess "$now" '{version: $version, lastSuccess: $lastSuccess}' > $file
+
+      - name: Upload updated JSON files to cache
+        if: env.skip_job != 'true'
+        uses: actions/cache@v4
+        with:
+          path: ./cache-files
+          key: cache-json-files-${{ runner.os }}
