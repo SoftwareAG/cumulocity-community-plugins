@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     outputs:
-      plugins_version: ${{ steps.extract-plugins-version.outputs.version }}
+      plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
 
     steps:
       - name: Checkout
