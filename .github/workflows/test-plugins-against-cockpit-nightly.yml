@@ -20,6 +20,8 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
+        with:
+          include-latest: true # TODO: remove
 
       - name: Verify shell versions output
         run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
@@ -88,9 +90,9 @@ jobs:
           file="./cache-files/${{ env.TAG }}.json"
           if [ -f "$file" ]; then
             echo "Cache file exists: $file"
-            lastSuccess=$(jq -r '.version' $file)
-            if [[ "$lastSuccess" == "${{ env.VERSION }}" ]]; then
-              echo "Version $lastSuccess already tested."
+            alreadyTestedVersion=$(jq -r '.version' $file)
+            if [[ "$alreadyTestedVersion" == "${{ env.VERSION }}" ]]; then
+              echo "Version $alreadyTestedVersion already tested."
               echo "skip_job=true" >> $GITHUB_ENV
             fi
           else
@@ -161,8 +163,9 @@ jobs:
           file="./cache-files/${{ env.TAG }}.json"
           now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
           jq -n --arg version "${{ env.VERSION }}" --arg lastSuccess "$now" '{version: $version, lastSuccess: $lastSuccess}' > $file
+          cat $file
 
-      - name: Upload updated JSON files to cache
+      - name: Upload updated JSON file to cache
         if: env.skip_job != 'true'
         uses: actions/cache@v4
         with:
