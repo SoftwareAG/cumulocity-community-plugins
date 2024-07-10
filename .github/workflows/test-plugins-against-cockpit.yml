@@ -52,7 +52,7 @@ jobs:
 
       - name: Extract Plugins Version
         id: extract-plugins-version
-        run: echo "version=$(jq -r .version cumulocity.json)" >> $GITHUB_ENV
+        run: echo "version=$(jq -r .version package.json)" >> $GITHUB_ENV
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
