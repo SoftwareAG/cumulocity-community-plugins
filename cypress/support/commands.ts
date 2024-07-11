@@ -20,6 +20,7 @@ declare global {
         required: boolean,
         functional: boolean
       ): Chainable<void>;
+      // both login2 and getTenantId2 commands are added in the same form as in cumulocity-ui; There were issues with login and getTenantId from cumulocity-cypress package
       login2(username: string, password: string): Chainable<any>;
       getTenantId2(username: string, password: string): Chainable<string>;
       prepareGroupWithDashboard(): Chainable<void>;

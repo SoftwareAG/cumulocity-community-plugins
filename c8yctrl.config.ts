@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 
 import { createLogger, format, transports } from 'winston';
 // https://github.com/winstonjs/winston/issues/2430
@@ -39,6 +39,7 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
   });
 
   config.onProxyResponse = ((
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ctrl: C8yPactHttpController,
     req: Request,
     res: C8yPactHttpResponse
