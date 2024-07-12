@@ -74,6 +74,7 @@ export class DatapointsGraphWidgetConfigComponent
   };
   datapointSelectionConfig: Partial<DatapointSelectorModalOptions> = {};
   activeDatapointsExists = false;
+  alarmsOrEventsHaveNoMatchingDps: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -105,6 +106,7 @@ export class DatapointsGraphWidgetConfigComponent
 
     this.initDateSelection();
     this.setActiveDatapointsExists();
+    this.checkForMatchingDatapoints();
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -116,6 +118,7 @@ export class DatapointsGraphWidgetConfigComponent
           ],
         };
         this.setActiveDatapointsExists();
+        this.checkForMatchingDatapoints();
       });
   }
 
@@ -167,6 +170,20 @@ export class DatapointsGraphWidgetConfigComponent
         widgetInstanceGlobalTimeContext: true,
         realtime: false,
       });
+    }
+  }
+
+  private checkForMatchingDatapoints(): void {
+    const allMatch = this.config?.alarmsEventsConfigs?.every((ae) =>
+      this.formGroup.value.datapoints?.some(
+        (dp) => dp.__target?.id === ae.__target?.id
+      )
+    );
+
+    if (allMatch) {
+      this.alarmsOrEventsHaveNoMatchingDps = false;
+    } else {
+      this.alarmsOrEventsHaveNoMatchingDps = true;
     }
   }
 

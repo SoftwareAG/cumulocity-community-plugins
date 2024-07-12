@@ -84,7 +84,7 @@
               <span translate>X axis helper lines</span>
             </label>
             <label
-              [title]="'Display marked line' | translate"
+              [title]="'Display vertical line' | translate"
               class="c8y-checkbox"
             >
               <input
@@ -93,19 +93,29 @@
                 name="displayMarkedLine"
               />
               <span></span>
-              <span translate>Display marked line</span>
+              <span translate>Display vertical line when alarm occurs</span>
             </label>
-            <label
-              [title]="'Display marked point' | translate"
-              class="c8y-checkbox"
-            >
+            <label [title]="'Display icons' | translate" class="c8y-checkbox">
               <input
                 type="checkbox"
                 formControlName="displayMarkedPoint"
                 name="displayMarkedPoint"
               />
               <span></span>
-              <span translate>Display marked point</span>
+              <span translate>Display icon when alarm occurs</span>
+              <button
+                *ngIf="alarmsOrEventsHaveNoMatchingDps"
+                [tooltip]="
+                  'Some alarms or events have no matching data points. No icons will be shown for them.'
+                    | translate
+                "
+                container="body"
+                (click)="$event.stopPropagation()"
+                [adaptivePosition]="false"
+                class="btn-clean m-l-8"
+              >
+                <i c8yIcon="exclamation-triangle" class="text-warning"></i>
+              </button>
             </label>
           </c8y-form-group>
         </fieldset>
