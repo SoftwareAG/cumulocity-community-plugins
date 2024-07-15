@@ -15,8 +15,6 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointWithValues,
-  MarkLineData,
-  SeriesDatapointInfo,
   SeriesValue,
 } from '../model';
 import {

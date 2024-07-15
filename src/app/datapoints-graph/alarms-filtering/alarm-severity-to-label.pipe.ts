@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
  * Pipe to transform alarm severity to corresponding label.
  */
 @Pipe({
-  name: 'AlarmSeverityToLabel'
+  name: 'AlarmSeverityToLabel',
 })
 export class AlarmSeverityToLabelPipe implements PipeTransform {
   constructor(private translateService: TranslateService) {}

@@ -180,11 +180,13 @@ export class DatapointsGraphWidgetConfigComponent
       )
     );
 
-    if (allMatch) {
-      this.alarmsOrEventsHaveNoMatchingDps = false;
-    } else {
-      this.alarmsOrEventsHaveNoMatchingDps = true;
-    }
+    queueMicrotask(() => {
+      if (allMatch) {
+        this.alarmsOrEventsHaveNoMatchingDps = false;
+      } else {
+        this.alarmsOrEventsHaveNoMatchingDps = true;
+      }
+    });
   }
 
   private initForm() {

@@ -140,36 +140,4 @@ describe('AlarmEventSelectorService', () => {
       ]);
     });
   });
-
-  describe('getBlankItem', () => {
-    it('getBlankItem for alarm', () => {
-      // when
-      const item = service.getBlankItem('ALARM', { id: 1 }, 'red');
-      // then
-      expect(item).toEqual({
-        timelineType: 'ALARM',
-        color: 'red',
-        label: '',
-        filters: {
-          type: '',
-        },
-        __target: { id: 1 },
-      });
-    });
-
-    it('getBlankItem for event', () => {
-      // when
-      const item = service.getBlankItem('EVENT', { id: 1 }, 'red');
-      // then
-      expect(item).toEqual({
-        timelineType: 'EVENT',
-        color: 'red',
-        label: '',
-        filters: {
-          type: '',
-        },
-        __target: { id: 1 },
-      });
-    });
-  });
 });

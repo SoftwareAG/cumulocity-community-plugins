@@ -11,6 +11,8 @@ import {
   TopLevelFormatterParams,
 } from 'echarts/types/src/component/tooltip/TooltipModel';
 import { TooltipFormatterCallback } from 'echarts/types/src/util/types';
+import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
+import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 
 describe('EchartsOptionsService', () => {
   let service: EchartsOptionsService;
@@ -75,6 +77,8 @@ describe('EchartsOptionsService', () => {
         { provide: DatePipe, useValue: datePipe },
         { provide: ChartTypesService, useValue: chartTypesService },
         { provide: YAxisService, useValue: yAxisService },
+        AlarmSeverityToIconPipe,
+        AlarmSeverityToLabelPipe,
       ],
     });
     service = TestBed.inject(EchartsOptionsService);
@@ -359,7 +363,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div>`
+        `<div class="d-flex a-i-center"><span class='dlt-c8y-icon-circle m-r-4' style='color: blue'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10</div></div>`
       );
     });
 
@@ -406,7 +410,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10 C<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div><span style='display: inline-block; background-color: red ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>2 C<div style="font-size: 11px">2023-03-20T10:09:00.000Z</div>`
+        '<div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: blue\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 C</div></div><div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: red\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:09:00.000Z</label><div class="m-l-auto text-12" >2 C</div></div>'
       );
     });
 
@@ -467,7 +471,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10 C<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div>`
+        '<div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: blue\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 C</div></div>'
       );
     });
 
@@ -511,7 +515,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        `2023-03-20T10:10:00.000Z<br/><span style='display: inline-block; background-color: blue ; height: 12px; width: 12px; border-radius: 50%; margin-right: 4px;'></span><strong>c8y_Temperature → T: </strong>-10 — 10 C<div style="font-size: 11px">2023-03-20T10:10:00.000Z</div>`
+        '<div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: blue\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 — 10 C</div></div>'
       );
     });
   });

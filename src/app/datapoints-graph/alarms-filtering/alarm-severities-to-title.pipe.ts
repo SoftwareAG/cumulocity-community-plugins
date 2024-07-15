@@ -11,7 +11,7 @@ import { SeverityType, SEVERITY_LABELS } from '@c8y/client';
  * Result: 'Warning, Critical'
  */
 @Pipe({
-  name: 'AlarmSeveritiesToTitle'
+  name: 'AlarmSeveritiesToTitle',
 })
 export class AlarmSeveritiesToTitlePipe implements PipeTransform {
   private readonly severityOptionsCount = Object.keys(SEVERITY_LABELS).length;
@@ -27,7 +27,9 @@ export class AlarmSeveritiesToTitlePipe implements PipeTransform {
     if (severities.length === this.severityOptionsCount) {
       return this.translateService.instant(gettext('All alarms'));
     }
-    const translatedChips = severities.map(severity => this.translateSeverityLabel(severity));
+    const translatedChips = severities.map((severity) =>
+      this.translateSeverityLabel(severity)
+    );
     return translatedChips.join(', ');
   }
   /**

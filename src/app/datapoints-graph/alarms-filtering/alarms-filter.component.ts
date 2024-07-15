@@ -41,10 +41,10 @@ export class AlarmsFilterComponent implements OnInit, AfterViewInit, OnDestroy {
    * Emits a `FormFilters` object representing the filter criteria applied by the user.
    */
   @Output()
-  onFilterApplied = new EventEmitter<FormFilters>();
+  filterApplied = new EventEmitter<FormFilters>();
 
   @ViewChild('filtersDropdown')
-  filtersDropdown: BsDropdownDirective;
+  filtersDropdown: BsDropdownDirective | undefined;
 
   formGroup = this.formBuilder.group(DEFAULT_SEVERITY_VALUES);
   chips: SeverityType[] = [];
@@ -112,7 +112,7 @@ export class AlarmsFilterComponent implements OnInit, AfterViewInit, OnDestroy {
       showCleared: this.showCleared,
       severityOptions: this.formGroup.value,
     };
-    this.onFilterApplied.emit(combinedFormEvent);
+    this.filterApplied.emit(combinedFormEvent);
     this.currentFormGroupValues = this.formGroup.value;
     this.currentShowClearedValue = this.showCleared;
 
