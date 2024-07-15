@@ -491,7 +491,15 @@ export class EchartsOptionsService {
       eventSeries = [...eventSeries, ...newEventSeries];
       alarmSeries = [...alarmSeries, ...newAlarmSeries];
     });
-    return [...series, ...eventSeries, ...alarmSeries];
+    const deduplicateFilterCallback = (
+      obj1: SeriesOption,
+      i: number,
+      arr: SeriesOption[]
+    ): obj1 is SeriesOption =>
+      arr.findIndex((obj2) => obj2['id'] === obj1['id']) === i;
+    const deduplicatedEvents = eventSeries.filter(deduplicateFilterCallback);
+    const deduplicatedAlarms = alarmSeries.filter(deduplicateFilterCallback);
+    return [...series, ...deduplicatedEvents, ...deduplicatedAlarms];
   }
 
   private groupByType(
