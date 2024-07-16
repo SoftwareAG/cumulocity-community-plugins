@@ -57,7 +57,9 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
     morgan('dev', {
       skip: (req, res) => {
         return (
-          res.statusCode < 400 || req.url.startsWith('/notification/realtime')
+          res.statusCode < 400 ||
+          req.url.startsWith('/notification/realtime') ||
+          req.url.startsWith('/c8yctrl')
         );
       },
       stream: {

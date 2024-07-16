@@ -3,7 +3,10 @@ describe(
   { tags: '@1020', c8ypact: { id: 'datapoints-graph' } },
   () => {
     beforeEach(() => {
-      cy.getAuth('admin').login();
+      cy.login({
+        user: Cypress.env('admin_username') || 'ccw',
+        password: Cypress.env('admin_password'),
+      });
 
       cy.prepareGroupWithDashboard();
     });

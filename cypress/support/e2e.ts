@@ -33,7 +33,10 @@ before(() => {
   Cypress.session.clearAllSavedSessions();
 
   cy.wrap(c8yctrl('skip recording'), { log: false }).then(() => {
-    cy.getAuth('admin').getTenantId();
+    cy.getAuth({
+      user: Cypress.env('admin_username') || 'ccw',
+      password: Cypress.env('admin_password'),
+    }).getTenantId();
   });
 
   if (Cypress.env('C8Y_CTRL_MODE') != null) {
