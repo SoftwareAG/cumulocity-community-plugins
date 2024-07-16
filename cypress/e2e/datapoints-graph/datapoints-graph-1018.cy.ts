@@ -1,6 +1,6 @@
 describe('datapoints-graph-1018', { tags: '@1018' }, () => {
   beforeEach(() => {
-    cy.login2(
+    cy.login(
       Cypress.env('admin_username') || 'ccw',
       Cypress.env('admin_password')
     );

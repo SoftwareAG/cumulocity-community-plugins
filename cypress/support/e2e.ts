@@ -19,11 +19,12 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import 'cumulocity-cypress/lib/commands';
+import 'cumulocity-cypress/commands';
+import 'cumulocity-cypress/commands/c8ypact';
 
 import registerCypressGrep from '@cypress/grep/src/support';
 
-import { C8yPactID } from 'cumulocity-cypress-ctrl';
+import { pactId } from 'cumulocity-cypress';
 const { _ } = Cypress;
 
 registerCypressGrep();
@@ -31,13 +32,14 @@ registerCypressGrep();
 before(() => {
   Cypress.session.clearAllSavedSessions();
 
+  cy.wrap(c8yctrl('skip recording'), { log: false }).then(() => {
+    cy.getAuth('admin').getTenantId();
+  });
+
   if (Cypress.env('C8Y_CTRL_MODE') != null) {
-    cy.wrap(c8yctrl('global before hook'), { log: false }).then(() => {
-      // do your requests to record in here
-      // ...
-    });
-    const runner = Cypress.mocha.getRunner();
-    runner.on('suite', (suite) => c8yctrl(getSuiteTitles(suite)));
+    // intercept all suite before() hooks to call c8yctrl and make sure rest
+    // requests in the before() hook are recorded
+    Cypress.c8ypact.on.suiteStart = (titlePath) => c8yctrl(titlePath);
   }
 });
 
@@ -47,23 +49,20 @@ beforeEach(() => {
   }
 });
 
-function getSuiteTitles(suite) {
-  if (suite.parent && !_.isEmpty(suite.parent.title)) {
-    return [...getSuiteTitles(suite.parent), suite.title];
-  }
-  return [suite.title];
-}
-
-function c8yctrl(title: string | string[] = Cypress.currentTest.titlePath) {
+/**
+ * Update c8yctrl pact file to be used for recording or mocking. This is a very simple
+ * implementation that will be replaced by cumulocity-cypress integration.
+ * @param titleOrId An id or array of titles with names of suite or titles
+ */
+function c8yctrl(titleOrId: string | string[] = Cypress.currentTest.titlePath) {
+  const id = pactId(titleOrId);
   const recording = Cypress.env('C8Y_CTRL_MODE') === 'recording';
   const parameter: string = recording
     ? '?recording=true&clear'
     : '?recording=false';
 
   return (cy.state('window') as Cypress.AUTWindow).fetch(
-    `${Cypress.config().baseUrl}/c8yctrl/current${parameter}&id=${pactId(
-      title
-    )}`,
+    `${Cypress.config().baseUrl}/c8yctrl/current${parameter}&id=${id}`,
     {
       method: 'POST',
       headers: {
@@ -72,26 +71,4 @@ function c8yctrl(title: string | string[] = Cypress.currentTest.titlePath) {
       body: '{}',
     }
   );
-}
-
-// todo: import pactId() from cumulocity-cypress when it's implemented in library
-function pactId(value: string | string[]): C8yPactID {
-  let result = '';
-  const suiteSeparator = '__';
-
-  const normalize = (toNormalize: string): string =>
-    toNormalize
-      .split(suiteSeparator)
-      .map((v) => _.words(_.deburr(v), /[a-zA-Z0-9]+/g).join('_'))
-      .join(suiteSeparator);
-
-  if (value && _.isArray(value)) {
-    result = value.map((v) => normalize(v)).join(suiteSeparator);
-  } else if (value && _.isString(value)) {
-    result = normalize(value as string);
-  }
-  if (!result || _.isEmpty(result)) {
-    return !value ? (value as C8yPactID) : (undefined as any);
-  }
-  return result;
 }

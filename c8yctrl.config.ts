@@ -1,85 +1,24 @@
 import _ from 'lodash';
-// import fs from 'fs';
-// import path from 'path';
-
 import { createLogger, format, transports } from 'winston';
 // https://github.com/winstonjs/winston/issues/2430
 // use following import if transports is empty
 import { default as transportsDirect } from 'winston/lib/winston/transports/';
 import morgan from 'morgan';
+
 import {
   C8yDefaultPactPreprocessor,
   C8yPactHttpController,
   C8yPactHttpControllerConfig,
   C8yPactHttpResponse,
+  C8yPactRecord,
 } from 'cumulocity-cypress-ctrl';
+
+import { Request } from 'express';
 
 const safeTransports = !_.isEmpty(transports) ? transports : transportsDirect;
 
 export default (config: Partial<C8yPactHttpControllerConfig>) => {
   config.logLevel = 'debug';
-
-  config.preprocessor = new C8yDefaultPactPreprocessor({
-    ignore: [
-      'request.headers.cookie',
-      'request.headers.accept-encoding',
-      'response.headers.cache-control',
-      'response.headers.content-length',
-      'response.headers.content-encoding',
-      'response.headers.transfer-encoding',
-      'response.headers.keep-alive',
-    ],
-    obfuscate: [
-      'request.headers.Authorization',
-      'request.headers.authorization',
-      'request.headers.X-XSRF-TOKEN',
-      'response.body.password',
-    ],
-    obfuscationPattern: '****',
-  });
-
-  config.onProxyResponse = ((
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ctrl: C8yPactHttpController,
-    req: Request,
-    res: C8yPactHttpResponse
-  ) => {
-    // log some details of request and responses for failing requests
-
-    // debugging only
-    if ((res.status || 200) >= 400) {
-      console.error({
-        url: req.url,
-        status: `${res.status} ${res.statusText}`,
-        requestHeader: req.headers,
-        responseHeader: res.headers,
-        responseBody: _.isString(res.body)
-          ? res.body
-          : JSON.stringify(res.body),
-      });
-    }
-    // ctrl.logger?.error({
-    //   url: req.url,
-    //   status: `${res.status} ${res.statusText}`,
-    //   requestHeader: req.headers,
-    //   responseHeader: res.headers,
-    //   responseBody: _.isString(res.body)
-    //     ? res.body
-    //     : ctrl.stringify(res.body),
-    // });
-    // }
-    // filter out requests that are already recorded
-    // const record = ctrl.currentPact?.nextRecordMatchingRequest(
-    //   req,
-    //   config.baseUrl
-    // );
-    // if (record) {
-    //   res.headers = res.headers || {};
-    //   res.headers["x-c8yctrl-type"] = "duplicate";
-    // }
-    // return record == null;
-    return true;
-  }) as any; // TODO: remove any when new version of c8yctrl package is released
 
   config.logger = createLogger({
     transports: [
@@ -97,15 +36,13 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
           format.simple()
         ),
       }),
-      // new safeTransports.File({
-      //   format: format.simple(),
-      //   filename: 'combined.log',
-      // }),
     ],
   });
 
-  config.requestLogger = () => [
-    morgan(':method :url :status :res[content-length] - :response-time ms', {
+  const requestLogFormat =
+    ':method :url :status :res[content-length] - :response-time ms';
+  config.requestLogger = [
+    morgan(`[c8yctrl] ${requestLogFormat}`, {
       skip: (req) => {
         return (
           !req.url.startsWith('/c8yctrl') || req.url.startsWith('/c8yctrl/log')
@@ -129,12 +66,107 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
         },
       },
     }),
-    // morgan('common', {
-    //   stream: fs.createWriteStream(path.join(__dirname, 'c8yctrl_access.log'), {
-    //     flags: 'a',
-    //   }),
-    // }),
   ];
+
+  config.preprocessor = new C8yDefaultPactPreprocessor({
+    ignore: [
+      'request.headers.cookie',
+      'request.headers.accept-encoding',
+      'response.headers.cache-control',
+      'response.headers.content-length',
+      'response.headers.content-encoding',
+      'response.headers.transfer-encoding',
+      'response.headers.keep-alive',
+    ],
+    obfuscate: [
+      'request.headers.Authorization',
+      'request.headers.authorization',
+      'request.headers.X-XSRF-TOKEN',
+      'response.body.password',
+    ],
+    obfuscationPattern: '****',
+  });
+
+  config.onMockRequest = (
+    ctrl: C8yPactHttpController,
+    req: Request,
+    record: C8yPactRecord | undefined | null
+  ) => {
+    // ALWAYS mock login and current tenant requests. This way we can avoid missing login
+    // requests and responses in recording files.
+    if (
+      req.url.startsWith('/tenant/oauth?tenant_id=') &&
+      req.method === 'POST'
+    ) {
+      const response: C8yPactHttpResponse = {
+        status: 200,
+        statusText: 'OK',
+        body: '',
+        headers: {
+          connection: 'close',
+          'content-length': '0',
+          'set-cookie': [
+            'authorization=c8yctrlauthorization; Max-Age=1209600; Path=/; HttpOnly',
+            'XSRF-TOKEN=c8yctrltoken; Max-Age=1209600; Path=/;',
+          ],
+        },
+      };
+      return response;
+    }
+
+    if (req.url.startsWith('/tenant/currentTenant') && record == null) {
+      const tenant = ctrl.currentPact?.info.tenant;
+      const baseUrl = ctrl.currentPact?.info.baseUrl || ctrl.baseUrl;
+      const domain = baseUrl?.replace(/^https?:\/\//, '');
+
+      const response: C8yPactHttpResponse = {
+        status: 200,
+        statusText: 'OK',
+        body: {
+          allowCreateTenants: true,
+          customProperties: {},
+          domain: domain || '',
+          name: tenant || 't1234567',
+          self: `https://${baseUrl}/currentTenant`,
+        },
+        headers: {
+          connection: 'close',
+          'content-type':
+            'application/vnd.com.nsn.cumulocity.currenttenant+json;charset=UTF-8;ver=0.9',
+        },
+      };
+      return response;
+    }
+
+    return record?.response;
+  };
+
+  config.onProxyResponse = (
+    _ctrl: C8yPactHttpController,
+    req: Request,
+    res: C8yPactHttpResponse
+  ) => {
+    // log request and responses for failing requests
+    if ((res.status || 200) >= 400) {
+      config.logger?.error({
+        url: req.url,
+        status: `${res.status} ${res.statusText}`,
+        requestHeader: req.headers,
+        responseHeader: res.headers,
+        responseBody: (_.isString(res.body)
+          ? res.body
+          : JSON.stringify(res.body)
+        ).slice(0, 200),
+      });
+    }
+
+    return true;
+  };
+
+  config.onSavePact = (_ctrl, pact) => {
+    // do not save pact with id 'skip_recording'
+    return pact.id !== 'skip_recording';
+  };
 
   return config;
 };
