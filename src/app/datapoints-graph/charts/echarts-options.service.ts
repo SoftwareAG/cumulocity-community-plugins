@@ -314,7 +314,7 @@ export class EchartsOptionsService {
           return;
         }
         updatedOptions.tooltip.formatter = `<div style="max-width: 300px">${YAxisReadings.join('')}</div>`;
-
+        updatedOptions.tooltip.transitionDuration = 0;
         this.echartsInstance?.setOption(updatedOptions);
         return;
       });
