@@ -313,7 +313,7 @@ export class EchartsOptionsService {
         if (!updatedOptions.tooltip) {
           return;
         }
-        updatedOptions.tooltip.formatter = YAxisReadings.join('');
+        updatedOptions.tooltip.formatter = `<div style="max-width: 300px">${YAxisReadings.join('')}</div>`;
 
         this.echartsInstance?.setOption(updatedOptions);
         return;
@@ -321,7 +321,7 @@ export class EchartsOptionsService {
     }
     YAxisReadings.push(value);
 
-    return YAxisReadings.join('');
+    return `<div style="max-width: 300px">${YAxisReadings.join('')}</div>`;
   }
 
   /**
@@ -436,7 +436,7 @@ export class EchartsOptionsService {
     value += `<li class="p-t-4 p-b-4 d-flex a-i-center separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Severity</label>`;
     value += `<span class="small d-inline-flex a-i-center gap-4 m-l-auto"><i class="stroked-icon icon-14 status dlt-c8y-icon-${this.severityIconPipe.transform(alarm.severity)} ${alarm.severity.toLowerCase()}" > </i> ${this.severityLabelPipe.transform(alarm.severity)} </span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm Type</label><span class="small m-l-auto"><code>${alarm.type}</code></span></li>`;
-    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Message</label><span class="small m-l-auto">${alarm.text}</span></li>`;
+    value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Message</label><span class="small m-l-auto" style="overflow: hidden; text-overflow: ellipsis;">${alarm.text}</span></li>`;
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Last Updated</label><span class="small m-l-auto">${this.datePipe.transform(alarm['lastUpdated'])}</span></li>`;
     const exists = await this.alarmRouteExists();
     if (exists) {
