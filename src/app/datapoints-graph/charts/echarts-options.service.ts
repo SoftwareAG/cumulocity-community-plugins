@@ -30,10 +30,10 @@ type TooltipPositionCallback = (
   point: [number, number], // position of mouse in chart [X, Y]; 0,0 is top left corner
   _: any, // tooltip data
   dom: HTMLElement | unknown, // tooltip element
-  __: any,
+  __: any, // valid only when mouse is on graphic elements; not relevant in our case
   size: {
     contentSize: [number, number]; // size of tooltip
-    viewSize: [number, number];
+    viewSize: [number, number]; // size of the chart
   } | null // size of chart
 ) => Partial<Record<'top' | 'bottom' | 'left' | 'right', number>>;
 
@@ -359,7 +359,6 @@ export class EchartsOptionsService {
       } | null // size of chart
     ) => {
       const offset = 10;
-      const margin = 30;
       const [mouseX, mouseY] = point;
       const chartWidth = size?.viewSize[0] || 0;
       const chartHeight = size?.viewSize[1] || 0;
@@ -367,12 +366,12 @@ export class EchartsOptionsService {
       const tooltipHeight = size?.contentSize[1] || 0;
       const tooltipRect = (dom as HTMLElement)?.getBoundingClientRect();
       const tooltipOverflowsBottomEdge =
-        tooltipRect.bottom + margin > window.innerHeight;
+        tooltipRect.bottom > window.innerHeight;
 
       const tooltipOverflowsRightEdge = tooltipRect.right > window.innerWidth;
 
       const tooltipWouldOverflowBottomEdgeOnPositionChange =
-        lastPositionOfTooltip.bottom &&
+        !lastPositionOfTooltip.top &&
         tooltipRect.bottom + 2 * offset + tooltipHeight > window.innerHeight;
 
       const tooltipWouldOverflowRightEdgeOnPositionChange =
