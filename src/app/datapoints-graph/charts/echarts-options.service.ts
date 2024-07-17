@@ -468,7 +468,7 @@ export class EchartsOptionsService {
       XAxisValue
     );
     return (
-      `<div class="d-flex a-i-center separator-top p-t-8"><label class="text-12 m-r-8 m-b-0">${this.datePipe.transform(minValue[0])}</label>` +
+      `<div class="d-flex a-i-center separator-top p-t-8 p-b-8"><label class="text-12 m-r-8 m-b-0">${this.datePipe.transform(minValue[0])}</label>` +
       `<span class="m-l-auto text-12">${minValue[1]} — ${maxValue![1]}` +
       (series.datapointUnit ? ` ${series.datapointUnit}` : '') +
       `</span></div>`
@@ -934,8 +934,8 @@ export class EchartsOptionsService {
             return;
           }
           value =
-            `<div class="p-t-8 p-b-8">` +
-            `<label class="m-b-0 m-r-8 small">${this.datePipe.transform(minValue[0])}</label>` +
+            `<div class="d-flex a-i-center separator-top p-t-8 p-b-8">` +
+            `<label class="text-12 m-r-8 m-b-0">${this.datePipe.transform(minValue[0])}</label>` +
             `<div class="m-l-auto text-12" >${minValue[1]} — ${maxValue[1]}` +
             (series['datapointUnit'] ? ` ${series['datapointUnit']}` : '') +
             `</div></div>`;
@@ -951,8 +951,8 @@ export class EchartsOptionsService {
             return;
           }
           value =
-            `<div class="p-t-8 p-b-8">` +
-            `<label class="m-b-0 m-r-8 small">${this.datePipe.transform(seriesValue[0])}</label>` +
+            `<div class="d-flex a-i-center separator-top p-t-8 p-b-8">` +
+            `<label class="text-12 m-r-8 m-b-0">${this.datePipe.transform(seriesValue[0])}</label>` +
             `<div class="m-l-auto text-12" >${seriesValue[1]?.toString()}` +
             (series['datapointUnit'] ? ` ${series['datapointUnit']}` : '') +
             `</div></div>`;
@@ -961,7 +961,7 @@ export class EchartsOptionsService {
         const itemStyle = series['itemStyle'] as { color: string };
 
         YAxisReadings.push(
-          `<div class="d-flex a-i-center"><span class='dlt-c8y-icon-circle m-r-4' style='color: ${itemStyle.color}'></span>` + // color circle
+          `<div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: ${itemStyle.color}'></span>` + // color circle
             `<strong>${series['datapointLabel']} </strong></div>` + // name
             `${value}` // single value or min-max range
         );
