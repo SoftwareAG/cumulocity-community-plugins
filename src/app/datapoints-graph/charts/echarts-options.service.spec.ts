@@ -138,6 +138,7 @@ describe('EchartsOptionsService', () => {
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           formatter: (service as any).getTooltipFormatter(),
           appendToBody: true,
+          transitionDuration: 0,
         },
         legend: {
           show: false,
@@ -363,7 +364,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        `<div class="d-flex a-i-center"><span class='dlt-c8y-icon-circle m-r-4' style='color: blue'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10</div></div>`
+        `<div style="width: 300px"><div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: blue'></span><strong>c8y_Temperature → T </strong></div><div class="d-flex a-i-center separator-top p-t-8 p-b-8"><label class="text-12 m-r-8 m-b-0">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10</div></div></div>`
       );
     });
 
@@ -410,7 +411,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        '<div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: blue\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 C</div></div><div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: red\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:09:00.000Z</label><div class="m-l-auto text-12" >2 C</div></div>'
+        `<div style="width: 300px"><div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: blue'></span><strong>c8y_Temperature → T </strong></div><div class="d-flex a-i-center separator-top p-t-8 p-b-8"><label class="text-12 m-r-8 m-b-0">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 C</div></div><div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: red'></span><strong>c8y_Temperature → T </strong></div><div class="d-flex a-i-center separator-top p-t-8 p-b-8"><label class="text-12 m-r-8 m-b-0">2023-03-20T10:09:00.000Z</label><div class="m-l-auto text-12" >2 C</div></div></div>`
       );
     });
 
@@ -471,7 +472,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        '<div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: blue\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 C</div></div>'
+        `<div style="width: 300px"><div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: blue'></span><strong>c8y_Temperature → T </strong></div><div class="d-flex a-i-center separator-top p-t-8 p-b-8"><label class="text-12 m-r-8 m-b-0">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 C</div></div></div>`
       );
     });
 
@@ -515,7 +516,7 @@ describe('EchartsOptionsService', () => {
       const tooltipInnerHtml = tooltipFormatter(params, '');
       // then
       expect(tooltipInnerHtml).toBe(
-        '<div class="d-flex a-i-center"><span class=\'dlt-c8y-icon-circle m-r-4\' style=\'color: blue\'></span><strong>c8y_Temperature → T </strong></div><div class="p-t-8 p-b-8"><label class="m-b-0 m-r-8 small">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 — 10 C</div></div>'
+        `<div style="width: 300px"><div class="d-flex a-i-center p-b-8"><span class='dlt-c8y-icon-circle m-r-4' style='color: blue'></span><strong>c8y_Temperature → T </strong></div><div class="d-flex a-i-center separator-top p-t-8 p-b-8"><label class="text-12 m-r-8 m-b-0">2023-03-20T10:10:00.000Z</label><div class="m-l-auto text-12" >-10 — 10 C</div></div></div>`
       );
     });
   });
