@@ -26,9 +26,22 @@ import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-i
 import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 import { Router } from '@angular/router';
 
+type TooltipPositionCallback = (
+  point: [number, number], // position of mouse in chart [X, Y]; 0,0 is top left corner
+  _: any, // tooltip data
+  dom: HTMLElement | unknown, // tooltip element
+  __: any,
+  size: {
+    contentSize: [number, number]; // size of tooltip
+    viewSize: [number, number];
+  } | null // size of chart
+) => Partial<Record<'top' | 'bottom' | 'left' | 'right', number>>;
+
 @Injectable()
 export class EchartsOptionsService {
   echartsInstance: ECharts | undefined;
+  private TOOLTIP_WIDTH = 300;
+  private tooltipPositionCallback: TooltipPositionCallback | undefined;
 
   constructor(
     private datePipe: DatePipe,
@@ -93,6 +106,8 @@ export class EchartsOptionsService {
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         formatter: this.getTooltipFormatter(),
         appendToBody: true,
+        position: this.tooltipPosition(),
+        transitionDuration: 0,
       },
       legend: {
         show: false,
@@ -313,15 +328,88 @@ export class EchartsOptionsService {
         if (!updatedOptions.tooltip) {
           return;
         }
-        updatedOptions.tooltip.formatter = `<div style="max-width: 300px">${YAxisReadings.join('')}</div>`;
+        updatedOptions.tooltip.formatter = `<div style="width: ${this.TOOLTIP_WIDTH}px">${YAxisReadings.join('')}</div>`;
         updatedOptions.tooltip.transitionDuration = 0;
+        updatedOptions.tooltip.position = this.tooltipPosition();
         this.echartsInstance?.setOption(updatedOptions);
         return;
       });
     }
     YAxisReadings.push(value);
 
-    return `<div style="max-width: 300px">${YAxisReadings.join('')}</div>`;
+    return `<div style="width: 300px">${YAxisReadings.join('')}</div>`;
+  }
+
+  private tooltipPosition(): TooltipPositionCallback {
+    let lastPositionOfTooltip: Partial<
+      Record<'top' | 'bottom' | 'left' | 'right', number>
+    > = {};
+    if (this.tooltipPositionCallback) {
+      return this.tooltipPositionCallback;
+    }
+
+    this.tooltipPositionCallback = (
+      point: [number, number], // position of mouse in chart [X, Y]; 0,0 is top left corner
+      _: any, // tooltip data
+      dom: HTMLElement | unknown, // tooltip element
+      __: any,
+      size: {
+        contentSize: [number, number]; // size of tooltip
+        viewSize: [number, number];
+      } | null // size of chart
+    ) => {
+      const offset = 10;
+      const margin = 30;
+      const [mouseX, mouseY] = point;
+      const chartWidth = size?.viewSize[0] || 0;
+      const chartHeight = size?.viewSize[1] || 0;
+      const tooltipWidth = size?.contentSize[0] || 0;
+      const tooltipHeight = size?.contentSize[1] || 0;
+      const tooltipRect = (dom as HTMLElement)?.getBoundingClientRect();
+      const tooltipOverflowsBottomEdge =
+        tooltipRect.bottom + margin > window.innerHeight;
+
+      const tooltipOverflowsRightEdge = tooltipRect.right > window.innerWidth;
+
+      const tooltipWouldOverflowBottomEdgeOnPositionChange =
+        lastPositionOfTooltip.bottom &&
+        tooltipRect.bottom + 2 * offset + tooltipHeight > window.innerHeight;
+
+      const tooltipWouldOverflowRightEdgeOnPositionChange =
+        !lastPositionOfTooltip.left &&
+        tooltipRect.right + 2 * offset + tooltipWidth > window.innerWidth;
+
+      let verticalPosition: { top: number } | { bottom: number } = {
+        top: mouseY + offset,
+      };
+      let horizontalPosition: { left: number } | { right: number } = {
+        left: mouseX + offset,
+      };
+
+      if (
+        tooltipOverflowsBottomEdge ||
+        tooltipWouldOverflowBottomEdgeOnPositionChange
+      ) {
+        verticalPosition = {
+          bottom: chartHeight - mouseY + offset,
+        };
+      }
+      if (
+        tooltipOverflowsRightEdge ||
+        tooltipWouldOverflowRightEdgeOnPositionChange
+      ) {
+        horizontalPosition = {
+          right: chartWidth - mouseX + offset,
+        };
+      }
+
+      lastPositionOfTooltip = {
+        ...verticalPosition,
+        ...horizontalPosition,
+      };
+      return lastPositionOfTooltip;
+    };
+    return this.tooltipPositionCallback;
   }
 
   /**
@@ -879,10 +967,7 @@ export class EchartsOptionsService {
         );
       });
 
-      return (
-        //this.datePipe.transform(XAxisValue) + '<br/>' +
-        YAxisReadings.join('')
-      );
+      return `<div style="width: ${this.TOOLTIP_WIDTH}px">${YAxisReadings.join('')}</div>`;
     };
   }
 
