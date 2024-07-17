@@ -32,14 +32,14 @@ registerCypressGrep();
 before(() => {
   Cypress.session.clearAllSavedSessions();
 
-  cy.wrap(c8yctrl('skip recording'), { log: false }).then(() => {
-    cy.getAuth({
-      user: Cypress.env('admin_username') || 'ccw',
-      password: Cypress.env('admin_password'),
-    }).getTenantId();
-  });
-
   if (Cypress.env('C8Y_CTRL_MODE') != null) {
+    cy.wrap(c8yctrl('skip recording'), { log: false }).then(() => {
+      cy.getAuth({
+        user: Cypress.env('admin_username') || 'ccw',
+        password: Cypress.env('admin_password'),
+      }).getTenantId();
+    });
+
     // intercept all suite before() hooks to call c8yctrl and make sure rest
     // requests in the before() hook are recorded
     Cypress.c8ypact.on.suiteStart = (titlePath) => c8yctrl(titlePath);
