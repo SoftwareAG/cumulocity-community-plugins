@@ -12,6 +12,7 @@ import { AlarmsFilterComponent } from '../alarms-filtering/alarms-filter.compone
 import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
 import { AlarmSeveritiesToTitlePipe } from '../alarms-filtering/alarm-severities-to-title.pipe';
 import { A11yModule } from '@angular/cdk/a11y';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { A11yModule } from '@angular/cdk/a11y';
     TooltipModule,
     TimeControlsModule,
     BsDropdownModule,
+    PopoverModule,
   ],
   declarations: [
     DatapointsGraphWidgetViewComponent,

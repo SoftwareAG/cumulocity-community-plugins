@@ -13,7 +13,6 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
-  SEVERITY_LABELS,
   SeverityType,
   Interval,
 } from '../model';
@@ -35,6 +34,7 @@ import {
 } from '@c8y/client';
 import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 import { ChartsComponent } from '../charts';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -71,16 +71,31 @@ export class DatapointsGraphWidgetViewComponent
   }
   @ViewChild(ChartsComponent) chartComponent!: ChartsComponent;
   displayConfig: DatapointsGraphWidgetConfig | undefined;
+  legendHelp = this.translate.instant(
+    gettext(`<ul class="m-l-0 p-l-8 m-t-8 m-b-0">
+    <li>
+      <b>Visibility:</b>
+      use visibility icon to toggle datapoint, alarm or event visibility on chart. At least one datapoint is required to display chart.
+    </li>
+    <li>
+      <b>Alarm details</b>
+      Click alarm legend item to highlight area between alarm raised timestamp and alarm cleared timestamp.
+      You can also click alarm markline on chart to highlight alarm and to pause tooltip. Click on highlighted area or legend item to cancel highlighting.
+    </li>
+  </ul>`)
+  );
   readonly disableZoomInLabel = gettext('Disable zoom in');
   readonly enableZoomInLabel = gettext(
     'Click to enable zoom, then click and drag on the desired area in the chart.'
   );
   readonly hideDatapointLabel = gettext('Hide data point');
   readonly showDatapointLabel = gettext('Show data point');
-  readonly severitiesList = Object.keys(SEVERITY_LABELS) as SeverityType[];
   private destroy$ = new Subject<void>();
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private translate: TranslateService
+  ) {
     this.timeControlsFormGroup = this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
