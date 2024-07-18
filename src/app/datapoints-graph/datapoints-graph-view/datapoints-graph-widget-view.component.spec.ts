@@ -23,6 +23,7 @@ import {
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { FetchClient, Realtime } from '@c8y/client';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 @Component({
   selector: 'c8y-alarms-filter',
@@ -64,6 +65,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         TimeControlsModule,
         ChartsComponent,
         TooltipModule,
+        PopoverModule,
       ],
       declarations: [
         DatapointsGraphWidgetViewComponent,
