@@ -70,7 +70,6 @@ jobs:
           browser: chrome
           record: false
           config-file: cypress.config.ts
-          env: grepUntagged=true
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v4
