@@ -76,7 +76,6 @@ jobs:
     env:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
-      MAJOR: ${{ matrix.version_data.major }}
       TAG: ${{ matrix.version_data.tag }}
       PLUGINS_VERSION: ${{ needs.build-plugins.outputs.plugins_version }}
 
@@ -154,7 +153,7 @@ jobs:
           browser: chrome
           record: false
           config-file: cypress.config.ts
-          env: C8Y_CTRL_MODE=mocking,C8Y_CTRL_PROVIDER_VERSION=${{ env.MAJOR }}
+          env: C8Y_CTRL_MODE=mocking,C8Y_CTRL_PROVIDER_VERSION=${{ env.VERSION }}
 
       - name: Upload cypress screenshots
         if: failure() && env.skip_job != 'true'

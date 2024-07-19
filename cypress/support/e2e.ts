@@ -73,7 +73,7 @@ before(() => {
 });
 
 // Required configurations for github workflows
-// env: C8Y_CTRL_MODE=mocking,C8Y_CTRL_PROVIDER_VERSION=${{ env.MAJOR }}
+// env: C8Y_CTRL_MODE=mocking,C8Y_CTRL_PROVIDER_VERSION=${{ env.VERSION }}
 // env: grepUntagged=true
 
 // Required configurations for local testing
