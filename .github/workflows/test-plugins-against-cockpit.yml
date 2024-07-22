@@ -28,6 +28,8 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
+        with:
+          exact-tags: y2024-lts
 
       - name: Extract Plugins Version
         id: extract-plugins-version
@@ -212,7 +214,7 @@ jobs:
 
       - name: Download updated JSON files
         run: |
-          shell_records=$(jq -r '.[] | @base64' <<< '${{ needs.collect-shell-versions.outputs.shell_versions }}')
+          shell_records=$(jq <<< '${{ needs.collect-shell-versions.outputs.shell_versions }}')
           plugins_version='${{ needs.collect-shell-versions.outputs.plugins_version }}'
 
           for record in shell_records; do
