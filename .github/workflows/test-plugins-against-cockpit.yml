@@ -228,7 +228,7 @@ jobs:
 
             echo "Downloading artifact $artifact_name"
             mkdir -p ./cache-files
-            actions/download-artifact@v4 --name "updated-json-$tag-$version-$plugins_version" --path ./cache-files || echo "Failed to fetch artifact: $artifact_name"
+            actions/download-artifact@v4 --name $artifact_name --path ./cache-files || echo "Failed to fetch artifact: $artifact_name"
 
             echo "Unzipping artifact $artifact_name"
             unzip ./cache-files/"$artifact_name" -d ./cache-files
