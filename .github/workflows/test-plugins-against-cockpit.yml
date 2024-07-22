@@ -207,16 +207,27 @@ jobs:
     needs: run-tests-against-shell
     runs-on: ubuntu-22.04
     steps:
+      - name: Setup cache directory
+        run: mkdir -p ./cache-files
+
       - name: Download updated JSON files
         run: |
-          for tag in $(echo '${{ needs.run-tests-against-shell.outputs }}' | jq -r 'keys[]'); do
-            for version in $(echo '${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) }}' | jq -r '.[].version'); do
-              artifact_name=updated-json-$tag-$version-${{ needs.build-plugins.outputs.plugins_version }}
-              echo "Downloading artifact $artifact_name"
-              mkdir -p ./cache-files
-              echo "Retrieving: ${artifact_name}"
-              actions/download-artifact@v4 --name $artifact_name --path ./cache-files || echo "Failed to fetch artifact: $artifact_name"
-            done
+          shell_records='${{ needs.collect-shell-versions.outputs.shell_versions }}'
+          plugins_version='${{ needs.build-plugins.outputs.plugins_version }}'
+
+          for record in $(echo "$shell_records" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${record} | base64 --decode | jq -r ${1}
+            }
+            tag=$(_jq '.tag')
+            version=$(_jq '.version')
+
+            artifact_name=updated-json-$tag-$version-$plugins_version
+
+            echo "Downloading artifact $artifact_name"
+            mkdir -p ./cache-files
+            echo "Retrieving: ${artifact_name}"
+            actions/download-artifact@v4 --name $artifact_name --path ./cache-files || echo "Failed to fetch artifact: $artifact_name"
           done
 
       - name: Upload to cache
