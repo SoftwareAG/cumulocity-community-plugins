@@ -199,8 +199,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/upload-artifact@v4
         with:
-          retention-days: 5
-          name: updated-json
+          name: updated-json-${{ matrix.version_data.tag }}-${{ matrix.version_data.version }}-${{ needs.build-plugins.outputs.plugins_version }}
           path: ./cache-files/*.json
 
   cache-upload:
@@ -209,10 +208,16 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Download updated JSON files
-        uses: actions/download-artifact@v4
-        with:
-          name: updated-json
-          path: ./cache-files
+        run: |
+          for tag in $(echo '${{ needs.run-tests-against-shell.outputs }}' | jq -r 'keys[]'); do
+            for version in $(echo '${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) }}' | jq -r '.[].version'); do
+              artifact_name=updated-json-$tag-$version-${{ needs.build-plugins.outputs.plugins_version }}
+              echo "Downloading artifact $artifact_name"
+              mkdir -p ./cache-files
+              echo "Retrieving: ${artifact_name}"
+              actions/download-artifact@v4 --name $artifact_name --path ./cache-files || echo "Failed to fetch artifact: $artifact_name"
+            done
+          done
 
       - name: Upload to cache
         uses: actions/cache@v4
