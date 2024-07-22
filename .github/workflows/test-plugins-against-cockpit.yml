@@ -201,3 +201,24 @@ jobs:
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
+
+  verify-cache:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Retrieve cached JSON files
+        uses: actions/cache@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+          restore-keys: test-plugins-against-shell-e2e-results
+
+      - name: Verify cache contents
+        run: |
+          echo "Contents of the cache:"
+          ls -l ./cache-files
+          for file in ./cache-files/*; do
+            if [[ -f "$file" ]]; then
+              echo "Content of $file:"
+              cat "$file"
+            fi
+          done
