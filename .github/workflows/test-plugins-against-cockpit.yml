@@ -213,25 +213,17 @@ jobs:
         run: mkdir -p ./cache-files
 
       - name: Download and unzip updated JSON files
+        uses: actions/download-artifact@v4
+        with:
+          path: ./cache-files
+          pattern: updated-json-*
+          merge-multiple: true
+
+      - name: Unzip artifacts
         run: |
-          shell_records=$(jq <<< '${{ needs.collect-shell-versions.outputs.shell_versions }}')
-          plugins_version='${{ needs.collect-shell-versions.outputs.plugins_version }}'
-
-          for record in $(echo "$shell_records" | jq -r '.[] | @base64'); do
-            _jq() {
-              echo ${record} | base64 --decode | jq -r ${1}
-            }
-            tag=$(_jq '.tag')
-            version=$(_jq '.version')
-
-            artifact_name=updated-json-$tag-$version-$plugins_version
-
-            echo "Downloading artifact $artifact_name"
-            mkdir -p ./cache-files
-            actions/download-artifact@v4 --name $artifact_name --path ./cache-files || echo "Failed to fetch artifact: $artifact_name"
-
-            echo "Unzipping artifact $artifact_name"
-            unzip ./cache-files/"$artifact_name" -d ./cache-files
+          for z in ./cache-files/*.zip; do
+            unzip -o "$z" -d ./cache-files
+            rm "$z"
           done
 
       - name: Upload to cache
