@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     outputs:
-      shell_versions: ${{ steps.collect-shell-versions.outputs.shell_versions }}
+      shell_versions: ${{ steps.filter-versions.outputs.shell_versions }}
       plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
 
     steps:
@@ -47,6 +47,7 @@ jobs:
 
       - name: Retrieve cached JSON files
         id: retrieve-cache
+        if: ${{ github.event_name == 'schedule' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
@@ -55,7 +56,8 @@ jobs:
             cache-json-files-${{ runner.os }}-plugins-${{ steps.extract-plugins-version.outputs.plugins_version }}
 
       - name: Check and filter already tested versions
-        id: check-versions
+        id: filter-versions
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           echo "Filtered shell versions:"
           filtered_versions="[]"
