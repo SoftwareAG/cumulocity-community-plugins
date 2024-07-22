@@ -56,9 +56,8 @@ jobs:
         run: |
           mkdir -p ./cache-files
 
-          # Correct environment variable access syntax
-          plugins_version="${steps.extract-plugins-version.outputs.plugins_version}"
-          shell_versions="${steps.collect-shell-versions.outputs.shell_versions}"
+          plugins_version="${{ steps.extract-plugins-version.outputs.plugins_version }}"
+          shell_versions='${{ steps.collect-shell-versions.outputs.shell_versions }}'
 
           # Create an empty JSON array for filtered_versions
           echo "[]" > filtered_versions.json
