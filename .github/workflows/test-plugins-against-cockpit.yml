@@ -37,54 +37,44 @@ jobs:
           echo "::set-output name=plugins_version::${plugins_version}"
 
       - name: Retrieve cached JSON files
+        if: ${{ github.event_name == 'pull_request' }}
         id: retrieve-cache
         uses: actions/cache@v4
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
 
-      - name: Create cache folder
-        run: mkdir -p ./cache-files
-
       - name: Filter Shell Versions
         id: filter-shell-versions
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
-          all_versions='${{ steps.collect-shell-versions.outputs.shell_versions }}'
-          filtered_versions='[]'
-          plugins_version='${{ steps.extract-plugins-version.outputs.plugins_version }}'
-
-          process_version() {
-            version_data=$1
-            tag=$(echo $version_data | jq -r '.tag')
-            version=$(echo $version_data | jq -r '.version')
-            cache_file="./cache-files/${tag}-${plugins_version}.json"
-
-            if [ -f "$cache_file" ]; then
-              alreadyTestedShellVersion=$(jq -r '.shellVersion' "$cache_file")
-              alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' "$cache_file")
-
-              if [[ "$alreadyTestedShellVersion" == "$version" && "$alreadyTestedPluginsVersion" == "$plugins_version" ]]; then
-                echo "Shell version $alreadyTestedShellVersion with plugins version $alreadyTestedPluginsVersion already tested."
-                return
+          mkdir -p ./cache-files
+          shell_versions_output=${{ steps.collect-shell-versions.outputs.shell_versions }}
+          plugins_version=${{ steps.extract-plugins-version.outputs.plugins_version }}
+          filtered_versions=$(echo $shell_versions_output | jq -c 'map(select(true))')
+          for version in $(echo $shell_versions_output | jq -c '.[]'); do
+            tag=$(echo $version | jq -r '.tag')
+            version_number=$(echo $version | jq -r '.version')
+            file="./cache-files/${tag}-${plugins_version}.json"
+            if [ -f "$file" ]; then
+              alreadyTestedShellVersion=$(jq -r '.shellVersion' $file)
+              alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $file)
+              if [[ "$alreadyTestedShellVersion" == "$version_number" && "$alreadyTestedPluginsVersion" == "$plugins_version" ]]; then
+                filtered_versions=$(echo $filtered_versions | jq "del(.[] | select(.tag == \"$tag\"))")
               fi
+            else
+              echo "No cache file found for $tag with plugins version $plugins_version"
             fi
-
-            filtered_versions=$(echo $filtered_versions | jq --argjson data "$version_data" '. + [$data]')
-          }
-
-          echo $all_versions | jq -c '.[]' | while read -r version_data; do process_version "$version_data"; done
-
-          echo "Filtered versions: $filtered_versions"
+          done
+          echo "filtered_versions=${filtered_versions}" >> $GITHUB_ENV
           echo "::set-output name=shell_versions::${filtered_versions}"
 
-      - name: Verify outputs
-        run: |
-          echo "Collected shell versions: ${{ steps.filter-shell-versions.outputs.shell_versions }}"
-          echo "Plugins version: ${{ steps.extract-plugins-version.outputs.plugins_version }}"
+      - name: Verify shell versions output
+        run: echo "Filtered shell versions ${{ steps.filter-shell-versions.outputs.shell_versions }}"
 
   build-plugins:
-    needs: collect-shell-versions
     if: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) != '[]' }}
+    needs: collect-shell-versions
     timeout-minutes: 30
     runs-on: ubuntu-22.04
 
@@ -116,8 +106,8 @@ jobs:
             dist/sag-pkg-community-plugins/**
 
   run-tests-against-shell:
-    needs: [collect-shell-versions, build-plugins]
     if: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) != '[]' }}
+    needs: [collect-shell-versions, build-plugins]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
