@@ -50,7 +50,7 @@ jobs:
         id: filter-versions
         run: |
           mkdir -p ./cache-files
-          versions=$(jq -r '.[] | @base64' <<< "${{ steps.collect-shell-versions.outputs.shell_versions }}")
+          versions=$(jq -r '.[] | @base64' <<< '${{ steps.collect-shell-versions.outputs.shell_versions }}')
           filtered_versions="[]"
 
           for version in $versions; do
