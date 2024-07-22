@@ -203,6 +203,7 @@ jobs:
           key: test-plugins-against-shell-e2e-results
 
   verify-cache:
+    needs: run-tests-against-shell
     runs-on: ubuntu-22.04
     steps:
       - name: Retrieve cached JSON files
