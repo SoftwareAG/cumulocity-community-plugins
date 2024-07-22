@@ -217,7 +217,7 @@ jobs:
           shell_records=$(jq <<< '${{ needs.collect-shell-versions.outputs.shell_versions }}')
           plugins_version='${{ needs.collect-shell-versions.outputs.plugins_version }}'
 
-          for record in shell_records; do
+          for record in $(echo "$shell_records" | jq -r '.[] | @base64'); do
             _jq() {
               echo ${record} | base64 --decode | jq -r ${1}
             }
