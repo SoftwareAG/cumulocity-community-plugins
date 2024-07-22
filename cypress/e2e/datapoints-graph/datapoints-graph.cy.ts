@@ -10,6 +10,7 @@ describe(
           user: Cypress.env('admin_username') || 'ccw',
           password: Cypress.env('admin_password'),
         });
+        cy.setLanguage('en');
         cy.prepareGroupWithDashboard();
       } else {
         cy.interceptLoginOptions();
@@ -22,6 +23,7 @@ describe(
           { fixture: 'widgets/datapoints-graph/cockpit-dashboard.json' }
         ).as('cockpitDashboardConfig');
 
+        cy.setLanguage('en');
         cy.visit('/apps/sag-pkg-community-plugins/#/');
         cy.wait('@cockpitDashboardConfig');
       }
@@ -35,7 +37,7 @@ describe(
     });
 
     it(
-      'config component should be present',
+      'config component should be present 1020',
       { c8yctrl: { versions: ['1020', null] } },
       () => {
         cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', {
@@ -56,7 +58,7 @@ describe(
     );
 
     it(
-      'config component should be present',
+      'config component should be present 1018',
       { c8yctrl: { versions: ['1018', null] } },
       () => {
         cy.get('c8y-dashboard-child .header-actions button[title="Settings"]', {
