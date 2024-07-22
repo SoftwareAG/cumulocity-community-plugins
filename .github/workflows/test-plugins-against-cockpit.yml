@@ -82,7 +82,7 @@ jobs:
           done
 
           filtered_versions=$(cat filtered_versions.json)
-#          echo "Filtered versions: $filtered_versions"
+          echo "Filtered versions: $filtered_versions"
           echo "filtered_versions=$filtered_versions" >> $GITHUB_ENV
           echo "::set-output name=shell_versions::$filtered_versions"
 
