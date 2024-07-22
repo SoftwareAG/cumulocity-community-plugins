@@ -63,7 +63,7 @@ jobs:
             shell_version=$(echo "$version" | jq -r '.version')
             echo "Tag: $tag, Shell Version: $shell_version"
 
-            cache_file="./cache-files/${tag}-${plugins_version}.json"
+#            cache_file="./cache-files/${tag}-${plugins_version}.json"
 #            if [ ! -f "$cache_file" ]; then
 #              echo "Cache file does not exist: $cache_file"
 #              jq --argjson version "$version" '. += [$version]' filtered_versions.json > tmp.json && mv tmp.json filtered_versions.json
@@ -78,7 +78,7 @@ jobs:
 #              else
 #                echo "Versions match, skipping"
 #              fi
-            fi
+#            fi
           done
 
           filtered_versions=$(cat filtered_versions.json)
