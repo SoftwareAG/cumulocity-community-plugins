@@ -20,6 +20,11 @@ jobs:
       plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
