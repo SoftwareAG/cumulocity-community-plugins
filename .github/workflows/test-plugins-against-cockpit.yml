@@ -195,16 +195,36 @@ jobs:
           jq -n --arg shellVersion "${{ env.VERSION }}" --arg pluginsVersion "${{ env.PLUGINS_VERSION }}" --arg lastSuccess "$now" '{shellVersion: $shellVersion, pluginsVersion: $pluginsVersion, lastSuccess: $lastSuccess}' > $file
           cat $file
 
-      - name: Upload updated JSON file to cache
+      - name: Upload updated JSON file
         if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 5
+          name: updated-json
+          path: ./cache-files/*.json
+
+  cache-upload:
+    if: needs.collect-shell-versions.outputs.shell_versions != '[]'
+    needs: run-tests-against-shell
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download updated JSON files
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-json
+          path: ./cache-files
+
+      - name: Upload to cache
         uses: actions/cache@v4
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
 
   verify-cache:
-    needs: run-tests-against-shell
+    if: needs.collect-shell-versions.outputs.shell_versions != '[]'
+    needs: [collect-shell-versions, build-plugins, run-tests-against-shell, cache-upload]
     runs-on: ubuntu-22.04
+
     steps:
       - name: Retrieve cached JSON files
         uses: actions/cache@v4
