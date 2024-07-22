@@ -204,7 +204,7 @@ jobs:
 
   cache-upload:
     if: needs.collect-shell-versions.outputs.shell_versions != '[]'
-    needs: run-tests-against-shell
+    needs: [collect-shell-versions, run-tests-against-shell]
     runs-on: ubuntu-22.04
     steps:
       - name: Setup cache directory
@@ -212,10 +212,10 @@ jobs:
 
       - name: Download updated JSON files
         run: |
-          shell_records='${{ needs.collect-shell-versions.outputs.shell_versions }}'
-          plugins_version='${{ needs.build-plugins.outputs.plugins_version }}'
+          shell_records=$(jq -r '.[] | @base64' <<< '${{ needs.collect-shell-versions.outputs.shell_versions }}')
+          plugins_version='${{ needs.collect-shell-versions.outputs.plugins_version }}'
 
-          for record in $(echo "$shell_records" | jq -r '.[] | @base64'); do
+          for record in shell_records; do
             _jq() {
               echo ${record} | base64 --decode | jq -r ${1}
             }
