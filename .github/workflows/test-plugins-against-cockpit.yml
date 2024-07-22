@@ -47,7 +47,7 @@ jobs:
 
       - name: Retrieve cached JSON files
         id: retrieve-cache
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
@@ -63,7 +63,7 @@ jobs:
           shell_versions='${{ steps.collect-shell-versions.outputs.shell_versions }}'
           plugins_version='${{ steps.extract-plugins-version.outputs.plugins_version }}'
 
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
             for version_data in $(echo "${shell_versions}" | jq -c '.[]'); do
               version_tag=$(echo $version_data | jq -r '.tag')
               version=$(echo $version_data | jq -r '.version')
@@ -192,7 +192,7 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
           now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
@@ -200,7 +200,7 @@ jobs:
           cat $file
 
       - name: Upload updated JSON file to cache
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
