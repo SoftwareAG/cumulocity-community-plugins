@@ -56,14 +56,14 @@ jobs:
           shell_versions=${{ steps.collect-shell-versions.outputs.shell_versions }}
           echo "[]" > filtered_versions.json # Create an empty JSON array for filtered_versions
 
-#          # Iterate over each shell version and check if it's already tested
-#          echo "$shell_versions" | jq -c '.[]' | while IFS='' read -r version; do
-#            echo "Processing version: $version"
-#            tag=$(echo "$version" | jq -r '.tag')
-#            shell_version=$(echo "$version" | jq -r '.version')
-#            echo "Tag: $tag, Shell Version: $shell_version"
-#
-#            cache_file="./cache-files/${tag}-${plugins_version}.json"
+          # Iterate over each shell version and check if it's already tested
+          echo "$shell_versions" | jq -c '.[]' | while IFS='' read -r version; do
+            echo "Processing version: $version"
+            tag=$(echo "$version" | jq -r '.tag')
+            shell_version=$(echo "$version" | jq -r '.version')
+            echo "Tag: $tag, Shell Version: $shell_version"
+
+            cache_file="./cache-files/${tag}-${plugins_version}.json"
 #            if [ ! -f "$cache_file" ]; then
 #              echo "Cache file does not exist: $cache_file"
 #              jq --argjson version "$version" '. += [$version]' filtered_versions.json > tmp.json && mv tmp.json filtered_versions.json
@@ -78,13 +78,13 @@ jobs:
 #              else
 #                echo "Versions match, skipping"
 #              fi
-#            fi
-#          done
-#
-#          filtered_versions=$(cat filtered_versions.json)
-#          echo "Filtered versions: $filtered_versions"
-#          echo "filtered_versions=$filtered_versions" >> $GITHUB_ENV
-#          echo "::set-output name=shell_versions::$filtered_versions"
+            fi
+          done
+
+          filtered_versions=$(cat filtered_versions.json)
+          echo "Filtered versions: $filtered_versions"
+          echo "filtered_versions=$filtered_versions" >> $GITHUB_ENV
+          echo "::set-output name=shell_versions::$filtered_versions"
 
       - name: Verify shell versions output
         run: echo "Filtered shell versions ${{ steps.filter-shell-versions.outputs.shell_versions }}"
