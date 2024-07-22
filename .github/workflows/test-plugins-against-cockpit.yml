@@ -219,12 +219,20 @@ jobs:
           pattern: updated-json-*
           merge-multiple: true
 
-      - name: Unzip artifacts
+      - name: Log artifacts and unzip
         run: |
-          for z in ./cache-files/*.zip; do
-            unzip -o "$z" -d ./cache-files
-            rm "$z"
-          done
+          echo "Listing contents of ./cache-files before attempting to unzip:"
+          ls -l ./cache-files
+          zip_files=(./cache-files/*.zip)
+          if [ -e "${zip_files[0]}" ]; then
+            for z in "${zip_files[@]}"; do
+              echo "Unzipping $z"
+              unzip -o "$z" -d ./cache-files
+              rm "$z"
+            done
+          else
+            echo "No zip files found in ./cache-files"
+          fi
 
       - name: Upload to cache
         uses: actions/cache@v4
