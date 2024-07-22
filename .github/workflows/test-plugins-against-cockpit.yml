@@ -57,28 +57,32 @@ jobs:
 
       - name: Check and filter already tested versions
         id: filter-versions
-        if: ${{ github.event_name == 'schedule' }}
         run: |
           echo "Filtered shell versions:"
           filtered_versions="[]"
           shell_versions='${{ steps.collect-shell-versions.outputs.shell_versions }}'
           plugins_version='${{ steps.extract-plugins-version.outputs.plugins_version }}'
-          for version_data in $(echo "${shell_versions}" | jq -c '.[]'); do
-            version_tag=$(echo $version_data | jq -r '.tag')
-            version=$(echo $version_data | jq -r '.version')
-            cache_file="./cache-files/${version_tag}-${plugins_version}.json"
 
-            if [ -f "$cache_file" ]; then
-              alreadyTestedShellVersion=$(jq -r '.shellVersion' $cache_file)
-              alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $cache_file)
-              if [[ "$alreadyTestedShellVersion" == "$version" && "$alreadyTestedPluginsVersion" == "$plugins_version" ]]; then
-                echo "- $version_tag ($version) with plugins version $plugins_version: already tested"
-                continue
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            for version_data in $(echo "${shell_versions}" | jq -c '.[]'); do
+              version_tag=$(echo $version_data | jq -r '.tag')
+              version=$(echo $version_data | jq -r '.version')
+              cache_file="./cache-files/${version_tag}-${plugins_version}.json"
+
+              if [ -f "$cache_file" ]; then
+                alreadyTestedShellVersion=$(jq -r '.shellVersion' $cache_file)
+                alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $cache_file)
+                if [[ "$alreadyTestedShellVersion" == "$version" && "$alreadyTestedPluginsVersion" == "$plugins_version" ]]; then
+                  echo "- $version_tag ($version) with plugins version $plugins_version: already tested"
+                  continue
+                fi
               fi
-            fi
-            echo "- $version_tag ($version) with plugins version $plugins_version: not tested"
-            filtered_versions=$(echo $filtered_versions | jq ". += [${version_data}]")
-          done
+              echo "- $version_tag ($version) with plugins version $plugins_version: not tested"
+              filtered_versions=$(echo $filtered_versions | jq ". += [${version_data}]")
+            done
+          else
+            filtered_versions=$shell_versions
+          fi
 
           echo "::set-output name=shell_versions::${filtered_versions}"
           echo "Final shell versions to test: $filtered_versions"
