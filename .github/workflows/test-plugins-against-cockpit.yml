@@ -98,9 +98,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
-          restore-keys: |
-            cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
+          key: test-plugins-against-shell-e2e-results
+          restore-keys: test-plugins-against-shell-e2e-results
 
       - name: Check if version is already tested
         if: ${{ github.event_name == 'schedule' }}
@@ -191,4 +190,4 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
+          key: test-plugins-against-shell-e2e-results
