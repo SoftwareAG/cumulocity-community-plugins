@@ -42,60 +42,51 @@ jobs:
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
-          restore-keys: |
-            test-plugins-against-shell-e2e-results
 
-      - name: Filter out already tested shell versions
+      - name: Create cache folder
+        run: mkdir -p ./cache-files
+
+      - name: Filter Shell Versions
         id: filter-shell-versions
         run: |
-          echo "Plugins version: ${{ steps.extract-plugins-version.outputs.plugins_version }}"
-          echo "Shell versions: ${{ steps.collect-shell-versions.outputs.shell_versions }}"
+          all_versions='${{ steps.collect-shell-versions.outputs.shell_versions }}'
+          filtered_versions='[]'
+          plugins_version='${{ steps.extract-plugins-version.outputs.plugins_version }}'
 
-          mkdir -p ./cache-files
-          plugins_version="${{ steps.extract-plugins-version.outputs.plugins_version }}"
-          shell_versions=${{ steps.collect-shell-versions.outputs.shell_versions }}
-          echo "[]" > filtered_versions.json # Create an empty JSON array for filtered_versions
-
-          # Iterate over each shell version and check if it's already tested
-          echo "$shell_versions" | jq -c '.[]' | while IFS='' read -r version; do
-            echo "Processing version: $version"
-            tag=$(echo "$version" | jq -r '.tag')
-            shell_version=$(echo "$version" | jq -r '.version')
-            echo "Tag: $tag, Shell Version: $shell_version"
-
+          process_version() {
+            version_data=$1
+            tag=$(echo $version_data | jq -r '.tag')
+            version=$(echo $version_data | jq -r '.version')
             cache_file="./cache-files/${tag}-${plugins_version}.json"
-            if [ ! -f "$cache_file" ]; then
-              echo "Cache file does not exist: $cache_file"
-              jq --argjson version "$version" '. += [$version]' filtered_versions.json > tmp.json && mv tmp.json filtered_versions.json
-            else
-              echo "Cache file exists: $cache_file"
-              cached_shell_version=$(jq -r '.shellVersion' "$cache_file")
-              cached_plugins_version=$(jq -r '.pluginsVersion' "$cache_file")
-              echo "Cached Shell Version: $cached_shell_version, Cached Plugins Version: $cached_plugins_version"
-              if [ "$cached_shell_version" != "$shell_version" ] || [ "$cached_plugins_version" != "$plugins_version" ]; then
-                echo "Versions do not match, adding to filtered versions"
-                jq --argjson version "$version" '. += [$version]' filtered_versions.json > tmp.json && mv tmp.json filtered_versions.json
-              else
-                echo "Versions match, skipping"
+
+            if [ -f "$cache_file" ]; then
+              alreadyTestedShellVersion=$(jq -r '.shellVersion' "$cache_file")
+              alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' "$cache_file")
+
+              if [[ "$alreadyTestedShellVersion" == "$version" && "$alreadyTestedPluginsVersion" == "$plugins_version" ]]; then
+                echo "Shell version $alreadyTestedShellVersion with plugins version $alreadyTestedPluginsVersion already tested."
+                return
               fi
             fi
-          done
 
-          filtered_versions=$(cat filtered_versions.json)
+            filtered_versions=$(echo $filtered_versions | jq --argjson data "$version_data" '. + [$data]')
+          }
+
+          echo $all_versions | jq -c '.[]' | while read -r version_data; do process_version "$version_data"; done
+
           echo "Filtered versions: $filtered_versions"
-          echo "filtered_versions=$filtered_versions" >> $GITHUB_ENV
-          echo "::set-output name=shell_versions::$filtered_versions"
+          echo "::set-output name=shell_versions::${filtered_versions}"
 
-      - name: Verify shell versions output
-        run: echo "Filtered shell versions ${{ steps.filter-shell-versions.outputs.shell_versions }}"
+      - name: Verify outputs
+        run: |
+          echo "Collected shell versions: ${{ steps.filter-shell-versions.outputs.shell_versions }}"
+          echo "Plugins version: ${{ steps.extract-plugins-version.outputs.plugins_version }}"
 
   build-plugins:
     needs: collect-shell-versions
-    if: ${{ needs.collect-shell-versions.outputs.shell_versions != '[]' }}
+    if: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) != '[]' }}
     timeout-minutes: 30
     runs-on: ubuntu-22.04
-    outputs:
-      plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
 
     steps:
       - name: Checkout
@@ -126,7 +117,7 @@ jobs:
 
   run-tests-against-shell:
     needs: [collect-shell-versions, build-plugins]
-    if: ${{ needs.collect-shell-versions.outputs.shell_versions != '[]' }}
+    if: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) != '[]' }}
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -136,7 +127,7 @@ jobs:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
       TAG: ${{ matrix.version_data.tag }}
-      PLUGINS_VERSION: ${{ needs.build-plugins.outputs.plugins_version }}
+      PLUGINS_VERSION: ${{ needs.collect-shell-versions.outputs.plugins_version }}
 
     steps:
       - name: Checkout
