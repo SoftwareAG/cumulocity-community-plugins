@@ -2,7 +2,7 @@ name: Test plugins against Cockpit
 
 on:
   pull_request:
-  pull_request:
+  schedule:
     - cron: '15 4 * * 1-5'
 
 permissions:
@@ -28,6 +28,9 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
+
+      - name: Verify shell versions output
+        run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
 
       - name: Extract Plugins Version
         id: extract-plugins-version
