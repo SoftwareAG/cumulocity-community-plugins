@@ -16,7 +16,21 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     outputs:
-      shell_versions: ${{ steps.filter-versions.outputs.shell_versions }}
+      shell_versions: ${{ steps.collect-shell-versions.outputs.shell_versions }}
+
+    steps:
+      - name: Collect Shell Versions
+        id: collect-shell-versions
+        uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
+
+      - name: Verify shell versions output
+        run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
+
+  build-plugins:
+    needs: collect-shell-versions
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    outputs:
       plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
 
     steps:
@@ -38,74 +52,6 @@ jobs:
           echo "plugins_version=${plugins_version}" >> $GITHUB_ENV
           echo "::set-output name=plugins_version::${plugins_version}"
 
-      - name: Collect Shell Versions
-        id: collect-shell-versions
-        uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
-
-      - name: Verify shell versions output
-        run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }}"
-
-      - name: Retrieve cached JSON files
-        id: retrieve-cache
-        if: ${{ github.event_name == 'pull_request' }} # TODO: schedule
-        uses: actions/cache@v4
-        with:
-          path: ./cache-files
-          key: cache-json-files-${{ runner.os }}-plugins-${{ steps.extract-plugins-version.outputs.plugins_version }}
-          restore-keys: |
-            cache-json-files-${{ runner.os }}-plugins-${{ steps.extract-plugins-version.outputs.plugins_version }}
-
-      - name: Check and filter already tested versions
-        id: filter-versions
-        run: |
-          echo "Filtered shell versions:"
-          shell_versions='${{ steps.collect-shell-versions.outputs.shell_versions }}'
-          plugins_version='${{ steps.extract-plugins-version.outputs.plugins_version }}'
-
-          filtered_versions=$(echo '[]' | jq -c)
-
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            for version_data in $(echo "${shell_versions}" | jq -c '.[]'); do
-              version_tag=$(echo "$version_data" | jq -r '.tag')
-              version=$(echo "$version_data" | jq -r '.version')
-              cache_file="./cache-files/${version_tag}-${plugins_version}.json"
-
-              if [ -f "$cache_file" ]; then
-                alreadyTestedShellVersion=$(jq -r '.shellVersion' "$cache_file")
-                alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' "$cache_file")
-                if [[ "$alreadyTestedShellVersion" == "$version" && "$alreadyTestedPluginsVersion" == "$plugins_version" ]]; then
-                  echo "- $version_tag ($version) with plugins version $plugins_version: already tested"
-                  continue
-                fi
-              fi
-              echo "- $version_tag ($version) with plugins version $plugins_version: not tested"
-              filtered_versions=$(echo "$filtered_versions" | jq -c ". += [$version_data]")
-            done
-          else
-            filtered_versions=$shell_versions
-          fi
-
-          echo "::set-output name=shell_versions::$filtered_versions"
-          echo "Final shell versions to test: $filtered_versions"
-
-  build-plugins:
-    needs: collect-shell-versions
-    if: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) != '[]' }}
-    timeout-minutes: 30
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
       - name: Install dependencies
         run: npm ci
 
@@ -123,7 +69,6 @@ jobs:
 
   run-tests-against-shell:
     needs: [collect-shell-versions, build-plugins]
-    if: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) != '[]' }}
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -133,7 +78,7 @@ jobs:
       JSON: ${{ toJson(matrix.version_data) }}
       VERSION: ${{ matrix.version_data.version }}
       TAG: ${{ matrix.version_data.tag }}
-      PLUGINS_VERSION: ${{ needs.collect-shell-versions.outputs.plugins_version }}
+      PLUGINS_VERSION: ${{ needs.build-plugins.outputs.plugins_version }}
 
     steps:
       - name: Checkout
@@ -141,22 +86,58 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Retrieve cached JSON files
+        if: ${{ github.event_name == 'schedule' }}
+        id: retrieve-cache
+        uses: actions/cache@v4
+        with:
+          path: ./cache-files
+          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
+          restore-keys: |
+            cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
+
+      - name: Check if version is already tested
+        if: ${{ github.event_name == 'schedule' }}
+        id: check-version
+        run: |
+          mkdir -p ./cache-files
+          file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
+          if [ -f "$file" ]; then
+            echo "Cache file exists: $file"
+            alreadyTestedShellVersion=$(jq -r '.shellVersion' $file)
+            alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $file)
+            if [[ "$alreadyTestedShellVersion" == "${{ env.VERSION }}" && "$alreadyTestedPluginsVersion" == "${{ env.PLUGINS_VERSION }}" ]]; then
+              echo "Shell version $alreadyTestedShellVersion with plugins of version $alreadyTestedPluginsVersion already tested."
+              echo "skip_job=true" >> $GITHUB_ENV
+            fi
+          else
+            echo "No cache file found for ${{ env.TAG }} with plugins version ${{ env.PLUGINS_VERSION }}"
+          fi
+
+      - name: Skip if already tested
+        if: ${{ env.skip_job == 'true' }}
+        run: echo "Skipping job for shell version ${{ env.VERSION }} and plugins version ${{ env.PLUGINS_VERSION }}"
+
       - name: Setup Node.js
+        if: ${{ env.skip_job != 'true' }}
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
+        if: ${{ env.skip_job != 'true' }}
         run: npm ci
 
       - name: Download build artifact
+        if: ${{ env.skip_job != 'true' }}
         uses: actions/download-artifact@v4
         with:
           name: build
           path: dist/apps/sag-pkg-community-plugins/
 
       - name: Get shell app of particular version
+        if: ${{ env.skip_job != 'true' }}
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
         with:
           shell-name: cockpit
@@ -164,6 +145,7 @@ jobs:
           shell-path: dist/apps
 
       - name: Cypress run
+        if: ${{ env.skip_job != 'true' }}
         uses: cypress-io/github-action@v5
         with:
           start: npm run cypress:ctrl
@@ -175,7 +157,7 @@ jobs:
           env: C8Y_CTRL_MODE=mocking,C8Y_CTRL_PROVIDER_VERSION=${{ env.VERSION }}
 
       - name: Upload cypress screenshots
-        if: failure()
+        if: failure() && env.skip_job != 'true'
         uses: actions/upload-artifact@v4
         with:
           retention-days: 5
@@ -183,7 +165,7 @@ jobs:
           path: cypress/screenshots
 
       - name: Upload cypress videos
-        if: always()
+        if: always() && env.skip_job != 'true'
         uses: actions/upload-artifact@v4
         with:
           retention-days: 5
@@ -191,17 +173,16 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
         run: |
-          mkdir -p ./cache-files
           file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
           now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
           jq -n --arg shellVersion "${{ env.VERSION }}" --arg pluginsVersion "${{ env.PLUGINS_VERSION }}" --arg lastSuccess "$now" '{shellVersion: $shellVersion, pluginsVersion: $pluginsVersion, lastSuccess: $lastSuccess}' > $file
           cat $file
 
       - name: Upload updated JSON file to cache
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ env.skip_job != 'true' && github.event_name == 'schedule' }}
         uses: actions/cache@v4
         with:
           path: ./cache-files
-          key: cache-json-files-${{ runner.os }}-plugins-${{ env.PLUGINS_VERSION }}
+          key: cache-json-files-${{ runner.os }}-${{ env.TAG }}-${{ env.PLUGINS_VERSION }}
