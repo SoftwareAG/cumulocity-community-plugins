@@ -224,7 +224,7 @@ jobs:
             tag=$(_jq '.tag')
             version=$(_jq '.version')
 
-            artifact_name=updated-json-$tag-$version-$plugins_version.zip
+            artifact_name=updated-json-$tag-$version-$plugins_version
 
             echo "Downloading artifact $artifact_name"
             mkdir -p ./cache-files
