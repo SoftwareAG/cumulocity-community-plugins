@@ -252,14 +252,14 @@ jobs:
           echo "Listing contents of ./cache-files :"
           ls -la ./cache-files
 
-      - name: Delete Previous Cache
+      - name: Delete previous cache # cache cannot be overridden therefore it has to be deleted and saved again
         run: |
           gh extension install actions/gh-actions-cache
           gh actions-cache delete test-plugins-against-shell-e2e-results --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload to cache
+      - name: Save results to cache
         uses: actions/cache/save@v4
         with:
           path: ./cache-files
