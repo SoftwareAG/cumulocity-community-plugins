@@ -217,6 +217,8 @@ jobs:
           path: ./cache-files/*.json
 
   cache-upload:
+    permissions:
+      actions: write
     if: needs.collect-shell-versions.outputs.shell_versions != '[]'
     needs: [collect-shell-versions, run-tests-against-shell]
     runs-on: ubuntu-22.04
