@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     outputs:
-      shell_versions: ${{ steps.collect-shell-versions.outputs.shell_versions }}
+      shell_versions: ${{ steps.filter-versions.outputs.shell_versions }}
       plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
 
     steps:
@@ -90,7 +90,7 @@ jobs:
           echo "::set-output name=shell_versions::$filtered_versions"
 
       - name: Verify shell versions output
-        run: echo "Collected shell versions ${{ steps.collect-shell-versions.outputs.shell_versions }} and plugins version ${{ steps.extract-plugins-version.outputs.plugins_version }}"
+        run: echo "Filtered shell versions ${{ steps.filter-versions.outputs.shell_versions }}"
 
   build-plugins:
     if: needs.collect-shell-versions.outputs.shell_versions != '[]'
