@@ -29,8 +29,6 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
-        with:
-          exact-tags: y2025-lts
 
       - name: Extract Plugins Version
         id: extract-plugins-version
@@ -222,9 +220,6 @@ jobs:
     needs: [collect-shell-versions, run-tests-against-shell]
     runs-on: ubuntu-22.04
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
       - name: Setup cache directory
         run: mkdir -p ./cache-files
 
@@ -256,7 +251,7 @@ jobs:
         if: steps.check-cache.outputs.cache-hit == 'true'
         run: |
           gh extension install actions/gh-actions-cache
-          gh actions-cache delete test-plugins-against-shell-e2e-results --confirm
+          gh actions-cache delete test-plugins-against-shell-e2e-results --confirm -R ${{github.repository}}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
