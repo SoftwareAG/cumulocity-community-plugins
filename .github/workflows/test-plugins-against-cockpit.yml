@@ -247,7 +247,7 @@ jobs:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
 
-      - name: Log cache files
+      - name: Log all files
         run: |
           echo "Listing contents of ./cache-files :"
           ls -la ./cache-files
