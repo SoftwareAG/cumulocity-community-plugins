@@ -86,8 +86,10 @@ jobs:
             filtered_versions=$(jq --argjson ver "$(echo $version | base64 --decode)" '. + [$ver]' <<< $filtered_versions)
           done
 
-          echo "Filtered shell versions: $filtered_versions"
-          echo "::set-output name=shell_versions::$filtered_versions"
+          # Properly escape the output for GitHub Actions
+          filtered_versions_escaped=$(echo "$filtered_versions" | jq -c .)
+          echo "Filtered shell versions: $filtered_versions_escaped"
+          echo "::set-output name=shell_versions::$filtered_versions_escaped"
 
       - name: Verify shell versions output
         run: echo "Filtered shell versions ${{ steps.filter-versions.outputs.shell_versions }}"
