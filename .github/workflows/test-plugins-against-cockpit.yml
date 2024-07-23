@@ -218,12 +218,12 @@ jobs:
   cache-upload:
     permissions:
       actions: write
-    if: needs.collect-shell-versions.outputs.shell_versions != '[]'
+    if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
     needs: [collect-shell-versions, run-tests-against-shell]
     runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup cache directory
         run: mkdir -p ./cache-files
@@ -267,7 +267,7 @@ jobs:
           key: test-plugins-against-shell-e2e-results
 
   verify-cache:
-    if: needs.collect-shell-versions.outputs.shell_versions != '[]'
+    if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
     needs: [collect-shell-versions, build-plugins, run-tests-against-shell, cache-upload]
     runs-on: ubuntu-22.04
 
