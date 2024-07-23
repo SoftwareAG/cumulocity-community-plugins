@@ -28,8 +28,6 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
-        with:
-          exact-tags: y2024-lts,y2025-lts
 
       - name: Extract Plugins Version
         id: extract-plugins-version
@@ -38,13 +36,24 @@ jobs:
           echo "plugins_version=${plugins_version}" >> $GITHUB_ENV
           echo "::set-output name=plugins_version::${plugins_version}"
 
-#      - name: Retrieve cached JSON files
-#        if: ${{ github.event_name == 'pull_request' }}
-#        id: retrieve-cache
-#        uses: actions/cache@v4
-#        with:
-#          path: ./cache-files
-#          key: test-plugins-against-shell-e2e-results
+      - name: Retrieve cached JSON files
+        if: ${{ github.event_name == 'pull_request' }}
+        id: retrieve-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+
+      - name: Verify cache contents
+        run: |
+          echo "Contents of the cache:"
+          ls -l ./cache-files
+          for file in ./cache-files/*; do
+            if [[ -f "$file" ]]; then
+              echo "Content of $file:"
+              cat "$file"
+            fi
+          done
 
       - name: Filter out already tested versions
         if: ${{ github.event_name == 'pull_request' }}
