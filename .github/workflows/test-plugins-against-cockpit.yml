@@ -242,6 +242,7 @@ jobs:
           ls -la ./cache-files
 
       - name: Retrieve cached JSON files
+        id: check-cache
         uses: actions/cache/restore@v4
         with:
           path: ./cache-files
@@ -253,6 +254,7 @@ jobs:
           ls -la ./cache-files
 
       - name: Delete previous cache # cache cannot be overridden therefore it has to be deleted and saved again
+        if: steps.check-cache.outputs.cache-hit == 'true'
         run: |
           gh extension install actions/gh-actions-cache
           gh actions-cache delete test-plugins-against-shell-e2e-results --confirm
