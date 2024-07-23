@@ -38,7 +38,7 @@ jobs:
           echo "::set-output name=plugins_version::${plugins_version}"
 
       - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'pull_request' }} # TODO: schedule
+        if: ${{ github.event_name == 'schedule' }}
         id: retrieve-cache
         uses: actions/cache/restore@v4
         with:
@@ -46,7 +46,7 @@ jobs:
           key: test-plugins-against-shell-e2e-results
 
       - name: Verify cache contents
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           echo "Contents of the cache:"
           mkdir -p ./cache-files
@@ -59,7 +59,6 @@ jobs:
           done
 
       - name: Filter out already tested versions
-        if: ${{ github.event_name == 'pull_request' }}
         id: filter-versions
         run: |
           versions=$(jq -r '.[] | @base64' <<< '${{ steps.collect-shell-versions.outputs.shell_versions }}')
@@ -94,7 +93,7 @@ jobs:
           echo "::set-output name=shell_versions::$filtered_versions_escaped"
 
       - name: Verify shell versions output
-        run: echo "Filtered shell versions ${{ steps.filter-versions.outputs.shell_versions }}"
+        run: echo "Shell versions to test against ${{ steps.filter-versions.outputs.shell_versions }}"
 
   build-plugins:
     if: needs.collect-shell-versions.outputs.shell_versions != '[]'
@@ -201,7 +200,7 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           mkdir -p ./cache-files
           file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
@@ -210,7 +209,7 @@ jobs:
           cat $file
 
       - name: Upload updated JSON file
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         uses: actions/upload-artifact@v4
         with:
           name: updated-json-${{ matrix.version_data.tag }}-${{ matrix.version_data.version }}-${{ needs.build-plugins.outputs.plugins_version }}
