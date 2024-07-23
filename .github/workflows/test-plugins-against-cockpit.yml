@@ -223,6 +223,9 @@ jobs:
     needs: [collect-shell-versions, run-tests-against-shell]
     runs-on: ubuntu-22.04
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
       - name: Setup cache directory
         run: mkdir -p ./cache-files
 
