@@ -226,7 +226,7 @@ jobs:
       - name: Setup cache directory
         run: mkdir -p ./cache-files
 
-      - name: Download and unzip updated JSON files
+      - name: Download updated JSON files
         uses: actions/download-artifact@v4
         with:
           path: ./cache-files
@@ -237,6 +237,24 @@ jobs:
         run: |
           echo "Listing contents of ./cache-files :"
           ls -la ./cache-files
+
+      - name: Retrieve cached JSON files
+        uses: actions/cache/restore@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+
+      - name: Log cache files
+        run: |
+          echo "Listing contents of ./cache-files :"
+          ls -la ./cache-files
+
+      - name: Delete Previous Cache
+        run: |
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete test-plugins-against-shell-e2e-results --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to cache
         uses: actions/cache/save@v4
