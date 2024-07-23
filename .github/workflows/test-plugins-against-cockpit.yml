@@ -49,6 +49,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo "Contents of the cache:"
+          mkdir -p ./cache-files
           ls -l ./cache-files
           for file in ./cache-files/*; do
             if [[ -f "$file" ]]; then
@@ -61,7 +62,6 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         id: filter-versions
         run: |
-          mkdir -p ./cache-files
           versions=$(jq -r '.[] | @base64' <<< '${{ steps.collect-shell-versions.outputs.shell_versions }}')
           filtered_versions="[]"
 
