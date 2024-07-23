@@ -29,6 +29,8 @@ jobs:
       - name: Collect Shell Versions
         id: collect-shell-versions
         uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
+        with:
+          exact-tags: y2025-lts
 
       - name: Extract Plugins Version
         id: extract-plugins-version
