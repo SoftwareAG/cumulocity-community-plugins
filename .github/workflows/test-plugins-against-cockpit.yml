@@ -211,7 +211,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: updated-json-${{ matrix.version_data.tag }}-${{ matrix.version_data.version }}-${{ env.PLUGINS_VERSION }}
-          path: ./cache-files/*.json
+          path: ./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json
 
   cache-upload:
     permissions:
