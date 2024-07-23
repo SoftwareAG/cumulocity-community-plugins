@@ -38,13 +38,13 @@ jobs:
           echo "plugins_version=${plugins_version}" >> $GITHUB_ENV
           echo "::set-output name=plugins_version::${plugins_version}"
 
-      - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'pull_request' }}
-        id: retrieve-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ./cache-files
-          key: test-plugins-against-shell-e2e-results
+#      - name: Retrieve cached JSON files
+#        if: ${{ github.event_name == 'pull_request' }}
+#        id: retrieve-cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./cache-files
+#          key: test-plugins-against-shell-e2e-results
 
       - name: Filter out already tested versions
         if: ${{ github.event_name == 'pull_request' }}
