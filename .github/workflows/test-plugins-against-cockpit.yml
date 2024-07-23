@@ -38,7 +38,7 @@ jobs:
           echo "::set-output name=plugins_version::${plugins_version}"
 
       - name: Retrieve cached JSON previous test results files
-        if: ${{ github.event_name == 'pull_request' }} # TODO " schedule
+        if: ${{ github.event_name == 'schedule' }}
         id: retrieve-cache
         uses: actions/cache/restore@v4
         with:
@@ -46,7 +46,7 @@ jobs:
           key: test-plugins-against-shell-e2e-results
 
       - name: Verify cache contents
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           echo "Contents of the cache:"
           mkdir -p ./cache-files
@@ -198,7 +198,7 @@ jobs:
           path: cypress/videos
 
       - name: Create or update JSON file
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           mkdir -p ./cache-files
           file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
@@ -207,7 +207,7 @@ jobs:
           cat $file
 
       - name: Upload updated JSON file
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'schedule' }}
         uses: actions/upload-artifact@v4
         with:
           name: updated-json-${{ matrix.version_data.tag }}-${{ matrix.version_data.version }}-${{ env.PLUGINS_VERSION }}
@@ -216,7 +216,7 @@ jobs:
   cache-upload:
     permissions:
       actions: write
-    if: ${{ github.event_name == 'pull_request' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
+    if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
     needs: [collect-shell-versions, run-tests-against-shell]
     runs-on: ubuntu-22.04
     steps:
@@ -265,7 +265,7 @@ jobs:
           key: test-plugins-against-shell-e2e-results
 
   verify-cache:
-    if: ${{ github.event_name == 'pull_request' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
+    if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
     needs: [collect-shell-versions, build-plugins, run-tests-against-shell, cache-upload]
     runs-on: ubuntu-22.04
 
