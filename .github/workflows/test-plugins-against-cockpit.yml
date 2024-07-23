@@ -41,11 +41,10 @@ jobs:
       - name: Retrieve cached JSON files
         if: ${{ github.event_name == 'pull_request' }}
         id: retrieve-cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
-          restore-keys: test-plugins-against-shell-e2e-results
 
       - name: Filter out already tested versions
         if: ${{ github.event_name == 'pull_request' }}
@@ -235,7 +234,7 @@ jobs:
           fi
 
       - name: Upload to cache
-        uses: actions/cache@v4
+        uses: actions/cache/save@v4
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
@@ -247,11 +246,10 @@ jobs:
 
     steps:
       - name: Retrieve cached JSON files
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ./cache-files
           key: test-plugins-against-shell-e2e-results
-          restore-keys: test-plugins-against-shell-e2e-results
 
       - name: Verify cache contents
         run: |
