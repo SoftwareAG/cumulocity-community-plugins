@@ -38,7 +38,7 @@ jobs:
           echo "::set-output name=plugins_version::${plugins_version}"
 
       - name: Retrieve cached JSON files
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }} # TODO: schedule
         id: retrieve-cache
         uses: actions/cache/restore@v4
         with:
