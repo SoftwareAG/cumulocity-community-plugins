@@ -5,9 +5,9 @@ export default defineConfig({
   chromeWebSecurity: false,
   e2e: {
     setupNodeEvents(on, config) {
-      const providerVersion = config.env['C8Y_CTRL_PROVIDER_VERSION'];
+      const providerVersion = config.env['C8Y_SYSTEM_VERSION'];
       if (!providerVersion) {
-        config.env['C8Y_CTRL_PROVIDER_VERSION'] = '1020';
+        config.env['C8Y_SYSTEM_VERSION'] = '1020';
       }
 
       const baseUrl =

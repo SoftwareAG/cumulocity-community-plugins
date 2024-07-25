@@ -1,7 +1,7 @@
 describe(
-  'datapoints-graph',
+  'datapoints graph',
   {
-    c8yctrl: { id: 'datapoints-graph', versions: ['1020', '1018', null] },
+    requires: ['1020', '1018', null],
   },
   () => {
     beforeEach(function () {
@@ -37,8 +37,10 @@ describe(
     });
 
     it(
-      'config component should be present 1020',
-      { c8yctrl: { versions: ['1020', null] } },
+      'config component should be present v1020',
+      // requires can be any semver range including .x, .* or caret and tilde ranges
+      // this is just an example for specifying 1020 version requirement to highlight use of semver
+      { requires: ['1020.x.x', null] },
       () => {
         cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', {
           timeout: 10000,
@@ -58,8 +60,9 @@ describe(
     );
 
     it(
-      'config component should be present 1018',
-      { c8yctrl: { versions: ['1018', null] } },
+      'config component should be present v1018',
+      // more complex semver range to define 1018 version as required
+      { requires: ['>=1018.0.0 <1020.0.0', null] },
       () => {
         cy.get('c8y-dashboard-child .header-actions button[title="Settings"]', {
           timeout: 10000,

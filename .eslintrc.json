@@ -24,9 +24,7 @@
             "ignoreRestSiblings": true
           }
         ],
-        "@typescript-eslint/no-explicit-any": "warn",
-        "mocha/no-identical-title": "off", // <- required for tests with different annotations
-        "@typescript-eslint/no-namespace": "off" // <- required for Cypress interface extensions
+        "@typescript-eslint/no-explicit-any": "warn"
       },
       "parserOptions": {
         "project": ["tsconfig.json"]
