@@ -38,8 +38,12 @@ describe(
 
     it(
       'config component should be present v1020',
-      // requires can be any semver range including .x, .* or caret and tilde ranges
-      // this is just an example for specifying 1020 version requirement to highlight use of semver
+      // `requires` can be any semver range including .x, .* or caret and tilde ranges.
+      // This is just an example for specifying 1020 version requirement to highlight use of semver.
+      // `requires` array elements are used to match cypress env argument C8Y_SYSTEM_VERSION
+      // e.g. running command `cypress run --env C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=1020.0.5` will check if 1020.0.5 is matching with 1020.x.x,
+      // and test will be executed if it is.
+      // null element is for case when C8Y_SYSTEM_VERSION is not provided (in our case for tests without Cockpit shell)
       { requires: ['1020.x.x', null] },
       () => {
         cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', {

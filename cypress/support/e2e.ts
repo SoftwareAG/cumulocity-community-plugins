@@ -62,8 +62,7 @@ afterEach(() => {
 });
 
 /**
- * Update c8yctrl pact file to be used for recording or mocking. This is a very simple
- * implementation that will be replaced by cumulocity-cypress integration.
+ * Update c8yctrl pact file to be used for recording or mocking.
  * @param titleOrId An id or array of titles with names of suite or titles
  */
 function c8yctrl(
