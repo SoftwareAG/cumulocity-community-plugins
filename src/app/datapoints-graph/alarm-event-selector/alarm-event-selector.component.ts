@@ -38,7 +38,7 @@ import { AssetSelectionChangeEvent } from '@c8y/ngx-components/assets-navigator'
 })
 export class AlarmEventSelectorComponent implements OnInit {
   @Input() timelineType: TimelineType = 'ALARM';
-  @Input() contextAsset: IIdentified;
+  @Input() contextAsset: IIdentified | undefined;
   @Input() allowChangingContext = true;
   @Input() selectedItems = new Array<AlarmOrEvent>();
   @Input() allowSearch = true;
@@ -47,11 +47,11 @@ export class AlarmEventSelectorComponent implements OnInit {
   maxNumberOfItems = 50;
 
   loadingItems = false;
-  assetSelection = new BehaviorSubject<IIdentified>(null);
-  items$: Observable<AlarmOrEvent[]>;
-  filteredItems$: Observable<AlarmOrEvent[]>;
-  filterStringChanges$: Observable<string>;
-  timelineTypeTexts: TimelineTypeTexts;
+  assetSelection = new BehaviorSubject<IIdentified | null>(null);
+  items$: Observable<AlarmOrEvent[]> | undefined;
+  filteredItems$: Observable<AlarmOrEvent[]> | undefined;
+  filterStringChanges$: Observable<string> | undefined;
+  timelineTypeTexts: TimelineTypeTexts | undefined;
   isExpanded = false;
   private filterString$ = new BehaviorSubject('');
 
@@ -85,7 +85,9 @@ export class AlarmEventSelectorComponent implements OnInit {
 
   assetSelectionChanged(evt: AssetSelectionChangeEvent): void {
     if (evt.items) {
-      return this.selectAsset(evt.items.length ? evt.items[0] : evt.items);
+      return this.selectAsset(
+        evt.items.length ? (evt.items as IIdentified[])[0] : evt.items
+      );
     }
     // reset selection
     this.assetSelection.next(null);
@@ -107,7 +109,7 @@ export class AlarmEventSelectorComponent implements OnInit {
       }),
       switchMap((asset) =>
         asset?.id
-          ? this.alarmEventSelectorService.getItemsOfAsset(
+          ? this.alarmEventSelectorService.getAlarmsOrEvents(
               asset,
               this.timelineType
             )

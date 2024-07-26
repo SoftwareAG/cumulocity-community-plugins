@@ -87,7 +87,7 @@ describe('AlarmEventSelectorService', () => {
         .spyOn(colorService, 'generateColor')
         .mockReturnValue(Promise.resolve('blue'));
       // when
-      const items = await service.getItemsOfAsset({ id: 1 }, 'ALARM');
+      const items = await service.getAlarmsOrEvents({ id: 1 }, 'ALARM');
       // then
       expect(items).toEqual([
         {
@@ -125,7 +125,7 @@ describe('AlarmEventSelectorService', () => {
         .spyOn(colorService, 'generateColor')
         .mockReturnValue(Promise.resolve('blue'));
       // when
-      const items = await service.getItemsOfAsset({ id: 1 }, 'EVENT');
+      const items = await service.getAlarmsOrEvents({ id: 1 }, 'EVENT');
       // then
       expect(items).toEqual([
         {

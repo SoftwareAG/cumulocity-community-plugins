@@ -223,9 +223,10 @@
         >
           <span
             class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
-            style="background-color: {{ selectedItem.color }}; padding-top: {{
-              timelineType === 'EVENT' ? '3px' : '0'
-            }};"
+            [ngStyle]="{
+              'background-color': selectedItem.color,
+              'padding-top': timelineType === 'EVENT' ? '3px' : '0',
+            }"
           >
             <i
               [c8yIcon]="timelineType === 'ALARM' ? 'bell' : 'c8y-events'"

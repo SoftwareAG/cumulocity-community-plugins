@@ -1,4 +1,11 @@
-import { Component, forwardRef, Input, OnInit, Optional } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -10,7 +17,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { AlarmEventSelectorService } from '../alarm-event-selector.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
@@ -19,6 +26,7 @@ import {
   TimelineType,
   TimelineTypeTexts,
 } from '../alarm-event-selector.model';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'c8y-alarm-event-selection-list',
@@ -37,13 +45,15 @@ import {
   ],
 })
 export class AlarmEventSelectionListComponent
-  implements ControlValueAccessor, Validator, OnInit
+  implements ControlValueAccessor, Validator, OnInit, OnDestroy
 {
   @Input() timelineType: TimelineType = 'ALARM';
   @Input() config: Partial<AlarmEventSelectorModalOptions> = {};
 
   formArray: FormArray;
-  timelineTypeTexts: TimelineTypeTexts;
+  timelineTypeTexts: TimelineTypeTexts | undefined;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private alarmEventSelectService: AlarmEventSelectorService,
@@ -64,11 +74,16 @@ export class AlarmEventSelectionListComponent
     }
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   registerOnTouched(fn: any): void {
     this.formArray.valueChanges.pipe(take(1)).subscribe(fn);
   }
 
-  validate(_control: AbstractControl): ValidationErrors {
+  validate(_control: AbstractControl): ValidationErrors | null {
     return this.formArray.valid ? null : { formInvalid: {} };
   }
 
@@ -76,8 +91,7 @@ export class AlarmEventSelectionListComponent
     this.formArray.clear();
     if (val?.length) {
       val.forEach((val) => {
-        const formgroup = this.formBuilder.group({ details: [] });
-        formgroup.patchValue({ details: val });
+        const formgroup = this.formBuilder.group({ details: val });
         this.formArray.push(formgroup);
       });
     }
@@ -85,7 +99,10 @@ export class AlarmEventSelectionListComponent
 
   registerOnChange(fn: any): void {
     this.formArray.valueChanges
-      .pipe(map((res) => this.transformValue(res)))
+      .pipe(
+        map((res) => this.transformValue(res)),
+        takeUntil(this.destroy$)
+      )
       .subscribe(fn);
   }
 
@@ -100,8 +117,8 @@ export class AlarmEventSelectionListComponent
         selectType: this.timelineType,
         selectedItems: this.transformValue(this.formArray.value),
         allowSearch: !this.config?.contextAsset,
-        title: this.timelineTypeTexts.selectorTitle,
-        saveButtonLabel: this.timelineTypeTexts.addButtonLabel,
+        title: this.timelineTypeTexts?.selectorTitle,
+        saveButtonLabel: this.timelineTypeTexts?.addButtonLabel,
       })
       .then(
         (result) => {

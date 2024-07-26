@@ -39,8 +39,8 @@ import { Observable, Subject } from 'rxjs';
 export class AlarmEventSelectorListItemComponent
   implements ControlValueAccessor, Validator, OnDestroy
 {
-  @Input() timelineType: TimelineType;
-  @Input() highlightText: string;
+  @Input() timelineType: TimelineType | undefined;
+  @Input() highlightText: string | undefined;
   @Input() showAddRemoveButton = true;
   @Input() isSelected = false;
   @Input() optionToRemove = false;
@@ -72,7 +72,7 @@ export class AlarmEventSelectorListItemComponent
     this.destroy$.complete();
   }
 
-  validate(_control: AbstractControl): ValidationErrors {
+  validate(_control: AbstractControl): ValidationErrors | null {
     return this.formGroup?.valid ? null : { formInvalid: {} };
   }
 
@@ -82,7 +82,10 @@ export class AlarmEventSelectorListItemComponent
 
   registerOnChange(fn: any): void {
     this.formGroup.valueChanges
-      .pipe(map((tmp) => this.transformFormValue(tmp)))
+      .pipe(
+        map((tmp) => this.transformFormValue(tmp)),
+        takeUntil(this.destroy$)
+      )
       .subscribe(fn);
   }
 

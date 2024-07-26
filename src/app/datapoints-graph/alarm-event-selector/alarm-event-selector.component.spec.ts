@@ -117,7 +117,7 @@ describe('AlarmEventSelectorComponent', () => {
     it('should setup items$ observable and emit values', fakeAsync(() => {
       // given
       jest
-        .spyOn(alarmEventSelectorService, 'getItemsOfAsset')
+        .spyOn(alarmEventSelectorService, 'getAlarmsOrEvents')
         .mockReturnValue(
           new Promise((resolve) => setTimeout(() => resolve([alarm1]), 1000))
         );
@@ -125,7 +125,7 @@ describe('AlarmEventSelectorComponent', () => {
       // when
       fixture.detectChanges();
       tick();
-      component.items$.subscribe((items) => (result = items));
+      component.items$!.subscribe((items) => (result = items));
       component.assetSelection.next(asset1);
       tick(500);
       expect(component.loadingItems).toBe(true);
@@ -156,12 +156,12 @@ describe('AlarmEventSelectorComponent', () => {
       };
 
       jest
-        .spyOn(alarmEventSelectorService, 'getItemsOfAsset')
+        .spyOn(alarmEventSelectorService, 'getAlarmsOrEvents')
         .mockReturnValue(Promise.resolve([alarm1, alarm2, alarm3]));
       let result: AlarmOrEvent[] = [];
       fixture.detectChanges();
       tick();
-      component.filteredItems$.subscribe((items) => (result = items));
+      component.filteredItems$!.subscribe((items) => (result = items));
       component.assetSelection.next({ id: 1 });
 
       // when
