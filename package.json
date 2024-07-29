@@ -19,7 +19,8 @@
     "lint": "eslint . --ext .ts,.tsx --config .eslintrc.json --no-cache",
     "lint:staged": "lint-staged",
     "prepare": "husky install",
-    "cypress:ctrl": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec --recording"
+    "cypress:ctrl": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec",
+    "cypress:ctrl:recording": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec --recording"
   },
   "repository": {
     "type": "git",
