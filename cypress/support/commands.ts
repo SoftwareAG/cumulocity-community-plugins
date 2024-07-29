@@ -105,17 +105,6 @@ Cypress.Commands.add('interceptAppManifest', () => {
   ).as('appManifest');
 });
 
-Cypress.Commands.add('interceptAppManifest', () => {
-  cy.intercept(
-    '/application/applications/sag-pkg-community-plugins/manifest',
-    (req) => {
-      req.reply((res) => {
-        res.send(404);
-      });
-    }
-  ).as('appManifest');
-});
-
 Cypress.Commands.overwrite('request', (originalFn, ...args) => {
   let defaults;
   cy.getCookie('XSRF-TOKEN').then((cookie) => {

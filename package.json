@@ -11,15 +11,15 @@
     "commit": "commit",
     "cypress:ci:plugins": "start-server-and-test http-server http://localhost:4200/apps/sag-pkg-community-plugins/index.html cypress:headless:plugins",
     "cypress:headless:plugins": "cypress run",
-    "cypress:headless:shell:recording": "cypress run --env C8Y_CTRL_MODE=recording,C8Y_SYSTEM_VERSION=1020",
-    "cypress:headless:shell:mocking": "cypress run --env C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=1020",
+    "cypress:headless:shell:recording": "cypress run --env C8Y_CTRL_MODE=recording,grepTags=@shell",
+    "cypress:headless:shell:mocking": "cypress run --env C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=1020,grepTags=@shell",
     "cypress:open": "cypress open",
     "deploy": "c8ycli deploy",
     "http-server": "http-server -p 4200 ./dist",
     "lint": "eslint . --ext .ts,.tsx --config .eslintrc.json --no-cache",
     "lint:staged": "lint-staged",
     "prepare": "husky install",
-    "cypress:ctrl": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec"
+    "cypress:ctrl": "npx c8yctrl --config c8yctrl.config.ts --baseUrl https://ccw.latest.stage.c8y.io --port 4200 --staticRoot ./dist --folder ./cypress/rec --recording"
   },
   "repository": {
     "type": "git",
@@ -71,6 +71,7 @@
     "@commitlint/config-angular": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@commitlint/prompt-cli": "^19.3.1",
+    "@cypress/grep": "^4.1.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",

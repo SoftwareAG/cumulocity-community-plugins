@@ -126,10 +126,13 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
         statusText: 'OK',
         body: {
           allowCreateTenants: true,
-          customProperties: {},
+          customProperties: { gainsightEnabled: false },
           domain: domain || '',
           name: tenant || 't1234567',
           self: `https://${baseUrl}/currentTenant`,
+          applications: {
+            references: [],
+          },
         },
         headers: {
           connection: 'close',
@@ -140,7 +143,39 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
       return response;
     }
 
+    if (req.url.startsWith('/tenant/currentTenant') && record == null) {
+      const response: C8yPactHttpResponse = {
+        status: 200,
+        statusText: 'OK',
+        body: {
+          loginOptions: [],
+        },
+        headers: {
+          connection: 'close',
+          'content-type':
+            'application/vnd.com.nsn.cumulocity.loginoptioncollection+json;charset=UTF-8;ver=0.9',
+        },
+      };
+      return response;
+    }
+    // mock /apps/ requests not served from static files as 404
+    if (!record) {
+      return {
+        status: 404,
+        statusText: 'Not Found',
+      };
+    }
     return record?.response;
+  };
+
+  config.onProxyRequest = (_ctrl, proxyReq) => {
+    if (proxyReq.hasHeader('x-c8yctrl-noproxy')) {
+      return {
+        status: 404,
+        statusText: 'Not Found',
+      };
+    }
+    return undefined;
   };
 
   config.onProxyResponse = (
@@ -163,11 +198,6 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
     }
 
     return true;
-  };
-
-  config.onSavePact = (_ctrl, pact) => {
-    // do not save pact with id 'skip_recording'
-    return pact.id !== 'skip_recording';
   };
 
   return config;
