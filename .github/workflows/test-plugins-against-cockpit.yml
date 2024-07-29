@@ -179,7 +179,7 @@ jobs:
           browser: chrome
           record: false
           config-file: cypress.config.ts
-          env: C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=${{ env.VERSION }}
+          env: C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=${{ env.VERSION }},grepTags=@shell
 
       - name: Upload cypress screenshots
         if: failure()
@@ -263,7 +263,13 @@ jobs:
 
   verify-cache:
     if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
-    needs: [collect-shell-versions, build-plugins, run-tests-against-shell, cache-upload]
+    needs:
+      [
+        collect-shell-versions,
+        build-plugins,
+        run-tests-against-shell,
+        cache-upload,
+      ]
     runs-on: ubuntu-22.04
 
     steps:

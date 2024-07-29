@@ -63,6 +63,8 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
+        env:
+          grepTags: '@noShell'
         with:
           start: npm run http-server
           install: false
