@@ -79,6 +79,10 @@ describe('AlarmEventSelectorComponent', () => {
         .fn()
         .mockName('timelineTypeTexts')
         .mockReturnValue({ selectedItemsTitle: 'items' }),
+      getAlarmsOrEvents: jest
+        .fn()
+        .mockName('getAlarmsOrEvents')
+        .mockImplementation(() => null),
     } as any as AlarmEventSelectorService;
 
     color = {
