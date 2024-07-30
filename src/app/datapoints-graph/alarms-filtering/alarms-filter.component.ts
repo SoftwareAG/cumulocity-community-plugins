@@ -19,12 +19,7 @@ import { BsDropdownDirective } from 'ngx-bootstrap/dropdown';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  AlarmCount,
-  DEFAULT_ALARM_COUNTS,
-  DEFAULT_SEVERITY_VALUES,
-  FormFilters,
-} from './alarms.model';
+import { DEFAULT_SEVERITY_VALUES, FormFilters } from './alarms.model';
 
 @Component({
   selector: 'c8y-alarms-filter',
@@ -50,7 +45,6 @@ export class AlarmsFilterComponent implements OnInit, AfterViewInit, OnDestroy {
   chips: SeverityType[] = [];
   countLoading: boolean = false;
   showCleared = true;
-  alarmCounts: AlarmCount = DEFAULT_ALARM_COUNTS;
   shouldDisableApplyButton$: Observable<boolean> | undefined;
   isEachCheckboxSelected$: Observable<boolean> | undefined;
   protected readonly SEVERITY_LABELS = SEVERITY_LABELS;
@@ -167,18 +161,6 @@ export class AlarmsFilterComponent implements OnInit, AfterViewInit, OnDestroy {
   ): Observable<boolean> {
     return formValue$.pipe(
       map((severities) => Object.values(severities).every(Boolean))
-    );
-  }
-
-  private createIndeterminateStream(
-    formValue$: Observable<SeverityFilter>
-  ): Observable<boolean> {
-    return formValue$.pipe(
-      map(
-        (severities) =>
-          Object.values(severities).some(Boolean) &&
-          !Object.values(severities).every(Boolean)
-      )
     );
   }
 

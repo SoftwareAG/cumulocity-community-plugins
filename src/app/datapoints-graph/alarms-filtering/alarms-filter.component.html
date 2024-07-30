@@ -91,20 +91,6 @@
           ></i>
           <span class="m-l-8">{{ SEVERITY_LABELS[severity] | translate }}</span>
         </label>
-        <!-- badge -->
-        <div
-          class="badge badge-info m-l-auto"
-          *ngIf="alarmCounts[severity] || alarmCounts[severity] === 0"
-        >
-          <i
-            class="icon-spin"
-            [c8yIcon]="'circle-o-notch'"
-            *ngIf="countLoading"
-          ></i>
-          <span *ngIf="!countLoading" [attr.data-cy]="severity + '-badge'">
-            {{ alarmCounts[severity] < 99 ? alarmCounts[severity] : '99+' }}
-          </span>
-        </div>
       </li>
       <li class="p-l-16 p-r-16 p-t-4 p-b-4 d-flex a-i-center separator-top">
         <label

@@ -34,8 +34,6 @@ export interface AlarmsModuleConfig {
 
 export const ALARMS_MODULE_CONFIG = new InjectionToken('AlarmsModuleConfig');
 
-export type AlarmCount = { [key in SeverityType]: number };
-
 export const ALARM_STATUS_ICON = {
   ALERT_IDLE: 'c8y-alert-idle',
   BELL_SLASH: 'bell-slash',
@@ -80,13 +78,6 @@ export type FormFilters = {
 };
 
 export type SelectedAlarm = IAlarm | null;
-
-export const DEFAULT_ALARM_COUNTS: AlarmCount = {
-  CRITICAL: 0,
-  MAJOR: 0,
-  MINOR: 0,
-  WARNING: 0,
-};
 
 export const DEFAULT_SEVERITY_VALUES: SeverityFilter = {
   [Severity.CRITICAL]: true,
