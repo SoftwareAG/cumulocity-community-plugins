@@ -3,7 +3,7 @@ import { isShellRequired } from '../../support/utils';
 describe(
   'datapoints graph',
   {
-    requires: ['1020', '1018', null],
+    requires: ['1020', '1018'],
     tags: ['@noShell', '@shell'],
   },
   () => {
@@ -47,7 +47,7 @@ describe(
       // e.g. running command `cypress run --env C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=1020.0.5` will check if 1020.0.5 is matching with 1020.x.x,
       // and test will be executed if it is.
       // null element is for case when C8Y_SYSTEM_VERSION is not provided (in our case for tests without Cockpit shell)
-      { requires: ['1020.x.x', null], tags: ['@shell'] },
+      { requires: ['1020.x.x'] },
       () => {
         cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', {
           timeout: 10000,
@@ -70,7 +70,8 @@ describe(
       'config component should be present v1018',
       // more complex semver range to define 1018 version as required
       {
-        requires: ['>=1018.0.0 <1020.0.0', null],
+        requires: ['>=1018.0.0 <1020.0.0'],
+        tags: ['@shell'],
       },
       () => {
         cy.get('c8y-dashboard-child .header-actions button[title="Settings"]', {
