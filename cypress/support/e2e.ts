@@ -39,7 +39,9 @@ before(() => {
 
     if (isRecording()) {
       cy.login();
-      cy.getSystemVersion();
+      cy.getSystemVersion().then((version) => {
+        Cypress.env('C8Y_SYSTEM_VERSION', version);
+      });
     } else {
       if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
         cy.wrap(fetchInfo('cockpit'), { log: false }).then((info: any) => {
