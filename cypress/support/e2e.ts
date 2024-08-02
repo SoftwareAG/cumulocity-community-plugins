@@ -44,10 +44,11 @@ before(() => {
       cy.getSystemVersion();
     } else {
       if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
-        cy.wrap(fetchInfo('cockpit2'), { log: false }).then((info: any) => {
+        cy.wrap(fetchInfo('cockpit'), { log: false }).then((info: any) => {
           const version: any = info?.version;
           if (version) {
             Cypress.env('C8Y_SYSTEM_VERSION', version);
+            cy.log(`C8Y_SYSTEM_VERSION: ${version}`);
           }
         });
       }
@@ -56,9 +57,12 @@ before(() => {
     Cypress.c8ypact.on.suiteStart = (titlePath) => c8yctrl(titlePath);
   }
 
-  if (!Cypress.env('C8Y_SYSTEM_VERSION')) {
-    Cypress.env('C8Y_SYSTEM_VERSION', '1020');
-  }
+  cy.then(() => {
+    if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
+      Cypress.env('C8Y_SYSTEM_VERSION', '1020');
+      cy.log(`C8Y_SYSTEM_VERSION: 1020 (default)`);
+    }
+  });
 });
 
 beforeEach(function () {
