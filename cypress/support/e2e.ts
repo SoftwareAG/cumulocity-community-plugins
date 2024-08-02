@@ -46,7 +46,6 @@ before(() => {
           const version: any = info?.version;
           if (version) {
             Cypress.env('C8Y_SYSTEM_VERSION', version);
-            cy.log(`C8Y_SYSTEM_VERSION: ${version}`);
           }
         });
       }
@@ -58,8 +57,13 @@ before(() => {
   cy.then(() => {
     if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
       Cypress.env('C8Y_SYSTEM_VERSION', '1020');
-      cy.log(`C8Y_SYSTEM_VERSION: 1020 (default)`);
     }
+  }).then(() => {
+    // log in workflow to see version being used
+    cy.task(
+      'log',
+      `Using C8Y_SYSTEM_VERSION: ${Cypress.env('C8Y_SYSTEM_VERSION')}`
+    );
   });
 });
 

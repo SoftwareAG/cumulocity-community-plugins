@@ -10,6 +10,16 @@ export default defineConfig({
       if (!config.baseUrl && baseUrl) {
         config.baseUrl = baseUrl;
       }
+
+      on('task', {
+        log: (message: string) => {
+          if (message != null) {
+            console.log(message.trim());
+          }
+          return null;
+        },
+      });
+
       configureC8yPlugin(on, config);
 
       return config;
