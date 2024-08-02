@@ -34,13 +34,11 @@ registerCypressGrep();
 before(() => {
   Cypress.session.clearAllSavedSessions();
   if (isShellRequired()) {
-    const auth = {
-      user: Cypress.env('admin_username') || 'ccw',
-      password: Cypress.env('admin_password'),
-    };
-    cy.getTenantId(auth);
+    cy.useAuth('admin');
+    cy.getTenantId();
+
     if (isRecording()) {
-      cy.login(auth);
+      cy.login();
       cy.getSystemVersion();
     } else {
       if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
