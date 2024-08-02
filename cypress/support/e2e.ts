@@ -21,7 +21,13 @@ import 'cumulocity-cypress/commands/c8ypact';
 
 import '@cypress/grep';
 import registerCypressGrep from '@cypress/grep/src/support';
-import { c8yctrl, isRecording, isShellRequired, resetC8yCtrl } from './utils';
+import {
+  c8yctrl,
+  fetchInfo,
+  isRecording,
+  isShellRequired,
+  resetC8yCtrl,
+} from './utils';
 
 registerCypressGrep();
 
@@ -36,9 +42,22 @@ before(() => {
     if (isRecording()) {
       cy.login(auth);
       cy.getSystemVersion();
+    } else {
+      if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
+        cy.wrap(fetchInfo('cockpit2'), { log: false }).then((info: any) => {
+          const version: any = info?.version;
+          if (version) {
+            Cypress.env('C8Y_SYSTEM_VERSION', version);
+          }
+        });
+      }
     }
     // make sure rest requests in the before() hook are recorded
     Cypress.c8ypact.on.suiteStart = (titlePath) => c8yctrl(titlePath);
+  }
+
+  if (!Cypress.env('C8Y_SYSTEM_VERSION')) {
+    Cypress.env('C8Y_SYSTEM_VERSION', '1020');
   }
 });
 
