@@ -28,6 +28,7 @@ import {
   isShellRequired,
   resetC8yCtrl,
 } from './utils';
+import { toSemverVersion } from 'cumulocity-cypress';
 
 registerCypressGrep();
 
@@ -37,13 +38,16 @@ before(() => {
     cy.useAuth('admin');
     cy.getTenantId();
 
-    if (isRecording()) {
-      cy.login();
-      cy.getSystemVersion().then((version) => {
-        Cypress.env('C8Y_SYSTEM_VERSION', version);
-      });
-    } else {
-      if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
+    // get system version from environment variable and try to convert to semver
+    // this will also fix / coerce the version to a semver if it is not valid
+    const systemVersion = toSemverVersion(Cypress.env('C8Y_SYSTEM_VERSION'));
+    if (systemVersion == null) {
+      if (isRecording()) {
+        cy.login();
+        cy.getSystemVersion().then((version) => {
+          Cypress.env('C8Y_SYSTEM_VERSION', version);
+        });
+      } else {
         cy.wrap(fetchInfo('cockpit'), { log: false }).then((info: any) => {
           const version: any = info?.version;
           if (version) {
@@ -51,6 +55,9 @@ before(() => {
           }
         });
       }
+    } else {
+      // update system version to semver version and possibly fix provided version
+      Cypress.env('C8Y_SYSTEM_VERSION', systemVersion);
     }
     // make sure rest requests in the before() hook are recorded
     Cypress.c8ypact.on.suiteStart = (titlePath) => c8yctrl(titlePath);
@@ -58,7 +65,7 @@ before(() => {
 
   cy.then(() => {
     if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
-      Cypress.env('C8Y_SYSTEM_VERSION', '1020');
+      Cypress.env('C8Y_SYSTEM_VERSION', '1020.0.0');
     }
   }).then(() => {
     // log in workflow to see version being used
