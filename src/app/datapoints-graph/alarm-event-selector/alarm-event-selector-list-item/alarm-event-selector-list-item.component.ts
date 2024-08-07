@@ -19,6 +19,7 @@ import {
 import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
+import { gettext } from '@c8y/ngx-components';
 
 @Component({
   selector: 'c8y-alarm-event-selector-list-item',
@@ -46,7 +47,7 @@ export class AlarmEventSelectorListItemComponent
   @Input() optionToRemove = false;
   @Input() showActiveToggle = false;
   @Input() allowItemEdit = false;
-
+  colorPickerTitle = this.allowItemEdit ? gettext('Change color') : '';
   @Output() added = new EventEmitter<AlarmOrEvent>();
   @Output() removed = new EventEmitter<AlarmOrEvent>();
 
