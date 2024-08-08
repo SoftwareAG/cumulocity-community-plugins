@@ -227,7 +227,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     expect(clonedDp.__active).toBe(false);
   });
 
-  it('toggleChart should set toolboxDisabled to true if no data points are active', () => {
+  it('toggleChart should set hasAtleastOneDatapointActive to false if you try to disable the last datapoint', () => {
     // given
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
@@ -239,10 +239,10 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     // when
     component.toggleChart(clonedDp);
     // then
-    expect(component.toolboxDisabled).toBe(true);
+    expect(component.hasAtleastOneDatapointActive).toBe(false);
   });
 
-  it('toggleChart should set toolboxDisabled to false if there are active data points', () => {
+  it('toggleChart should not change hasAtleastOneDatapointActive and it should be true', () => {
     // given
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
@@ -254,7 +254,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     // when
     component.toggleChart(clonedDp);
     // then
-    expect(component.toolboxDisabled).toBe(false);
+    expect(component.hasAtleastOneDatapointActive).toBe(true);
   });
 
   it('handleDatapointOutOfSync should add datapoint to datapointsOutOfSync', () => {

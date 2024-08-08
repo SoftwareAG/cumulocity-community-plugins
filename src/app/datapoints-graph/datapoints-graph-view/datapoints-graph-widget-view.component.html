@@ -58,7 +58,6 @@
         "
         [attr.aria-label]="'Zoom in' | translate"
         [adaptivePosition]="false"
-        [disabled]="toolboxDisabled"
       >
         <i c8yIcon="zoom-in" class="icon-14"></i>
       </button>
@@ -70,7 +69,6 @@
         tooltip="{{ 'Zoom out' | translate }}"
         [attr.aria-label]="'Zoom out' | translate"
         [adaptivePosition]="false"
-        [disabled]="toolboxDisabled"
       >
         <i c8yIcon="zoom-out" class="icon-14"></i>
       </button>
@@ -82,7 +80,6 @@
         [attr.aria-label]="'Save as image' | translate"
         tooltip="{{ 'Save as image' | translate }}"
         [adaptivePosition]="false"
-        [disabled]="toolboxDisabled"
       >
         <i c8yIcon="image-file-checked" class="icon-14"></i>
       </button>
@@ -106,6 +103,16 @@
           [ngClass]="{ active: datapoint.__active }"
           title="{{ datapoint.label }} - {{ datapoint.__target.name }}"
         >
+          <i
+            *ngIf="!hasAtleastOneDatapointActive"
+            [tooltip]="
+              'At least 1 active data points must be active.' | translate
+            "
+            container="body"
+            [adaptivePosition]="false"
+            c8yIcon="exclamation-triangle"
+            class="text-warning m-l-4"
+          ></i>
           <button
             type="button"
             title="{{
@@ -165,7 +172,7 @@
             *ngIf="
               displayConfig?.activeAlarmTypesOutOfRange?.includes(
                 alarm.filters.type
-              )
+              ) && alarm.__active
             "
             [tooltip]="
               'Alarm of this type is currently active and outside of the selected time range'
@@ -180,6 +187,7 @@
             type="button"
             title="{{ alarm.filters.type }} "
             class="c8y-alarm-pill__btn"
+            *ngIf="alarm.__active"
             (click)="toggleAlarmEventType(alarm)"
           >
             <i
@@ -191,6 +199,7 @@
           </button>
           <button
             class="c8y-alarm-pill__label c8y-alarm-pill__btn"
+            *ngIf="alarm.__active"
             (click)="toggleMarkedArea(alarm)"
             [ngClass]="{
               active:
@@ -227,6 +236,7 @@
             type="button"
             title="{{ event.filters.type }} "
             class="c8y-event-pill__btn"
+            *ngIf="event.__active"
             (click)="toggleAlarmEventType(event)"
           >
             <i
@@ -236,7 +246,10 @@
               class="icon-14"
             ></i>
           </button>
-          <div class="c8y-event-pill__label c8y-event-pill__btn">
+          <div
+            class="c8y-event-pill__label c8y-event-pill__btn"
+            *ngIf="event.__active"
+          >
             <span
               class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
               style="padding-top: 3px; background-color: {{ event.color }};"

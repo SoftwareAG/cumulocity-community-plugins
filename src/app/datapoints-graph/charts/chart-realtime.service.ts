@@ -314,12 +314,16 @@ export class ChartRealtimeService {
             const alarmSeriesMarkPoint = markPoint![
               'markPoint'
             ] as customSeriesMarkPointData;
-            alarmSeriesMarkPoint.data[2].coord[0] = (alarmOrEvent as IAlarm)[
-              'lastUpdated'
-            ];
-            alarmSeriesMarkPoint.data[3].coord[0] = (alarmOrEvent as IAlarm)[
-              'lastUpdated'
-            ];
+
+            // the if block is needed in case an alarm has occured, of that type, but for a different target device.
+            if (alarmSeriesMarkPoint.data?.length > 2) {
+              alarmSeriesMarkPoint.data[2].coord[0] = (alarmOrEvent as IAlarm)[
+                'lastUpdated'
+              ];
+              alarmSeriesMarkPoint.data[3].coord[0] = (alarmOrEvent as IAlarm)[
+                'lastUpdated'
+              ];
+            }
           } else {
             const newAlarmSeries =
               this.echartsOptionsService.getAlarmOrEventSeries(

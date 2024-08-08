@@ -51,7 +51,7 @@ export class DatapointsGraphWidgetViewComponent
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator | undefined;
   datapointsOutOfSync = new Map<DatapointsGraphKPIDetails, boolean>();
-  toolboxDisabled = false;
+  hasAtleastOneDatapointActive = true;
   timeControlsFormGroup: ReturnType<
     DatapointsGraphWidgetViewComponent['initForm']
   >;
@@ -135,10 +135,15 @@ export class DatapointsGraphWidgetViewComponent
   }
 
   toggleChart(datapoint: DatapointsGraphKPIDetails): void {
+    if (
+      this.displayConfig?.datapoints?.filter((dp) => dp.__active).length === 1
+    ) {
+      // at least 1 datapoint should be active
+      this.hasAtleastOneDatapointActive = false;
+      return;
+    }
     datapoint.__active = !datapoint.__active;
     this.displayConfig = { ...this.displayConfig };
-    this.toolboxDisabled =
-      this.displayConfig.datapoints?.filter((dp) => dp.__active).length === 0;
   }
 
   handleDatapointOutOfSync(dpOutOfSync: DatapointsGraphKPIDetails): void {
