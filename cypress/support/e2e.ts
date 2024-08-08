@@ -21,14 +21,7 @@ import 'cumulocity-cypress/commands/c8ypact';
 
 import '@cypress/grep';
 import registerCypressGrep from '@cypress/grep/src/support';
-import {
-  c8yctrl,
-  fetchInfo,
-  isRecording,
-  isShellRequired,
-  resetC8yCtrl,
-} from './utils';
-import { toSemverVersion } from 'cumulocity-cypress';
+import { c8yctrl, isRecording, isShellRequired, resetC8yCtrl } from './utils';
 
 registerCypressGrep();
 
@@ -36,42 +29,31 @@ before(() => {
   Cypress.session.clearAllSavedSessions();
   if (isShellRequired()) {
     cy.useAuth('admin');
-    cy.getTenantId();
+    cy.getTenantId().then(() => {
+      cy.login();
+      cy.getShellVersion();
 
-    // get system version from environment variable and try to convert to semver
-    // this will also fix / coerce the version to a semver if it is not valid
-    const systemVersion = toSemverVersion(Cypress.env('C8Y_SYSTEM_VERSION'));
-    if (systemVersion == null) {
       if (isRecording()) {
-        cy.login();
-        cy.getSystemVersion().then((version) => {
-          Cypress.env('C8Y_SYSTEM_VERSION', version);
-        });
-      } else {
-        cy.wrap(fetchInfo('cockpit'), { log: false }).then((info: any) => {
-          const version: any = info?.version;
-          if (version) {
-            Cypress.env('C8Y_SYSTEM_VERSION', version);
-          }
-        });
+        // t1234567 is the default tenant id returned by c8yctrl. if needed change value in c8yctrl.config.ts.
+        expect(
+          Cypress.env('C8Y_TENANT'),
+          'Tenant id is mocked in recording mode. Restart c8yctrl in recording mode and rerun tests'
+        ).not.to.equal('t1234567');
+        cy.getSystemVersion();
       }
-    } else {
-      // update system version to semver version and possibly fix provided version
-      Cypress.env('C8Y_SYSTEM_VERSION', systemVersion);
-    }
+    });
+
+    expect(Cypress.env('C8Y_SHELL_VERSION')).to.not.be.null;
+
     // make sure rest requests in the before() hook are recorded
     Cypress.c8ypact.on.suiteStart = (titlePath) => c8yctrl(titlePath);
   }
 
   cy.then(() => {
-    if (Cypress.env('C8Y_SYSTEM_VERSION') == null) {
-      Cypress.env('C8Y_SYSTEM_VERSION', '1020.0.0');
-    }
-  }).then(() => {
     // log in workflow to see version being used
     cy.task(
       'log',
-      `Using C8Y_SYSTEM_VERSION: ${Cypress.env('C8Y_SYSTEM_VERSION')}`
+      `C8Y_SHELL_VERSION: ${Cypress.env('C8Y_SHELL_VERSION')}, C8Y_SYSTEM_VERSION: ${Cypress.env('C8Y_SYSTEM_VERSION')}`
     );
   });
 });

@@ -143,7 +143,7 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
       return response;
     }
 
-    if (req.url.startsWith('/tenant/currentTenant') && record == null) {
+    if (req.url.startsWith('/tenant/loginOptions') && record == null) {
       const response: C8yPactHttpResponse = {
         status: 200,
         statusText: 'OK',
@@ -158,6 +158,7 @@ export default (config: Partial<C8yPactHttpControllerConfig>) => {
       };
       return response;
     }
+
     // mock /apps/ requests not served from static files as 404
     if (!record) {
       return {
