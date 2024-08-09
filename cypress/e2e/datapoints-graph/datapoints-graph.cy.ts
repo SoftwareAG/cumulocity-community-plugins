@@ -1,4 +1,4 @@
-import { isShellRequired } from '../../support/utils';
+import { isRecording, isShellRequired } from '../../support/utils';
 
 describe(
   'datapoints graph',
@@ -9,10 +9,9 @@ describe(
   () => {
     beforeEach(function () {
       if (isShellRequired()) {
-        cy.login({
-          user: Cypress.env('admin_username') || 'ccw',
-          password: Cypress.env('admin_password'),
-        });
+        if (isRecording()) {
+          cy.getAuth('admin').login();
+        }
         cy.setLanguage('en');
         cy.prepareGroupWithDashboard();
       } else {
@@ -41,12 +40,16 @@ describe(
 
     it(
       'config component should be present v1020',
-      // `requires` can be any semver range including .x, .* or caret and tilde ranges.
+      // `requires` can hold any array of semver ranges, including .x, .* or caret and tilde ranges.
       // This is just an example for specifying 1020 version requirement to highlight use of semver.
-      // `requires` array elements are used to match cypress env argument C8Y_SYSTEM_VERSION
-      // e.g. running command `cypress run --env C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=1020.0.5` will check if 1020.0.5 is matching with 1020.x.x,
-      // and test will be executed if it is.
-      // null element is for case when C8Y_SYSTEM_VERSION is not provided (in our case for tests without Cockpit shell)
+      // `requires` array elements are used to match cypress env variable C8Y_SHELL_VERSION for shell or
+      // C8Y_SYSTEM_VERSION for system versions. Init shell and system version using cy.getShellVersion()
+      // and cy.getSystemVersion() for example in e2e.ts, or by passing the env variabls to the cypress command.
+      //
+      // Example:
+      // `cypress run --env C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=1020.0.5,C8Y_SHELL_VERSION=1020.1.203`
+      //
+      // Provide `null` element the test will also run if system or shell version or undefined.
       { requires: { shell: ['1020.x.x', null] } },
       () => {
         cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', {
