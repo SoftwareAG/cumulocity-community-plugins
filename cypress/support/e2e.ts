@@ -30,10 +30,8 @@ before(() => {
   if (isShellRequired()) {
     cy.useAuth('admin');
     cy.getTenantId().then(() => {
-      cy.login();
-      cy.getShellVersion();
-
       if (isRecording()) {
+        cy.login();
         // t1234567 is the default tenant id returned by c8yctrl. if needed change value in c8yctrl.config.ts.
         expect(
           Cypress.env('C8Y_TENANT'),
@@ -41,6 +39,7 @@ before(() => {
         ).not.to.equal('t1234567');
         cy.getSystemVersion();
       }
+      cy.getShellVersion();
     });
 
     expect(Cypress.env('C8Y_SHELL_VERSION')).to.not.be.null;
