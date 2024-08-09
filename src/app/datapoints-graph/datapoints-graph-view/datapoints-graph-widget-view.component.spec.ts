@@ -219,12 +219,18 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       series: 'T',
       __active: true,
     };
-    component.config = { datapoints: [dp] };
+    const dp2: DatapointsGraphKPIDetails = {
+      fragment: 'c8y_Temperature',
+      series: 'T',
+      __active: true,
+    };
+    component.config = { datapoints: [dp, dp2] };
     const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
     expect(clonedDp.__active).toBe(false);
+    expect(component.hasAtleastOneDatapointActive).toBe(true);
   });
 
   it('toggleChart should set hasAtleastOneDatapointActive to false if you try to disable the last datapoint', () => {
@@ -239,6 +245,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     // when
     component.toggleChart(clonedDp);
     // then
+    expect(clonedDp.__active).toBe(true);
     expect(component.hasAtleastOneDatapointActive).toBe(false);
   });
 
