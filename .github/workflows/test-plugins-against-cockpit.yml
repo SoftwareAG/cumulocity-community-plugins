@@ -179,7 +179,7 @@ jobs:
           browser: chrome
           record: false
           config-file: cypress.config.ts
-          env: C8Y_CTRL_MODE=mocking,C8Y_SYSTEM_VERSION=${{ env.VERSION }},grepTags=@shell
+          env: C8Y_CTRL_MODE=mocking,grepTags=@shell
 
       - name: Upload cypress screenshots
         if: failure()
