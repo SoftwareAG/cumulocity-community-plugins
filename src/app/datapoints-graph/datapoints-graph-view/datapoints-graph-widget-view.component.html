@@ -40,6 +40,7 @@
     </div>
 
     <c8y-alarms-filter
+      *ngIf="hasAtleastOneAlarmActive"
       [contextSourceId]="''"
       (filterApplied)="filterSeverity($event)"
       class="d-contents"
@@ -163,112 +164,111 @@
         </div>
         <!-- Alarms  -->
 
-        <div
-          class="c8y-alarm-pill flex-no-shrink"
-          *ngFor="let alarm of alarms"
-          title="{{ alarm.filters.type }} "
-        >
-          <i
-            *ngIf="
-              displayConfig?.activeAlarmTypesOutOfRange?.includes(
-                alarm.filters.type
-              ) && alarm.__active
-            "
-            [tooltip]="
-              'Alarm of this type is currently active and outside of the selected time range'
-                | translate
-            "
-            container="body"
-            [adaptivePosition]="false"
-            c8yIcon="exclamation-triangle"
-            class="text-warning m-l-4"
-          ></i>
-          <button
-            type="button"
-            title="{{ alarm.filters.type }} "
-            class="c8y-alarm-pill__btn"
-            *ngIf="alarm.__active"
-            (click)="toggleAlarmEventType(alarm)"
-          >
-            <i
-              [c8yIcon]="
-                alarm.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
-              "
-              class="icon-14"
-            ></i>
-          </button>
-          <button
-            class="c8y-alarm-pill__label c8y-alarm-pill__btn"
-            *ngIf="alarm.__active"
-            (click)="toggleMarkedArea(alarm)"
-            [ngClass]="{
-              active:
-                !isMarkedAreaEnabled &&
-                alarm.filters.type === enabledMarkedAreaAlarmType,
-            }"
-          >
-            <span
-              class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
-              [style.background-color]="alarm.color"
-            >
-              <i c8yIcon="bell" class="stroked-icon"></i>
-            </span>
-            <span
-              class="text-truncate"
-              [ngClass]="{ 'text-muted': alarm.__hidden }"
-            >
-              <span class="text-truncate">
-                {{ alarm.filters.type }}
-              </span>
-              <small class="text-muted text-10">
-                {{ alarm.__target.name }}
-              </small>
-            </span>
-          </button>
-        </div>
-        <!-- Events -->
-        <div
-          class="c8y-event-pill flex-no-shrink"
-          *ngFor="let event of events"
-          title="{{ event.filters.type }} "
-        >
-          <button
-            type="button"
-            title="{{ event.filters.type }} "
-            class="c8y-event-pill__btn"
-            *ngIf="event.__active"
-            (click)="toggleAlarmEventType(event)"
-          >
-            <i
-              [c8yIcon]="
-                event.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
-              "
-              class="icon-14"
-            ></i>
-          </button>
+        <ng-container *ngFor="let alarm of alarms">
           <div
-            class="c8y-event-pill__label c8y-event-pill__btn"
+            class="c8y-alarm-pill flex-no-shrink"
+            title="{{ alarm.filters.type }} "
+            *ngIf="alarm.__active"
+          >
+            <i
+              *ngIf="
+                displayConfig?.activeAlarmTypesOutOfRange?.includes(
+                  alarm.filters.type
+                )
+              "
+              [tooltip]="
+                'Alarm of this type is currently active and outside of the selected time range'
+                  | translate
+              "
+              container="body"
+              [adaptivePosition]="false"
+              c8yIcon="exclamation-triangle"
+              class="text-warning m-l-4"
+            ></i>
+            <button
+              type="button"
+              title="{{ alarm.filters.type }} "
+              class="c8y-alarm-pill__btn"
+              (click)="toggleAlarmEventType(alarm)"
+            >
+              <i
+                [c8yIcon]="
+                  alarm.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+                "
+                class="icon-14"
+              ></i>
+            </button>
+            <button
+              class="c8y-alarm-pill__label c8y-alarm-pill__btn"
+              (click)="toggleMarkedArea(alarm)"
+              [ngClass]="{
+                active:
+                  !isMarkedAreaEnabled &&
+                  alarm.filters.type === enabledMarkedAreaAlarmType,
+              }"
+            >
+              <span
+                class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
+                [style.background-color]="alarm.color"
+              >
+                <i c8yIcon="bell" class="stroked-icon"></i>
+              </span>
+              <span
+                class="text-truncate"
+                [ngClass]="{ 'text-muted': alarm.__hidden }"
+              >
+                <span class="text-truncate">
+                  {{ alarm.filters.type }}
+                </span>
+                <small class="text-muted text-10">
+                  {{ alarm.__target.name }}
+                </small>
+              </span>
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Events -->
+        <ng-container *ngFor="let event of events">
+          <div
+            class="c8y-event-pill flex-no-shrink"
+            title="{{ event.filters.type }}"
             *ngIf="event.__active"
           >
-            <span
-              class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
-              style="padding-top: 3px; background-color: {{ event.color }};"
+            <button
+              type="button"
+              title="{{ event.filters.type }} "
+              class="c8y-event-pill__btn"
+              (click)="toggleAlarmEventType(event)"
             >
-              <i c8yIcon="c8y-events" class="stroked-icon"></i>
-            </span>
-            <span
-              class="text-truncate"
-              [ngClass]="{ 'text-muted': event.__hidden }"
-            >
-              <span class="text-truncate">
-                {{ event.filters.type }}
+              <i
+                [c8yIcon]="
+                  event.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+                "
+                class="icon-14"
+              ></i>
+            </button>
+            <div class="c8y-event-pill__label c8y-event-pill__btn">
+              <span
+                class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
+                style="padding-top: 3px; background-color: {{ event.color }};"
+              >
+                <i c8yIcon="c8y-events" class="stroked-icon"></i>
               </span>
-              <small class="text-muted text-10">
-                {{ event.__target.name }}
-              </small>
-            </span>
+              <span
+                class="text-truncate"
+                [ngClass]="{ 'text-muted': event.__hidden }"
+              >
+                <span class="text-truncate">
+                  {{ event.filters.type }}
+                </span>
+                <small class="text-muted text-10">
+                  {{ event.__target.name }}
+                </small>
+              </span>
+            </div>
           </div>
-        </div>
+        </ng-container>
       </div>
     </div>
   </div>

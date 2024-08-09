@@ -52,6 +52,7 @@ export class DatapointsGraphWidgetViewComponent
   alerts: DynamicComponentAlertAggregator | undefined;
   datapointsOutOfSync = new Map<DatapointsGraphKPIDetails, boolean>();
   hasAtleastOneDatapointActive = true;
+  hasAtleastOneAlarmActive = true;
   timeControlsFormGroup: ReturnType<
     DatapointsGraphWidgetViewComponent['initForm']
   >;
@@ -193,6 +194,12 @@ export class DatapointsGraphWidgetViewComponent
     this.events = alarmsEventsConfigs.filter(
       (event) => event.timelineType === 'EVENT'
     ) as EventDetails[];
+    if (
+      this.alarms.length === 0 ||
+      !this.alarms.find((alarm) => alarm.__active)
+    ) {
+      this.hasAtleastOneAlarmActive = false;
+    }
   }
 
   filterSeverity(eventTarget: {
