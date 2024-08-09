@@ -18,6 +18,7 @@ import './commands';
 
 import 'cumulocity-cypress/commands';
 import 'cumulocity-cypress/commands/c8ypact';
+import 'cumulocity-cypress/commands/request';
 
 import '@cypress/grep';
 import registerCypressGrep from '@cypress/grep/src/support';
