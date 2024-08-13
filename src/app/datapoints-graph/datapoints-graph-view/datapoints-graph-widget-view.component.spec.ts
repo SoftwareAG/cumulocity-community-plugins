@@ -11,14 +11,29 @@ import {
   DynamicComponentAlertAggregator,
 } from '@c8y/ngx-components';
 import { TimeControlsModule } from '../time-controls';
-import { ChartsComponent } from '../charts';
+import {
+  ChartAlarmsService,
+  ChartEventsService,
+  ChartsComponent,
+} from '../charts';
 import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
 } from '../model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { FetchClient, Realtime } from '@c8y/client';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+
+@Component({
+  selector: 'c8y-alarms-filter',
+  template: ``,
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class AlarmsFilterComponentMock {
+  @Input()
+  contextSourceId: number | string | null = null;
+}
 
 describe('DatapointsGraphWidgetViewComponent', () => {
   let component: DatapointsGraphWidgetViewComponent;
@@ -50,12 +65,18 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         TimeControlsModule,
         ChartsComponent,
         TooltipModule,
+        PopoverModule,
       ],
-      declarations: [DatapointsGraphWidgetViewComponent],
+      declarations: [
+        DatapointsGraphWidgetViewComponent,
+        AlarmsFilterComponentMock,
+      ],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         { provide: FetchClient, useValue: client },
         { provide: Realtime, useValue: {} },
+        ChartEventsService,
+        ChartAlarmsService,
       ],
     });
     await TestBed.compileComponents();
@@ -114,8 +135,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         config: { currentValue: config },
       } as any as SimpleChanges);
       // then
-      expect(component.displayConfig.dateFrom).toEqual(dateFrom);
-      expect(component.displayConfig.dateTo).toEqual(dateTo);
+      expect(component.displayConfig?.dateFrom).toEqual(dateFrom);
+      expect(component.displayConfig?.dateTo).toEqual(dateTo);
     });
 
     it(`should not change dateFrom nor dateTo when changed config has "date" property
@@ -134,8 +155,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         config: { currentValue: config },
       } as any as SimpleChanges);
       // then
-      expect(component.displayConfig.dateFrom).toEqual(dateFrom);
-      expect(component.displayConfig.dateTo).toEqual(dateTo);
+      expect(component.displayConfig?.dateFrom).toEqual(dateFrom);
+      expect(component.displayConfig?.dateTo).toEqual(dateTo);
     });
 
     it(`should change dateFrom and dateTo when changed config has "date" property
@@ -156,8 +177,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       } as any as SimpleChanges);
       tick();
       // then
-      expect(component.displayConfig.dateFrom).toEqual(dashboardTimeRange[0]);
-      expect(component.displayConfig.dateTo).toEqual(dashboardTimeRange[1]);
+      expect(component.displayConfig?.dateFrom).toEqual(dashboardTimeRange[0]);
+      expect(component.displayConfig?.dateTo).toEqual(dashboardTimeRange[1]);
     }));
   });
 
@@ -171,8 +192,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     component.timePropsChanged({ dateFrom, dateTo });
     tick();
     // then
-    expect(component.displayConfig.dateFrom).toEqual(dateFrom);
-    expect(component.displayConfig.dateTo).toEqual(dateTo);
+    expect(component.displayConfig?.dateFrom).toEqual(dateFrom);
+    expect(component.displayConfig?.dateTo).toEqual(dateTo);
   }));
 
   it('updateTimeRangeOnRealtime should override set form values but not change config', fakeAsync(() => {
@@ -185,8 +206,8 @@ describe('DatapointsGraphWidgetViewComponent', () => {
     component.updateTimeRangeOnRealtime({ dateFrom, dateTo });
     tick();
     // then
-    expect(component.displayConfig.dateFrom).toEqual(null);
-    expect(component.displayConfig.dateTo).toEqual(null);
+    expect(component.displayConfig?.dateFrom).toEqual(null);
+    expect(component.displayConfig?.dateTo).toEqual(null);
     expect(component.timeControlsFormGroup.value.dateFrom).toEqual(dateFrom);
     expect(component.timeControlsFormGroup.value.dateTo).toEqual(dateTo);
   }));
@@ -198,15 +219,21 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       series: 'T',
       __active: true,
     };
-    component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const dp2: DatapointsGraphKPIDetails = {
+      fragment: 'c8y_Temperature',
+      series: 'T',
+      __active: true,
+    };
+    component.config = { datapoints: [dp, dp2] };
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
     expect(clonedDp.__active).toBe(false);
+    expect(component.hasAtleastOneDatapointActive).toBe(true);
   });
 
-  it('toggleChart should set toolboxDisabled to true if no data points are active', () => {
+  it('toggleChart should set hasAtleastOneDatapointActive to false if you try to disable the last datapoint', () => {
     // given
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
@@ -214,14 +241,15 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __active: true,
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
-    expect(component.toolboxDisabled).toBe(true);
+    expect(clonedDp.__active).toBe(true);
+    expect(component.hasAtleastOneDatapointActive).toBe(false);
   });
 
-  it('toggleChart should set toolboxDisabled to false if there are active data points', () => {
+  it('toggleChart should not change hasAtleastOneDatapointActive and it should be true', () => {
     // given
     const dp: DatapointsGraphKPIDetails = {
       fragment: 'c8y_Temperature',
@@ -229,11 +257,11 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __active: false,
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.toggleChart(clonedDp);
     // then
-    expect(component.toolboxDisabled).toBe(false);
+    expect(component.hasAtleastOneDatapointActive).toBe(true);
   });
 
   it('handleDatapointOutOfSync should add datapoint to datapointsOutOfSync', () => {
@@ -245,7 +273,7 @@ describe('DatapointsGraphWidgetViewComponent', () => {
       __target: { id: '1' },
     };
     component.config = { datapoints: [dp] };
-    const clonedDp = component.displayConfig.datapoints[0];
+    const clonedDp = component.displayConfig!.datapoints![0];
     // when
     component.handleDatapointOutOfSync(clonedDp);
     // then

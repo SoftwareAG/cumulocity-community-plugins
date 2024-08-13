@@ -28,9 +28,11 @@ import {
 } from '../model';
 import { ECharts, EChartsOption } from 'echarts';
 import { take } from 'rxjs/operators';
-import { NEVER, of } from 'rxjs';
+import { of } from 'rxjs';
 import { IResult, ISeries } from '@c8y/client';
 import { Component, ViewChild } from '@angular/core';
+import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
+import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
 
 const dateFrom = new Date('2023-03-20T10:30:19.710Z');
 const dateTo = new Date('2023-03-20T11:00:19.710Z');
@@ -62,18 +64,18 @@ export class ChartsWrapperComponent {
   };
   alerts = new DynamicComponentAlertAggregator();
 
-  @ViewChild(ChartsComponent) chartsComponent;
+  @ViewChild(ChartsComponent) chartsComponent!: ChartsComponent;
 }
 
-describe('ChartsComponent', () => {
+fdescribe('ChartsComponent', () => {
   let hostComponent: ChartsWrapperComponent;
   let fixture: ComponentFixture<ChartsWrapperComponent>;
   let component: ChartsComponent;
-  let customMeasurementServiceMock;
-  let echartsOptionsServiceMock;
-  let chartRealtimeServiceMock;
-  let dataZoomCallback;
-  let echartsInstance;
+  let customMeasurementServiceMock: CustomMeasurementService;
+  let echartsOptionsServiceMock: EchartsOptionsService;
+  let chartRealtimeServiceMock: ChartRealtimeService;
+  let dataZoomCallback: (_: any) => any;
+  let echartsInstance: ECharts;
 
   const originalResizeObserver = window.ResizeObserver;
   const originalCetComputedStyle = window.getComputedStyle;
@@ -86,7 +88,7 @@ describe('ChartsComponent', () => {
     }
     window.ResizeObserver = ResizeObserverMock;
     const getComputedStyleMock = () => ({
-      getPropertyValue: (_) => {
+      getPropertyValue: (_: any) => {
         return 1;
       },
     });
@@ -112,14 +114,16 @@ describe('ChartsComponent', () => {
     } as any as CustomMeasurementService;
     echartsOptionsServiceMock = {
       getChartOptions: jest.fn().mockName('getChartOptions'),
-    };
+    } as any as EchartsOptionsService;
     chartRealtimeServiceMock = {
       stopRealtime: jest.fn().mockName('stopRealtime'),
       startRealtime: jest.fn().mockName('startRealtime'),
-    };
+    } as any as ChartRealtimeService;
     echartsInstance = {
-      on(_eventName, cb) {
-        dataZoomCallback = cb;
+      on(_: any, cb: () => any) {
+        if (_ === 'dataZoom') {
+          dataZoomCallback = cb;
+        }
       },
       getOption() {
         return {
@@ -152,6 +156,8 @@ describe('ChartsComponent', () => {
         ChartTypesService,
         EchartsOptionsService,
         CustomMeasurementService,
+        ChartEventsService,
+        ChartAlarmsService,
       ],
     });
     TestBed.overrideProvider(CustomMeasurementService, {
@@ -189,7 +195,7 @@ describe('ChartsComponent', () => {
   describe('chartOption$', () => {
     it('should emit null when there are no active datapoints', fakeAsync(() => {
       // given
-      let result: EChartsOption;
+      let result: EChartsOption | null = null;
       component.config = { datapoints: [] };
       component.chartOption$.pipe(take(1)).subscribe((val) => (result = val));
       // when
@@ -199,36 +205,41 @@ describe('ChartsComponent', () => {
       expect(result).toBeNull();
     }));
 
-    it('should invoke EchartsOptionsService getChartOptions and clear alerts when there are active datapoints', fakeAsync(() => {
+    it('should invoke EchartsOptionsService getChartOptions and clear alerts when there are active datapoints', (done) => {
       // given
-      jest.spyOn(component.alerts, 'clear');
+      const spy = jest.spyOn(component.alerts, 'clear');
+
+      component.chartOption$.subscribe(() => {
+        expect(echartsOptionsServiceMock.getChartOptions).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
+        done();
+      });
+
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      expect(echartsOptionsServiceMock.getChartOptions).toHaveBeenCalled();
-      expect(component.alerts.clear).toHaveBeenCalled();
-    }));
+    });
 
-    it('should restart realtime', fakeAsync(() => {
+    it('should restart realtime', (done) => {
       // given
       component.config = { ...component.config, realtime: true };
       component.echartsInstance = {} as any;
       jest
         .spyOn(echartsOptionsServiceMock, 'getChartOptions')
-        .mockReturnValue(of({}));
+        .mockReturnValue({});
       jest.spyOn(component, 'onChartInit').mockImplementation();
+
+      component.chartOption$.subscribe(() => {
+        expect(chartRealtimeServiceMock.stopRealtime).toHaveBeenCalled();
+        expect(chartRealtimeServiceMock.startRealtime).toHaveBeenCalled();
+        done();
+      });
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      expect(chartRealtimeServiceMock.stopRealtime).toHaveBeenCalled();
-      expect(chartRealtimeServiceMock.startRealtime).toHaveBeenCalled();
-    }));
+    });
 
-    it('should add empty value at the beginning of chart and add warning alert when data is truncated', fakeAsync(() => {
+    it('should add empty value at the beginning of chart and add warning alert when data is truncated', (done) => {
       // given
-      let datapointsWithValues: DatapointWithValues[];
+      let datapointsWithValues: DatapointWithValues[] = [];
       jest.spyOn(customMeasurementServiceMock, 'listSeries$').mockReturnValue(
         of({
           data: {
@@ -244,20 +255,24 @@ describe('ChartsComponent', () => {
         .spyOn(echartsOptionsServiceMock, 'getChartOptions')
         .mockImplementation((vals: any) => (datapointsWithValues = vals));
       jest.spyOn(component, 'onChartInit').mockImplementation();
-      // when
-      component.ngOnChanges();
-      tick();
-      // then
-      expect(Object.keys(datapointsWithValues[0].values).length).toBe(3);
-      const currentAlerts = component.alerts.alertGroups.find(
-        (a) => a.type === 'warning'
-      ).value.alerts;
-      expect(currentAlerts.length).toBe(1);
-    }));
 
-    it('should get proper timeRange when global time context is enabled', fakeAsync(() => {
+      component.chartOption$.subscribe(() => {
+        expect(Object.keys(datapointsWithValues[0].values).length).toBe(3);
+        const currentAlerts = component.alerts.alertGroups.find(
+          (a) => a.type === 'warning'
+        )?.value.alerts;
+        expect(currentAlerts?.length).toBe(1);
+        done();
+      });
+      // when
+    });
+
+    it('should get proper timeRange when global time context is enabled', (done) => {
       // given
-      let timeRange: { dateFrom: string; dateTo: string };
+      let timeRange: { dateFrom: string; dateTo: string } = {
+        dateFrom: '',
+        dateTo: '',
+      };
       jest
         .spyOn(echartsOptionsServiceMock, 'getChartOptions')
         .mockImplementation(
@@ -268,17 +283,22 @@ describe('ChartsComponent', () => {
         ...component.config,
         widgetInstanceGlobalTimeContext: true,
       };
+
+      component.chartOption$.subscribe(() => {
+        expect(timeRange.dateFrom).toBe('2023-03-20T10:30:19.710Z');
+        expect(timeRange.dateTo).toBe('2023-03-20T11:00:19.710Z');
+        done();
+      });
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      expect(timeRange.dateFrom).toBe('2023-03-20T10:30:19.710Z');
-      expect(timeRange.dateTo).toBe('2023-03-20T11:00:19.710Z');
-    }));
+    });
 
-    it('should get proper timeRange when interval is "custom" and realtime is off', fakeAsync(() => {
+    it('should get proper timeRange when interval is "custom" and realtime is off', (done) => {
       // given
-      let timeRange: { dateFrom: string; dateTo: string };
+      let timeRange: { dateFrom: string; dateTo: string } = {
+        dateFrom: '',
+        dateTo: '',
+      };
       jest
         .spyOn(echartsOptionsServiceMock, 'getChartOptions')
         .mockImplementation(
@@ -290,17 +310,22 @@ describe('ChartsComponent', () => {
         interval: 'custom',
         realtime: false,
       };
+
+      component.chartOption$.subscribe(() => {
+        expect(timeRange.dateFrom).toBe('2023-03-20T10:30:19.710Z');
+        expect(timeRange.dateTo).toBe('2023-03-20T11:00:19.710Z');
+        done();
+      });
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      expect(timeRange.dateFrom).toBe('2023-03-20T10:30:19.710Z');
-      expect(timeRange.dateTo).toBe('2023-03-20T11:00:19.710Z');
-    }));
+    });
 
-    it('should get proper timeRange for interval', fakeAsync(() => {
+    it('should get proper timeRange for interval', (done) => {
       // given
-      let timeRange: { dateFrom: string; dateTo: string };
+      let timeRange: { dateFrom: string; dateTo: string } = {
+        dateFrom: '',
+        dateTo: '',
+      };
       jest
         .spyOn(echartsOptionsServiceMock, 'getChartOptions')
         .mockImplementation(
@@ -312,25 +337,30 @@ describe('ChartsComponent', () => {
         interval: 'hours',
         realtime: false,
       };
+
+      component.chartOption$.subscribe(() => {
+        expect(timeRange.dateFrom).not.toEqual(
+          component.config.dateFrom?.toISOString()
+        );
+        expect(timeRange.dateTo).not.toEqual(
+          component.config.dateTo?.toISOString()
+        );
+        expect(
+          new Date(timeRange.dateTo).valueOf() -
+            new Date(timeRange.dateFrom).valueOf()
+        ).toEqual(3600_000); // time span is one hour in milliseconds
+        done();
+      });
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      expect(timeRange.dateFrom).not.toEqual(
-        component.config.dateFrom.toISOString()
-      );
-      expect(timeRange.dateTo).not.toEqual(
-        component.config.dateTo.toISOString()
-      );
-      expect(
-        new Date(timeRange.dateTo).valueOf() -
-          new Date(timeRange.dateFrom).valueOf()
-      ).toEqual(3600_000); // time span is one hour in milliseconds
-    }));
+    });
 
-    it('should get proper timeRange when realtime is on', fakeAsync(() => {
+    it('should get proper timeRange when realtime is on', (done) => {
       // given
-      let timeRange: { dateFrom: string; dateTo: string };
+      let timeRange: { dateFrom: string; dateTo: string } = {
+        dateFrom: '',
+        dateTo: '',
+      };
       jest
         .spyOn(echartsOptionsServiceMock, 'getChartOptions')
         .mockImplementation(
@@ -342,40 +372,44 @@ describe('ChartsComponent', () => {
         interval: 'custom',
         realtime: true,
       };
+
+      component.chartOption$.subscribe(() => {
+        const calculatedDatesDiff =
+          new Date(timeRange.dateTo).valueOf() -
+          new Date(timeRange.dateFrom).valueOf();
+        const configDatesDiff =
+          new Date(component.config?.dateTo as Date).valueOf() -
+          new Date(component.config?.dateFrom as Date).valueOf();
+        expect(configDatesDiff).toEqual(calculatedDatesDiff);
+        done();
+      });
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      const calculatedDatesDiff =
-        new Date(timeRange.dateTo).valueOf() -
-        new Date(timeRange.dateFrom).valueOf();
-      const configDatesDiff =
-        new Date(component.config.dateTo).valueOf() -
-        new Date(component.config.dateFrom).valueOf();
-      expect(configDatesDiff).toEqual(calculatedDatesDiff);
-    }));
+    });
 
-    it('should get proper timeRange when interval is "custom", realtime is off and padding is declared', fakeAsync(() => {
+    it('should get proper timeRange when interval is "custom", realtime is off and padding is declared', (done) => {
       // given
       let timeRange: { dateFrom: string; dateTo: string };
       jest
         .spyOn(customMeasurementServiceMock, 'listSeries$')
         .mockImplementation((options: any) => {
           timeRange = { dateFrom: options.dateFrom, dateTo: options.dateTo };
-          return NEVER;
+          return of({ data: { values: null } } as any);
         });
       component.config = {
         ...component.config,
         interval: 'custom',
         realtime: false,
       };
+
+      component.chartOption$.subscribe(() => {
+        expect(timeRange?.dateFrom).toBe('2023-03-20T10:29:19.710Z');
+        expect(timeRange?.dateTo).toBe('2023-03-20T11:01:19.710Z');
+        done();
+      });
       // when
       component.ngOnChanges();
-      tick();
-      // then
-      expect(timeRange.dateFrom).toBe('2023-03-20T10:29:19.710Z');
-      expect(timeRange.dateTo).toBe('2023-03-20T11:01:19.710Z');
-    }));
+    });
   });
 
   describe('onChartInit', () => {
@@ -417,18 +451,22 @@ describe('ChartsComponent', () => {
       flush();
     }));
 
-    it('should update zoom state on zoom event', fakeAsync(() => {
+    it('should update zoom state on zoom event', (done) => {
       // given
+      jest.spyOn(console, 'error').mockImplementation();
       component.config = { ...component.config, realtime: false };
       fixture.detectChanges();
       // when
       component.onChartInit(echartsInstance);
-      tick();
       dataZoomCallback({ batch: [{ from: 0 }] });
+
       // then
-      expect(component.zoomHistory.length).toBe(2);
-      expect(chartRealtimeServiceMock.stopRealtime).toHaveBeenCalled();
-    }));
+      queueMicrotask(() => {
+        expect(component.zoomHistory.length).toBe(2);
+        expect(chartRealtimeServiceMock.stopRealtime).toHaveBeenCalled();
+        done();
+      });
+    });
   });
 
   it('toggleZoomIn', () => {

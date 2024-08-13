@@ -1,6 +1,6 @@
 <div class="p-l-16 p-r-16">
   <div class="d-flex gap-16 a-i-start">
-    <div class="btn-group btn-group-sm">
+    <div class="btn-group btn-group-sm flex-no-shrink">
       <button
         type="button"
         class="btn btn-default"
@@ -39,7 +39,14 @@
       ></c8y-time-controls>
     </div>
 
-    <div class="m-l-auto btn-group btn-group-sm">
+    <c8y-alarms-filter
+      *ngIf="hasAtleastOneAlarmActive"
+      [contextSourceId]="''"
+      (filterApplied)="filterSeverity($event)"
+      class="d-contents"
+    ></c8y-alarms-filter>
+
+    <div class="m-l-auto btn-group btn-group-sm flex-no-shrink">
       <button
         type="button"
         class="btn btn-default"
@@ -52,7 +59,6 @@
         "
         [attr.aria-label]="'Zoom in' | translate"
         [adaptivePosition]="false"
-        [disabled]="toolboxDisabled"
       >
         <i c8yIcon="zoom-in" class="icon-14"></i>
       </button>
@@ -64,7 +70,6 @@
         tooltip="{{ 'Zoom out' | translate }}"
         [attr.aria-label]="'Zoom out' | translate"
         [adaptivePosition]="false"
-        [disabled]="toolboxDisabled"
       >
         <i c8yIcon="zoom-out" class="icon-14"></i>
       </button>
@@ -76,68 +81,194 @@
         [attr.aria-label]="'Save as image' | translate"
         tooltip="{{ 'Save as image' | translate }}"
         [adaptivePosition]="false"
-        [disabled]="toolboxDisabled"
       >
         <i c8yIcon="image-file-checked" class="icon-14"></i>
       </button>
     </div>
   </div>
-  <div class="flex-grow p-t-8 d-flex a-i-start gap-8 inner-scroll p-b-4">
-    <div
-      class="c8y-datapoint-pill"
-      *ngFor="let datapoint of displayConfig.datapoints"
-      [ngClass]="{ active: datapoint.__active }"
-      title="{{ datapoint.label }} - {{ datapoint.__target.name }}"
-    >
-      <button
-        type="button"
-        title="{{
-          (datapoint.__active ? hideDatapointLabel : showDatapointLabel)
-            | translate
-        }} "
-        class="c8y-datapoint-pill__btn"
-        (click)="toggleChart(datapoint)"
-      >
-        <i
-          [c8yIcon]="
-            datapoint.__active ? 'eye text-primary' : 'eye-slash text-muted'
-          "
-          class="icon-14"
-        ></i>
-      </button>
-      <div
-        class="c8y-datapoint-pill__label"
-        style="padding-top: 3px; padding-bottom: 2px"
-      >
-        <i
-          c8yIcon="circle"
-          class="m-r-4 icon-14"
-          [ngStyle]="{
-            color: datapoint.color,
-          }"
-        ></i>
-        <span
-          class="text-truncate"
-          [ngClass]="{ 'text-muted': !datapoint.__active }"
+  <div class="d-flex" style="align-items: center">
+    <button
+      class="btn-help btn-help--sm m-r-8"
+      [attr.aria-label]="'Help' | translate"
+      [popover]="legendHelpTemplate"
+      [adaptivePosition]="false"
+      placement="bottom"
+      container="body"
+      triggers="focus"
+    ></button>
+    <div class="inner-scroll">
+      <div class="flex-grow p-t-8 d-flex a-i-start gap-8 p-b-4">
+        <div
+          class="c8y-datapoint-pill flex-no-shrink"
+          *ngFor="let datapoint of displayConfig.datapoints"
+          [ngClass]="{ active: datapoint.__active }"
+          title="{{ datapoint.label }} - {{ datapoint.__target.name }}"
         >
-          <span class="text-truncate">
-            {{ datapoint.label }}
-          </span>
-          <small class="text-muted text-10">
-            {{ datapoint.__target.name }}
-          </small>
-        </span>
-        <i
-          *ngIf="datapointsOutOfSync.get(datapoint)"
-          [tooltip]="
-            'Measurements received for this data point may be out of sync.'
-              | translate
-          "
-          container="body"
-          [adaptivePosition]="false"
-          c8yIcon="exclamation-triangle"
-          class="text-warning m-l-4"
-        ></i>
+          <i
+            *ngIf="!hasAtleastOneDatapointActive"
+            [tooltip]="
+              'At least 1 active data points must be active.' | translate
+            "
+            container="body"
+            [adaptivePosition]="false"
+            c8yIcon="exclamation-triangle"
+            class="text-warning m-l-4"
+          ></i>
+          <button
+            type="button"
+            title="{{
+              (datapoint.__active ? hideDatapointLabel : showDatapointLabel)
+                | translate
+            }} "
+            class="c8y-datapoint-pill__btn"
+            (click)="toggleChart(datapoint)"
+          >
+            <i
+              [c8yIcon]="
+                datapoint.__active ? 'eye text-primary' : 'eye-slash text-muted'
+              "
+              class="icon-14"
+            ></i>
+          </button>
+          <div class="c8y-datapoint-pill__label c8y-datapoint-pill__btn">
+            <i
+              c8yIcon="circle"
+              class="m-r-4 icon-14"
+              [ngStyle]="{
+                color: datapoint.color,
+              }"
+            ></i>
+            <span
+              class="text-truncate"
+              [ngClass]="{ 'text-muted': !datapoint.__active }"
+            >
+              <span class="text-truncate">
+                {{ datapoint.label }}
+              </span>
+              <small class="text-muted text-10">
+                {{ datapoint.__target.name }}
+              </small>
+            </span>
+            <i
+              *ngIf="datapointsOutOfSync.get(datapoint)"
+              [tooltip]="
+                'Measurements received for this data point may be out of sync.'
+                  | translate
+              "
+              container="body"
+              [adaptivePosition]="false"
+              c8yIcon="exclamation-triangle"
+              class="text-warning m-l-4"
+            ></i>
+          </div>
+        </div>
+        <!-- Alarms  -->
+
+        <ng-container *ngFor="let alarm of alarms">
+          <div
+            class="c8y-alarm-pill flex-no-shrink"
+            title="{{ alarm.filters.type }} "
+            *ngIf="alarm.__active"
+          >
+            <i
+              *ngIf="
+                displayConfig?.activeAlarmTypesOutOfRange?.includes(
+                  alarm.filters.type
+                )
+              "
+              [tooltip]="
+                'Alarm of this type is currently active and outside of the selected time range'
+                  | translate
+              "
+              container="body"
+              [adaptivePosition]="false"
+              c8yIcon="exclamation-triangle"
+              class="text-warning m-l-4"
+            ></i>
+            <button
+              type="button"
+              title="{{ alarm.filters.type }} "
+              class="c8y-alarm-pill__btn"
+              (click)="toggleAlarmEventType(alarm)"
+            >
+              <i
+                [c8yIcon]="
+                  alarm.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+                "
+                class="icon-14"
+              ></i>
+            </button>
+            <button
+              class="c8y-alarm-pill__label c8y-alarm-pill__btn"
+              (click)="toggleMarkedArea(alarm)"
+              [ngClass]="{
+                active:
+                  !isMarkedAreaEnabled &&
+                  alarm.filters.type === enabledMarkedAreaAlarmType,
+              }"
+            >
+              <span
+                class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
+                [style.background-color]="alarm.color"
+              >
+                <i c8yIcon="bell" class="stroked-icon"></i>
+              </span>
+              <span
+                class="text-truncate"
+                [ngClass]="{ 'text-muted': alarm.__hidden }"
+              >
+                <span class="text-truncate">
+                  {{ alarm.filters.type }}
+                </span>
+                <small class="text-muted text-10">
+                  {{ alarm.__target.name }}
+                </small>
+              </span>
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Events -->
+        <ng-container *ngFor="let event of events">
+          <div
+            class="c8y-event-pill flex-no-shrink"
+            title="{{ event.filters.type }}"
+            *ngIf="event.__active"
+          >
+            <button
+              type="button"
+              title="{{ event.filters.type }} "
+              class="c8y-event-pill__btn"
+              (click)="toggleAlarmEventType(event)"
+            >
+              <i
+                [c8yIcon]="
+                  event.__hidden ? 'eye-slash text-muted' : 'eye text-primary'
+                "
+                class="icon-14"
+              ></i>
+            </button>
+            <div class="c8y-event-pill__label c8y-event-pill__btn">
+              <span
+                class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
+                style="padding-top: 3px; background-color: {{ event.color }};"
+              >
+                <i c8yIcon="c8y-events" class="stroked-icon"></i>
+              </span>
+              <span
+                class="text-truncate"
+                [ngClass]="{ 'text-muted': event.__hidden }"
+              >
+                <span class="text-truncate">
+                  {{ event.filters.type }}
+                </span>
+                <small class="text-muted text-10">
+                  {{ event.__target.name }}
+                </small>
+              </span>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>
@@ -147,7 +278,13 @@
   #chart
   [config]="displayConfig"
   [alerts]="alerts"
+  (updateAlarmsAndEvents)="updateAlarmsAndEvents($event)"
   (configChangeOnZoomOut)="timePropsChanged($event)"
   (datapointOutOfSync)="handleDatapointOutOfSync($event)"
   (timeRangeChangeOnRealtime)="updateTimeRangeOnRealtime($event)"
+  (isMarkedAreaEnabled)="isMarkedAreaEnabled = $event"
 ></c8y-charts>
+
+<ng-template #legendHelpTemplate>
+  <div [innerHTML]="legendHelp"></div>
+</ng-template>
