@@ -1,3 +1,8 @@
+@import "../shared.less";
+
+@primary: var(--component-brand-primary, var(--root-component-brand-primary, var(--brand-primary, var(--c8y-brand-primary, #1776BF))));
+
+
 c8y-datapoints-graph-widget-view {
   .btn-group-sm {
 
@@ -22,7 +27,7 @@ c8y-datapoints-graph-widget-view {
       height: 28px;
       color: var(--component-brand-primary, var(--root-component-brand-primary, var(--c8y-brand-primary)));
       background-color: var(--component-background, var(--root-component-background, white));
-      border-color: var(--component-brand-primary, var(--root-component-brand-primary, var(--c8y-brand-primary)));
+      border-color: @primary;
       font-size: 12px;
       border-radius: 0 !important;
 
@@ -39,7 +44,7 @@ c8y-datapoints-graph-widget-view {
       &:hover,
       &:focus,
       &.focus {
-        color: var(--c8y-brand-primary);
+        color: @primary;
         text-decoration: none;
       }
 

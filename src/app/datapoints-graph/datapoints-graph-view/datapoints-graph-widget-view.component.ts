@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -12,6 +13,7 @@ import {
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
+  SeverityType,
   Interval,
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
@@ -19,8 +21,20 @@ import { cloneDeep } from 'lodash-es';
 import { FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
-import { aggregationType } from '@c8y/client';
+import {
+  AlarmDetails,
+  AlarmOrEvent,
+  EventDetails,
+} from '../alarm-event-selector';
+import {
+  ALARM_STATUS_LABELS,
+  AlarmStatusType,
+  SeveritySettings,
+  aggregationType,
+} from '@c8y/client';
 import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
+import { ChartsComponent } from '../charts';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-view',
@@ -31,14 +45,22 @@ import type { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 export class DatapointsGraphWidgetViewComponent
   implements OnChanges, OnDestroy
 {
+  events: EventDetails[] = [];
+  alarms: AlarmDetails[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator | undefined;
   datapointsOutOfSync = new Map<DatapointsGraphKPIDetails, boolean>();
-  toolboxDisabled = false;
+  hasAtleastOneDatapointActive = true;
+  hasAtleastOneAlarmActive = true;
   timeControlsFormGroup: ReturnType<
     DatapointsGraphWidgetViewComponent['initForm']
   >;
+  isMarkedAreaEnabled = false;
+  /*
+   * @description: The type of alarm that has marked area enabled.
+   */
+  enabledMarkedAreaAlarmType: string | undefined;
 
   @Input() set config(value: DatapointsGraphWidgetConfig) {
     this.displayConfig = cloneDeep(value);
@@ -48,7 +70,21 @@ export class DatapointsGraphWidgetViewComponent
       '"config" property should not be referenced in view component to avoid mutating data.'
     );
   }
+  @ViewChild(ChartsComponent) chartComponent!: ChartsComponent;
   displayConfig: DatapointsGraphWidgetConfig | undefined;
+  legendHelp = this.translate.instant(
+    gettext(`<ul class="m-l-0 p-l-8 m-t-8 m-b-0">
+    <li>
+      <b>Visibility:</b>
+      use visibility icon to toggle datapoint, alarm or event visibility on chart. At least one datapoint is required to display chart.
+    </li>
+    <li>
+      <b>Alarm details</b>
+      Click alarm legend item to highlight area between alarm raised timestamp and alarm cleared timestamp.
+      You can also click alarm markline on chart to highlight alarm and to pause tooltip. Click on highlighted area or legend item to cancel highlighting.
+    </li>
+  </ul>`)
+  );
   readonly disableZoomInLabel = gettext('Disable zoom in');
   readonly enableZoomInLabel = gettext(
     'Click to enable zoom, then click and drag on the desired area in the chart.'
@@ -57,7 +93,10 @@ export class DatapointsGraphWidgetViewComponent
   readonly showDatapointLabel = gettext('Show data point');
   private destroy$ = new Subject<void>();
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private translate: TranslateService
+  ) {
     this.timeControlsFormGroup = this.initForm();
     this.timeControlsFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -97,10 +136,15 @@ export class DatapointsGraphWidgetViewComponent
   }
 
   toggleChart(datapoint: DatapointsGraphKPIDetails): void {
+    if (
+      this.displayConfig?.datapoints?.filter((dp) => dp.__active).length === 1
+    ) {
+      // at least 1 datapoint should be active
+      this.hasAtleastOneDatapointActive = false;
+      return;
+    }
     datapoint.__active = !datapoint.__active;
     this.displayConfig = { ...this.displayConfig };
-    this.toolboxDisabled =
-      this.displayConfig.datapoints?.filter((dp) => dp.__active).length === 0;
   }
 
   handleDatapointOutOfSync(dpOutOfSync: DatapointsGraphKPIDetails): void {
@@ -112,6 +156,76 @@ export class DatapointsGraphWidgetViewComponent
       return;
     }
     this.datapointsOutOfSync.set(dpMatch, true);
+  }
+
+  toggleMarkedArea(alarm: AlarmDetails) {
+    this.enabledMarkedAreaAlarmType = alarm.filters.type;
+    const params = {
+      data: {
+        itemType: alarm.filters.type,
+      },
+    };
+    this.chartComponent.onChartClick(params);
+  }
+
+  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent): void {
+    if (alarmOrEvent.timelineType === 'ALARM') {
+      this.alarms = this.alarms.map((alarm) => {
+        if (alarm.filters.type === alarmOrEvent.filters.type) {
+          alarm.__hidden = !alarm.__hidden;
+        }
+        return alarm;
+      });
+    } else {
+      this.events = this.events.map((event) => {
+        if (event.filters.type === alarmOrEvent.filters.type) {
+          event.__hidden = !event.__hidden;
+        }
+        return event;
+      });
+    }
+    this.displayConfig = { ...this.displayConfig };
+  }
+
+  updateAlarmsAndEvents(alarmsEventsConfigs: AlarmOrEvent[]): void {
+    this.alarms = alarmsEventsConfigs.filter(
+      (alarm) => alarm.timelineType === 'ALARM'
+    ) as AlarmDetails[];
+    this.events = alarmsEventsConfigs.filter(
+      (event) => event.timelineType === 'EVENT'
+    ) as EventDetails[];
+    if (
+      this.alarms.length === 0 ||
+      !this.alarms.find((alarm) => alarm.__active)
+    ) {
+      this.hasAtleastOneAlarmActive = false;
+    }
+  }
+
+  filterSeverity(eventTarget: {
+    showCleared: boolean;
+    severityOptions: SeveritySettings;
+  }): void {
+    this.alarms = this.alarms.map((alarm) => {
+      if (!alarm.__severity) {
+        alarm.__severity = [];
+      }
+      alarm.__severity = Object.keys(eventTarget.severityOptions).filter(
+        (severity): severity is keyof SeveritySettings =>
+          eventTarget.severityOptions[severity as keyof SeveritySettings]
+      ) as SeverityType[];
+
+      if (!alarm.__status) {
+        alarm.__status = [];
+      }
+      const statuses = Object.keys(ALARM_STATUS_LABELS) as AlarmStatusType[];
+      const filteredStatuses = eventTarget.showCleared
+        ? statuses
+        : statuses.filter((status) => status !== 'CLEARED');
+      alarm.__status = filteredStatuses;
+      return alarm;
+    });
+    this.displayConfig = { ...this.displayConfig };
   }
 
   private initForm() {

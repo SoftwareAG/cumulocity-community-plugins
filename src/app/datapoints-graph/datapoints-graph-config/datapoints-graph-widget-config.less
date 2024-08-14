@@ -1,3 +1,7 @@
+@import "../shared.less";
+
+@primary: var(--component-brand-primary, var(--root-component-brand-primary, var(--brand-primary, var(--c8y-brand-primary, #1776BF))));
+
 c8y-datapoints-graph-widget-config {
 
   .conf-col {
@@ -9,7 +13,11 @@ c8y-datapoints-graph-widget-config {
   .no-card-context .card-header {
     padding-left: 0;
     padding-right: 0;
-    z-index: 100;
+    z-index: 95;
+    &.sticky-top{
+      z-index: 100;
+      background: inherit;
+    }
   }
 
   .no-card-context .card-header>.card-title,
@@ -24,5 +32,11 @@ c8y-datapoints-graph-widget-config {
     .btn {
       border-radius: 0;
     }
+  }
+}
+
+.c8y-colorpicker{
+  > input{
+    cursor: pointer;
   }
 }

@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.0.1...v3.1.0) (2024-08-13)
+
+
+### Features
+
+* **datapoints-graph:** [MTM-52605] Configure alarms and events in Data points graph 2.0 and display on chart ([#29](https://github.com/SoftwareAG/cumulocity-community-plugins/issues/29)) ([04813d1](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/04813d134fff69a5ad21189baea06e4a38230843))
+
 ## [3.0.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.0.0...v3.0.1) (2024-06-26)
 
 
