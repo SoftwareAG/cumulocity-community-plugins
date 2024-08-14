@@ -62,9 +62,7 @@ describe(
        * Provide `null` element the test will also run if system or shell version or undefined.
        */
       {
-        requires: {
-          shell: ['>=1018.0.0 <1020.0.0'],
-        },
+        requires: { shell: ['1020.x.x', null] },
       },
       () => {
         cy.get('[data-cy="c8y-widget-dashboard--edit-widgets"]', {
