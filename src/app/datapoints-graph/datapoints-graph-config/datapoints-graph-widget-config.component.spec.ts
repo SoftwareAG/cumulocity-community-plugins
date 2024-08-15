@@ -26,9 +26,12 @@ import { aggregationType } from '@c8y/client';
 import { AnimationBuilder } from '@angular/animations';
 import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
+import {
+  AlarmEventSelectionListComponent,
+  AlarmDetails,
+  EventDetails,
+} from '@c8y/ngx-components/alarm-event-selector';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { AlarmDetails, EventDetails } from '../alarm-event-selector';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;

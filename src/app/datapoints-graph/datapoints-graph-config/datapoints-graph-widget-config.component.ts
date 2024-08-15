@@ -34,7 +34,10 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { omit } from 'lodash-es';
 import { aggregationType } from '@c8y/client';
-import { AlarmDetails, EventDetails } from '../alarm-event-selector';
+import {
+  AlarmDetails,
+  EventDetails,
+} from '@c8y/ngx-components/alarm-event-selector';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',

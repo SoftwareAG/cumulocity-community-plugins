@@ -21,19 +21,14 @@ import {
   DatapointsGraphWidgetConfig,
 } from '../model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { SimpleChanges } from '@angular/core';
 import { FetchClient, Realtime } from '@c8y/client';
 import { PopoverModule } from 'ngx-bootstrap/popover';
-
-@Component({
-  selector: 'c8y-alarms-filter',
-  template: ``,
-})
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class AlarmsFilterComponentMock {
-  @Input()
-  contextSourceId: number | string | null = null;
-}
+import {
+  AlarmSeverityToIconPipe,
+  AlarmSeverityToLabelPipe,
+  AlarmsModule,
+} from '@c8y/ngx-components/alarms';
 
 describe('DatapointsGraphWidgetViewComponent', () => {
   let component: DatapointsGraphWidgetViewComponent;
@@ -66,17 +61,17 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         ChartsComponent,
         TooltipModule,
         PopoverModule,
+        AlarmsModule,
       ],
-      declarations: [
-        DatapointsGraphWidgetViewComponent,
-        AlarmsFilterComponentMock,
-      ],
+      declarations: [DatapointsGraphWidgetViewComponent],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         { provide: FetchClient, useValue: client },
         { provide: Realtime, useValue: {} },
         ChartEventsService,
         ChartAlarmsService,
+        AlarmSeverityToIconPipe,
+        AlarmSeverityToLabelPipe,
       ],
     });
     await TestBed.compileComponents();

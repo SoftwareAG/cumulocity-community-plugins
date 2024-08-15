@@ -11,8 +11,6 @@ import {
   TopLevelFormatterParams,
 } from 'echarts/types/src/component/tooltip/TooltipModel';
 import { TooltipFormatterCallback } from 'echarts/types/src/util/types';
-import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
-import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 
 describe('EchartsOptionsService', () => {
   let service: EchartsOptionsService;
@@ -77,8 +75,6 @@ describe('EchartsOptionsService', () => {
         { provide: DatePipe, useValue: datePipe },
         { provide: ChartTypesService, useValue: chartTypesService },
         { provide: YAxisService, useValue: yAxisService },
-        AlarmSeverityToIconPipe,
-        AlarmSeverityToLabelPipe,
       ],
     });
     service = TestBed.inject(EchartsOptionsService);

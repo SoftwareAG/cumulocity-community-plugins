@@ -10,10 +10,13 @@ import {
 } from '@angular/core';
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts';
 import {
+  AlarmDetailsExtended,
+  AlarmOrEventExtended,
   DatapointsGraphKPIDetails,
   DatapointsGraphWidgetConfig,
   DatapointsGraphWidgetTimeProps,
   DatapointWithValues,
+  EventDetailsExtended,
   INTERVALS,
   MarkLineData,
 } from '../model';
@@ -47,17 +50,15 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { YAxisService } from './y-axis.service';
 import { ChartAlertsComponent } from './chart-alerts/chart-alerts.component';
 import { AlarmStatus, IAlarm, IEvent } from '@c8y/client';
-import {
-  AlarmDetails,
-  AlarmOrEvent,
-  EventDetails,
-} from '../alarm-event-selector';
 import { ChartEventsService } from '../datapoints-graph-view/chart-events.service';
 import { ChartAlarmsService } from '../datapoints-graph-view/chart-alarms.service';
 import { EchartsCustomOptions } from './chart.model';
 import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/TooltipModel';
-import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
-import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
+import {
+  AlarmSeverityToIconPipe,
+  AlarmSeverityToLabelPipe,
+  AlarmsModule,
+} from '@c8y/ngx-components/alarms';
 
 type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
 
@@ -69,8 +70,6 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
       provide: NGX_ECHARTS_CONFIG,
       useFactory: () => ({ echarts: () => import('echarts') }),
     },
-    AlarmSeverityToIconPipe,
-    AlarmSeverityToLabelPipe,
     ChartRealtimeService,
     MeasurementRealtimeService,
     AlarmRealtimeService,
@@ -79,6 +78,8 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     EchartsOptionsService,
     CustomMeasurementService,
     YAxisService,
+    AlarmSeverityToIconPipe,
+    AlarmSeverityToLabelPipe,
   ],
   standalone: true,
   imports: [
@@ -88,6 +89,7 @@ type ZoomState = Record<'startValue' | 'endValue', number | string | Date>;
     TooltipModule,
     PopoverModule,
     ChartAlertsComponent,
+    AlarmsModule,
   ],
 })
 export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
@@ -105,7 +107,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
   >();
   @Output() datapointOutOfSync = new EventEmitter<DatapointsGraphKPIDetails>();
-  @Output() updateAlarmsAndEvents = new EventEmitter<AlarmOrEvent[]>();
+  @Output() updateAlarmsAndEvents = new EventEmitter<AlarmOrEventExtended[]>();
   @Output() isMarkedAreaEnabled = new EventEmitter<boolean>();
   private configChangedSubject = new BehaviorSubject<void | null>(null);
 
@@ -471,10 +473,10 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
     );
     const alarms = visibleAlarmsOrEvents?.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'ALARM'
-    ) as AlarmDetails[];
+    ) as AlarmDetailsExtended[];
     const events = visibleAlarmsOrEvents?.filter(
       (alarmOrEvent) => alarmOrEvent.timelineType === 'EVENT'
-    ) as EventDetails[];
+    ) as EventDetailsExtended[];
 
     const [listedEvents, listedAlarms] = await Promise.all([
       this.chartEventsService.listEvents(updatedTimeRange, events),
@@ -511,7 +513,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
   /*
   This method should check and add active alarms from the begining of time to the alarm array
   */
-  private async addActiveAlarms(alarms: AlarmDetails[]): Promise<void> {
+  private async addActiveAlarms(alarms: AlarmDetailsExtended[]): Promise<void> {
     const timeRange = this.getTimeRange();
     const params = {
       dateFrom: '1970-01-01T01:00:00+01:00',

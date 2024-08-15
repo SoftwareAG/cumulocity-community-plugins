@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { EventService, IEvent } from '@c8y/client';
 import { ChartEventsService } from './chart-events.service';
-import { EventDetails } from '../alarm-event-selector';
+import { EventDetails } from '@c8y/ngx-components/alarm-event-selector';
 
 describe('ChartEventsService', () => {
   let service: ChartEventsService;

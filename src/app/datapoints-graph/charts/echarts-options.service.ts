@@ -22,9 +22,11 @@ import type { TopLevelFormatterParams } from 'echarts/types/src/component/toolti
 import { AlarmStatus, IAlarm, IEvent, SeverityType } from '@c8y/client';
 import { ICONS_MAP } from './svg-icons.model';
 import { CustomSeriesOptions } from './chart.model';
-import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
-import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 import { Router } from '@angular/router';
+import {
+  AlarmSeverityToIconPipe,
+  AlarmSeverityToLabelPipe,
+} from '@c8y/ngx-components/alarms';
 
 type TooltipPositionCallback = (
   point: [number, number], // position of mouse in chart [X, Y]; 0,0 is top left corner

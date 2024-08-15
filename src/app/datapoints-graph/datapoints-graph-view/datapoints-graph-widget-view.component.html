@@ -41,7 +41,6 @@
 
     <c8y-alarms-filter
       *ngIf="hasAtleastOneAlarmActive"
-      [contextSourceId]="''"
       (filterApplied)="filterSeverity($event)"
       class="d-contents"
     ></c8y-alarms-filter>
