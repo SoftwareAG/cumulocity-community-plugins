@@ -3,6 +3,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -31,10 +32,10 @@ import {
   DatapointAttributesFormConfig,
   DatapointSelectorModalOptions,
 } from '@c8y/ngx-components/datapoint-selector';
-import { ActivatedRoute } from '@angular/router';
 import { omit } from 'lodash-es';
 import { aggregationType } from '@c8y/client';
 import { AlarmDetails, EventDetails } from '../alarm-event-selector';
+import { ContextDashboardComponent } from '@c8y/ngx-components/context-dashboard';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -81,15 +82,16 @@ export class DatapointsGraphWidgetConfigComponent
     private formBuilder: FormBuilder,
     private form: NgForm,
     private translate: TranslateService,
-    private route: ActivatedRoute
+    @Optional() private dashboardContextComponent: ContextDashboardComponent
   ) {
     this.formGroup = this.initForm();
   }
 
   ngOnInit() {
-    const context = this.route.root.firstChild?.snapshot.data?.['contextData'];
+    const context = this.dashboardContextComponent?.context;
     if (context?.id) {
-      this.datapointSelectionConfig.contextAsset = context;
+      const { id } = context;
+      this.datapointSelectionConfig.contextAsset = id;
     }
     this.form.form.addControl('config', this.formGroup);
     this.formGroup.patchValue(this.config || {});
