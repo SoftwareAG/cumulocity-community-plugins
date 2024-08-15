@@ -25,10 +25,10 @@ import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector'
 import { aggregationType } from '@c8y/client';
 import { AnimationBuilder } from '@angular/animations';
 import { take } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
 import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AlarmDetails, EventDetails } from '../alarm-event-selector';
+import { ContextDashboardComponent } from '@c8y/ngx-components/context-dashboard';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
@@ -85,14 +85,8 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         NgForm,
         { provide: AnimationBuilder, useValue: { build: () => null } },
         {
-          provide: ActivatedRoute,
-          useValue: {
-            root: {
-              firstChild: {
-                snapshot: { data: { contextData: mockContextData } },
-              },
-            },
-          },
+          provide: ContextDashboardComponent,
+          useValue: { context: mockContextData },
         },
       ],
     });

@@ -91,7 +91,7 @@ export class DatapointsGraphWidgetConfigComponent
     const context = this.dashboardContextComponent?.context;
     if (context?.id) {
       const { id } = context;
-      this.datapointSelectionConfig.contextAsset = id;
+      this.datapointSelectionConfig.contextAsset = { id };
     }
     this.form.form.addControl('config', this.formGroup);
     this.formGroup.patchValue(this.config || {});
