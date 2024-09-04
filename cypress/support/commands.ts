@@ -8,7 +8,6 @@ declare global {
       interceptCurrentTenant(): Chainable<void>;
       interceptLoginOptions(): Chainable<void>;
       interceptAppManifest(): Chainable<void>;
-      interceptAppManifest(): Chainable<void>;
 
       prepareGroupWithDashboard(): Chainable<void>;
     }

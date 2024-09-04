@@ -41,16 +41,6 @@ export function c8yctrl(
   );
 }
 
-export async function fetchInfo(app: string) {
-  const response = await (cy.state('window') as Cypress.AUTWindow).fetch(
-    `${Cypress.config().baseUrl}/apps/${app}/cumulocity.json`
-  );
-  if (!response.ok) {
-    return Promise.resolve({});
-  }
-  return response.json();
-}
-
 export function resetC8yCtrl() {
   return (cy.state('window') as Cypress.AUTWindow).fetch(
     `${Cypress.config().baseUrl}/c8yctrl/current`,
