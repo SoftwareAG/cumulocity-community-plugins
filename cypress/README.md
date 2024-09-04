@@ -137,11 +137,12 @@ It is an object that can contain two properties:
 
 - shell: to declare shell versions
 - system: to declare system (backend) versions
-  Both properties can hold any array of semver ranges, including `.x`, `.*` or caret and tilde ranges.
-  Provide `null` element the test will also run if system or shell version or undefined.
-  `requires` array elements are used to match cypress env variable `C8Y_SHELL_VERSION` for shell or `C8Y_SYSTEM_VERSION` for system versions.
-  In our case there is also `tags` property- it is necessary to support both shell and no-shell tests approaches.
-  If `requires` property is not declared for test case (`it` block), it will always be executed (as long as `describe` block config matches current run environment).
+
+Both properties can hold any array of semver ranges, including `.x`, `.*` or caret and tilde ranges.
+Provide `null` element the test will also run if system or shell version or undefined.
+`requires` array elements are used to match cypress env variable `C8Y_SHELL_VERSION` for shell or `C8Y_SYSTEM_VERSION` for system versions.
+In our case there is also `tags` property- it is necessary to support both shell and no-shell tests approaches.
+If `requires` property is not declared for test case (`it` block), it will always be executed (as long as `describe` block config matches current run environment).
 
 ### Running tests
 
