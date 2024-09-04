@@ -48,7 +48,7 @@
         <fieldset class="c8y-fieldset m-b-24 m-t-0">
           <c8y-form-group class="p-b-16 m-b-0 p-t-8">
             <label
-              [title]="'Display aggregation selection on view' | translate"
+              [title]="'Aggregation selection' | translate"
               class="c8y-checkbox"
             >
               <input
@@ -57,7 +57,7 @@
                 name="displayAggregationSelection"
               />
               <span></span>
-              <span translate>Display aggregation selection on view</span>
+              <span translate>Aggregation selection</span>
             </label>
             <label
               [title]="'Y axis helper lines' | translate"
@@ -93,7 +93,7 @@
                 name="displayMarkedLine"
               />
               <span></span>
-              <span translate>Display vertical line when alarm occurs</span>
+              <span translate>Show vertical line when alarm occurs</span>
             </label>
             <label [title]="'Display icons' | translate" class="c8y-checkbox">
               <input
@@ -102,7 +102,7 @@
                 name="displayMarkedPoint"
               />
               <span></span>
-              <span translate>Display icon when alarm occurs</span>
+              <span translate>Show icon when alarm occurs</span>
               <button
                 *ngIf="alarmsOrEventsHaveNoMatchingDps"
                 [tooltip]="

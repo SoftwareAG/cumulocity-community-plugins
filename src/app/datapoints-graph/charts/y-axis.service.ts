@@ -23,6 +23,7 @@ export class YAxisService {
     > = this.getYAxisPlacement(datapointsWithValues);
 
     const matchingDpSet = new Set<DatapointWithValues>();
+    const firstOccurrence = new Set<DatapointWithValues>();
 
     return datapointsWithValues.map((dp, index) => {
       const matchingDpRange = datapointsWithValues.some(
@@ -30,12 +31,11 @@ export class YAxisService {
           dp2.min === dp.min && dp2.max === dp.max && index2 < index
       );
 
-      const matchingDpRangeFirstOccurence = datapointsWithValues.some(
-        (dp2, index2) =>
-          dp2.min === dp.min && dp2.max === dp.max && index < index2
-      );
+      if (!matchingDpRange) {
+        firstOccurrence.add(dp);
+      }
 
-      if (matchingDpRangeFirstOccurence) {
+      if (firstOccurrence.has(dp)) {
         datapointsWithValues.forEach((dp2) => {
           if (dp2.min === dp.min && dp2.max === dp.max) {
             matchingDpSet.add(dp2);
@@ -44,9 +44,9 @@ export class YAxisService {
       }
 
       return {
-        name: matchingDpRangeFirstOccurence
+        name: firstOccurrence.has(dp)
           ? Array.from(matchingDpSet)
-              .map((dp) => `{${dp.unit}|${dp.unit}}`)
+              .map((dp) => `{${dp.__target?.id}${dp.unit}|${dp.unit}}`)
               .join(' /')
           : matchingDpRange
             ? ''
@@ -57,10 +57,10 @@ export class YAxisService {
           // add rich text to support multiple colors for different dp units
           rich: {
             ...Array.from(matchingDpSet).reduce((acc, dp) => {
-              acc[dp.unit] = {
+              const accKey = `${dp.__target?.id}${dp.unit}`;
+              acc[accKey] = {
                 color: dp.color,
               };
-              console.log(acc);
               return acc;
             }, {}),
           },
@@ -70,7 +70,7 @@ export class YAxisService {
         axisLine: {
           show: matchingDpRange ? false : true,
           lineStyle: {
-            color: matchingDpRangeFirstOccurence ? 'black' : dp.color,
+            color: firstOccurrence.has(dp) ? 'black' : dp.color,
           },
           onZero: false,
         },
