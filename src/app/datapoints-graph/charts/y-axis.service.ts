@@ -31,7 +31,17 @@ export class YAxisService {
           dp2.min === dp.min && dp2.max === dp.max && index2 < index
       );
 
-      if (!matchingDpRange) {
+      const anyMatchingDp = datapointsWithValues.some(
+        (dp2, index2) =>
+          dp2.min === dp.min && dp2.max === dp.max && index2 !== index
+      );
+
+      if (
+        anyMatchingDp &&
+        !matchingDpRange &&
+        YAxisOptions.mergeMatchingDatapoints &&
+        !firstOccurrence.has(dp)
+      ) {
         firstOccurrence.add(dp);
       }
 
@@ -44,13 +54,15 @@ export class YAxisService {
       }
 
       return {
-        name: firstOccurrence.has(dp)
-          ? Array.from(matchingDpSet)
-              .map((dp) => `{${dp.__target?.id}${dp.unit}|${dp.unit}}`)
-              .join(' /')
-          : matchingDpRange
-            ? ''
-            : `${dp.label} [${dp.unit}]`,
+        name: YAxisOptions.mergeMatchingDatapoints
+          ? firstOccurrence.has(dp)
+            ? Array.from(matchingDpSet)
+                .map((dp) => `{${dp.__target?.id}${dp.unit}|${dp.unit}}`)
+                .join(' /')
+            : matchingDpRange
+              ? ''
+              : `${dp.label} [${dp.unit}]`
+          : `${dp.label} [${dp.unit}]`,
         nameLocation: 'middle',
         nameGap: 20,
         nameTextStyle: {
@@ -68,7 +80,10 @@ export class YAxisService {
         type: 'value',
         animation: true,
         axisLine: {
-          show: matchingDpRange ? false : true,
+          show:
+            matchingDpRange && YAxisOptions.mergeMatchingDatapoints
+              ? false
+              : true,
           lineStyle: {
             color: firstOccurrence.has(dp) ? 'black' : dp.color,
           },

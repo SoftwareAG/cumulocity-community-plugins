@@ -224,7 +224,7 @@ export class ChartRealtimeService {
       seriesDataToUpdate.get(datapoint)?.push(measurement);
     });
 
-    const allDataSeries = this.echartsInstance?.getOption()[
+    let allDataSeries = this.echartsInstance?.getOption()[
       'series'
     ] as CustomSeriesOptions[];
 
@@ -301,29 +301,24 @@ export class ChartRealtimeService {
                 );
               }
             );
-            // update the last value of the markline to the new value
-            const markLine = alarmSeries.find((series) => series['markLine']);
-            const alarmSeriesMarkLine = markLine![
-              'markLine'
-            ] as customSeriesMarkLineData;
-            alarmSeriesMarkLine.data[1].xAxis = (alarmOrEvent as IAlarm)[
-              'lastUpdated'
-            ];
-            // update the last value of the markpoint to the new value
-            const markPoint = alarmSeries.find((series) => series['markPoint']);
-            const alarmSeriesMarkPoint = markPoint![
-              'markPoint'
-            ] as customSeriesMarkPointData;
+            // remove all matching alarm series which are in the array
+            alarmSeries.forEach((series) => {
+              allDataSeries = allDataSeries.filter(
+                (s) => s['id'] !== series['id']
+              );
+            });
 
-            // the if block is needed in case an alarm has occured, of that type, but for a different target device.
-            if (alarmSeriesMarkPoint.data?.length > 2) {
-              alarmSeriesMarkPoint.data[2].coord[0] = (alarmOrEvent as IAlarm)[
-                'lastUpdated'
-              ];
-              alarmSeriesMarkPoint.data[3].coord[0] = (alarmOrEvent as IAlarm)[
-                'lastUpdated'
-              ];
-            }
+            const newAlarmSeries =
+              this.echartsOptionsService.getAlarmOrEventSeries(
+                dp,
+                renderType,
+                false,
+                [alarmOrEvent],
+                'alarm',
+                displayOptions,
+                (alarmOrEvent as IAlarm).creationTime
+              );
+            allDataSeries.push(...newAlarmSeries);
           } else {
             const newAlarmSeries =
               this.echartsOptionsService.getAlarmOrEventSeries(

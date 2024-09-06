@@ -117,6 +117,15 @@
                 <i c8yIcon="exclamation-triangle" class="text-warning"></i>
               </button>
             </label>
+            <label [title]="'Merge axis' | translate" class="c8y-checkbox">
+              <input
+                type="checkbox"
+                formControlName="mergeMatchingDatapoints"
+                name="mergeMatchingDatapoints"
+              />
+              <span></span>
+              <span translate>Merge matching datapoints into single axis.</span>
+            </label>
           </c8y-form-group>
         </fieldset>
 

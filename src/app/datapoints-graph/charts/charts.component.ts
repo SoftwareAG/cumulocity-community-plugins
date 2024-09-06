@@ -558,6 +558,7 @@ export class ChartsComponent implements OnChanges, OnInit, OnDestroy {
       {
         displayMarkedLine: this.config.displayMarkedLine || false,
         displayMarkedPoint: this.config.displayMarkedPoint || false,
+        mergeMatchingDatapoints: this.config.mergeMatchingDatapoints || false,
       }
     );
   }
