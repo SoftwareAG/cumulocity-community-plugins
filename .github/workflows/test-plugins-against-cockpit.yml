@@ -175,7 +175,7 @@ jobs:
         with:
           start: npm run cypress:ctrl
           install: false
-          wait-on: 'http://localhost:4200/apps/cockpit/index.html?remotes=%7B"sag-pkg-community-plugins"%3A%5B"ExampleWidgetPluginModule"%2C"DatapointsGraphWidgetModule"%5D%7D#'
+          wait-on: 'http://localhost:4200/apps/cockpit/index.html'
           browser: chrome
           record: false
           config-file: cypress.config.ts
