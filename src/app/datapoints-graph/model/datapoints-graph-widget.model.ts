@@ -60,7 +60,7 @@ export type EventDetailsExtended = EventDetails & {
 };
 
 /**
- * @description: Extended AlarmOrEvent type which includes properties from the incoming alarms/events
+ * @description: Extended AlarmOrEvent type which includes properties from the incoming alarms/events. This interface can be used when the expected data can be either events or alarms.
  * such as severity and status.
  */
 export type AlarmOrEventExtended = AlarmDetailsExtended | EventDetailsExtended;
