@@ -19,7 +19,6 @@ import type {
 } from 'echarts';
 import {
   AlarmDetails,
-  AlarmOrEvent,
   EventDetails,
 } from '@c8y/ngx-components/alarm-event-selector';
 import { TooltipFormatterCallback } from 'echarts/types/src/util/types';
