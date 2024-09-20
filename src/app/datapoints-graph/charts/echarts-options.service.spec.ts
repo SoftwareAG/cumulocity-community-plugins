@@ -11,6 +11,11 @@ import {
   TopLevelFormatterParams,
 } from 'echarts/types/src/component/tooltip/TooltipModel';
 import { TooltipFormatterCallback } from 'echarts/types/src/util/types';
+import {
+  AlarmSeveritiesToTitlePipe,
+  AlarmSeverityToIconPipe,
+  AlarmSeverityToLabelPipe,
+} from '@c8y/ngx-components/alarms';
 
 describe('EchartsOptionsService', () => {
   let service: EchartsOptionsService;
@@ -75,6 +80,9 @@ describe('EchartsOptionsService', () => {
         { provide: DatePipe, useValue: datePipe },
         { provide: ChartTypesService, useValue: chartTypesService },
         { provide: YAxisService, useValue: yAxisService },
+        AlarmSeverityToIconPipe,
+        AlarmSeverityToLabelPipe,
+        AlarmSeveritiesToTitlePipe,
       ],
     });
     service = TestBed.inject(EchartsOptionsService);

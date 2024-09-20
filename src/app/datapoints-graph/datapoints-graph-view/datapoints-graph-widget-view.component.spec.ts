@@ -21,7 +21,7 @@ import {
   DatapointsGraphWidgetConfig,
 } from '../model';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { FetchClient, Realtime } from '@c8y/client';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import {
@@ -29,6 +29,16 @@ import {
   AlarmSeverityToLabelPipe,
   AlarmsModule,
 } from '@c8y/ngx-components/alarms';
+
+@Component({
+  selector: 'c8y-alarms-filter',
+  template: ``,
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class AlarmsFilterComponentMock {
+  @Input()
+  contextSourceId: number | string | null = null;
+}
 
 describe('DatapointsGraphWidgetViewComponent', () => {
   let component: DatapointsGraphWidgetViewComponent;
@@ -63,7 +73,10 @@ describe('DatapointsGraphWidgetViewComponent', () => {
         PopoverModule,
         AlarmsModule,
       ],
-      declarations: [DatapointsGraphWidgetViewComponent],
+      declarations: [
+        DatapointsGraphWidgetViewComponent,
+        AlarmsFilterComponentMock,
+      ],
       providers: [
         { provide: window, useValue: { ResizeObserver: {} } },
         { provide: FetchClient, useValue: client },
