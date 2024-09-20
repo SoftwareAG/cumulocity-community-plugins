@@ -161,7 +161,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-          path: dist/apps/sag-pkg-community-plugins/
+          path: dist/apps/sag-pkg-community-plugins/ # download the build artifact to "dist/apps/" as whole dist folder will be served and url will match adopted scheme like "<base url>/apps/cockpit/index.html"
 
       - name: Get shell app of particular version
         uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
