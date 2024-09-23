@@ -88,7 +88,7 @@ export class DatapointsGraphWidgetConfigComponent
   }
 
   ngOnInit() {
-    const {id} = this.dashboardContextComponent?.context;
+    const { id } = this.dashboardContextComponent?.context || {};
     if (id) {
       this.datapointSelectionConfig.contextAsset = { id };
     }
