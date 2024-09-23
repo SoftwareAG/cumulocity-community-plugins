@@ -37,6 +37,8 @@ type TooltipPositionCallback = (
   } | null // size of chart
 ) => Partial<Record<'top' | 'bottom' | 'left' | 'right', number>>;
 
+const INDEX_HTML = '/index.html';
+
 @Injectable()
 export class EchartsOptionsService {
   echartsInstance: ECharts | undefined;
@@ -527,10 +529,10 @@ export class EchartsOptionsService {
     value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Last Updated</label><span class="small m-l-auto">${this.datePipe.transform(alarm['lastUpdated'])}</span></li>`;
     const exists = await this.alarmRouteExists();
     if (exists) {
-      const currentUrl = this.router.url;
-      const baseUrlIndex = currentUrl.indexOf('/index.html#');
-      const baseUrl = currentUrl.substring(0, baseUrlIndex + 11);
-      value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href = "${baseUrl}/alarms/${alarm.id}">Alarm Details</a></span></li>`;
+      const currentUrl = window.location.href;
+      const baseUrlIndex = currentUrl.indexOf(INDEX_HTML);
+      const baseUrl = currentUrl.substring(0, baseUrlIndex + INDEX_HTML.length);
+      value += `<li class="p-t-4 p-b-4 d-flex separator-bottom text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Link</label><span class="small m-l-auto"><a href="${baseUrl}#/alarms/${alarm.id}">Alarm Details</a></span></li>`;
     }
     value += `<li class="p-t-4 p-b-4 d-flex text-no-wrap"><label class="text-label-small m-b-0 m-r-8">Alarm count</label><span class="small m-l-auto"><span class="badge badge-info">${alarm.count}</span></span></li>`;
     value += `</ul>`;
