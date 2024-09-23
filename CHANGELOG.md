@@ -1,3 +1,11 @@
+## [3.2.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.2.0...v3.2.1) (2024-09-23)
+
+
+### Bug Fixes
+
+* **datapoints-graph:** fix alarm url ([b716ecc](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/b716ecc7d123286b8368cf4956b42f895a97adf1))
+* **datapoints-graph:** index.html as const ([877d6c7](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/877d6c70ec7c3de6fa50ed881c3e4d7b97eecd67))
+
 # [3.2.0](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.1.0...v3.2.0) (2024-09-23)
 
 
