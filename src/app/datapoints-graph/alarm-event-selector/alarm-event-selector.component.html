@@ -2,7 +2,7 @@
   class="d-grid grid__row--1 fit-h"
   [ngClass]="{
     'grid__col--3-6-3--md': allowChangingContext,
-    'grid__col--8-4--md': !allowChangingContext,
+    'grid__col--8-4--md': !allowChangingContext
   }"
 >
   <div
@@ -22,7 +22,7 @@
         showUnassignedDevices: true,
         singleColumn: true,
         search: allowSearch,
-        showFilter: true,
+        showFilter: true
       }"
       class="d-contents"
     ></c8y-asset-selector-miller>
@@ -199,7 +199,7 @@
       <div
         [ngClass]="{
           'c8y-alarm-pill': timelineType === 'ALARM',
-          'c8y-event-pill': timelineType === 'EVENT',
+          'c8y-event-pill': timelineType === 'EVENT'
         }"
         *ngFor="let selectedItem of selectedItems"
       >
@@ -208,7 +208,7 @@
           type="button"
           [ngClass]="{
             'c8y-alarm-pill__btn': timelineType === 'ALARM',
-            'c8y-event-pill__btn': timelineType === 'EVENT',
+            'c8y-event-pill__btn': timelineType === 'EVENT'
           }"
           (click)="itemRemoved(selectedItem)"
         >
@@ -217,7 +217,7 @@
         <div
           [ngClass]="{
             'c8y-alarm-pill__label': timelineType === 'ALARM',
-            'c8y-event-pill__label': timelineType === 'EVENT',
+            'c8y-event-pill__label': timelineType === 'EVENT'
           }"
           [title]="selectedItem.label"
         >
@@ -225,7 +225,7 @@
             class="circle-icon-wrapper circle-icon-wrapper--small m-r-4"
             [ngStyle]="{
               'background-color': selectedItem.color,
-              'padding-top': timelineType === 'EVENT' ? '3px' : '0',
+              'padding-top': timelineType === 'EVENT' ? '3px' : '0'
             }"
           >
             <i
