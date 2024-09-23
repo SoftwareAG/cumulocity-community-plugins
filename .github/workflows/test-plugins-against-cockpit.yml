@@ -1,0 +1,291 @@
+name: Test plugins against Cockpit
+
+on:
+  pull_request:
+  schedule:
+    - cron: '15 4 * * 1-5'
+
+permissions:
+  contents: read
+  actions: write
+
+env:
+  ACTIONS_STEP_DEBUG: true
+
+jobs:
+  collect-shell-versions:
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    outputs:
+      shell_versions: ${{ steps.filter-versions.outputs.shell_versions }}
+      plugins_version: ${{ steps.extract-plugins-version.outputs.plugins_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Collect Shell Versions
+        id: collect-shell-versions
+        uses: SoftwareAG/plugins-e2e-setup/collect-shell-versions@main
+
+      - name: Extract Plugins Version
+        id: extract-plugins-version
+        run: |
+          plugins_version=$(jq -r '.version' package.json)
+          echo "plugins_version=${plugins_version}" >> $GITHUB_ENV
+          echo "::set-output name=plugins_version::${plugins_version}"
+
+      - name: Retrieve cached JSON previous test results files
+        if: ${{ github.event_name == 'schedule' }}
+        id: retrieve-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+
+      - name: Verify cache contents
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          echo "Contents of the cache:"
+          mkdir -p ./cache-files
+          ls -l ./cache-files
+          for file in ./cache-files/*; do
+            if [[ -f "$file" ]]; then
+              echo "Content of $file:"
+              cat "$file"
+            fi
+          done
+
+      - name: Filter out already tested versions and set shell_versions output # for pull_request event cache retrieval is omitted so no versions from step collect-shell-versions are filtered out
+        id: filter-versions
+        run: |
+          versions=$(jq -r '.[] | @base64' <<< '${{ steps.collect-shell-versions.outputs.shell_versions }}')
+          filtered_versions="[]"
+
+          for version in $versions; do
+            _jq() {
+              echo ${version} | base64 --decode | jq -r ${1}
+            }
+            tag=$(_jq '.tag')
+            ver=$(_jq '.version')
+            file="./cache-files/${tag}-${{ steps.extract-plugins-version.outputs.plugins_version }}.json"
+
+            if [[ -f "$file" ]]; then
+              echo "Cache file exists: $file"
+              alreadyTestedShellVersion=$(jq -r '.shellVersion' $file)
+              alreadyTestedPluginsVersion=$(jq -r '.pluginsVersion' $file)
+              if [[ "$alreadyTestedShellVersion" == "$ver" && "$alreadyTestedPluginsVersion" == "${{ steps.extract-plugins-version.outputs.plugins_version }}" ]]; then
+                echo "Shell version $alreadyTestedShellVersion with plugins of version $alreadyTestedPluginsVersion already tested. Skipping..."
+                continue
+              fi
+            else
+              echo "No cache file found for $tag with plugins version ${{ steps.extract-plugins-version.outputs.plugins_version }}"
+            fi
+
+            filtered_versions=$(jq --argjson ver "$(echo $version | base64 --decode)" '. + [$ver]' <<< $filtered_versions)
+          done
+
+          # Properly escape the output for GitHub Actions
+          filtered_versions_escaped=$(echo "$filtered_versions" | jq -c .)
+          echo "Filtered shell versions: $filtered_versions_escaped"
+          echo "::set-output name=shell_versions::$filtered_versions_escaped"
+
+      - name: Verify shell versions output
+        run: echo "Shell versions to test against ${{ steps.filter-versions.outputs.shell_versions }}"
+
+  build-plugins:
+    if: needs.collect-shell-versions.outputs.shell_versions != '[]'
+    needs: collect-shell-versions
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          if-no-files-found: error
+          retention-days: 5
+          path: |
+            dist/sag-pkg-community-plugins/**
+
+  run-tests-against-shell:
+    if: needs.collect-shell-versions.outputs.shell_versions != '[]'
+    needs: [collect-shell-versions, build-plugins]
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        version_data: ${{ fromJson(needs.collect-shell-versions.outputs.shell_versions) }}
+    env:
+      JSON: ${{ toJson(matrix.version_data) }}
+      VERSION: ${{ matrix.version_data.version }}
+      TAG: ${{ matrix.version_data.tag }}
+      PLUGINS_VERSION: ${{ needs.collect-shell-versions.outputs.plugins_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: dist/apps/sag-pkg-community-plugins/ # download the build artifact to "dist/apps/" as whole dist folder will be served and url will match adopted scheme like "<base url>/apps/cockpit/index.html"
+
+      - name: Get shell app of particular version
+        uses: SoftwareAG/plugins-e2e-setup/get-shell-app@main
+        with:
+          shell-name: cockpit
+          shell-version: ${{ env.VERSION }}
+          shell-path: dist/apps
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run cypress:ctrl
+          install: false
+          wait-on: 'http://localhost:4200/apps/cockpit/index.html'
+          browser: chrome
+          record: false
+          config-file: cypress.config.ts
+          env: C8Y_CTRL_MODE=mocking,grepTags=@shell
+
+      - name: Upload cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 5
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload cypress videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 5
+          name: cypress-videos
+          path: cypress/videos
+
+      - name: Create or update JSON file
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          mkdir -p ./cache-files
+          file="./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json"
+          now=$(date --utc +"%Y-%m-%dT%H:%M:%SZ")
+          jq -n --arg shellVersion "${{ env.VERSION }}" --arg pluginsVersion "${{ env.PLUGINS_VERSION }}" --arg lastSuccess "$now" '{shellVersion: $shellVersion, pluginsVersion: $pluginsVersion, lastSuccess: $lastSuccess}' > $file
+          cat $file
+
+      - name: Upload updated JSON file
+        if: ${{ github.event_name == 'schedule' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-json-${{ matrix.version_data.tag }}-${{ matrix.version_data.version }}-${{ env.PLUGINS_VERSION }}
+          path: ./cache-files/${{ env.TAG }}-${{ env.PLUGINS_VERSION }}.json
+
+  cache-upload:
+    permissions:
+      actions: write
+    if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
+    needs: [collect-shell-versions, run-tests-against-shell]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Setup cache directory
+        run: mkdir -p ./cache-files
+
+      - name: Download updated JSON files
+        uses: actions/download-artifact@v4
+        with:
+          path: ./cache-files
+          pattern: updated-json-*
+          merge-multiple: true
+
+      - name: Log artifacts
+        run: |
+          echo "Listing contents of ./cache-files :"
+          ls -la ./cache-files
+
+      - name: Retrieve cached JSON files
+        id: check-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+
+      - name: Log all files
+        run: |
+          echo "Listing contents of ./cache-files :"
+          ls -la ./cache-files
+
+      - name: Delete previous cache # cache cannot be overridden therefore it has to be deleted and saved again
+        if: steps.check-cache.outputs.cache-hit == 'true'
+        run: |
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete test-plugins-against-shell-e2e-results --confirm -R ${{github.repository}}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save results to cache
+        uses: actions/cache/save@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+
+  verify-cache:
+    if: ${{ github.event_name == 'schedule' && needs.collect-shell-versions.outputs.shell_versions != '[]' }}
+    needs:
+      [
+        collect-shell-versions,
+        build-plugins,
+        run-tests-against-shell,
+        cache-upload,
+      ]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Retrieve cached JSON files
+        uses: actions/cache/restore@v4
+        with:
+          path: ./cache-files
+          key: test-plugins-against-shell-e2e-results
+
+      - name: Verify cache contents
+        run: |
+          echo "Contents of the cache:"
+          ls -l ./cache-files
+          for file in ./cache-files/*; do
+            if [[ -f "$file" ]]; then
+              echo "Content of $file:"
+              cat "$file"
+            fi
+          done
