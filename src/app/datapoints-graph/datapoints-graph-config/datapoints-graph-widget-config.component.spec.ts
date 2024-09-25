@@ -236,6 +236,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         displayMarkedLine: true,
         displayMarkedPoint: true,
         interval: 'hours',
+        mergeMatchingDatapoints: true,
         realtime: false,
         widgetInstanceGlobalTimeContext: false,
         canDecoupleGlobalTimeContext: false,
