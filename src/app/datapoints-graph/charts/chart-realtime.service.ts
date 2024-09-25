@@ -26,11 +26,7 @@ import {
 import type { ECharts, SeriesOption } from 'echarts';
 import { EchartsOptionsService } from './echarts-options.service';
 import { AlarmOrEvent } from '../alarm-event-selector';
-import {
-  customSeriesMarkLineData,
-  customSeriesMarkPointData,
-  CustomSeriesOptions,
-} from './chart.model';
+import { CustomSeriesOptions } from './chart.model';
 
 type Milliseconds = number;
 

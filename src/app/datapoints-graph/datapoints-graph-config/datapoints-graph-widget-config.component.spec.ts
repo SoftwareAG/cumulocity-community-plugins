@@ -29,7 +29,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AlarmDetails, EventDetails } from '../alarm-event-selector';
-import { merge } from 'rxjs';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
