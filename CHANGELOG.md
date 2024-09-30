@@ -1,3 +1,10 @@
+## [3.2.2](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.2.1...v3.2.2) (2024-09-24)
+
+
+### Bug Fixes
+
+* **ci:** update versioning matrix ([#47](https://github.com/SoftwareAG/cumulocity-community-plugins/issues/47)) ([578fec2](https://github.com/SoftwareAG/cumulocity-community-plugins/commit/578fec2effaba99803ad6c0b2f6769e5123551af))
+
 ## [3.2.1](https://github.com/SoftwareAG/cumulocity-community-plugins/compare/v3.2.0...v3.2.1) (2024-09-23)
 
 
