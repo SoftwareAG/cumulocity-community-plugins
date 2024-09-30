@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EventService, IEvent, IFetchOptions } from '@c8y/client';
-import { EventDetails } from '../alarm-event-selector';
+import { EventDetails } from '@c8y/ngx-components/alarm-event-selector';
 
 @Injectable()
 export class ChartEventsService {

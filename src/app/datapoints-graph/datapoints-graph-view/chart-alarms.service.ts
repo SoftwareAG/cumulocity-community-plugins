@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlarmService, IAlarm, IFetchOptions } from '@c8y/client';
-import { AlarmDetails } from '../alarm-event-selector';
+import { AlarmDetailsExtended } from '../model';
 
 @Injectable()
 export class ChartAlarmsService {
@@ -12,7 +12,10 @@ export class ChartAlarmsService {
    * @param alarms List of alarm types with details like color, target, etc.
    * @returns List of alarms for the given alarm details
    */
-  async listAlarms(params?: any, alarms?: AlarmDetails[]): Promise<IAlarm[]> {
+  async listAlarms(
+    params?: any,
+    alarms?: AlarmDetailsExtended[]
+  ): Promise<IAlarm[]> {
     if (!alarms) {
       return [];
     }

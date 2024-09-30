@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ChartAlarmsService } from './chart-alarms.service';
 import { AlarmService, IAlarm, IFetchResponse } from '@c8y/client';
-import { AlarmDetails } from '../alarm-event-selector';
+import { AlarmDetails } from '@c8y/ngx-components/alarm-event-selector';
 
 describe('ChartAlarmsService', () => {
   let service: ChartAlarmsService;

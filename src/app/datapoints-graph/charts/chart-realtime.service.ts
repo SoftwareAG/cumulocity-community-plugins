@@ -10,6 +10,7 @@ import {
 import { IAlarm, IEvent, IMeasurement } from '@c8y/client';
 import { buffer, map, mergeMap, tap, throttleTime } from 'rxjs/operators';
 import {
+  AlarmOrEventExtended,
   DatapointChartRenderType,
   DatapointRealtimeMeasurements,
   DatapointsGraphKPIDetails,
@@ -25,7 +26,6 @@ import {
 } from '@c8y/ngx-components';
 import type { ECharts, SeriesOption } from 'echarts';
 import { EchartsOptionsService } from './echarts-options.service';
-import { AlarmOrEvent } from '../alarm-event-selector';
 import {
   customSeriesMarkLineData,
   customSeriesMarkPointData,
@@ -59,7 +59,7 @@ export class ChartRealtimeService {
     timeRangeChangedCallback: (
       timeRange: Pick<DatapointsGraphWidgetConfig, 'dateFrom' | 'dateTo'>
     ) => void,
-    alarmOrEventConfig: AlarmOrEvent[] = [],
+    alarmOrEventConfig: AlarmOrEventExtended[] = [],
     displayOptions: { displayMarkedLine: boolean; displayMarkedPoint: boolean }
   ) {
     this.echartsInstance = echartsInstance;

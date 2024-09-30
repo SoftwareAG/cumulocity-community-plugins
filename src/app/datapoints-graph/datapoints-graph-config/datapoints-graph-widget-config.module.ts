@@ -6,7 +6,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector';
 import { TimeControlsModule } from '../time-controls';
-import { AlarmEventSelectorModule } from '../alarm-event-selector';
+import { AlarmEventSelectorModule } from '@c8y/ngx-components/alarm-event-selector';
 
 @NgModule({
   imports: [

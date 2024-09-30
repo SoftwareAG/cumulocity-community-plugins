@@ -4,13 +4,11 @@ import { DatapointsGraphWidgetViewComponent } from './datapoints-graph-widget-vi
 import { TimeControlsModule } from '../time-controls';
 import { ChartsComponent } from '../charts';
 import { CoreModule } from '@c8y/ngx-components';
+import { AlarmsModule } from '@c8y/ngx-components/alarms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ChartEventsService } from './chart-events.service';
 import { ChartAlarmsService } from './chart-alarms.service';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { AlarmsFilterComponent } from '../alarms-filtering/alarms-filter.component';
-import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
-import { AlarmSeveritiesToTitlePipe } from '../alarms-filtering/alarm-severities-to-title.pipe';
 import { A11yModule } from '@angular/cdk/a11y';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 
@@ -24,13 +22,9 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
     TimeControlsModule,
     BsDropdownModule,
     PopoverModule,
+    AlarmsModule,
   ],
-  declarations: [
-    DatapointsGraphWidgetViewComponent,
-    AlarmsFilterComponent,
-    AlarmSeverityToIconPipe,
-    AlarmSeveritiesToTitlePipe,
-  ],
+  declarations: [DatapointsGraphWidgetViewComponent],
   providers: [ChartEventsService, ChartAlarmsService],
 })
 export class DatapointsGraphWidgetViewModule {}

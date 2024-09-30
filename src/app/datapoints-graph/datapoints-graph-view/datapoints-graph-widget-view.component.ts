@@ -15,17 +15,15 @@ import {
   DatapointsGraphWidgetTimeProps,
   SeverityType,
   Interval,
+  AlarmDetailsExtended,
+  AlarmOrEventExtended,
+  EventDetailsExtended,
 } from '../model';
 import { DynamicComponentAlertAggregator, gettext } from '@c8y/ngx-components';
 import { cloneDeep } from 'lodash-es';
 import { FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
-import {
-  AlarmDetails,
-  AlarmOrEvent,
-  EventDetails,
-} from '../alarm-event-selector';
 import {
   ALARM_STATUS_LABELS,
   AlarmStatusType,
@@ -45,8 +43,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class DatapointsGraphWidgetViewComponent
   implements OnChanges, OnDestroy
 {
-  events: EventDetails[] = [];
-  alarms: AlarmDetails[] = [];
+  events: EventDetailsExtended[] = [];
+  alarms: AlarmDetailsExtended[] = [];
   AGGREGATION_ICONS = AGGREGATION_ICONS;
   AGGREGATION_TEXTS = AGGREGATION_TEXTS;
   alerts: DynamicComponentAlertAggregator | undefined;
@@ -158,7 +156,7 @@ export class DatapointsGraphWidgetViewComponent
     this.datapointsOutOfSync.set(dpMatch, true);
   }
 
-  toggleMarkedArea(alarm: AlarmDetails) {
+  toggleMarkedArea(alarm: AlarmDetailsExtended): void {
     this.enabledMarkedAreaAlarmType = alarm.filters.type;
     const params = {
       data: {
@@ -168,7 +166,7 @@ export class DatapointsGraphWidgetViewComponent
     this.chartComponent.onChartClick(params);
   }
 
-  toggleAlarmEventType(alarmOrEvent: AlarmOrEvent): void {
+  toggleAlarmEventType(alarmOrEvent: AlarmOrEventExtended): void {
     if (alarmOrEvent.timelineType === 'ALARM') {
       this.alarms = this.alarms.map((alarm) => {
         if (alarm.filters.type === alarmOrEvent.filters.type) {
@@ -187,13 +185,13 @@ export class DatapointsGraphWidgetViewComponent
     this.displayConfig = { ...this.displayConfig };
   }
 
-  updateAlarmsAndEvents(alarmsEventsConfigs: AlarmOrEvent[]): void {
+  updateAlarmsAndEvents(alarmsEventsConfigs: AlarmOrEventExtended[]): void {
     this.alarms = alarmsEventsConfigs.filter(
       (alarm) => alarm.timelineType === 'ALARM'
-    ) as AlarmDetails[];
+    ) as AlarmDetailsExtended[];
     this.events = alarmsEventsConfigs.filter(
       (event) => event.timelineType === 'EVENT'
-    ) as EventDetails[];
+    ) as EventDetailsExtended[];
     if (
       this.alarms.length === 0 ||
       !this.alarms.find((alarm) => alarm.__active)
