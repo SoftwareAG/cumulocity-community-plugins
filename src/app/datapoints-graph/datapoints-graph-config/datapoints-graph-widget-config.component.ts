@@ -154,19 +154,15 @@ export class DatapointsGraphWidgetConfigComponent
   }
 
   dateSelectionChange(dateSelection: DATE_SELECTION): void {
+    this.dateSelection = dateSelection;
     if (dateSelection === DATE_SELECTION.CONFIG) {
+      this.formGroup.controls.displayDateSelection.enable();
       this.formGroup.patchValue({
-        displayDateSelection: false,
         widgetInstanceGlobalTimeContext: false,
       });
-    } else if (dateSelection === DATE_SELECTION.VIEW_AND_CONFIG) {
+    } else {
+      this.formGroup.controls.displayDateSelection.disable();
       this.formGroup.patchValue({
-        displayDateSelection: true,
-        widgetInstanceGlobalTimeContext: false,
-      });
-    } else if (dateSelection === DATE_SELECTION.DASHBOARD_CONTEXT) {
-      this.formGroup.patchValue({
-        displayDateSelection: false,
         widgetInstanceGlobalTimeContext: true,
         realtime: false,
       });
@@ -216,12 +212,11 @@ export class DatapointsGraphWidgetConfigComponent
   }
 
   private initDateSelection(): void {
-    if (this.config?.widgetInstanceGlobalTimeContext) {
-      this.dateSelection = DATE_SELECTION.DASHBOARD_CONTEXT;
-    } else if (this.config?.displayDateSelection) {
-      this.dateSelection = DATE_SELECTION.VIEW_AND_CONFIG;
-    } else {
+    if (!this.config?.widgetInstanceGlobalTimeContext) {
       this.dateSelection = DATE_SELECTION.CONFIG;
+    } else {
+      this.dateSelection = DATE_SELECTION.DASHBOARD_CONTEXT;
+      this.formGroup.controls.displayDateSelection.disable();
     }
   }
 

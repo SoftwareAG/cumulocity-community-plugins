@@ -92,11 +92,20 @@ export class YAxisService {
         axisLabel: {
           fontSize: 10,
           show: !matchingDpRange,
-          formatter: (val) =>
-            new Intl.NumberFormat(this.intlNumberFormatCompliantLocale, {
+          formatter: (val) => {
+            const { min, max } = dp || {};
+            const range =
+              min !== undefined && max !== undefined ? max - min : undefined;
+
+            if (range !== undefined && range < 1) {
+              return val.toFixed(2); // Format to two decimal places for narrow ranges
+            }
+
+            return new Intl.NumberFormat(this.intlNumberFormatCompliantLocale, {
               notation: 'compact',
               compactDisplay: 'short',
-            }).format(val),
+            }).format(val);
+          },
         },
         splitLine: {
           show: YAxisOptions.showSplitLines && !matchingDpRange,

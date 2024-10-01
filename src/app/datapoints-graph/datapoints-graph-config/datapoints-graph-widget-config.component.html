@@ -28,12 +28,6 @@
               {{ 'Widget configuration' | translate }}
             </option>
             <option
-              title="{{ 'Widget and widget configuration' | translate }}"
-              [value]="DATE_SELECTION.VIEW_AND_CONFIG"
-            >
-              {{ 'Widget and widget configuration' | translate }}
-            </option>
-            <option
               title="{{ 'Dashboard time range' | translate }}"
               [value]="DATE_SELECTION.DASHBOARD_CONTEXT"
             >
@@ -47,6 +41,31 @@
         <label>{{ 'Display options' | translate }}</label>
         <fieldset class="c8y-fieldset m-b-24 m-t-0">
           <c8y-form-group class="p-b-16 m-b-0 p-t-8">
+            <label
+              [title]="'Enable date selection in the widget view.' | translate"
+              class="c8y-checkbox"
+            >
+              <input
+                type="checkbox"
+                formControlName="displayDateSelection"
+                name="displayDateSelection"
+              />
+              <span></span>
+              <span translate>Date selection in the widget view.</span>
+              <button
+                *ngIf="dateSelection === DATE_SELECTION.DASHBOARD_CONTEXT"
+                [tooltip]="
+                  'Date selection in widget view is not possible when using dashboard time range.'
+                    | translate
+                "
+                container="body"
+                (click)="$event.stopPropagation()"
+                [adaptivePosition]="false"
+                class="btn-clean m-l-8"
+              >
+                <i c8yIcon="info" class="text-info"></i>
+              </button>
+            </label>
             <label
               [title]="'Aggregation selection' | translate"
               class="c8y-checkbox"
