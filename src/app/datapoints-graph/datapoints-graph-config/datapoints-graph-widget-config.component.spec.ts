@@ -12,7 +12,11 @@ import {
   FormsModule,
 } from '@c8y/ngx-components';
 import { TimeControlsModule } from '../time-controls';
-import { ChartsComponent } from '../charts';
+import {
+  ChartAlarmsService,
+  ChartEventsService,
+  ChartsComponent,
+} from '../charts';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgForm, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -28,7 +32,7 @@ import { take } from 'rxjs/operators';
 import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AlarmDetails, EventDetails } from '../alarm-event-selector';
-import { ContextDashboardComponent } from '@c8y/ngx-components/context-dashboard';
+import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
@@ -44,7 +48,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
     __active: true,
   };
   const config: DatapointsGraphWidgetConfig = {
-    datapoints: [],
+    datapoints: [dp],
     dateFrom,
     dateTo,
   };
@@ -85,9 +89,11 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         NgForm,
         { provide: AnimationBuilder, useValue: { build: () => null } },
         {
-          provide: ContextDashboardComponent,
+          provide: WidgetConfigComponent,
           useValue: { context: mockContextData },
         },
+        { provide: ChartEventsService, useValue: {} },
+        { provide: ChartAlarmsService, useValue: {} },
       ],
     });
     await TestBed.compileComponents();
