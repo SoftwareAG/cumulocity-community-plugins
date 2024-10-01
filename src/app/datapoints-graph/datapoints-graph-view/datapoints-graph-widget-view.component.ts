@@ -137,13 +137,16 @@ export class DatapointsGraphWidgetViewComponent
 
   toggleChart(datapoint: DatapointsGraphKPIDetails): void {
     if (
-      this.displayConfig?.datapoints?.filter((dp) => dp.__active).length === 1
+      this.displayConfig?.datapoints?.filter((dp) => dp.__active).length ===
+        1 &&
+      datapoint.__active
     ) {
       // at least 1 datapoint should be active
       this.hasAtleastOneDatapointActive = false;
       return;
     }
     datapoint.__active = !datapoint.__active;
+    this.hasAtleastOneDatapointActive = true;
     this.displayConfig = { ...this.displayConfig };
   }
 
