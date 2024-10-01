@@ -3,6 +3,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -30,11 +31,12 @@ import { Subject } from 'rxjs';
 import {
   DatapointAttributesFormConfig,
   DatapointSelectorModalOptions,
+  KPIDetails,
 } from '@c8y/ngx-components/datapoint-selector';
-import { ActivatedRoute } from '@angular/router';
 import { omit } from 'lodash-es';
 import { aggregationType } from '@c8y/client';
 import { AlarmDetails, EventDetails } from '../alarm-event-selector';
+import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
 
 @Component({
   selector: 'c8y-datapoints-graph-widget-config',
@@ -81,16 +83,15 @@ export class DatapointsGraphWidgetConfigComponent
     private formBuilder: FormBuilder,
     private form: NgForm,
     private translate: TranslateService,
-    private route: ActivatedRoute
+    @Optional() private widgetConfig: WidgetConfigComponent
   ) {
     this.formGroup = this.initForm();
   }
 
   ngOnInit() {
-    const context = this.route.root.firstChild?.snapshot.data?.['contextData'];
-    if (context?.id) {
-      this.datapointSelectionConfig.contextAsset = context;
-    }
+    this.config?.datapoints?.forEach((dp) =>
+      this.assignContextFromContextDashboard(dp)
+    );
     this.form.form.addControl('config', this.formGroup);
     this.formGroup.patchValue(this.config || {});
     this.formGroup.controls.alarms.setValue(
@@ -170,6 +171,15 @@ export class DatapointsGraphWidgetConfigComponent
         widgetInstanceGlobalTimeContext: true,
         realtime: false,
       });
+    }
+  }
+
+  private assignContextFromContextDashboard(datapoint: KPIDetails) {
+    const context = this.widgetConfig?.context;
+    if (context?.id) {
+      const { name, id } = context;
+      datapoint.__target = { name, id };
+      this.datapointSelectionConfig.contextAsset = { id };
     }
   }
 

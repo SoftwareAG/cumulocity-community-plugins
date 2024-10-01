@@ -12,7 +12,11 @@ import {
   FormsModule,
 } from '@c8y/ngx-components';
 import { TimeControlsModule } from '../time-controls';
-import { ChartsComponent } from '../charts';
+import {
+  ChartAlarmsService,
+  ChartEventsService,
+  ChartsComponent,
+} from '../charts';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgForm, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -25,10 +29,10 @@ import { DatapointSelectorModule } from '@c8y/ngx-components/datapoint-selector'
 import { aggregationType } from '@c8y/client';
 import { AnimationBuilder } from '@angular/animations';
 import { take } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
 import { AlarmEventSelectionListComponent } from '../alarm-event-selector/alarm-event-selection-list/alarm-event-selection-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AlarmDetails, EventDetails } from '../alarm-event-selector';
+import { WidgetConfigComponent } from '@c8y/ngx-components/context-dashboard';
 
 describe('DatapointsGraphWidgetConfigComponent', () => {
   let component: DatapointsGraphWidgetConfigComponent;
@@ -44,7 +48,7 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
     __active: true,
   };
   const config: DatapointsGraphWidgetConfig = {
-    datapoints: [],
+    datapoints: [dp],
     dateFrom,
     dateTo,
   };
@@ -85,15 +89,11 @@ describe('DatapointsGraphWidgetConfigComponent', () => {
         NgForm,
         { provide: AnimationBuilder, useValue: { build: () => null } },
         {
-          provide: ActivatedRoute,
-          useValue: {
-            root: {
-              firstChild: {
-                snapshot: { data: { contextData: mockContextData } },
-              },
-            },
-          },
+          provide: WidgetConfigComponent,
+          useValue: { context: mockContextData },
         },
+        { provide: ChartEventsService, useValue: {} },
+        { provide: ChartAlarmsService, useValue: {} },
       ],
     });
     await TestBed.compileComponents();
