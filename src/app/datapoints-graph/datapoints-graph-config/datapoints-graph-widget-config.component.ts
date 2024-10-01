@@ -199,6 +199,7 @@ export class DatapointsGraphWidgetConfigComponent
       events: [[] as EventDetails[]],
       displayMarkedLine: [true, []],
       displayMarkedPoint: [true, []],
+      mergeMatchingDatapoints: [true, []],
       displayDateSelection: [false, []],
       displayAggregationSelection: [false, []],
       widgetInstanceGlobalTimeContext: [false, []],

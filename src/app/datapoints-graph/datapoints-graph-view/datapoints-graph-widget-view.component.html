@@ -105,7 +105,7 @@
           title="{{ datapoint.label }} - {{ datapoint.__target.name }}"
         >
           <i
-            *ngIf="!hasAtleastOneDatapointActive"
+            *ngIf="!hasAtleastOneDatapointActive && datapoint.__active"
             [tooltip]="
               'At least 1 active data points must be active.' | translate
             "
