@@ -2,6 +2,7 @@ import { AlarmStatusType, IIdentified } from '@c8y/client';
 import { AlarmEventSelectorModalComponent } from './alarm-event-selector-modal/alarm-event-selector-modal.component';
 import { SeverityType } from '@c8y/client/lib/src/core/Severity';
 import { gettext } from '@c8y/ngx-components';
+import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 
 export type TimelineType = 'ALARM' | 'EVENT';
 
@@ -32,6 +33,7 @@ export type AlarmDetails = AlarmOrEventBase & {
   filters: {
     type: string;
   };
+  selectedDatapoint?: SelectedDatapoint;
   __hidden?: boolean;
   __severity?: SeverityType[];
   __status?: AlarmStatusType[];
@@ -42,7 +44,14 @@ export type EventDetails = AlarmOrEventBase & {
   filters: {
     type: string;
   };
+  selectedDatapoint?: SelectedDatapoint;
   __hidden?: boolean;
+};
+
+export type SelectedDatapoint = {
+  target?: string;
+  series?: string;
+  fragment?: string;
 };
 
 export type AlarmOrEvent = AlarmDetails | EventDetails;

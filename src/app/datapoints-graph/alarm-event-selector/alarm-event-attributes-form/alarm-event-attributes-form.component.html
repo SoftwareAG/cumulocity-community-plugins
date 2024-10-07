@@ -38,4 +38,35 @@
       />
     </c8y-form-group>
   </div>
+
+  <c8y-form-group>
+    <label>{{ 'Select datapoint' | translate }}</label>
+    <div class="c8y-select-wrapper">
+      <select
+        class="form-control input-sm"
+        [ngModel]="formGroup.value.selectedDatapoint"
+        (ngModelChange)="changeDatapointSelection($event)"
+      >
+        <option
+          *ngFor="let datapoint of datapoints; trackBy: trackByFn"
+          title="{{ 'Widget configuration' | translate }}"
+          [ngValue]="{
+            target: datapoint.__target.id,
+            fragment: datapoint.fragment,
+            series: datapoint.series,
+          }"
+          [selected]="
+            datapoint.__target.id ===
+              formGroup.value.selectedDatapoint?.target &&
+            datapoint.fragment ===
+              formGroup.value.selectedDatapoint?.fragment &&
+            datapoint.series === formGroup.value.selectedDatapoint?.series
+          "
+        >
+          {{ datapoint?.label }}
+        </option>
+      </select>
+      <span></span>
+    </div>
+  </c8y-form-group>
 </div>

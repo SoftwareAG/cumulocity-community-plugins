@@ -11,7 +11,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
-import { TimelineType } from '../alarm-event-selector.model';
+import { SelectedDatapoint, TimelineType } from '../alarm-event-selector.model';
+import { IIdentified } from '@c8y/client';
+import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 
 @Component({
   selector: 'c8y-alarm-event-attributes-form',
@@ -33,6 +35,8 @@ export class AlarmEventAttributesFormComponent
   implements ControlValueAccessor, Validator, OnInit
 {
   @Input() timelineType: TimelineType;
+  @Input() target: IIdentified;
+  @Input() datapoints: KPIDetails[] = [];
   formGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder) {}
@@ -42,7 +46,9 @@ export class AlarmEventAttributesFormComponent
       label: ['', [Validators.required]],
       filters: this.formBuilder.group({ type: ['', [Validators.required]] }),
       timelineType: '',
+      selectedDatapoint: [{}, []],
     });
+    this.listKpis();
   }
 
   validate(_control: AbstractControl): ValidationErrors {
@@ -63,5 +69,21 @@ export class AlarmEventAttributesFormComponent
 
   setDisabledState(isDisabled: boolean): void {
     isDisabled ? this.formGroup.disable() : this.formGroup.enable();
+  }
+
+  changeDatapointSelection(selectedDatapoint: SelectedDatapoint) {
+    this.formGroup.patchValue({ selectedDatapoint });
+  }
+
+  trackByFn(_index: number, item: KPIDetails) {
+    return `${item.fragment}-${item.series}-${item.__target?.id}`;
+  }
+
+  private listKpis() {
+    if (this.target && this.target.id) {
+      this.datapoints = this.datapoints.filter(
+        (dp) => dp.__target?.id === this.target.id
+      );
+    }
   }
 }

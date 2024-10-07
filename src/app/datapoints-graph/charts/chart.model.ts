@@ -8,6 +8,8 @@ import { TopLevelFormatterParams } from 'echarts/types/src/component/tooltip/Too
 interface ModifiedCustomSeriesOptions extends echarts.EChartsOption {
   // typeOfSeries is used for formatter to distinguish between events/alarms series
   typeOfSeries?: 'alarm' | 'event' | null;
+  // isDpTemplateSelected is used to distinguish if the series have a specific dp template selected. E.g. for case when a device has 2 measurements
+  isDpTemplateSelected?: boolean;
   id: string;
   data: SeriesValue[];
   itemStyle: { color: string };

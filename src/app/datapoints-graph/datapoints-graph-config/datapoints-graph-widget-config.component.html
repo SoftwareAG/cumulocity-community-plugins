@@ -143,6 +143,7 @@
           name="alarms"
           class="bg-level-1 separator-bottom d-block"
           [timelineType]="'ALARM'"
+          [config]="config"
         ></c8y-alarm-event-selection-list>
 
         <c8y-alarm-event-selection-list
@@ -150,6 +151,7 @@
           name="events"
           class="bg-inherit"
           [timelineType]="'EVENT'"
+          [config]="config"
         ></c8y-alarm-event-selection-list>
       </form>
     </div>
