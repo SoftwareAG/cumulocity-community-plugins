@@ -41,6 +41,7 @@ export class ChartAlarmsService {
       return this.alarmService.list(fetchOptions).then((result) => {
         result.data.forEach((iAlarm) => {
           iAlarm['color'] = alarm.color;
+          iAlarm['selectedDatapoint'] = alarm.selectedDatapoint;
         });
         return result.data;
       });

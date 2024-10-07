@@ -20,6 +20,7 @@ import { AlarmOrEvent, TimelineType } from '../alarm-event-selector.model';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { gettext } from '@c8y/ngx-components';
+import { KPIDetails } from '@c8y/ngx-components/datapoint-selector';
 
 @Component({
   selector: 'c8y-alarm-event-selector-list-item',
@@ -40,6 +41,7 @@ import { gettext } from '@c8y/ngx-components';
 export class AlarmEventSelectorListItemComponent
   implements ControlValueAccessor, Validator, OnDestroy
 {
+  @Input() datapoints: KPIDetails | undefined;
   @Input() timelineType: TimelineType | undefined;
   @Input() highlightText: string | undefined;
   @Input() showAddRemoveButton = true;

@@ -27,6 +27,7 @@ export class ChartEventsService {
       return this.eventService.list(fetchOptions).then((result) => {
         result.data.forEach((iEvent) => {
           iEvent['color'] = event.color;
+          iEvent['selectedDatapoint'] = event.selectedDatapoint;
         });
         return result.data;
       });

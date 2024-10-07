@@ -25,6 +25,7 @@ import { CustomSeriesOptions } from './chart.model';
 import { AlarmSeverityToIconPipe } from '../alarms-filtering/alarm-severity-to-icon.pipe';
 import { AlarmSeverityToLabelPipe } from '../alarms-filtering/alarm-severity-to-label.pipe';
 import { Router } from '@angular/router';
+import { max } from 'rxjs';
 
 type TooltipPositionCallback = (
   point: [number, number], // position of mouse in chart [X, Y]; 0,0 is top left corner
@@ -198,9 +199,18 @@ export class EchartsOptionsService {
           'markLineFlag',
         ]);
 
+        // Is a specific datapoint template selected for this alarm/event type?
+        let isDpTemplateSelected = false;
+
         // MarkPoint data
         const markPointData = itemsOfType.reduce<MarkPointData[]>(
           (acc, item) => {
+            isDpTemplateSelected =
+              item['selectedDatapoint'] &&
+              dp['__target'] &&
+              item['selectedDatapoint']['fragment'] === dp['fragment'] &&
+              item['selectedDatapoint']['series'] === dp['series'] &&
+              item['selectedDatapoint']['target'] === dp['__target']['id'];
             if (dp.__target?.id === item.source.id) {
               const isCleared = isAlarm && item.status === AlarmStatus.CLEARED;
               const isEvent = !isAlarm;
@@ -230,7 +240,9 @@ export class EchartsOptionsService {
           name: `${type}-markPoint`,
           typeOfSeries: itemType,
           data: mainData,
+          isDpTemplateSelected,
           silent: true,
+          position: 'bottom',
           markPoint: {
             showSymbol: true,
             symbolKeepAspect: true,
@@ -243,16 +255,19 @@ export class EchartsOptionsService {
           ),
         };
 
+        const markLineData = this.createMarkLine(itemsOfType);
+
         // Construct series with markLine
         const seriesWithMarkLine = {
           id: `${type}/${dp.__target?.id}+${id ? id : ''}-markLine`,
           name: `${type}-markLine`,
           typeOfSeries: itemType,
           data: mainData,
+          isDpTemplateSelected,
           markLine: {
             showSymbol: false,
             symbol: ['none', 'none'], // no symbol at the start/end of the line
-            data: this.createMarkLine(itemsOfType),
+            data: markLineData,
           },
           ...this.chartTypesService.getSeriesOptions(
             dp,
@@ -554,10 +569,10 @@ export class EchartsOptionsService {
     events: IEvent[],
     alarms: IAlarm[],
     displayOptions: { displayMarkedLine: boolean; displayMarkedPoint: boolean }
-  ): SeriesOption[] {
+  ): CustomSeriesOptions[] | SeriesOption[] {
     const series: SeriesOption[] = [];
-    let eventSeries: SeriesOption[] = [];
-    let alarmSeries: SeriesOption[] = [];
+    let eventSeries: CustomSeriesOptions[] = [];
+    let alarmSeries: CustomSeriesOptions[] = [];
     datapointsWithValues.forEach((dp, idx) => {
       const renderType: DatapointChartRenderType = dp.renderType || 'min';
       if (renderType === 'area') {
@@ -587,11 +602,20 @@ export class EchartsOptionsService {
       alarmSeries = [...alarmSeries, ...newAlarmSeries];
     });
     const deduplicateFilterCallback = (
-      obj1: SeriesOption,
+      obj1: CustomSeriesOptions,
       i: number,
-      arr: SeriesOption[]
-    ): obj1 is SeriesOption =>
-      arr.findIndex((obj2) => obj2['id'] === obj1['id']) === i;
+      arr: CustomSeriesOptions[]
+    ): obj1 is CustomSeriesOptions => {
+      const duplicates = arr.filter(
+        (obj2) => obj1['id'] === obj2['id'] && i !== arr.indexOf(obj2)
+      );
+
+      if (duplicates.length > 0) {
+        return obj1['isDpTemplateSelected'] as boolean;
+      }
+
+      return true;
+    };
     const deduplicatedEvents = eventSeries.filter(deduplicateFilterCallback);
     const deduplicatedAlarms = alarmSeries.filter(deduplicateFilterCallback);
     return [...series, ...deduplicatedEvents, ...deduplicatedAlarms];
@@ -675,7 +699,8 @@ export class EchartsOptionsService {
     isCleared: boolean,
     isEvent: boolean
   ): MarkPointData[] {
-    if (!item.creationTime) {
+    // check if dp.values object is empty
+    if (!item.creationTime || Object.keys(dp.values).length === 0) {
       return [];
     }
 
@@ -877,13 +902,11 @@ export class EchartsOptionsService {
   }
 
   /**
-   * This method creates a markLine on the chart which represents the line between every alarm or event on the chart.
+   * This method creates a markLine on the chart which represents the line between every alarm or eventon the chart.
    * @param items Array of alarms or events
    * @returns MarkLineDataItemOptionBase[]
    */
-  private createMarkLine<T extends IAlarm | IEvent>(
-    items: T[]
-  ): MarkLineData[] {
+  private createMarkLine<T extends IAlarm | IEvent>(items: T[]): any[] {
     return items.reduce<MarkLineData[]>((acc, item) => {
       if (!item.creationTime) {
         return acc;
